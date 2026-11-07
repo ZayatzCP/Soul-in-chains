@@ -132,16 +132,33 @@ public final class ArcaneGameTests {
 
     @GameTest(template = ARENA)
     public static void parasitismHasNoRecursion(GameTestHelper helper) {
+        // Mutual links: the player redirects to the husk, the husk redirects back to the player.
+        // Redirected damage must stop at the husk instead of bouncing back and forth.
         ServerLevel level = helper.getLevel();
-        Player a = player(helper, 2.5, 1, 2.5);
-        Player b = player(helper, 6.5, 1, 6.5);
-        helper.assertTrue(ParasitismManager.tryLink(level, a, b), "Link A->B was not created");
-        helper.assertTrue(ParasitismManager.tryLink(level, b, a), "Link B->A was not created");
-        float aHp = a.getHealth();
-        float bHp = b.getHealth();
-        hurtFresh(a, level.damageSources().generic(), 4f);
-        helper.assertTrue(a.getHealth() == aHp, "A took damage although it is linked to B");
-        helper.assertTrue(Math.abs((bHp - b.getHealth()) - 4f) < 0.01f, "B should take exactly the redirected 4 damage, took " + (bHp - b.getHealth()));
+        Player player = player(helper, 2.5, 1, 2.5);
+        Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(6, 1, 6));
+        helper.assertTrue(ParasitismManager.tryLink(level, player, husk), "Link player->husk was not created");
+        helper.assertTrue(ParasitismManager.tryLink(level, husk, player), "Link husk->player was not created");
+        float playerHp = player.getHealth();
+        float huskHp = husk.getHealth();
+        hurtFresh(player, level.damageSources().generic(), 4f);
+        helper.assertTrue(player.getHealth() == playerHp, "Damage bounced back to the player");
+        helper.assertTrue(Math.abs((huskHp - husk.getHealth()) - 4f) < 0.01f, "Husk should take exactly the redirected 4 damage, took " + (huskHp - husk.getHealth()));
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void parasitismBreaksWhenHostUnavailable(GameTestHelper helper) {
+        // A host that is no longer in the world (here: a player object that never joined it) breaks the link
+        // and the damage reaches the caster normally.
+        ServerLevel level = helper.getLevel();
+        Player caster = player(helper, 2.5, 1, 2.5);
+        Player ghost = player(helper, 6.5, 1, 6.5);
+        helper.assertTrue(ParasitismManager.tryLink(level, caster, ghost), "Link was not created");
+        float hp = caster.getHealth();
+        hurtFresh(caster, level.damageSources().generic(), 3f);
+        helper.assertTrue(caster.getHealth() < hp, "Damage was swallowed although the host is unavailable");
+        helper.assertTrue(!ParasitismManager.hasLink(caster), "Link to an unavailable host was not broken");
         helper.succeed();
     }
 
