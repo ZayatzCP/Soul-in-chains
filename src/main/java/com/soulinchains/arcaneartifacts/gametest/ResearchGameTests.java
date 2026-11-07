@@ -4,7 +4,6 @@ import com.hollingsworth.arsnouveau.common.block.tile.ScribesTile;
 import com.hollingsworth.arsnouveau.common.crafting.recipes.GlyphRecipe;
 import com.hollingsworth.arsnouveau.setup.registry.BlockRegistry;
 import com.hollingsworth.arsnouveau.setup.registry.ItemsRegistry;
-import com.hollingsworth.arsnouveau.setup.registry.RecipeRegistry;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.research.NoteCategory;
 import com.soulinchains.arcaneartifacts.research.PlayerResearch;
@@ -107,9 +106,10 @@ public final class ResearchGameTests {
         Player player = player(helper);
         helper.assertTrue(!ResearchService.isGlyphAvailable(player, PARASITISM), "Parasitism should be locked for a new player");
 
-        RecipeHolder<GlyphRecipe> recipe = helper.getLevel().getRecipeManager()
-                .byKeyTyped(RecipeRegistry.GLYPH_TYPE.get(), ArcaneArtifacts.id("glyph_parasitism"));
-        helper.assertTrue(recipe != null, "Parasitism glyph recipe missing");
+        RecipeHolder<?> holder = helper.getLevel().getRecipeManager().byKey(ArcaneArtifacts.id("glyph_parasitism")).orElse(null);
+        helper.assertTrue(holder != null && holder.value() instanceof GlyphRecipe, "Parasitism glyph recipe missing");
+        @SuppressWarnings("unchecked")
+        RecipeHolder<GlyphRecipe> recipe = (RecipeHolder<GlyphRecipe>) holder;
         BlockPos pos = helper.absolutePos(new BlockPos(2, 1, 2));
         helper.getLevel().setBlockAndUpdate(pos, BlockRegistry.SCRIBES_BLOCK.get().defaultBlockState());
         helper.assertTrue(helper.getLevel().getBlockEntity(pos) instanceof ScribesTile, "No Scribes Table tile");
