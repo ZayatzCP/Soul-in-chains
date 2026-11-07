@@ -72,5 +72,6 @@
   "ars_nouveau.augment_desc.glyph_arcane_missile_glyph_splitting": "On hitting a creature, splits into two half-damage missiles that seek other targets.",
   "ars_nouveau.augment_desc.glyph_arcane_mark_glyph_extend_time": "Increases the duration of the mark.",
   "ars_nouveau.augment_desc.glyph_arcane_mark_glyph_duration_down": "Decreases the duration of the mark.",
-  "ars_nouveau.augment_desc.glyph_projectile_glyph_splitting": "On hitting a creature, splits into two half-damage homing projectiles that seek other targets."
+  "ars_nouveau.augment_desc.glyph_projectile_glyph_splitting": "On hitting a creature, splits into two half-damage homing projectiles that seek other targets.",
+  "item.arcane_artifacts.rose_gold_ingot": "Rose Gold Ingot"
 }

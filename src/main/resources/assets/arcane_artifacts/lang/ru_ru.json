@@ -72,5 +72,6 @@
   "ars_nouveau.augment_desc.glyph_arcane_missile_glyph_splitting": "При попадании в существо распадается на две ракеты с половиной урона.",
   "ars_nouveau.augment_desc.glyph_arcane_mark_glyph_extend_time": "Увеличивает длительность метки.",
   "ars_nouveau.augment_desc.glyph_arcane_mark_glyph_duration_down": "Уменьшает длительность метки.",
-  "ars_nouveau.augment_desc.glyph_projectile_glyph_splitting": "При попадании в существо распадается на два самонаводящихся снаряда с половиной урона."
+  "ars_nouveau.augment_desc.glyph_projectile_glyph_splitting": "При попадании в существо распадается на два самонаводящихся снаряда с половиной урона.",
+  "item.arcane_artifacts.rose_gold_ingot": "Розовое золото"
 }

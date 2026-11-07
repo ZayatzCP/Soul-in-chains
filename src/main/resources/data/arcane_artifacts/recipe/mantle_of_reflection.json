@@ -3,36 +3,48 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "ars_nouveau:abjuration_essence"
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
     },
     {
       "item": "ars_nouveau:abjuration_essence"
     },
     {
-      "item": "ars_nouveau:manipulation_essence"
+      "item": "ars_nouveau:abjuration_essence"
     },
     {
-      "item": "minecraft:shulker_shell"
+      "item": "ars_nouveau:wilden_wing"
     },
     {
-      "item": "minecraft:shulker_shell"
+      "item": "ars_nouveau:spell_parchment"
     },
     {
-      "item": "minecraft:ender_pearl"
+      "item": "ars_nouveau:magebloom_fiber"
     },
     {
-      "item": "minecraft:amethyst_block"
-    },
-    {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:air_essence"
     }
   ],
   "reagent": {
-    "item": "ars_nouveau:magebloom_fiber"
+    "item": "minecraft:phantom_membrane"
   },
   "result": {
     "count": 1,
     "id": "arcane_artifacts:mantle_of_reflection"
   },
-  "sourceCost": 6000
+  "sourceCost": 18000
 }

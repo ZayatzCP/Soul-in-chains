@@ -425,7 +425,29 @@ WORN_VINE = ['GgGgGgGgGgGgGgGg'] * 16
 WORN_FLOWER = ['WwWwWwWwWwWwWwWw', 'wWwWwWwWwWwWwWwW'] * 8
 
 
+ROSE_GOLD_INGOT = [
+    '................',
+    '................',
+    '................',
+    '....hhhhhhhh....',
+    '...hHHHHHHHHh...',
+    '..hHHhhhhhhHHh..',
+    '..hHhLLLLLLhHh..',
+    '..hHhLhhhhLhHh..',
+    '..hHhLhhhhLhHh..',
+    '..hHhLhhhhLhHh..',
+    '..hHhLhhhhLhHh..',
+    '..hHhhhhhhhhHh..',
+    '...hHHHHHHHHh...',
+    '....hhhhhhhh....',
+    '................',
+    '................',
+]
+ROSE_GOLD_PAL = {'h': '#9C5A46', 'H': '#E39A85', 'L': '#FFE3D8'}
+
+
 def main():
+    save(sprite(ROSE_GOLD_INGOT, ROSE_GOLD_PAL), 'item', 'rose_gold_ingot.png')
     for name, rows in GLYPHS.items():
         save(glyph(rows), 'item', name + '.png')
 

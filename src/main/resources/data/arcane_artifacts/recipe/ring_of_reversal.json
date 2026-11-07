@@ -3,30 +3,33 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
       "item": "ars_nouveau:abjuration_essence"
     },
     {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:manipulation_essence"
     },
     {
-      "tag": "c:gems/source"
+      "item": "minecraft:redstone"
     },
     {
-      "item": "minecraft:redstone_block"
-    },
-    {
-      "item": "minecraft:echo_shard"
-    },
-    {
-      "item": "minecraft:lapis_block"
+      "item": "ars_nouveau:magebloom_fiber"
     }
   ],
   "reagent": {
-    "item": "ars_nouveau:ring_of_potential"
+    "item": "minecraft:gold_ingot"
   },
   "result": {
     "count": 1,
     "id": "arcane_artifacts:ring_of_reversal"
   },
-  "sourceCost": 3000
+  "sourceCost": 7000
 }

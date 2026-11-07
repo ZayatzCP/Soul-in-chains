@@ -3,30 +3,36 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "ars_nouveau:manipulation_essence"
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
     },
     {
       "item": "ars_nouveau:air_essence"
     },
     {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:source_gem"
     },
     {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:spell_parchment"
     },
     {
-      "item": "minecraft:feather"
-    },
-    {
-      "item": "ars_nouveau:magebloom_fiber"
+      "item": "ars_nouveau:abjuration_essence"
     }
   ],
   "reagent": {
-    "item": "minecraft:leather_boots"
+    "item": "minecraft:diamond_boots"
   },
   "result": {
     "count": 1,
     "id": "arcane_artifacts:focusing_boots"
   },
-  "sourceCost": 3000
+  "sourceCost": 6000
 }

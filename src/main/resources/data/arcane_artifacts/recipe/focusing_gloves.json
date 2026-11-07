@@ -3,36 +3,42 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "ars_nouveau:manipulation_essence"
+      "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
-      "item": "ars_nouveau:manipulation_essence"
+      "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
-      "item": "ars_nouveau:conjuration_essence"
+      "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
-      "tag": "c:rods/blaze"
+      "item": "ars_nouveau:source_gem"
     },
     {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:source_gem"
     },
     {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:spell_parchment"
+    },
+    {
+      "item": "ars_nouveau:spell_parchment"
     },
     {
       "item": "ars_nouveau:magebloom_fiber"
     },
     {
-      "item": "ars_nouveau:magebloom_fiber"
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "ars_nouveau:wilden_spike"
     }
   ],
   "reagent": {
-    "item": "minecraft:leather"
+    "item": "ars_nouveau:arcane_core"
   },
   "result": {
     "count": 1,
     "id": "arcane_artifacts:focusing_gloves"
   },
-  "sourceCost": 4000
+  "sourceCost": 12000
 }

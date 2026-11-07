@@ -3,36 +3,42 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "ars_nouveau:abjuration_essence"
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    },
+    {
+      "item": "ars_nouveau:air_essence"
     },
     {
       "item": "ars_nouveau:abjuration_essence"
     },
     {
-      "item": "ars_nouveau:magebloom"
+      "item": "ars_nouveau:wilden_horn"
     },
     {
-      "item": "ars_nouveau:magebloom"
-    },
-    {
-      "item": "minecraft:golden_apple"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:totem_of_undying"
-    },
-    {
-      "tag": "c:gems/source"
+      "item": "ars_nouveau:wilden_wing"
     }
   ],
   "reagent": {
-    "item": "minecraft:flowering_azalea"
+    "item": "minecraft:diamond_helmet"
   },
   "result": {
     "count": 1,
     "id": "arcane_artifacts:wreath_of_manipulation"
   },
-  "sourceCost": 6000
+  "sourceCost": 12000
 }

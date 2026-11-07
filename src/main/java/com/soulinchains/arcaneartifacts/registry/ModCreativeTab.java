@@ -16,6 +16,7 @@ public final class ModCreativeTab {
             .title(Component.translatable("itemGroup.arcane_artifacts"))
             .icon(() -> ModItems.WREATH_OF_MANIPULATION.get().getDefaultInstance())
             .displayItems((params, output) -> {
+                output.accept(ModItems.ROSE_GOLD_INGOT.get());
                 output.accept(ModItems.WREATH_OF_MANIPULATION.get());
                 output.accept(ModItems.FOCUSING_BOOTS.get());
                 output.accept(ModItems.FOCUSING_GLOVES.get());
