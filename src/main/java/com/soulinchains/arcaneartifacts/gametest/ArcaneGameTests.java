@@ -71,12 +71,27 @@ public final class ArcaneGameTests {
         return player;
     }
 
+    /**
+     * Puts the item in the Curios slot and checks the slot itself. Curios caches
+     * {@code findFirstCurio} results for the current game tick, so tests look the item up
+     * through the mod's helpers only from the next tick on (see {@link #afterEquip}).
+     */
     private static void equip(GameTestHelper helper, Player player, String slot, Item item) {
         ICuriosItemHandler inventory = CuriosApi.getCuriosInventory(player).orElse(null);
         helper.assertTrue(inventory != null, "Player has no Curios inventory");
-        helper.assertTrue(inventory.getStacksHandler(slot).isPresent(), "Player has no Curios slot '" + slot + "'");
+        var handler = inventory.getStacksHandler(slot).orElse(null);
+        helper.assertTrue(handler != null, "Player has no Curios slot '" + slot + "'");
+        helper.assertTrue(handler.getStacks().getSlots() > 0, "Curios slot '" + slot + "' has size 0");
         inventory.setEquippedCurio(slot, 0, new ItemStack(item));
-        helper.assertTrue(CurioHelper.findEquipped(player, item).isPresent(), "Could not equip " + item + " in slot " + slot);
+        helper.assertTrue(handler.getStacks().getStackInSlot(0).is(item),
+                "Slot '" + slot + "' holds " + handler.getStacks().getStackInSlot(0) + " instead of " + item);
+    }
+
+    private static void afterEquip(GameTestHelper helper, Player player, Item item, Runnable body) {
+        helper.runAfterDelay(1, () -> {
+            helper.assertTrue(CurioHelper.findEquipped(player, item).isPresent(), "Curios does not report " + item + " as equipped");
+            body.run();
+        });
     }
 
     private static void hurtFresh(Player player, net.minecraft.world.damagesource.DamageSource source, float amount) {
@@ -197,6 +212,10 @@ public final class ArcaneGameTests {
         ServerLevel level = helper.getLevel();
         Player player = player(helper, 4.5, 1, 4.5);
         equip(helper, player, "head", ModItems.WREATH_OF_MANIPULATION.get());
+        afterEquip(helper, player, ModItems.WREATH_OF_MANIPULATION.get(), () -> wreathScenario(helper, level, player));
+    }
+
+    private static void wreathScenario(GameTestHelper helper, ServerLevel level, Player player) {
         int needed = Config.WREATH_HITS_TO_ADAPT.get();
         for (int i = 0; i < needed - 1; i++) {
             hurtFresh(player, level.damageSources().cactus(), 1f);
@@ -227,12 +246,13 @@ public final class ArcaneGameTests {
         ServerLevel level = helper.getLevel();
         Player player = player(helper, 4.5, 1, 4.5);
         equip(helper, player, "ring", ModItems.RING_OF_REVERSAL.get());
-        hurtFresh(player, level.damageSources().cactus(), 2f);
-        hurtFresh(player, level.damageSources().cactus(), 2f);
-        int charge = RingOfReversalItem.charge(CurioHelper.findEquipped(player, ModItems.RING_OF_REVERSAL.get()).orElseThrow());
-        helper.assertTrue(charge == Config.RING_CHARGE_PER_HIT.get(), "Expected one rate-limited charge, got " + charge);
-        hurtFresh(player, level.damageSources().cactus(), 0.5f);
-        helper.succeed();
+        afterEquip(helper, player, ModItems.RING_OF_REVERSAL.get(), () -> {
+            hurtFresh(player, level.damageSources().cactus(), 2f);
+            hurtFresh(player, level.damageSources().cactus(), 2f);
+            int charge = RingOfReversalItem.charge(CurioHelper.findEquipped(player, ModItems.RING_OF_REVERSAL.get()).orElseThrow());
+            helper.assertTrue(charge == Config.RING_CHARGE_PER_HIT.get(), "Expected one rate-limited charge, got " + charge);
+            helper.succeed();
+        });
     }
 
     @GameTest(template = ARENA)
@@ -250,30 +270,32 @@ public final class ArcaneGameTests {
         Husk caster = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 7));
         Player wearer = player(helper, 2.5, 1, 2.5);
         equip(helper, wearer, "back", ModItems.MANTLE_OF_REFLECTION.get());
-        double oldChance = Config.MANTLE_REFLECT_CHANCE.get();
-        Config.MANTLE_REFLECT_CHANCE.set(1.0);
-        try {
-            SpellResolver resolver = new SpellResolver(new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), caster, LivingCaster.from(caster)));
-            EntityProjectileSpell projectile = new EntityProjectileSpell(level, resolver);
-            Vec3 at = wearer.position().add(0, 1, 0);
-            projectile.setPos(at.x, at.y, at.z);
-            projectile.setDeltaMovement(at.subtract(caster.position()).normalize().scale(0.8));
-            ProjectileImpactEvent event = new ProjectileImpactEvent(projectile, new EntityHitResult(wearer));
-            NeoForge.EVENT_BUS.post(event);
-            helper.assertTrue(event.isCanceled(), "Mantle did not reflect the spell");
-            helper.assertTrue(projectile.getOwner() == wearer, "Reflected projectile must belong to the wearer");
-            Vec3 toCaster = caster.position().subtract(projectile.position()).normalize();
-            helper.assertTrue(projectile.getDeltaMovement().normalize().dot(toCaster) > 0.9, "Reflected projectile is not aimed at its caster");
-            helper.assertTrue(wearer.getCooldowns().isOnCooldown(ModItems.MANTLE_OF_REFLECTION.get()), "Mantle cooldown not started");
+        afterEquip(helper, wearer, ModItems.MANTLE_OF_REFLECTION.get(), () -> {
+            double oldChance = Config.MANTLE_REFLECT_CHANCE.get();
+            Config.MANTLE_REFLECT_CHANCE.set(1.0);
+            try {
+                SpellResolver resolver = new SpellResolver(new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), caster, LivingCaster.from(caster)));
+                EntityProjectileSpell projectile = new EntityProjectileSpell(level, resolver);
+                Vec3 at = wearer.position().add(0, 1, 0);
+                projectile.setPos(at.x, at.y, at.z);
+                projectile.setDeltaMovement(at.subtract(caster.position()).normalize().scale(0.8));
+                ProjectileImpactEvent event = new ProjectileImpactEvent(projectile, new EntityHitResult(wearer));
+                NeoForge.EVENT_BUS.post(event);
+                helper.assertTrue(event.isCanceled(), "Mantle did not reflect the spell");
+                helper.assertTrue(projectile.getOwner() == wearer, "Reflected projectile must belong to the wearer");
+                Vec3 toCaster = caster.position().subtract(projectile.position()).normalize();
+                helper.assertTrue(projectile.getDeltaMovement().normalize().dot(toCaster) > 0.9, "Reflected projectile is not aimed at its caster");
+                helper.assertTrue(wearer.getCooldowns().isOnCooldown(ModItems.MANTLE_OF_REFLECTION.get()), "Mantle cooldown not started");
 
-            EntityProjectileSpell second = new EntityProjectileSpell(level, resolver);
-            ProjectileImpactEvent again = new ProjectileImpactEvent(second, new EntityHitResult(wearer));
-            NeoForge.EVENT_BUS.post(again);
-            helper.assertTrue(!again.isCanceled(), "Mantle reflected during its cooldown");
-        } finally {
-            Config.MANTLE_REFLECT_CHANCE.set(oldChance);
-        }
-        helper.succeed();
+                EntityProjectileSpell second = new EntityProjectileSpell(level, resolver);
+                ProjectileImpactEvent again = new ProjectileImpactEvent(second, new EntityHitResult(wearer));
+                NeoForge.EVENT_BUS.post(again);
+                helper.assertTrue(!again.isCanceled(), "Mantle reflected during its cooldown");
+            } finally {
+                Config.MANTLE_REFLECT_CHANCE.set(oldChance);
+            }
+            helper.succeed();
+        });
     }
 
     // ------------------------------------------------------------------ glyphs in flight
