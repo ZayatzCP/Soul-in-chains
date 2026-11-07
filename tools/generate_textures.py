@@ -199,19 +199,19 @@ WREATH_PAL = {'g': '#2E6B3A', 'G': '#4FA35A', 'w': '#BDBDBD', 'W': '#FFFFFF'}
 BOOTS = [
     '................',
     '................',
-    '...vvvv.........',
-    '...vVVv.........',
-    '...yyyy.........',
-    '...vVVv...vvvv..',
-    '...vVVv...vVVv..',
-    '...vVVv...yyyy..',
-    '...vVtv...vVVv..',
-    '..vvVVv...vVVv..',
-    '.vVVVVv...vVtv..',
-    '.vVVVVvv.vvVVv..',
-    '.ddddddd.vVVVVv.',
-    '.........vVVVVvv',
-    '.........ddddddd',
+    '....yyyyy.......',
+    '....vVVVv.......',
+    '....vVtVv.......',
+    '....vVVVv.......',
+    '....vVVVv.......',
+    '....vVVVv.......',
+    '....vVVVvv......',
+    '...vVVVVVVvv....',
+    '...vVVVVVVVVv...',
+    '...vVVVVVVVVVv..',
+    '...yyyyyyyyyyy..',
+    '...ddddddddddd..',
+    '................',
     '................',
 ]
 BOOTS_PAL = {'v': '#3B2A6B', 'V': '#5C45A8', 'y': '#E3B341', 't': '#2FD6B5', 'd': '#1E1638'}
@@ -423,27 +423,35 @@ FEET_SLOT = [
 
 WORN_VINE = ['GgGgGgGgGgGgGgGg'] * 16
 WORN_FLOWER = ['WwWwWwWwWwWwWwWw', 'wWwWwWwWwWwWwWwW'] * 8
+WORN_TEXTURES = {
+    'boots': (['yyyyyyyyyyyyyyyy'] * 3 + ['vVvVvVvVvVvVvVvV', 'VvVvVvVvVvVvVvVv'] * 5 + ['dddddddddddddddd'] * 3, BOOTS_PAL),
+    'gloves': (['vVvVvVvVvVvVvVvV', 'VvVvVpVvVvVpVvVv'] * 5 + ['yyyyyyyyyyyyyyyy', 'ytyyyyyytyyyyyyt', 'yyyyyyyyyyyyyyyy'] * 2, GLOVES_PAL),
+    'ring': (['yYyYyYyYyYyYyYyY', 'YyYyYyYyYyYyYyYy'] * 8, RING_PAL),
+    'gem': (['tTtTtTtTtTtTtTtT', 'TtTtTtTtTtTtTtTt'] * 8, RING_PAL),
+    'mantle': (['vVvVvVvVvVvVvVvV', 'VvVvVvVvVvVvVvVv'] * 6 + ['pvpvpvpvpvpvpvpv'] * 2 + ['tttttttttttttttt'] * 2, MANTLE_PAL),
+    'clasp': (['yYyYyYyYyYyYyYyY', 'YyYyYyYyYyYyYyYy'] * 8, MANTLE_PAL),
+}
 
 
 ROSE_GOLD_INGOT = [
     '................',
     '................',
     '................',
-    '....hhhhhhhh....',
-    '...hHHHHHHHHh...',
-    '..hHHhhhhhhHHh..',
-    '..hHhLLLLLLhHh..',
-    '..hHhLhhhhLhHh..',
-    '..hHhLhhhhLhHh..',
-    '..hHhLhhhhLhHh..',
-    '..hHhLhhhhLhHh..',
-    '..hHhhhhhhhhHh..',
-    '...hHHHHHHHHh...',
-    '....hhhhhhhh....',
+    '................',
+    '.......hhhhhh...',
+    '.....hhLLLLLHh..',
+    '...hhLLLHHHHHd..',
+    '..hLLHHHHHHHdd..',
+    '..hHHHHHHHHddd..',
+    '..dHHHHHHHddd...',
+    '..ddHHHHHddd....',
+    '...ddddddd......',
+    '................',
+    '................',
     '................',
     '................',
 ]
-ROSE_GOLD_PAL = {'h': '#9C5A46', 'H': '#E39A85', 'L': '#FFE3D8'}
+ROSE_GOLD_PAL = {'h': '#C77B66', 'H': '#E7A08B', 'L': '#FFE1D6', 'd': '#8E4B3B'}
 
 
 def main():
@@ -457,8 +465,10 @@ def main():
         img = Image.new('RGBA', (16, 16), (0, 0, 0, 0))
         img.alpha_composite(sprite([r.ljust(16, '.') for r in rows], WREATH_PAL))
         save(img, 'item', f'wreath_of_manipulation_flowers_{group}.png')
-    save(sprite(WORN_VINE, WREATH_PAL), 'item', 'wreath_worn_vine.png')
-    save(sprite(WORN_FLOWER, WREATH_PAL), 'item', 'wreath_worn_flower.png')
+    save(sprite(WORN_VINE, WREATH_PAL), 'item', 'worn', 'wreath_vine.png')
+    save(sprite(WORN_FLOWER, WREATH_PAL), 'item', 'worn', 'wreath_flower.png')
+    for name, (rows, pal) in WORN_TEXTURES.items():
+        save(sprite(rows, pal), 'item', 'worn', name + '.png')
 
     save(sprite(BOOTS, BOOTS_PAL), 'item', 'focusing_boots.png')
     save(sprite(GLOVES, GLOVES_PAL), 'item', 'focusing_gloves.png')

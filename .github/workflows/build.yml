@@ -18,6 +18,15 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build mod jar
         run: ./gradlew build --stacktrace --no-daemon
+      - name: Run game tests (headless server with Ars Nouveau + Curios)
+        run: ./gradlew runGameTestServer --stacktrace --no-daemon
+      - name: Upload game test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gametest-logs
+          path: runs/gametest/logs/
+          if-no-files-found: ignore
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:

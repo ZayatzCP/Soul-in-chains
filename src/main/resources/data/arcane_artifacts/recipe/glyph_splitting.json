@@ -3,13 +3,16 @@
   "exp": 55,
   "inputs": [
     {
-      "item": "ars_nouveau:glyph_split"
+      "item": "ars_nouveau:wilden_spike"
+    },
+    {
+      "item": "ars_nouveau:wilden_spike"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
       "item": "minecraft:amethyst_cluster"
-    },
-    {
-      "item": "ars_nouveau:manipulation_essence"
     }
   ],
   "output": {

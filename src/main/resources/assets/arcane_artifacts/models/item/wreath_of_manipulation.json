@@ -1,12 +1,10 @@
 {
-  "loader": "neoforge:separate_transforms",
-  "gui_light": "front",
-  "base": {
-    "parent": "arcane_artifacts:item/wreath_of_manipulation_icon"
-  },
-  "perspectives": {
-    "head": {
-      "parent": "arcane_artifacts:item/wreath_of_manipulation_worn"
-    }
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "arcane_artifacts:item/wreath_of_manipulation_vines",
+    "layer1": "arcane_artifacts:item/wreath_of_manipulation_flowers_1",
+    "layer2": "arcane_artifacts:item/wreath_of_manipulation_flowers_2",
+    "layer3": "arcane_artifacts:item/wreath_of_manipulation_flowers_3",
+    "layer4": "arcane_artifacts:item/wreath_of_manipulation_flowers_4"
   }
 }

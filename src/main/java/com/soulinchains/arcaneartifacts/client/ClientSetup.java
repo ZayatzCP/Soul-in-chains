@@ -8,6 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -27,7 +28,13 @@ public final class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void registerWornModels(ModelEvent.RegisterAdditional event) {
+        WornModels.all().values().forEach(list -> list.forEach(attachment -> event.register(attachment.location())));
+    }
+
+    @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> CuriosRendererRegistry.register(ModItems.WREATH_OF_MANIPULATION.get(), WreathCurioRenderer::new));
+        event.enqueueWork(() -> WornModels.all().forEach((item, attachments) ->
+                CuriosRendererRegistry.register(item.get(), () -> new AccessoryCurioRenderer(attachments))));
     }
 }

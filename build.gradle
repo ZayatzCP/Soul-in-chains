@@ -32,6 +32,12 @@ neoForge {
             programArgument '--nogui'
             gameDirectory = project.file('runs/server')
         }
+        // Starts a headless server, runs every @GameTest of this mod and exits (non-zero on failure).
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file('runs/gametest')
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             logLevel = org.slf4j.event.Level.INFO
