@@ -1,0 +1,46 @@
+{
+  "category": "arcane",
+  "icon": "ars_nouveau:source_gem",
+  "sort": 0,
+  "subjects": [
+    "ars_nouveau:source_gem",
+    "minecraft:amethyst_shard"
+  ],
+  "properties": [
+    "resonant",
+    "condensed_source"
+  ],
+  "experiments": [
+    {
+      "id": "cast",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast"
+        }
+      ]
+    },
+    {
+      "id": "compare",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:amethyst_shard"
+        },
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:lapis_lazuli"
+        }
+      ]
+    },
+    {
+      "id": "touch_life",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "entity": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1
+}

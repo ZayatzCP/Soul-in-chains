@@ -38,3 +38,6 @@ type = "required"
 versionRange = "${curios_version_range}"
 ordering = "AFTER"
 side = "BOTH"
+
+[[mixins]]
+config = "arcane_artifacts.mixins.json"

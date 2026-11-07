@@ -1,0 +1,49 @@
+{
+  "category": "material",
+  "icon": "minecraft:amethyst_cluster",
+  "sort": 30,
+  "subjects": [
+    "minecraft:amethyst_cluster",
+    "ars_nouveau:wilden_spike"
+  ],
+  "properties": [
+    "brittle",
+    "splinters"
+  ],
+  "requires": [
+    "arcane_artifacts:trajectories"
+  ],
+  "experiments": [
+    {
+      "id": "split",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_split"
+        }
+      ]
+    },
+    {
+      "id": "shatter",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_break",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_crush",
+          "block": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "spatial": 1
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_splitting"
+  ]
+}

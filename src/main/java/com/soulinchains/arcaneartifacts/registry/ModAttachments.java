@@ -3,6 +3,7 @@ package com.soulinchains.arcaneartifacts.registry;
 import com.mojang.serialization.Codec;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.accessory.WreathRuntime;
+import com.soulinchains.arcaneartifacts.research.PlayerResearch;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -26,6 +27,10 @@ public final class ModAttachments {
     /** Transient runtime state of the wreath (regeneration timer, cleanse tracking). Not saved. */
     public static final Supplier<AttachmentType<WreathRuntime>> WREATH_RUNTIME = REGISTER.register("wreath_runtime",
             () -> AttachmentType.builder(WreathRuntime::new).build());
+
+    /** Research progress of a player: saved with the world, kept through death, mirrored to the client. */
+    public static final Supplier<AttachmentType<PlayerResearch>> RESEARCH = REGISTER.register("research",
+            () -> AttachmentType.builder(PlayerResearch::new).serialize(PlayerResearch.CODEC).copyOnDeath().build());
 
     private ModAttachments() {
     }

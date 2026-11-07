@@ -58,6 +58,9 @@ public final class Config {
     public static final ModConfigSpec.IntValue SPLIT_CHILD_LIFETIME_TICKS;
     public static final ModConfigSpec.BooleanValue SPLIT_ALLOW_SAME_TARGET;
 
+    // Research
+    public static final ModConfigSpec.BooleanValue RESEARCH_GATES_GLYPHS;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
@@ -135,6 +138,11 @@ public final class Config {
         SPLIT_CHILD_LIFETIME_TICKS = b.defineInRange("child_lifetime_ticks", 80, 10, 1200);
         SPLIT_ALLOW_SAME_TARGET = b.comment("Allow split projectiles to hit the entity the parent projectile hit.")
                 .define("allow_same_target", false);
+        b.pop();
+
+        b.push("research");
+        RESEARCH_GATES_GLYPHS = b.comment("Glyphs listed in a research's \"unlocks\" can only be crafted/learned after that research is formulated. Creative players are never blocked.")
+                .define("research_gates_glyphs", true);
         b.pop();
 
         SPEC = b.build();

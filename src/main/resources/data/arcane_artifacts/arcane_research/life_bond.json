@@ -1,0 +1,64 @@
+{
+  "category": "biological",
+  "icon": "minecraft:fermented_spider_eye",
+  "sort": 40,
+  "subjects": [
+    "minecraft:fermented_spider_eye",
+    "ars_nouveau:wilden_horn",
+    "minecraft:ghast_tear"
+  ],
+  "properties": [
+    "vital_flow",
+    "parasitic_affinity"
+  ],
+  "requires": [
+    "arcane_artifacts:arcane_marking"
+  ],
+  "experiments": [
+    {
+      "id": "wound",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_harm",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "mend",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_heal",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "drain",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:effect_applied",
+          "effect": "minecraft:wither"
+        },
+        {
+          "trigger": "arcane_artifacts:effect_applied",
+          "effect": "minecraft:poison"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_wither",
+          "entity": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "arcane": 2
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_parasitism"
+  ]
+}

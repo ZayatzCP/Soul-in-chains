@@ -1,0 +1,63 @@
+{
+  "category": "spatial",
+  "icon": "minecraft:arrow",
+  "sort": 10,
+  "subjects": [
+    "#minecraft:arrows",
+    "minecraft:ender_eye"
+  ],
+  "properties": [
+    "ballistic",
+    "guided"
+  ],
+  "requires": [
+    "arcane_artifacts:source_resonance"
+  ],
+  "experiments": [
+    {
+      "id": "projectile",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_projectile"
+        }
+      ]
+    },
+    {
+      "id": "speed",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_accelerate"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_decelerate"
+        }
+      ]
+    },
+    {
+      "id": "strike",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_harm",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_knockback",
+          "entity": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "arcane": 1
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_arcane_missile",
+    "arcane_artifacts:glyph_pursuit"
+  ]
+}

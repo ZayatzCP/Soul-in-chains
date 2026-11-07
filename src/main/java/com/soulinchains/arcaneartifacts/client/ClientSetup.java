@@ -23,6 +23,16 @@ public final class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_ENTITY.get(), ResearchTableRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(net.neoforged.neoforge.client.event.RegisterMenuScreensEvent event) {
+        event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_MENU.get(), ResearchTableScreen::new);
+    }
+
+    @SubscribeEvent
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
         event.register(WreathColors::color, ModItems.WREATH_OF_MANIPULATION.get());
     }

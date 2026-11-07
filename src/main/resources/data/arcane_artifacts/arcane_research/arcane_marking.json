@@ -1,0 +1,53 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:glow_ink_sac",
+  "sort": 20,
+  "subjects": [
+    "minecraft:glow_ink_sac",
+    "minecraft:spectral_arrow"
+  ],
+  "properties": [
+    "luminous",
+    "lingering_trace"
+  ],
+  "requires": [
+    "arcane_artifacts:source_resonance"
+  ],
+  "experiments": [
+    {
+      "id": "reveal",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_sense_magic"
+        },
+        {
+          "trigger": "arcane_artifacts:effect_applied",
+          "effect": "minecraft:glowing"
+        }
+      ]
+    },
+    {
+      "id": "bind",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_hex",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_snare",
+          "entity": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "arcane": 1
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_arcane_mark"
+  ]
+}

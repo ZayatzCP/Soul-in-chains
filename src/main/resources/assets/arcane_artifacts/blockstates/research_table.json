@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arcane_artifacts:block/research_table",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "arcane_artifacts:block/research_table",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arcane_artifacts:block/research_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arcane_artifacts:block/research_table",
+      "y": 270
+    }
+  }
+}

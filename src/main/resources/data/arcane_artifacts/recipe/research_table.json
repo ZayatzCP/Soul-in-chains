@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "GRG",
+    "PPP"
+  ],
+  "key": {
+    "B": {
+      "item": "ars_nouveau:worn_notebook"
+    },
+    "G": {
+      "tag": "c:gems/source"
+    },
+    "R": {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    "P": {
+      "tag": "c:planks/archwood"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:research_table"
+  }
+}

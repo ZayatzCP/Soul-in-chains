@@ -6,12 +6,15 @@ import com.soulinchains.arcaneartifacts.accessory.FocusingGlovesItem;
 import com.soulinchains.arcaneartifacts.accessory.MantleOfReflectionItem;
 import com.soulinchains.arcaneartifacts.accessory.RingOfReversalItem;
 import com.soulinchains.arcaneartifacts.accessory.WreathOfManipulationItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModItems {
     public static final DeferredRegister.Items REGISTER = DeferredRegister.createItems(ArcaneArtifacts.MODID);
+
+    public static final DeferredItem<BlockItem> RESEARCH_TABLE = REGISTER.registerSimpleBlockItem(ModBlocks.RESEARCH_TABLE);
 
     public static final DeferredItem<Item> ROSE_GOLD_INGOT = REGISTER.register("rose_gold_ingot", () -> new Item(new Item.Properties()));
 

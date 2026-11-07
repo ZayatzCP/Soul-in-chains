@@ -2,6 +2,7 @@ package com.soulinchains.arcaneartifacts;
 
 import com.soulinchains.arcaneartifacts.glyph.ArcaneGlyphs;
 import com.soulinchains.arcaneartifacts.registry.ModAttachments;
+import com.soulinchains.arcaneartifacts.registry.ModBlocks;
 import com.soulinchains.arcaneartifacts.registry.ModComponents;
 import com.soulinchains.arcaneartifacts.registry.ModCreativeTab;
 import com.soulinchains.arcaneartifacts.registry.ModEffects;
@@ -35,6 +36,9 @@ public final class ArcaneArtifacts {
         ModAttachments.REGISTER.register(modBus);
         ModEffects.REGISTER.register(modBus);
         ModEntities.REGISTER.register(modBus);
+        ModBlocks.BLOCKS.register(modBus);
+        ModBlocks.BLOCK_ENTITIES.register(modBus);
+        ModBlocks.MENUS.register(modBus);
         ModItems.REGISTER.register(modBus);
         ModCreativeTab.REGISTER.register(modBus);
 
