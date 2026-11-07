@@ -1,0 +1,12 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "arcane_artifacts:item/wreath_of_manipulation_icon"
+  },
+  "perspectives": {
+    "head": {
+      "parent": "arcane_artifacts:item/wreath_of_manipulation_worn"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "tag": "c:gems/source"
+    },
+    {
+      "tag": "c:gems/source"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:lapis_block"
+    }
+  ],
+  "reagent": {
+    "item": "ars_nouveau:ring_of_potential"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:ring_of_reversal"
+  },
+  "sourceCost": 3000
+}

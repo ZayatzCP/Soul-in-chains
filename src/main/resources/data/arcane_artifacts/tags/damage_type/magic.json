@@ -1,0 +1,22 @@
+{
+  "values": [
+    "minecraft:magic",
+    "minecraft:indirect_magic",
+    "minecraft:wither",
+    "minecraft:dragon_breath",
+    "minecraft:sonic_boom",
+    {
+      "id": "ars_nouveau:spell",
+      "required": false
+    },
+    {
+      "id": "ars_nouveau:frost",
+      "required": false
+    },
+    {
+      "id": "ars_nouveau:windshear",
+      "required": false
+    },
+    "arcane_artifacts:parasitic_transfer"
+  ]
+}

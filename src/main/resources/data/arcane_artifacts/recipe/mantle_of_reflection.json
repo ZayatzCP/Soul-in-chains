@@ -1,0 +1,38 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "item": "minecraft:shulker_shell"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "minecraft:amethyst_block"
+    },
+    {
+      "tag": "c:gems/source"
+    }
+  ],
+  "reagent": {
+    "item": "ars_nouveau:magebloom_fiber"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:mantle_of_reflection"
+  },
+  "sourceCost": 6000
+}

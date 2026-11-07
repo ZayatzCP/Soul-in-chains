@@ -1,0 +1,38 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "ars_nouveau:magebloom"
+    },
+    {
+      "item": "ars_nouveau:magebloom"
+    },
+    {
+      "item": "minecraft:golden_apple"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "minecraft:totem_of_undying"
+    },
+    {
+      "tag": "c:gems/source"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:flowering_azalea"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:wreath_of_manipulation"
+  },
+  "sourceCost": 6000
+}

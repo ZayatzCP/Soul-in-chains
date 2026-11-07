@@ -1,0 +1,32 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "ars_nouveau:air_essence"
+    },
+    {
+      "tag": "c:gems/source"
+    },
+    {
+      "tag": "c:gems/source"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:leather_boots"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:focusing_boots"
+  },
+  "sourceCost": 3000
+}
