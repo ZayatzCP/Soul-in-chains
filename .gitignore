@@ -9,3 +9,4 @@ run/
 *.iws
 .vscode/
 bin/
+dist/
