@@ -27,7 +27,7 @@
 
 ### 1.2 Венок манипуляции (голова)
 - **Файлы:**
-  - иконка: `textures/item/wreath_of_manipulation_vines.png` + четыре слоя цветов `textures/item/wreath_of_manipulation_flowers_1..4.png`;
+  - иконка: `textures/item/wreath_of_manipulation.png` (один слой, 16×16);
   - надетая модель: `models/item/worn/wreath_of_manipulation.json` (+ текстуры `textures/item/worn/wreath_vine.png`, `wreath_flower.png`).
 - **Описание:** Адаптируется к урону. После 5 попаданий одного типа урона (физический, огонь, лава, удушье, утопление, магия) даёт защиту на 3–6 минут. Регенерация и очищение от негативных эффектов.
 - **Визуал:** Венок из лозы. Четыре группы цветов окрашиваются при адаптации:

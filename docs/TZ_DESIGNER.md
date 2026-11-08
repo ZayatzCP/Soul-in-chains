@@ -69,8 +69,7 @@
 
 - **Состояния:** в покое цветы серые; по мере попаданий окрашиваются; при адаптации светятся ярче.
 - **Файлы:**
-  - иконка: `textures/item/wreath_of_manipulation_vines.png` (лоза, без tint);
-  - цветы: `textures/item/wreath_of_manipulation_flowers_1.png` … `_4.png` (tint 1–4);
+  - иконка: `textures/item/wreath_of_manipulation.png` (один слой, 16×16);
   - надетая модель: `models/item/worn/wreath_of_manipulation.json`, текстуры `textures/item/worn/wreath_vine.png`, `wreath_flower.png`.
 - **Критерии приёмки:** четыре группы цветов различимы на иконке; на голове видны с расстояния 5 блоков.
 
