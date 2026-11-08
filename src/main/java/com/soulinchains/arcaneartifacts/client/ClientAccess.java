@@ -13,9 +13,8 @@ public final class ClientAccess {
         return Minecraft.getInstance().level;
     }
 
-    /** Opens the Arcane Artifacts section (Researcher's Secret Notebook) in the Ars Nouveau book interface. */
+    /** Opens the Researcher's Secret Notebook, the addon's own book. */
     public static void openNotebook() {
-        Minecraft.getInstance().setScreen(new com.hollingsworth.arsnouveau.client.gui.documentation.EntriesScreen(
-                com.soulinchains.arcaneartifacts.client.docs.ArcaneDocumentation.category()));
+        Minecraft.getInstance().setScreen(new com.soulinchains.arcaneartifacts.client.notebook.ArcaneNotebookScreen());
     }
 }

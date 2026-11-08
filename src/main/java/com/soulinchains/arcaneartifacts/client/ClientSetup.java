@@ -19,7 +19,8 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(ModEntities.ARCANE_MISSILE.get(), ArcaneMissileRenderer::new);
+        // Rendered exactly like an Ars Nouveau spell projectile (spell style + particle timeline).
+        event.registerEntityRenderer(ModEntities.ARCANE_MISSILE.get(), com.hollingsworth.arsnouveau.client.renderer.entity.StyledSpellRender::new);
     }
 
     @SubscribeEvent

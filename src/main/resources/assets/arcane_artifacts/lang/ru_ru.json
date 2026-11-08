@@ -218,5 +218,10 @@
   "arcane_artifacts.research.arcane_artifacts.reflection.description": "Шалкеры прячутся в зеркальных раковинах, щиты отводят удары. Можно ли отправить магию обратно?",
   "arcane_artifacts.research.arcane_artifacts.reflection.experiment.struck": "Получите попадание снарядом или заклинанием",
   "arcane_artifacts.research.arcane_artifacts.reflection.experiment.rebound": "Примените Отскок или отбросьте существо заклинанием",
-  "arcane_artifacts.research.arcane_artifacts.reflection.principle": "Летящее заклинание сохраняет направление лишь до тех пор, пока что-то не настоит на ином. (Мантия зеркального отражения)"
+  "arcane_artifacts.research.arcane_artifacts.reflection.principle": "Летящее заклинание сохраняет направление лишь до тех пор, пока что-то не настоит на ином. (Мантия зеркального отражения)",
+  "arcane_artifacts.notebook.title": "Записи «???»",
+  "arcane_artifacts.notebook.subtitle": "тайный блокнот исследователя",
+  "arcane_artifacts.notebook.shapeless": "Бесформенный рецепт",
+  "arcane_artifacts.notebook.experience": "Опыт: %s",
+  "arcane_artifacts.notebook.source": "Источник: %s"
 }

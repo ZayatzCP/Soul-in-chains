@@ -519,8 +519,6 @@ def main():
     save(sprite(RESEARCHER_NOTEBOOK, RESEARCHER_NOTEBOOK_PAL), 'item', 'researcher_notebook.png')
     save(sprite(MANTLE, MANTLE_PAL), 'item', 'mantle_of_reflection.png')
 
-    save(sprite(MISSILE, MISSILE_PAL), 'entity', 'arcane_missile.png')
-    save(sprite(MISSILE, SHARD_PAL), 'entity', 'arcane_missile_shard.png')
 
     for name, (rows, pal) in EFFECTS.items():
         save(sprite(rows, pal), 'mob_effect', name + '.png')

@@ -218,5 +218,10 @@
   "arcane_artifacts.research.arcane_artifacts.reflection.description": "Shulkers hide in mirrored shells, shields turn blows aside. Can magic be sent back?",
   "arcane_artifacts.research.arcane_artifacts.reflection.experiment.struck": "Be hit by a projectile or a spell",
   "arcane_artifacts.research.arcane_artifacts.reflection.experiment.rebound": "Cast Bounce, or knock a creature back with a spell",
-  "arcane_artifacts.research.arcane_artifacts.reflection.principle": "A moving spell keeps its direction only until something insists otherwise. (Mantle of Reflection)"
+  "arcane_artifacts.research.arcane_artifacts.reflection.principle": "A moving spell keeps its direction only until something insists otherwise. (Mantle of Reflection)",
+  "arcane_artifacts.notebook.title": "The Notes of ???",
+  "arcane_artifacts.notebook.subtitle": "a researcher's secret notebook",
+  "arcane_artifacts.notebook.shapeless": "Shapeless",
+  "arcane_artifacts.notebook.experience": "Experience: %s",
+  "arcane_artifacts.notebook.source": "Source: %s"
 }

@@ -6,7 +6,6 @@ import com.soulinchains.arcaneartifacts.Config;
 import com.soulinchains.arcaneartifacts.registry.ModEntities;
 import com.soulinchains.arcaneartifacts.spell.MissileTargeting;
 import com.soulinchains.arcaneartifacts.util.Allies;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,8 +36,6 @@ public class ArcaneMissileEntity extends EntityProjectileSpell {
     private static final EntityDataAccessor<Integer> TARGET_ID = SynchedEntityData.defineId(ArcaneMissileEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> SPLIT_CHILD = SynchedEntityData.defineId(ArcaneMissileEntity.class, EntityDataSerializers.BOOLEAN);
 
-    private static final Vector3f MAIN_COLOR = new Vector3f(0.71f, 0.28f, 0.96f);
-    private static final Vector3f CHILD_COLOR = new Vector3f(0.18f, 0.84f, 0.71f);
 
     private int pursuitLevel;
     private int lifetime = 200;
@@ -109,19 +105,6 @@ public class ArcaneMissileEntity extends EntityProjectileSpell {
     @Override
     public int getExpirationTime() {
         return lifetime;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (level().isClientSide && !isRemoved()) {
-            Vector3f color = isSplitChild() ? CHILD_COLOR : MAIN_COLOR;
-            Vec3 pos = position().add(0, getBbHeight() / 2.0, 0);
-            level().addParticle(new DustParticleOptions(color, isSplitChild() ? 0.6f : 0.9f), pos.x, pos.y, pos.z, 0, 0, 0);
-            if (tickCount % 2 == 0) {
-                level().addParticle(net.minecraft.core.particles.ParticleTypes.WITCH, pos.x, pos.y, pos.z, 0, 0, 0);
-            }
-        }
     }
 
     @Override
