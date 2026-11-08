@@ -119,6 +119,13 @@ jar {
     }
 }
 
+// The sources jar must never look like a mod: if a player drops it into "mods", NeoForge would load it
+// instead of the real jar and crash on the missing compiled classes (mixin "was not found").
+tasks.named('sourcesJar', Jar) {
+    exclude 'META-INF/neoforge.mods.toml'
+    exclude '*.mixins.json'
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-Xlint:deprecation'

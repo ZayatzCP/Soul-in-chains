@@ -31,5 +31,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: arcane_artifacts-jar
-          path: build/libs/*.jar
+          # Only the mod itself: the -sources.jar must not end up in a mods folder.
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
           if-no-files-found: error
