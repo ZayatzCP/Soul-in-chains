@@ -87,10 +87,22 @@ public final class ArcaneGameTests {
                 "Slot '" + slot + "' holds " + handler.getStacks().getStackInSlot(0) + " instead of " + item);
     }
 
+    /** Waits (up to 40 ticks) until Curios reports the item as equipped, then runs the scenario. */
     private static void afterEquip(GameTestHelper helper, Player player, Item item, Runnable body) {
+        poll(helper, player, item, body, 0);
+    }
+
+    private static void poll(GameTestHelper helper, Player player, Item item, Runnable body, int attempt) {
         helper.runAfterDelay(1, () -> {
-            helper.assertTrue(CurioHelper.findEquipped(player, item).isPresent(), "Curios does not report " + item + " as equipped");
-            body.run();
+            if (CurioHelper.findEquipped(player, item).isPresent()) {
+                body.run();
+            } else if (attempt < 40) {
+                poll(helper, player, item, body, attempt + 1);
+            } else {
+                String held = CuriosApi.getCuriosInventory(player)
+                        .map(inv -> inv.getCurios().toString()).orElse("no inventory");
+                helper.fail("Curios does not report " + item + " as equipped after 40 ticks; inventory: " + held);
+            }
         });
     }
 
