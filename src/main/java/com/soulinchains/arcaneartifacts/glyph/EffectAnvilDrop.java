@@ -43,7 +43,7 @@ public class EffectAnvilDrop extends AreaEffect {
         Vec3 ground = target != null ? target.position() : landing(level, point);
         int aoe = (int) Math.round(Math.max(0, stats.getAoeMultiplier()));
         boolean heavy = stats.getAmpMultiplier() > 0;
-        float damage = (float) (heavy ? Config.ANVIL_HEAVY_DAMAGE.get() : Config.ANVIL_DAMAGE.get());
+        float damage = (float) (heavy ? Config.ANVIL_HEAVY_DAMAGE.getAsDouble() : Config.ANVIL_DAMAGE.getAsDouble());
         double radius = aoe == 0 ? 0 : 1.5 + 1.5 * aoe;
         float size = 1.0f + 0.6f * aoe + (heavy ? 0.4f : 0f);
         var style = Fx.timeline(context, ModTimelines.ANVIL_DROP);
