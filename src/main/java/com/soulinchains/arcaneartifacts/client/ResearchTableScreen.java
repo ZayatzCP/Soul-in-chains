@@ -43,6 +43,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     private static final int FADED = 0x6E5A40;
     private static final int RIGHT_X = 186;
     private static final int PAGE_WIDTH = 150;
+    private static final int LEFT_WIDTH = 154, LEFT_BOTTOM = 144, RIGHT_BOTTOM = 196;
 
     private int selected;
     private Item lastSample;
@@ -125,14 +126,14 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         ItemStack sample = menu.sample();
         int y = 104;
         if (sample.isEmpty()) {
-            y = paragraph(g, Component.translatable("arcane_artifacts.research_table.place_sample"), 12, y, 156, FADED, 4);
+            y = paragraph(g, Component.translatable("arcane_artifacts.research_table.place_sample"), 12, y, LEFT_WIDTH, FADED, 4, LEFT_BOTTOM);
             return;
         }
-        g.drawString(font, sample.getHoverName(), 12, y, INK, false);
+        line(g, sample.getHoverName(), 12, y, LEFT_WIDTH, INK);
         y += 11;
         List<ResourceLocation> relevant = ResearchService.researchesFor(data, sample);
         if (relevant.isEmpty()) {
-            paragraph(g, Component.translatable("arcane_artifacts.research_table.nothing"), 12, y, 156, FADED, 4);
+            paragraph(g, Component.translatable("arcane_artifacts.research_table.nothing"), 12, y, LEFT_WIDTH, FADED, 3, LEFT_BOTTOM);
             return;
         }
         Set<String> properties = new LinkedHashSet<>();
@@ -144,18 +145,18 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
             }
         }
         if (!anyObserved) {
-            y = paragraph(g, Component.translatable("arcane_artifacts.research_table.unobserved"), 12, y, 156, FADED, 2);
+            y = paragraph(g, Component.translatable("arcane_artifacts.research_table.unobserved"), 12, y, LEFT_WIDTH, FADED, 2, LEFT_BOTTOM);
         } else {
             for (String property : properties) {
-                if (y > 130) break;
-                g.drawString(font, Component.literal("• ").append(Component.translatable("arcane_artifacts.research_property." + property)), 12, y, INK, false);
+                if (y + 9 > LEFT_BOTTOM) break;
+                line(g, Component.literal("• ").append(Component.translatable("arcane_artifacts.research_property." + property)), 12, y, LEFT_WIDTH, INK);
                 y += 9;
             }
         }
         for (ResourceLocation id : relevant) {
-            if (y > 130) break;
+            if (y + 9 > LEFT_BOTTOM) break;
             ResearchState state = stateOf(data, id);
-            g.drawString(font, researchTitle(id, state).copy().withStyle(ChatFormatting.ITALIC), 12, y, stateColor(state), false);
+            line(g, researchTitle(id, state).copy().withStyle(ChatFormatting.ITALIC), 12, y, LEFT_WIDTH, stateColor(state));
             y += 9;
         }
     }
@@ -176,11 +177,11 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         String prefix = ResearchDefinition.langPrefix(id);
 
         Component title = researchTitle(id, state);
-        g.drawString(font, title, x + PAGE_WIDTH / 2 - font.width(title) / 2, 10, INK, false);
+        centered(g, title, x + 14, 10, PAGE_WIDTH - 28, INK);
         g.renderItem(new ItemStack(def.icon()), x + PAGE_WIDTH / 2 - 8, 22);
         Component stateLine = Component.translatable(state.translationKey())
                 .append(Component.literal("  " + (selected + 1) + "/" + order.size()));
-        g.drawString(font, stateLine, x + PAGE_WIDTH / 2 - font.width(stateLine) / 2, 41, stateColor(state), false);
+        centered(g, stateLine, x, 41, PAGE_WIDTH, stateColor(state));
 
         int y = 53;
         if (state == ResearchState.UNKNOWN) {
@@ -280,14 +281,54 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         };
     }
 
+    /** One line, cut with "..." if it does not fit. */
+    private void line(GuiGraphics g, Component text, int x, int y, int width, int color) {
+        g.drawString(font, fit(text, width), x, y, color, false);
+    }
+
+    private void centered(GuiGraphics g, Component text, int x, int y, int width, int color) {
+        FormattedCharSequence fitted = fit(text, width);
+        g.drawString(font, fitted, x + (width - font.width(fitted)) / 2, y, color, false);
+    }
+
+    private FormattedCharSequence fit(Component text, int width) {
+        if (font.width(text) <= width) {
+            return text.getVisualOrderText();
+        }
+        String ellipsis = "...";
+        var cut = font.substrByWidth(text, width - font.width(ellipsis));
+        return net.minecraft.locale.Language.getInstance().getVisualOrder(
+                net.minecraft.network.chat.FormattedText.composite(cut, net.minecraft.network.chat.FormattedText.of(ellipsis)));
+    }
+
     /** Draws wrapped text and returns the next free y. */
     private int paragraph(GuiGraphics g, Component text, int x, int y, int width, int color, int maxLines) {
+        return paragraph(g, text, x, y, width, color, maxLines, RIGHT_BOTTOM);
+    }
+
+    /** Draws wrapped text (never below {@code bottom}, the last visible line ends with "...") and returns the next free y. */
+    private int paragraph(GuiGraphics g, Component text, int x, int y, int width, int color, int maxLines, int bottom) {
         List<FormattedCharSequence> lines = new ArrayList<>(font.split(text, width));
-        for (int i = 0; i < lines.size() && i < maxLines; i++) {
+        int fitting = Math.max(0, Math.min(maxLines, (bottom - y) / 9));
+        if (lines.size() > fitting && fitting > 0) {
+            List<FormattedCharSequence> shown = new ArrayList<>(lines.subList(0, fitting - 1));
+            shown.add(fit(Component.literal(lineText(lines.get(fitting - 1)) + " " + lineText(lines.get(Math.min(fitting, lines.size() - 1)))).withStyle(text.getStyle()), width));
+            lines = shown;
+        }
+        for (int i = 0; i < lines.size() && i < fitting; i++) {
             g.drawString(font, lines.get(i), x, y, color, false);
             y += 9;
         }
         return y;
+    }
+
+    private static String lineText(FormattedCharSequence sequence) {
+        StringBuilder builder = new StringBuilder();
+        sequence.accept((index, style, codePoint) -> {
+            builder.appendCodePoint(codePoint);
+            return true;
+        });
+        return builder.toString();
     }
 
     /** Text-only button in ink, underlined on hover, faded when inactive. */

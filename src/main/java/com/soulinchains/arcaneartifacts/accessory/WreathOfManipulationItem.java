@@ -68,7 +68,7 @@ public class WreathOfManipulationItem extends ArcaneAccessoryItem {
         int cooldown = Math.max(rush, Config.WREATH_COOLDOWN_SECONDS.get() * 20);
         player.addEffect(new MobEffectInstance(ModEffects.BATTLE_RUSH, rush, 0, false, true, true));
         player.addEffect(new MobEffectInstance(ModEffects.RUSH_EXHAUSTION, cooldown, 0, false, false, true));
-        wreath.set(ModComponents.RUSH_STATE, new RushState(now + rush, now + cooldown));
+        wreath.set(ModComponents.RUSH_STATE, new RushState(now + rush, now + cooldown, now));
         player.displayClientMessage(Component.translatable("arcane_artifacts.wreath.rush_started").withStyle(ChatFormatting.GOLD), true);
         if (player.level() instanceof ServerLevel level) {
             level.sendParticles(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), 40, 0.5, 0.8, 0.5, 0.05);

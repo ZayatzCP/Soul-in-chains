@@ -1,5 +1,5 @@
 {
-  "credit": "Mantle of Reflection by the mod's designer (Blockbench), split per body part",
+  "credit": "Designer's Blockbench model, converted to the worn-model convention (joint at 8,8,8)",
   "textures": {
     "mantle": "arcane_artifacts:item/worn/mantle_of_reflection",
     "particle": "arcane_artifacts:item/worn/mantle_of_reflection"
@@ -8,12 +8,12 @@
     {
       "from": [
         3,
-        6,
+        7,
         3
       ],
       "to": [
         13,
-        16,
+        17,
         13
       ],
       "faces": {

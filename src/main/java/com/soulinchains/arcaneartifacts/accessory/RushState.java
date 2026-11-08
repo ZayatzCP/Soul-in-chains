@@ -10,17 +10,19 @@ import net.minecraft.network.codec.StreamCodec;
  * Battle Rush state stored on the Wreath of Manipulation (game times), synced to the client for the
  * tooltip and the flower colours. The authoritative state is the pair of effects on the wearer.
  */
-public record RushState(long activeUntil, long readyAt) {
-    public static final RushState EMPTY = new RushState(0L, 0L);
+public record RushState(long activeUntil, long readyAt, long startedAt) {
+    public static final RushState EMPTY = new RushState(0L, 0L, 0L);
 
     public static final Codec<RushState> CODEC = RecordCodecBuilder.create(i -> i.group(
             Codec.LONG.fieldOf("active_until").forGetter(RushState::activeUntil),
-            Codec.LONG.fieldOf("ready_at").forGetter(RushState::readyAt)
+            Codec.LONG.fieldOf("ready_at").forGetter(RushState::readyAt),
+            Codec.LONG.optionalFieldOf("started_at", 0L).forGetter(RushState::startedAt)
     ).apply(i, RushState::new));
 
     public static final StreamCodec<ByteBuf, RushState> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_LONG, RushState::activeUntil,
             ByteBufCodecs.VAR_LONG, RushState::readyAt,
+            ByteBufCodecs.VAR_LONG, RushState::startedAt,
             RushState::new);
 
     public boolean isActive(long now) {

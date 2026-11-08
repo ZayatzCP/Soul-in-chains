@@ -44,40 +44,40 @@ final class RecipeRenderer {
             station(g, screen, "minecraft:crafting_table", x, y);
             List<Ingredient> ingredients = shaped.getIngredients();
             for (int i = 0; i < ingredients.size(); i++) {
-                slot(g, screen, ingredients.get(i), x + 6 + (i % shaped.getWidth()) * SLOT, y + 34 + (i / shaped.getWidth()) * SLOT, mouseX, mouseY);
+                slot(g, screen, ingredients.get(i), x + 10 + (i % shaped.getWidth()) * SLOT, y + 40 + (i / shaped.getWidth()) * SLOT, mouseX, mouseY);
             }
-            arrow(g, x + 62, y + 53);
-            output(g, screen, shaped.getResultItem(minecraft.level.registryAccess()), x + 90, y + 52, mouseX, mouseY);
+            arrow(g, x + 70, y + 59);
+            output(g, screen, shaped.getResultItem(minecraft.level.registryAccess()), x + 100, y + 58, mouseX, mouseY);
         } else if (recipe instanceof ShapelessRecipe shapeless) {
             station(g, screen, "minecraft:crafting_table", x, y);
             List<Ingredient> ingredients = shapeless.getIngredients();
             for (int i = 0; i < ingredients.size(); i++) {
-                slot(g, screen, ingredients.get(i), x + 6 + (i % 3) * SLOT, y + 34 + (i / 3) * SLOT, mouseX, mouseY);
+                slot(g, screen, ingredients.get(i), x + 10 + (i % 3) * SLOT, y + 40 + (i / 3) * SLOT, mouseX, mouseY);
             }
-            arrow(g, x + 62, y + 53);
-            output(g, screen, shapeless.getResultItem(minecraft.level.registryAccess()), x + 90, y + 52, mouseX, mouseY);
-            screen.drawCentered(g, Component.translatable("arcane_artifacts.notebook.shapeless"), x, y + 96, ArcaneNotebookScreen.HINT_COLOR);
+            arrow(g, x + 70, y + 59);
+            output(g, screen, shapeless.getResultItem(minecraft.level.registryAccess()), x + 100, y + 58, mouseX, mouseY);
+            screen.drawCentered(g, Component.translatable("arcane_artifacts.notebook.shapeless"), x, y + 104, ArcaneNotebookScreen.HINT_COLOR);
         } else if (recipe instanceof ImbuementRecipe imbuement) {
             station(g, screen, "ars_nouveau:imbuement_chamber", x, y);
-            circle(g, screen, imbuement.input, imbuement.pedestalItems, cx, y + 65, mouseX, mouseY);
-            output(g, screen, imbuement.output, cx - 9, y + 110, mouseX, mouseY);
-            source(g, screen, imbuement.source, x, y + 131);
+            circle(g, screen, imbuement.input, imbuement.pedestalItems, cx, y + 72, mouseX, mouseY);
+            output(g, screen, imbuement.output, cx - 9, y + 120, mouseX, mouseY);
+            source(g, screen, imbuement.source, x, y + 144);
         } else if (recipe instanceof EnchantingApparatusRecipe apparatus) {
             station(g, screen, "ars_nouveau:enchanting_apparatus", x, y);
-            circle(g, screen, apparatus.reagent(), apparatus.pedestalItems(), cx, y + 65, mouseX, mouseY);
-            output(g, screen, apparatus.result(), cx - 9, y + 110, mouseX, mouseY);
-            source(g, screen, apparatus.sourceCost(), x, y + 131);
+            circle(g, screen, apparatus.reagent(), apparatus.pedestalItems(), cx, y + 72, mouseX, mouseY);
+            output(g, screen, apparatus.result(), cx - 9, y + 120, mouseX, mouseY);
+            source(g, screen, apparatus.sourceCost(), x, y + 144);
         } else if (recipe instanceof GlyphRecipe glyph) {
             station(g, screen, "ars_nouveau:scribes_table", x, y);
             List<Ingredient> inputs = glyph.inputs;
-            int perRow = 5;
+            int perRow = 6;
             int rowStart = x + (ArcaneNotebookScreen.PAGE_WIDTH - perRow * SLOT) / 2;
             for (int i = 0; i < inputs.size(); i++) {
-                slot(g, screen, inputs.get(i), rowStart + (i % perRow) * SLOT, y + 30 + (i / perRow) * SLOT, mouseX, mouseY);
+                slot(g, screen, inputs.get(i), rowStart + (i % perRow) * SLOT, y + 36 + (i / perRow) * SLOT, mouseX, mouseY);
             }
-            arrowDown(g, cx - 4, y + 72);
-            output(g, screen, glyph.output, cx - 9, y + 86, mouseX, mouseY);
-            screen.drawCentered(g, Component.translatable("arcane_artifacts.notebook.experience", glyph.exp), x, y + 112, ArcaneNotebookScreen.HINT_COLOR);
+            arrowDown(g, cx - 4, y + 80);
+            output(g, screen, glyph.output, cx - 9, y + 96, mouseX, mouseY);
+            screen.drawCentered(g, Component.translatable("arcane_artifacts.notebook.experience", glyph.exp), x, y + 122, ArcaneNotebookScreen.HINT_COLOR);
         } else {
             screen.drawCentered(g, Component.literal(id.toString()), x, y + 60, ArcaneNotebookScreen.INK_COLOR);
         }
@@ -98,7 +98,7 @@ final class RecipeRenderer {
     private static void circle(GuiGraphics g, ArcaneNotebookScreen screen, Ingredient center, List<Ingredient> pedestals,
                                int cx, int cy, int mouseX, int mouseY) {
         // Fits between the station header (y+20) and the result (y+110): at most 34 px, wide enough for 12 pedestals.
-        int radius = pedestals.size() > 10 ? 34 : pedestals.size() > 6 ? 30 : 26;
+        int radius = pedestals.size() > 10 ? 38 : pedestals.size() > 6 ? 32 : 27;
         for (int i = 0; i < pedestals.size(); i++) {
             double angle = 2 * Math.PI * i / pedestals.size() - Math.PI / 2;
             int sx = cx - 9 + (int) Math.round(Math.cos(angle) * radius);
@@ -136,10 +136,10 @@ final class RecipeRenderer {
     }
 
     private static void arrow(GuiGraphics g, int x, int y) {
-        g.blit(ArcaneNotebookScreen.TEXTURE, x, y, 80, 184, 22, 15, ArcaneNotebookScreen.TEX_W, ArcaneNotebookScreen.TEX_H);
+        g.blit(ArcaneNotebookScreen.TEXTURE, x, y, 80, ArcaneNotebookScreen.UI_V, 22, 15, ArcaneNotebookScreen.TEX_W, ArcaneNotebookScreen.TEX_H);
     }
 
     private static void arrowDown(GuiGraphics g, int x, int y) {
-        g.blit(ArcaneNotebookScreen.TEXTURE, x, y, 104, 184, 9, 12, ArcaneNotebookScreen.TEX_W, ArcaneNotebookScreen.TEX_H);
+        g.blit(ArcaneNotebookScreen.TEXTURE, x, y, 104, ArcaneNotebookScreen.UI_V, 9, 12, ArcaneNotebookScreen.TEX_W, ArcaneNotebookScreen.TEX_H);
     }
 }

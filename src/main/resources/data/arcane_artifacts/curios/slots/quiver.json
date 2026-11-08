@@ -1,8 +1,0 @@
-{
-  "order": 50,
-  "size": 1,
-  "icon": "arcane_artifacts:slot/empty_quiver_slot",
-  "validators": [
-    "curios:tag"
-  ]
-}

@@ -18,19 +18,20 @@ import java.util.List;
  * The Researcher's Secret Notebook: the addon's own book, independent of the Ars Nouveau Worn Notebook.
  * An index of chapters (two pages per spread), each chapter a series of text and recipe pages.
  * <p>
- * Texture {@code textures/gui/notebook.png} (512×256): the open book at 0,0 (288×180); the slot frame at
- * 0,184 (18×18); next / previous / back buttons at 20,184 / 40,184 / 60,184 (18×10, hovered variants 12 px
- * lower); the recipe arrow at 80,184 (22×15) and the down arrow at 104,184 (9×12).
+ * Texture {@code textures/gui/notebook.png} (512×256): the open book at 0,0 (336×210); the slot frame at
+ * 0,214 (18×18); next / previous / back buttons at 20,214 / 40,214 / 60,214 (18×10, hovered variants 12 px
+ * lower); the recipe arrow at 80,214 (22×15) and the down arrow at 104,214 (9×12).
  */
 public class ArcaneNotebookScreen extends Screen {
     static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/gui/notebook.png");
     static final int TEX_W = 512, TEX_H = 256;
-    static final int BOOK_W = 288, BOOK_H = 180;
-    static final int PAGE_WIDTH = 116, PAGE_HEIGHT = 140;
+    static final int BOOK_W = 336, BOOK_H = 210;
+    static final int PAGE_WIDTH = 132, PAGE_HEIGHT = 160;
+    static final int UI_V = 214;
     static final int LINE_HEIGHT = 10, TITLE_LINES = 2;
     static final int INK_COLOR = 0x3B2A1A, TITLE_COLOR = 0x5B2A86, LORE_COLOR = 0x6B4B2A, HINT_COLOR = 0x7A6A55;
-    private static final int LEFT_PAGE_X = 18, RIGHT_PAGE_X = 154, PAGE_Y = 16;
-    private static final int ROW = 18, INDEX_LEFT_ROWS = 6, INDEX_RIGHT_ROWS = 7;
+    private static final int LEFT_PAGE_X = 22, RIGHT_PAGE_X = 182, PAGE_Y = 18;
+    private static final int ROW = 18, INDEX_LEFT_ROWS = 7, INDEX_RIGHT_ROWS = 8;
 
     private List<NotebookEntry> entries = List.of();
     private @Nullable NotebookEntry current;
@@ -64,7 +65,7 @@ public class ArcaneNotebookScreen extends Screen {
     }
 
     void blitSlot(GuiGraphics g, int x, int y) {
-        g.blit(TEXTURE, x, y, 0, 184, 18, 18, TEX_W, TEX_H);
+        g.blit(TEXTURE, x, y, 0, UI_V, 18, 18, TEX_W, TEX_H);
     }
 
     void drawCentered(GuiGraphics g, Component text, int pageX, int y, int color) {
@@ -103,7 +104,7 @@ public class ArcaneNotebookScreen extends Screen {
     private void button(GuiGraphics g, int x, int mouseX, int mouseY, int u) {
         int y = buttonY();
         boolean hover = mouseX >= x && mouseX < x + 18 && mouseY >= y && mouseY < y + 10;
-        g.blit(TEXTURE, x, y, u, hover ? 196 : 184, 18, 10, TEX_W, TEX_H);
+        g.blit(TEXTURE, x, y, u, hover ? UI_V + 12 : UI_V, 18, 10, TEX_W, TEX_H);
     }
 
     // ------------------------------------------------------------------ index
@@ -171,15 +172,15 @@ public class ArcaneNotebookScreen extends Screen {
 
     // ------------------------------------------------------------------ navigation
     private int buttonY() {
-        return top + BOOK_H - 20;
+        return top + BOOK_H - 22;
     }
 
     private int prevX() {
-        return left + 22;
+        return left + 26;
     }
 
     private int nextX() {
-        return left + BOOK_W - 40;
+        return left + BOOK_W - 44;
     }
 
     private int backX() {

@@ -3,7 +3,8 @@ package com.soulinchains.arcaneartifacts.client.notebook;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -12,8 +13,39 @@ import java.util.List;
 public sealed interface NotebookPage {
     void render(GuiGraphics graphics, ArcaneNotebookScreen screen, int x, int y, int mouseX, int mouseY);
 
-    /** One wrapped line of text with its colour. */
-    record Line(FormattedCharSequence text, int color) {
+    /**
+     * One wrapped line of text. Justified lines are stretched to the full page width (like a printed
+     * book); the last line of a paragraph and lines that would get huge gaps stay left-aligned.
+     */
+    record Line(String text, Style style, int color, boolean justify) {
+        static final Line EMPTY = new Line("", Style.EMPTY, 0, false);
+
+        void render(GuiGraphics graphics, Font font, int x, int y) {
+            if (text.isEmpty()) {
+                return;
+            }
+            String[] words = text.split(" ");
+            if (!justify || words.length < 2) {
+                graphics.drawString(font, Component.literal(text).withStyle(style), x, y, color, false);
+                return;
+            }
+            int total = 0;
+            int[] widths = new int[words.length];
+            for (int i = 0; i < words.length; i++) {
+                widths[i] = font.width(Component.literal(words[i]).withStyle(style));
+                total += widths[i];
+            }
+            float gap = (ArcaneNotebookScreen.PAGE_WIDTH - total) / (float) (words.length - 1);
+            if (gap > font.width(" ") * 4) {
+                graphics.drawString(font, Component.literal(text).withStyle(style), x, y, color, false);
+                return;
+            }
+            float cursor = x;
+            for (int i = 0; i < words.length; i++) {
+                graphics.drawString(font, Component.literal(words[i]).withStyle(style), Math.round(cursor), y, color, false);
+                cursor += widths[i] + gap;
+            }
+        }
     }
 
     /** Wrapped text; the first page of an entry also carries the entry title. */
@@ -27,7 +59,7 @@ public sealed interface NotebookPage {
                 lineY += ArcaneNotebookScreen.TITLE_LINES * ArcaneNotebookScreen.LINE_HEIGHT;
             }
             for (Line line : lines) {
-                graphics.drawString(screen.font(), line.text(), x, lineY, line.color(), false);
+                line.render(graphics, screen.font(), x, lineY);
                 lineY += ArcaneNotebookScreen.LINE_HEIGHT;
             }
         }

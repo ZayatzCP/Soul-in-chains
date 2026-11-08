@@ -64,9 +64,29 @@ public class AccessoryCurioRenderer implements ICurioRenderer {
             // Item space is Y-up with north as the front; entity model space is Y-down.
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             poseStack.scale(1.0F, -1.0F, -1.0F);
+            applyPlacement(poseStack, attachment.placement(), stack, partialTicks);
             minecraft.getItemRenderer().render(stack, ItemDisplayContext.NONE, false, poseStack, buffers, light,
                     OverlayTexture.NO_OVERLAY, model);
             poseStack.popPose();
         }
+    }
+
+    /**
+     * Applies an attachment's extra placement in item-model space. The item renderer translates by
+     * -0.5 before drawing the model's pixels / 16, so the transform is wrapped in -0.5 / +0.5.
+     */
+    static void applyPlacement(PoseStack pose, WornModels.Placement placement, ItemStack stack, float partialTicks) {
+        if (placement == WornModels.Placement.NONE) {
+            return;
+        }
+        float shake = placement.shakesInRush() ? RushShake.offset(stack, partialTicks) : 0f;
+        pose.translate(-0.5F, -0.5F, -0.5F);
+        pose.translate((placement.pivotX() + placement.offsetX() + shake) / 16F, (placement.pivotY() + placement.offsetY()) / 16F,
+                (placement.pivotZ() + placement.offsetZ()) / 16F);
+        pose.mulPose(Axis.XP.rotationDegrees(placement.rotX()));
+        pose.mulPose(Axis.YP.rotationDegrees(placement.rotY()));
+        pose.mulPose(Axis.ZP.rotationDegrees(placement.rotZ()));
+        pose.translate(-placement.pivotX() / 16F, -placement.pivotY() / 16F, -placement.pivotZ() / 16F);
+        pose.translate(0.5F, 0.5F, 0.5F);
     }
 }

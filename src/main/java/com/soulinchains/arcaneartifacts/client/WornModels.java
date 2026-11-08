@@ -28,7 +28,17 @@ import java.util.function.Supplier;
 public final class WornModels {
     public enum BodyPart { HEAD, BODY, RIGHT_ARM, LEFT_ARM, RIGHT_LEG, LEFT_LEG }
 
-    public record Attachment(BodyPart part, ResourceLocation model) {
+    /**
+     * Extra placement for models that the Java model format cannot express: a rotation in degrees (applied
+     * X, then Y, then Z) around {@code pivot}, then a move by {@code offset} (both in model pixels).
+     * {@code shakesInRush}: the model jitters sideways while the Battle Rush is active.
+     */
+    public record Placement(float pivotX, float pivotY, float pivotZ, float rotX, float rotY, float rotZ,
+                            float offsetX, float offsetY, float offsetZ, boolean shakesInRush) {
+        public static final Placement NONE = new Placement(0, 0, 0, 0, 0, 0, 0, 0, 0, false);
+    }
+
+    public record Attachment(BodyPart part, ResourceLocation model, Placement placement) {
         public ModelResourceLocation location() {
             return ModelResourceLocation.standalone(model);
         }
@@ -37,8 +47,11 @@ public final class WornModels {
     private static final Map<Supplier<? extends Item>, List<Attachment>> ATTACHMENTS = new LinkedHashMap<>();
 
     static {
+        // The designer's wreath lies flat; Blockbench rotated it on two axes at once, which 1.21.1 model
+        // files cannot store, so the rotation lives here. The offset seats the ring on the crown of the head.
         ATTACHMENTS.put(ModItems.WREATH_OF_MANIPULATION, List.of(
-                worn(BodyPart.HEAD, "wreath_of_manipulation")));
+                new Attachment(BodyPart.HEAD, ArcaneArtifacts.id("item/worn/wreath_of_manipulation"),
+                        new Placement(7f, -2.81233f, 8.56392f, -105f, 0f, -180f, 1f, 17.8f, -0.56f, true))));
         ATTACHMENTS.put(ModItems.FOCUSING_BOOTS, List.of(
                 worn(BodyPart.RIGHT_LEG, "focusing_boots_right"),
                 worn(BodyPart.LEFT_LEG, "focusing_boots_left")));
@@ -60,7 +73,7 @@ public final class WornModels {
     }
 
     private static Attachment worn(BodyPart part, String name) {
-        return new Attachment(part, ArcaneArtifacts.id("item/worn/" + name));
+        return new Attachment(part, ArcaneArtifacts.id("item/worn/" + name), Placement.NONE);
     }
 
     public static Map<Supplier<? extends Item>, List<Attachment>> all() {

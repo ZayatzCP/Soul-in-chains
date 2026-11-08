@@ -1,71 +1,72 @@
 {
+  "credit": "Designer's Blockbench model, converted to the worn-model convention (joint at 8,8,8)",
   "textures": {
-    "gloves": "arcane_artifacts:item/worn/gloves",
-    "particle": "arcane_artifacts:item/worn/gloves"
+    "gloves": "arcane_artifacts:item/worn/focusing_gloves_3d",
+    "particle": "arcane_artifacts:item/worn/focusing_gloves_3d"
   },
   "elements": [
     {
       "from": [
-        6.6,
-        -2.4,
-        5.6
+        6.25,
+        -2.75,
+        5.25
       ],
       "to": [
-        11.4,
-        2.6,
-        10.4
+        11.75,
+        10.75,
+        10.75
       ],
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            16,
-            10
-          ],
-          "texture": "#gloves"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            10
+            11,
+            10,
+            12,
+            16
           ],
           "texture": "#gloves"
         },
         "east": {
           "uv": [
-            0,
-            0,
-            16,
-            10
+            10,
+            10,
+            11,
+            16
+          ],
+          "texture": "#gloves"
+        },
+        "south": {
+          "uv": [
+            13,
+            10,
+            14,
+            16
           ],
           "texture": "#gloves"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            16,
-            10
+            12,
+            10,
+            13,
+            16
           ],
           "texture": "#gloves"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            16,
-            10
+            12,
+            10,
+            11,
+            8
           ],
           "texture": "#gloves"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            16,
+            13,
+            8,
+            12,
             10
           ],
           "texture": "#gloves"
@@ -74,67 +75,67 @@
     },
     {
       "from": [
-        6.4,
-        2.6,
-        5.4
+        6,
+        -3,
+        5
       ],
       "to": [
-        11.6,
-        3.6,
-        10.6
+        12,
+        11,
+        11
       ],
       "faces": {
         "north": {
           "uv": [
-            0,
             10,
-            16,
-            16
-          ],
-          "texture": "#gloves"
-        },
-        "south": {
-          "uv": [
-            0,
-            10,
-            16,
-            16
+            2,
+            11,
+            6.51563
           ],
           "texture": "#gloves"
         },
         "east": {
           "uv": [
-            0,
-            10,
-            16,
-            16
+            8.5,
+            2,
+            9.5,
+            6.51563
+          ],
+          "texture": "#gloves"
+        },
+        "south": {
+          "uv": [
+            13,
+            2,
+            14,
+            6.51563
           ],
           "texture": "#gloves"
         },
         "west": {
           "uv": [
-            0,
-            10,
-            16,
-            16
+            11.5,
+            2,
+            12.5,
+            6.51563
           ],
           "texture": "#gloves"
         },
         "up": {
           "uv": [
-            0,
+            11,
+            2,
             10,
-            16,
-            16
+            0
           ],
           "texture": "#gloves"
         },
         "down": {
           "uv": [
+            12.5,
             0,
-            10,
-            16,
-            16
+            11.5,
+            2
           ],
           "texture": "#gloves"
         }

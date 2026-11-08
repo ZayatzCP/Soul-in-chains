@@ -10,7 +10,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
@@ -148,23 +148,17 @@ final class NotebookContent {
         return result;
     }
 
-    /** Wraps the paragraphs to the page width and splits them into pages; the first page carries the title. */
+    /** Wraps the paragraphs to the page width (word by word, justified) and splits them into pages; the first page carries the title. */
     private static List<NotebookPage> paginate(Font font, Component title, List<Paragraph> paragraphs) {
         List<NotebookPage.Line> lines = new ArrayList<>();
         for (Paragraph paragraph : paragraphs) {
+            Style style = paragraph.text().getStyle();
             for (String block : paragraph.text().getString().split("\n", -1)) {
-                Component styled = Component.literal(block).withStyle(paragraph.text().getStyle());
-                List<FormattedCharSequence> wrapped = font.split(styled, ArcaneNotebookScreen.PAGE_WIDTH);
-                if (wrapped.isEmpty()) {
-                    lines.add(new NotebookPage.Line(FormattedCharSequence.EMPTY, paragraph.color()));
-                }
-                for (FormattedCharSequence line : wrapped) {
-                    lines.add(new NotebookPage.Line(line, paragraph.color()));
-                }
+                wrap(font, block, style, paragraph.color(), lines);
             }
-            lines.add(new NotebookPage.Line(FormattedCharSequence.EMPTY, paragraph.color()));
+            lines.add(NotebookPage.Line.EMPTY);
         }
-        while (!lines.isEmpty() && lines.get(lines.size() - 1).text() == FormattedCharSequence.EMPTY) {
+        while (!lines.isEmpty() && lines.get(lines.size() - 1).text().isEmpty()) {
             lines.remove(lines.size() - 1);
         }
 
@@ -175,7 +169,7 @@ final class NotebookContent {
         do {
             int capacity = first ? perPage - ArcaneNotebookScreen.TITLE_LINES : perPage;
             // Do not start a page with an empty line.
-            while (!first && index < lines.size() && lines.get(index).text() == FormattedCharSequence.EMPTY) {
+            while (!first && index < lines.size() && lines.get(index).text().isEmpty()) {
                 index++;
             }
             int end = Math.min(lines.size(), index + capacity);
@@ -184,5 +178,34 @@ final class NotebookContent {
             first = false;
         } while (index < lines.size());
         return pages;
+    }
+
+    /** Greedy word wrap; every line but the last of the block is justified. */
+    private static void wrap(Font font, String block, Style style, int color, List<NotebookPage.Line> out) {
+        if (block.isBlank()) {
+            out.add(NotebookPage.Line.EMPTY);
+            return;
+        }
+        String[] words = block.trim().split(" +");
+        StringBuilder current = new StringBuilder();
+        for (String word : words) {
+            String candidate = current.isEmpty() ? word : current + " " + word;
+            if (!current.isEmpty() && font.width(Component.literal(candidate).withStyle(style)) > ArcaneNotebookScreen.PAGE_WIDTH) {
+                out.add(new NotebookPage.Line(current.toString(), style, color, true));
+                current = new StringBuilder(word);
+            } else {
+                current = new StringBuilder(candidate);
+            }
+            // A single word longer than the page is cut so it never overflows.
+            while (font.width(Component.literal(current.toString()).withStyle(style)) > ArcaneNotebookScreen.PAGE_WIDTH) {
+                String head = font.plainSubstrByWidth(current.toString(), ArcaneNotebookScreen.PAGE_WIDTH);
+                if (head.isEmpty()) break;
+                out.add(new NotebookPage.Line(head, style, color, false));
+                current = new StringBuilder(current.substring(head.length()));
+            }
+        }
+        if (!current.isEmpty()) {
+            out.add(new NotebookPage.Line(current.toString(), style, color, false));
+        }
     }
 }

@@ -110,4 +110,3 @@ if __name__ == '__main__':
     save(amulet('#2A6BD1', '#7FD6FF'), 'item', 'amulet_of_opposites.png')
     save(amulet('#B0263B', '#FF8A7A'), 'item', 'amulet_of_opposites_repel.png')
     save(sprite(QUIVER, QUIVER_PAL), 'item', 'spell_quiver.png')
-    save(sprite(SLOT, {'x': (255, 255, 255, 70)}), 'slot', 'empty_quiver_slot.png')
