@@ -1,0 +1,56 @@
+{
+  "category": "arcane",
+  "icon": "ars_nouveau:abjuration_essence",
+  "sort": 80,
+  "subjects": [
+    "ars_nouveau:abjuration_essence",
+    "minecraft:milk_bucket"
+  ],
+  "properties": [
+    "nullifying",
+    "quiet"
+  ],
+  "requires": [
+    "arcane_artifacts:source_resonance"
+  ],
+  "experiments": [
+    {
+      "id": "dispel",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_dispel",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "cure",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:milk_bucket"
+        }
+      ]
+    },
+    {
+      "id": "struck",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "#minecraft:witch_resistant_to"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "arcane": 1
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_counterspell"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_dispel"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 55,
+  "inputs": [
+    {
+      "item": "ars_nouveau:air_essence"
+    },
+    {
+      "item": "minecraft:spyglass"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_beam"
+  }
+}

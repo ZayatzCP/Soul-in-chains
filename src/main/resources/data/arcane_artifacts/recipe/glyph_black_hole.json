@@ -1,0 +1,25 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 160,
+  "inputs": [
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "minecraft:crying_obsidian"
+    },
+    {
+      "item": "minecraft:ender_eye"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_black_hole"
+  }
+}

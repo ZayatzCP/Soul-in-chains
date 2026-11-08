@@ -13,7 +13,14 @@ public final class ArcaneGlyphs {
             EffectArcaneMark.INSTANCE,
             EffectParasitism.INSTANCE,
             AugmentShrapnel.INSTANCE,
-            AugmentPursuit.INSTANCE
+            AugmentPursuit.INSTANCE,
+            MethodBeam.INSTANCE,
+            EffectBlackHole.INSTANCE,
+            EffectTornado.INSTANCE,
+            EffectWeatherShift.INSTANCE,
+            EffectCounterspell.INSTANCE,
+            EffectMeteorShower.INSTANCE,
+            EffectTimeWarp.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */

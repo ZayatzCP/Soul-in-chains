@@ -20,8 +20,8 @@ import java.util.List;
 
 /**
  * Focusing Boots (feet slot). Inscribed at the Scribes Table like any Ars caster (place the boots on the
- * table, use a spell book on it). Only spells whose form is Self are accepted; the new spell replaces
- * the old one. Crouching casts it - see {@link BootsHandler}.
+ * table, use a spell book on it). The Self form is built in: write only the effects (a spell that already
+ * starts with Self is accepted too; other forms are refused). Crouching casts it - see {@link BootsHandler}.
  */
 public class FocusingBootsItem extends ArcaneAccessoryItem implements ICasterTool {
     public FocusingBootsItem() {
@@ -33,9 +33,25 @@ public class FocusingBootsItem extends ArcaneAccessoryItem implements ICasterToo
         return caster == null ? new Spell() : caster.getSpell();
     }
 
+    /** The spell as it is cast: the built-in Self form followed by the inscribed effects. */
+    public static Spell castableSpell(ItemStack stack) {
+        return withSelf(storedSpell(stack));
+    }
+
+    public static Spell withSelf(Spell spell) {
+        if (spell.isEmpty() || spell.getCastMethod() != null) {
+            return spell;
+        }
+        java.util.List<com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart> recipe = new java.util.ArrayList<>();
+        recipe.add(MethodSelf.INSTANCE);
+        recipe.addAll(spell.unsafeList());
+        return spell.mutable().setRecipe(recipe).immutable();
+    }
+
     @Override
     public boolean isScribedSpellValid(AbstractCaster<?> caster, Player player, InteractionHand hand, ItemStack stack, Spell spell) {
-        return spell.isValid() && spell.getCastMethod() == MethodSelf.INSTANCE;
+        Spell cast = withSelf(spell);
+        return !cast.isEmpty() && cast.isValid() && cast.getCastMethod() == MethodSelf.INSTANCE;
     }
 
     @Override

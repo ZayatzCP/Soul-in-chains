@@ -1,53 +1,39 @@
 package com.soulinchains.arcaneartifacts.client;
 
-import com.soulinchains.arcaneartifacts.Config;
-import com.soulinchains.arcaneartifacts.accessory.DamageCategory;
-import com.soulinchains.arcaneartifacts.accessory.WreathData;
+import com.soulinchains.arcaneartifacts.accessory.RushState;
 import com.soulinchains.arcaneartifacts.accessory.WreathOfManipulationItem;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 /**
- * Flower colours of the wreath. Tint index 0 is the vine (untinted); indexes 1-4 are the flower groups
- * physical / fire / water / magic. A dormant group is pale grey, a group gathering hits gradually
- * takes its colour, and an adapted group shines in full colour (pulsing slightly).
+ * Flower colours of the wreath. Tint index 0 is the vine (untinted); indexes 1-4 are the four flower
+ * groups. Ready: soft colours. Battle Rush: bright, pulsing fire colours. Recovering: faded grey.
  */
 public final class WreathColors {
-    private static final int DORMANT = 0x8E8A99;
-    private static final int[] GROUP_COLORS = {
-            0xD9DEE8, // physical: silver-white
-            0xFF8A1F, // fire & lava: ember orange
-            0x2FD6E0, // suffocation & drowning: turquoise
-            0xB548F5  // magic: arcane violet
-    };
+    private static final int FADED = 0x8E8A99;
+    private static final int[] READY = {0xD9DEE8, 0xF0A35E, 0x7FD6E0, 0xC48CF5};
+    private static final int[] RUSH = {0xFFF2B0, 0xFF5A1F, 0xFFB01F, 0xFF2B6E};
 
     private WreathColors() {
     }
 
     public static int color(ItemStack stack, int tintIndex) {
-        if (tintIndex <= 0 || tintIndex > GROUP_COLORS.length) {
+        if (tintIndex <= 0 || tintIndex > READY.length) {
             return 0xFFFFFFFF;
         }
         int group = tintIndex - 1;
-        WreathData data = WreathOfManipulationItem.data(stack);
+        RushState state = WreathOfManipulationItem.state(stack);
         Level level = ClientAccess.level();
         long now = level == null ? 0 : level.getGameTime();
-        int needed = Config.SPEC.isLoaded() ? Config.WREATH_HITS_TO_ADAPT.get() : 5;
-        boolean adapted = false;
-        int hits = 0;
-        for (DamageCategory category : DamageCategory.values()) {
-            if (category.flowerGroup != group) continue;
-            adapted |= data.isAdapted(category, now);
-            hits = Math.max(hits, data.hits(category));
+        if (state.isActive(now)) {
+            float pulse = 0.75f + 0.25f * (float) Math.sin(now / 3.0 + group);
+            return 0xFF000000 | lerp(0xFFFFFF, RUSH[group], pulse);
         }
-        int target = GROUP_COLORS[group];
-        if (adapted) {
-            float pulse = 0.85f + 0.15f * (float) Math.sin(now / 6.0);
-            return 0xFF000000 | lerp(0xFFFFFF, target, pulse);
+        if (state.isRecovering(now)) {
+            return 0xFF000000 | lerp(FADED, READY[group], 0.25f);
         }
-        float progress = Math.min(1f, hits / (float) Math.max(1, needed)) * 0.6f;
-        return 0xFF000000 | lerp(DORMANT, target, progress);
+        return 0xFF000000 | READY[group];
     }
 
     private static int lerp(int from, int to, float t) {

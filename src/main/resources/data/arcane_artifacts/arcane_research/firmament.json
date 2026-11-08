@@ -1,0 +1,74 @@
+{
+  "category": "material",
+  "icon": "minecraft:fire_charge",
+  "sort": 70,
+  "subjects": [
+    "minecraft:fire_charge",
+    "minecraft:lightning_rod",
+    "minecraft:snowball"
+  ],
+  "properties": [
+    "stormy",
+    "burning"
+  ],
+  "requires": [
+    "arcane_artifacts:source_resonance"
+  ],
+  "experiments": [
+    {
+      "id": "ignite",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_ignite",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_ignite",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "storm",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_lightning",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_lightning",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_cold_snap",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "burn",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "#minecraft:is_fire"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "material": 1
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_weather_shift",
+    "arcane_artifacts:glyph_meteor_shower"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_ignite"
+  ]
+}

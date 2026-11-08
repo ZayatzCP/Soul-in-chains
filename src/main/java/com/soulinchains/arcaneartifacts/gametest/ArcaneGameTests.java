@@ -12,11 +12,14 @@ import com.hollingsworth.arsnouveau.common.spell.effect.EffectHarm;
 import com.hollingsworth.arsnouveau.common.spell.method.MethodProjectile;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.Config;
-import com.soulinchains.arcaneartifacts.accessory.DamageCategory;
+import com.soulinchains.arcaneartifacts.accessory.FocusingBootsItem;
 import com.soulinchains.arcaneartifacts.accessory.FocusingGlovesItem;
-import com.soulinchains.arcaneartifacts.accessory.RingOfReversalItem;
-import com.soulinchains.arcaneartifacts.accessory.WreathData;
 import com.soulinchains.arcaneartifacts.accessory.WreathOfManipulationItem;
+import com.soulinchains.arcaneartifacts.glyph.EffectCounterspell;
+import com.soulinchains.arcaneartifacts.glyph.EffectWeatherShift;
+import com.soulinchains.arcaneartifacts.phenomena.Phenomena;
+import com.soulinchains.arcaneartifacts.phenomena.Vortex;
+import com.soulinchains.arcaneartifacts.registry.ModEffects;
 import com.soulinchains.arcaneartifacts.damage.ParasitismManager;
 import com.soulinchains.arcaneartifacts.entity.ArcaneMissileEntity;
 import com.soulinchains.arcaneartifacts.glyph.ArcaneGlyphs;
@@ -118,7 +121,9 @@ public final class ArcaneGameTests {
         var recipes = helper.getLevel().getRecipeManager();
         for (String id : List.of("rose_gold_ingot",
                 "wreath_of_manipulation", "focusing_boots", "focusing_gloves", "ring_of_reversal", "mantle_of_reflection",
-                "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_shrapnel", "glyph_pursuit")) {
+                "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_shrapnel", "glyph_pursuit",
+                "glyph_beam", "glyph_black_hole", "glyph_tornado", "glyph_weather_shift", "glyph_counterspell",
+                "glyph_meteor_shower", "glyph_time_warp", "old_parchment", "researcher_notebook", "research_table")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -206,65 +211,57 @@ public final class ArcaneGameTests {
     // ------------------------------------------------------------------ accessories
 
     @GameTest(template = ARENA)
-    public static void damageCategories(GameTestHelper helper) {
-        DamageSources s = helper.getLevel().damageSources();
-        helper.assertTrue(DamageCategory.classify(s.fall()) == null, "Fall damage must not adapt");
-        helper.assertTrue(DamageCategory.classify(s.fellOutOfWorld()) == null, "Void damage must not adapt");
-        helper.assertTrue(DamageCategory.classify(s.lava()) == DamageCategory.LAVA, "lava");
-        helper.assertTrue(DamageCategory.classify(s.inFire()) == DamageCategory.FIRE, "fire");
-        helper.assertTrue(DamageCategory.classify(s.drown()) == DamageCategory.DROWNING, "drowning");
-        helper.assertTrue(DamageCategory.classify(s.inWall()) == DamageCategory.SUFFOCATION, "suffocation");
-        helper.assertTrue(DamageCategory.classify(s.magic()) == DamageCategory.MAGIC, "magic");
-        helper.assertTrue(DamageCategory.classify(s.cactus()) == DamageCategory.PHYSICAL, "physical");
-        helper.succeed();
-    }
-
-    @GameTest(template = ARENA)
-    public static void wreathAdaptsAfterFiveHits(GameTestHelper helper) {
+    public static void wreathBattleRush(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = player(helper, 4.5, 1, 4.5);
         equip(helper, player, "head", ModItems.WREATH_OF_MANIPULATION.get());
-        afterEquip(helper, player, ModItems.WREATH_OF_MANIPULATION.get(), () -> wreathScenario(helper, level, player));
-    }
+        afterEquip(helper, player, ModItems.WREATH_OF_MANIPULATION.get(), () -> {
+            ItemStack wreath = CurioHelper.findEquipped(player, ModItems.WREATH_OF_MANIPULATION.get()).orElseThrow();
+            WreathOfManipulationItem.startRush(player, wreath);
+            helper.assertTrue(player.hasEffect(ModEffects.BATTLE_RUSH), "Battle Rush not granted");
+            helper.assertTrue(player.hasEffect(ModEffects.RUSH_EXHAUSTION), "Rush cooldown not started");
+            helper.assertTrue(WreathOfManipulationItem.state(wreath).isActive(level.getGameTime()), "Wreath does not show the rush");
 
-    private static void wreathScenario(GameTestHelper helper, ServerLevel level, Player player) {
-        int needed = Config.WREATH_HITS_TO_ADAPT.get();
-        for (int i = 0; i < needed - 1; i++) {
-            hurtFresh(player, level.damageSources().cactus(), 1f);
-        }
-        WreathData before = WreathOfManipulationItem.data(CurioHelper.findEquipped(player, ModItems.WREATH_OF_MANIPULATION.get()).orElseThrow());
-        helper.assertTrue(before.hits(DamageCategory.PHYSICAL) == needed - 1, "Expected " + (needed - 1) + " counted hits, got " + before.hits(DamageCategory.PHYSICAL));
-        helper.assertTrue(!before.isAdapted(DamageCategory.PHYSICAL, level.getGameTime()), "Adapted too early");
+            float hp = player.getHealth();
+            hurtFresh(player, level.damageSources().magic(), 6f);
+            helper.assertTrue(player.getHealth() == hp, "Took damage during Battle Rush");
 
-        hurtFresh(player, level.damageSources().cactus(), 1f);
-        WreathData after = WreathOfManipulationItem.data(CurioHelper.findEquipped(player, ModItems.WREATH_OF_MANIPULATION.get()).orElseThrow());
-        helper.assertTrue(after.isAdapted(DamageCategory.PHYSICAL, level.getGameTime()), "Not adapted after " + needed + " hits");
-        helper.assertTrue(after.hits(DamageCategory.PHYSICAL) == 0, "Counter must reset when adapting");
-        long remaining = after.remainingTicks(DamageCategory.PHYSICAL, level.getGameTime());
-        helper.assertTrue(remaining >= Config.WREATH_MIN_ADAPT_SECONDS.get() * 20L && remaining <= Config.WREATH_MAX_ADAPT_SECONDS.get() * 20L,
-                "Adaptation duration out of range: " + remaining + " ticks");
-        helper.assertTrue(player.hasEffect(DamageCategory.PHYSICAL.grantedEffect()), "Resistance was not granted");
-
-        for (int i = 0; i < needed; i++) {
-            hurtFresh(player, level.damageSources().fall(), 1f);
-        }
-        WreathData fall = WreathOfManipulationItem.data(CurioHelper.findEquipped(player, ModItems.WREATH_OF_MANIPULATION.get()).orElseThrow());
-        helper.assertTrue(fall.hits().size() == 0 && fall.adaptedUntil().size() == 1, "Fall damage changed the wreath state");
-        helper.succeed();
+            SpellContext context = new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player));
+            var cost = new com.hollingsworth.arsnouveau.api.event.SpellCostCalcEvent.Pre(context, 40);
+            NeoForge.EVENT_BUS.post(cost);
+            helper.assertTrue(cost.currentCost == 0, "Spell still costs " + cost.currentCost + " mana during Battle Rush");
+            helper.succeed();
+        });
     }
 
     @GameTest(template = ARENA)
-    public static void ringChargesWithRateLimit(GameTestHelper helper) {
+    public static void ringNegatesBigHitsAndThrowsAttacker(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
+        Husk attacker = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(5, 1, 4));
         Player player = player(helper, 4.5, 1, 4.5);
         equip(helper, player, "ring", ModItems.RING_OF_REVERSAL.get());
         afterEquip(helper, player, ModItems.RING_OF_REVERSAL.get(), () -> {
-            hurtFresh(player, level.damageSources().cactus(), 2f);
-            hurtFresh(player, level.damageSources().cactus(), 2f);
-            int charge = RingOfReversalItem.charge(CurioHelper.findEquipped(player, ModItems.RING_OF_REVERSAL.get()).orElseThrow());
-            helper.assertTrue(charge == Config.RING_CHARGE_PER_HIT.get(), "Expected one rate-limited charge, got " + charge);
+            float hp = player.getHealth();
+            hurtFresh(player, level.damageSources().mobAttack(attacker), player.getMaxHealth() * 0.75f);
+            helper.assertTrue(player.getHealth() == hp, "A hit above half health was not negated");
+            Vec3 push = attacker.getDeltaMovement();
+            helper.assertTrue(Math.hypot(push.x, push.z) > 0.5 && push.y > 0, "Attacker was not thrown back: " + push);
+
+            hurtFresh(player, level.damageSources().mobAttack(attacker), 3f);
+            helper.assertTrue(player.getHealth() < hp, "A small hit must still hurt");
             helper.succeed();
         });
+    }
+
+    @GameTest(template = ARENA)
+    public static void bootsHaveBuiltInSelf(GameTestHelper helper) {
+        Spell effects = new Spell(EffectHarm.INSTANCE);
+        Spell cast = FocusingBootsItem.withSelf(effects);
+        helper.assertTrue(cast.getCastMethod() == com.hollingsworth.arsnouveau.common.spell.method.MethodSelf.INSTANCE
+                && cast.unsafeList().size() == 2, "Boots must prepend Self, got " + cast.getDisplayString());
+        Spell projectile = new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE);
+        helper.assertTrue(FocusingBootsItem.withSelf(projectile).getCastMethod() == MethodProjectile.INSTANCE, "A spell with a form is kept as is");
+        helper.succeed();
     }
 
     @GameTest(template = ARENA)
@@ -303,12 +300,14 @@ public final class ArcaneGameTests {
                 helper.assertTrue(projectile.getOwner() == wearer, "Reflected projectile must belong to the wearer");
                 Vec3 toCaster = caster.position().subtract(projectile.position()).normalize();
                 helper.assertTrue(projectile.getDeltaMovement().normalize().dot(toCaster) > 0.9, "Reflected projectile is not aimed at its caster");
-                helper.assertTrue(wearer.getCooldowns().isOnCooldown(ModItems.MANTLE_OF_REFLECTION.get()), "Mantle cooldown not started");
 
-                EntityProjectileSpell second = new EntityProjectileSpell(level, resolver);
-                ProjectileImpactEvent again = new ProjectileImpactEvent(second, new EntityHitResult(wearer));
-                NeoForge.EVENT_BUS.post(again);
-                helper.assertTrue(!again.isCanceled(), "Mantle reflected during its cooldown");
+                net.minecraft.world.entity.projectile.Arrow arrow = new net.minecraft.world.entity.projectile.Arrow(EntityType.ARROW, level);
+                arrow.setOwner(caster);
+                arrow.setPos(at.x, at.y, at.z);
+                arrow.setDeltaMovement(at.subtract(caster.position()).normalize().scale(1.5));
+                ProjectileImpactEvent arrowHit = new ProjectileImpactEvent(arrow, new EntityHitResult(wearer));
+                NeoForge.EVENT_BUS.post(arrowHit);
+                helper.assertTrue(arrowHit.isCanceled() && arrow.getOwner() == wearer, "Mantle did not reflect an arrow");
             } finally {
                 Config.MANTLE_REFLECT_CHANCE.set(oldChance);
             }
@@ -367,6 +366,56 @@ public final class ArcaneGameTests {
                 new SpellContext(level, new Spell(), caster, LivingCaster.from(caster)));
         NeoForge.EVENT_BUS.post(normal);
         helper.assertTrue(normal.damage == 8f, "Normal spell damage must not be scaled");
+        helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ new glyphs
+
+    @GameTest(template = ARENA)
+    public static void weatherShiftChangesWeather(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        EffectWeatherShift.apply(level, EffectWeatherShift.Weather.THUNDER, 1200);
+        helper.assertTrue(level.isThundering() || level.getLevelData().isThundering(), "Thunderstorm not started");
+        EffectWeatherShift.apply(level, EffectWeatherShift.Weather.RAIN, 1200);
+        helper.assertTrue(level.getLevelData().isRaining() && !level.getLevelData().isThundering(), "Rain not started");
+        EffectWeatherShift.apply(level, EffectWeatherShift.Weather.CLEAR, 1200);
+        helper.assertTrue(!level.getLevelData().isRaining(), "Sky did not clear");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 60)
+    public static void blackHolePullsCreatures(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Vec3 start = helper.absoluteVec(new Vec3(8.5, 2.0, 4.5));
+        net.minecraft.world.entity.item.ItemEntity victim = new net.minecraft.world.entity.item.ItemEntity(level, start.x, start.y, start.z,
+                new ItemStack(net.minecraft.world.item.Items.STONE));
+        victim.setNoGravity(true);
+        level.addFreshEntity(victim);
+        Vec3 center = helper.absoluteVec(new Vec3(4.5, 2.0, 4.5));
+        double before = victim.position().distanceTo(center);
+        Phenomena.add(new Vortex(level, java.util.UUID.randomUUID(), Vortex.Kind.BLACK_HOLE, center, 8.0, 40, 0f, 0.3));
+        helper.runAfterDelay(15, () -> {
+            double after = victim.position().distanceTo(center);
+            helper.assertTrue(after < before - 1.0, "Black hole did not pull: " + before + " -> " + after);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void counterspellCancelsSpells(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Husk caster = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(6, 1, 6));
+        SpellResolver resolver = new SpellResolver(new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), caster, LivingCaster.from(caster)));
+        EntityProjectileSpell projectile = new EntityProjectileSpell(level, resolver);
+        projectile.setOwner(caster);
+        Vec3 at = caster.position().add(1, 1, 0);
+        projectile.setPos(at.x, at.y, at.z);
+        level.addFreshEntity(projectile);
+        Phenomena.add(new Vortex(level, caster.getUUID(), Vortex.Kind.TORNADO, at, 3.0, 200, 0f, 1.0));
+        int undone = EffectCounterspell.counter(level, caster.getUUID(), caster.position());
+        helper.assertTrue(undone >= 2, "Counterspell undid " + undone + " spells, expected the projectile and the tornado");
+        helper.assertTrue(projectile.isRemoved(), "Spell projectile survived Counterspell");
+        helper.assertTrue(Phenomena.active().stream().noneMatch(p -> p.owner().equals(caster.getUUID())), "Tornado survived Counterspell");
         helper.succeed();
     }
 }

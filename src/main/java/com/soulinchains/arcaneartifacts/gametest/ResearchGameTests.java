@@ -50,7 +50,8 @@ public final class ResearchGameTests {
 
     @GameTest(template = ARENA)
     public static void researchDataLoads(GameTestHelper helper) {
-        for (String id : new String[]{"source_resonance", "trajectories", "arcane_marking", "fragmentation", "life_bond"}) {
+        for (String id : new String[]{"source_resonance", "trajectories", "arcane_marking", "fragmentation", "life_bond",
+                "flesh_adaptation", "focusing", "reflection", "singularity", "firmament", "nullification"}) {
             helper.assertTrue(ResearchManager.get(ArcaneArtifacts.id(id)) != null, "Research not loaded: " + id);
         }
         helper.assertTrue(ResearchManager.gatedGlyphs().contains(PARASITISM), "Parasitism is not gated by any research");

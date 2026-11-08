@@ -2,7 +2,6 @@ package com.soulinchains.arcaneartifacts.registry;
 
 import com.mojang.serialization.Codec;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
-import com.soulinchains.arcaneartifacts.accessory.WreathRuntime;
 import com.soulinchains.arcaneartifacts.research.PlayerResearch;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -19,14 +18,6 @@ public final class ModAttachments {
      */
     public static final Supplier<AttachmentType<Long>> PARASITISM_COOLDOWN_UNTIL = REGISTER.register("parasitism_cooldown_until",
             () -> AttachmentType.builder(() -> 0L).serialize(Codec.LONG).copyOnDeath().build());
-
-    /** Game time of the last ring charge gain (anti-exploit rate limit). Saved with the player. */
-    public static final Supplier<AttachmentType<Long>> LAST_REVERSAL_CHARGE = REGISTER.register("last_reversal_charge",
-            () -> AttachmentType.builder(() -> 0L).serialize(Codec.LONG).build());
-
-    /** Transient runtime state of the wreath (regeneration timer, cleanse tracking). Not saved. */
-    public static final Supplier<AttachmentType<WreathRuntime>> WREATH_RUNTIME = REGISTER.register("wreath_runtime",
-            () -> AttachmentType.builder(WreathRuntime::new).build());
 
     /** Research progress of a player: saved with the world, kept through death, mirrored to the client. */
     public static final Supplier<AttachmentType<PlayerResearch>> RESEARCH = REGISTER.register("research",

@@ -1,0 +1,22 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 55,
+  "inputs": [
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "minecraft:clock"
+    },
+    {
+      "item": "minecraft:cobweb"
+    },
+    {
+      "item": "minecraft:honey_bottle"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_time_warp"
+  }
+}

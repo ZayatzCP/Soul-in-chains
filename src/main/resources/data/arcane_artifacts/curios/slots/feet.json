@@ -1,0 +1,8 @@
+{
+  "order": 45,
+  "size": 1,
+  "icon": "arcane_artifacts:slot/empty_feet_slot",
+  "validators": [
+    "curios:tag"
+  ]
+}

@@ -43,15 +43,15 @@ final class NotebookContent {
         entries.add(itemEntry(font, ModItems.OLD_PARCHMENT.get(), 1));
         entries.add(itemEntry(font, ModItems.RESEARCHER_NOTEBOOK.get(), 1));
         entries.add(itemEntry(font, ModItems.ROSE_GOLD_INGOT.get(), 1));
-        entries.add(itemEntry(font, ModItems.WREATH_OF_MANIPULATION.get(), 4));
-        entries.add(itemEntry(font, ModItems.FOCUSING_BOOTS.get(), 3));
-        entries.add(itemEntry(font, ModItems.FOCUSING_GLOVES.get(), 3));
+        entries.add(itemEntry(font, ModItems.WREATH_OF_MANIPULATION.get(), 2));
+        entries.add(itemEntry(font, ModItems.FOCUSING_BOOTS.get(), 2));
+        entries.add(itemEntry(font, ModItems.FOCUSING_GLOVES.get(), 2));
         entries.add(itemEntry(font, ModItems.RING_OF_REVERSAL.get(), 2));
         entries.add(itemEntry(font, ModItems.MANTLE_OF_REFLECTION.get(), 2));
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
-        for (String effect : new String[]{"arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "arcane_adaptation"}) {
+        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery"}) {
             effects.add(new Paragraph(Component.translatable("effect.arcane_artifacts." + effect).withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
             effects.add(new Paragraph(Component.translatable("arcane_artifacts.effect_doc." + effect), ArcaneNotebookScreen.INK_COLOR));
         }
@@ -103,7 +103,8 @@ final class NotebookContent {
         ItemStack glyph = new ItemStack(part.getGlyph());
         List<Paragraph> paragraphs = List.of(
                 new Paragraph(part.getBookDescLang(), ArcaneNotebookScreen.INK_COLOR),
-                new Paragraph(Component.translatable("arcane_artifacts.glyph_doc." + id.getPath()), ArcaneNotebookScreen.INK_COLOR));
+                new Paragraph(Component.translatable("arcane_artifacts.glyph_doc." + id.getPath()), ArcaneNotebookScreen.INK_COLOR),
+                new Paragraph(Component.translatable("arcane_artifacts.glyph_joke." + id.getPath()).withStyle(ChatFormatting.ITALIC), ArcaneNotebookScreen.LORE_COLOR));
         List<NotebookPage> pages = paginate(font, glyph.getHoverName(), paragraphs);
         pages.add(new NotebookPage.Recipe(ArcaneArtifacts.id(id.getPath())));
         return new NotebookEntry(glyph.getHoverName(), glyph, pages);

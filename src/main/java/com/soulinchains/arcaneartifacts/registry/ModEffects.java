@@ -23,9 +23,16 @@ public final class ModEffects {
     /** Cooldown indicator for Parasitism. Mirrors the cooldown, not curable. */
     public static final DeferredHolder<MobEffect, MobEffect> PARASITIC_RECOVERY = REGISTER.register("parasitic_recovery",
             () -> new ArcaneStatusEffect(MobEffectCategory.NEUTRAL, 0x6B4E7A, false));
-    /** Granted by the wreath's magic adaptation: reduces magic damage (see Config). */
-    public static final DeferredHolder<MobEffect, MobEffect> ARCANE_ADAPTATION = REGISTER.register("arcane_adaptation",
-            () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0x7A6CFF, true));
+    /** Wreath of Manipulation: spells cost no mana and the wearer takes no damage. Mirrors the rush, not curable. */
+    public static final DeferredHolder<MobEffect, MobEffect> BATTLE_RUSH = REGISTER.register("battle_rush",
+            () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0xFF5A2B, false));
+    /** Wreath of Manipulation cooldown: no new Battle Rush until it ends. Not curable. */
+    public static final DeferredHolder<MobEffect, MobEffect> RUSH_EXHAUSTION = REGISTER.register("rush_exhaustion",
+            () -> new ArcaneStatusEffect(MobEffectCategory.NEUTRAL, 0x6B5A4E, false));
+
+    /** Counterspell: the creature cannot cast Ars Nouveau spells. Can be cured with milk. */
+    public static final DeferredHolder<MobEffect, MobEffect> SILENCED = REGISTER.register("silenced",
+            () -> new ArcaneStatusEffect(MobEffectCategory.HARMFUL, 0x3A3A55, true));
 
     private ModEffects() {
     }

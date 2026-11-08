@@ -1,0 +1,25 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 160,
+  "inputs": [
+    {
+      "item": "ars_nouveau:fire_essence"
+    },
+    {
+      "item": "ars_nouveau:earth_essence"
+    },
+    {
+      "item": "minecraft:fire_charge"
+    },
+    {
+      "item": "minecraft:magma_block"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_meteor_shower"
+  }
+}

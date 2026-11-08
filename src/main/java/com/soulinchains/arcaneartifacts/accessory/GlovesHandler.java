@@ -37,6 +37,11 @@ public final class GlovesHandler {
     private GlovesHandler() {
     }
 
+    /** Drops the pending free repeats of a caster (Counterspell). */
+    public static void cancelFor(UUID player) {
+        PENDING.removeIf(repeat -> repeat.player().equals(player));
+    }
+
     public static void scheduleRepeat(ServerPlayer player, Spell spell, ItemStack casterTool) {
         long executeAt = player.level().getGameTime() + Config.GLOVES_REPEAT_DELAY_TICKS.get();
         PENDING.add(new PendingRepeat(player.getUUID(), spell, casterTool.copy(), executeAt));

@@ -52,7 +52,7 @@ public final class BootsHandler {
         if (boots.isEmpty() || player.getCooldowns().isOnCooldown(boots.getItem())) {
             return;
         }
-        Spell spell = FocusingBootsItem.storedSpell(boots);
+        Spell spell = FocusingBootsItem.castableSpell(boots);
         if (spell.isEmpty()) {
             return;
         }

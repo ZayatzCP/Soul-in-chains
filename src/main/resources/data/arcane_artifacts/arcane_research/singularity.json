@@ -1,0 +1,71 @@
+{
+  "category": "spatial",
+  "icon": "minecraft:ender_pearl",
+  "sort": 60,
+  "subjects": [
+    "minecraft:ender_pearl",
+    "minecraft:crying_obsidian",
+    "minecraft:obsidian"
+  ],
+  "properties": [
+    "dense",
+    "hungry"
+  ],
+  "requires": [
+    "arcane_artifacts:trajectories"
+  ],
+  "experiments": [
+    {
+      "id": "pull",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pull",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "weight",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_gravity",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_launch",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "gust",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_wind_shear",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_projectile"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "spatial": 2
+  },
+  "unlocks": [
+    "arcane_artifacts:glyph_beam",
+    "arcane_artifacts:glyph_black_hole",
+    "arcane_artifacts:glyph_tornado",
+    "arcane_artifacts:glyph_time_warp"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_pull"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 55,
+  "inputs": [
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "minecraft:milk_bucket"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "minecraft:wet_sponge"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_counterspell"
+  }
+}
