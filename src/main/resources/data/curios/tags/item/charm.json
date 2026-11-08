@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "arcane_artifacts:heart_charm",
+    "arcane_artifacts:diamond_charm",
+    "arcane_artifacts:club_charm",
+    "arcane_artifacts:spade_charm"
+  ]
+}

@@ -39,6 +39,7 @@ public class EffectMeteorShower extends AreaEffect {
         double spread = 2.5 + 1.5 * Math.max(0, stats.getAoeMultiplier());
         float damage = (float) Math.max(1.0, Config.METEOR_DAMAGE.get() + 2.0 * stats.getAmpMultiplier());
         var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.METEOR_SHOWER);
+        Phenomena.add(new com.soulinchains.arcaneartifacts.phenomena.AreaMarker(level, shooter.getUUID(), point.subtract(0, 0.4, 0), spread + 2.5, count * 6 + 30, style.impact));
         for (int i = 0; i < count; i++) {
             Vec3 spot = i == 0 ? point : point.add(level.random.nextGaussian() * spread, 0, level.random.nextGaussian() * spread);
             Phenomena.add(new Meteor(level, shooter.getUUID(), spot, i * 6, damage, 2.5, 22.0, style.main, style.impact));

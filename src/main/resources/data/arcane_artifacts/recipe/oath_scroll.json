@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NGN",
+    "PWP",
+    "NSN"
+  ],
+  "key": {
+    "N": {
+      "item": "arcane_artifacts:rose_gold_nugget"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "arcane_artifacts:old_parchment"
+    },
+    "W": {
+      "item": "minecraft:writable_book"
+    },
+    "S": {
+      "item": "ars_nouveau:source_gem"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:oath_scroll"
+  }
+}

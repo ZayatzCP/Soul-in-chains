@@ -81,6 +81,12 @@ public class AccessoryCurioRenderer implements ICurioRenderer {
         }
         float shake = placement.shakesInRush() ? RushShake.offset(stack, partialTicks) : 0f;
         pose.translate(-0.5F, -0.5F, -0.5F);
+        if (placement.turnY() != 0f) {
+            // Turn around the vertical axis through the middle of the head / limb.
+            pose.translate(0.5F, 0F, 0.5F);
+            pose.mulPose(Axis.YP.rotationDegrees(placement.turnY()));
+            pose.translate(-0.5F, 0F, -0.5F);
+        }
         pose.translate((placement.pivotX() + placement.offsetX() + shake) / 16F, (placement.pivotY() + placement.offsetY()) / 16F,
                 (placement.pivotZ() + placement.offsetZ()) / 16F);
         pose.mulPose(Axis.XP.rotationDegrees(placement.rotX()));

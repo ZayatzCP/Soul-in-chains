@@ -1,6 +1,6 @@
 {
   "type": "ars_nouveau:glyph",
-  "exp": 27,
+  "exp": 55,
   "inputs": [
     {
       "item": "ars_nouveau:source_gem"
@@ -10,6 +10,12 @@
     },
     {
       "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_nugget"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_nugget"
     }
   ],
   "output": {

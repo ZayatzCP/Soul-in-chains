@@ -87,10 +87,10 @@ final class RecipeRenderer {
     private static void station(GuiGraphics g, ArcaneNotebookScreen screen, String itemId, int x, int y) {
         ItemStack icon = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId)));
         Component name = icon.getHoverName();
-        int width = 18 + screen.font().width(name);
+        int width = Math.min(ArcaneNotebookScreen.PAGE_WIDTH, 18 + screen.font().width(name));
         int start = x + (ArcaneNotebookScreen.PAGE_WIDTH - width) / 2;
         g.renderItem(icon, start, y);
-        g.drawString(screen.font(), name, start + 18, y + 4, ArcaneNotebookScreen.TITLE_COLOR, false);
+        ArcaneNotebookScreen.drawFitted(g, screen.font(), name, start + 18, y + 4, width - 18, ArcaneNotebookScreen.TITLE_COLOR, false);
         g.fill(x + 10, y + 19, x + ArcaneNotebookScreen.PAGE_WIDTH - 10, y + 20, 0x40_5B2A86);
     }
 

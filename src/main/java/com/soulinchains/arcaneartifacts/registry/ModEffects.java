@@ -34,6 +34,10 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> SILENCED = REGISTER.register("silenced",
             () -> new ArcaneStatusEffect(MobEffectCategory.HARMFUL, 0x3A3A55, true));
 
+    /** Satiety glyph: hunger and saturation stay full. */
+    public static final DeferredHolder<MobEffect, MobEffect> WELL_FED = REGISTER.register("well_fed",
+            com.soulinchains.arcaneartifacts.effect.WellFedEffect::new);
+
     private ModEffects() {
     }
 }

@@ -41,14 +41,14 @@ public final class Fx {
 
     /** A trail from one point to another (the trail motion draws between the previous and the current position). */
     public static void line(ServerLevel level, TimelineEntryData entry, Vec3 from, Vec3 to) {
-        Vec3[] pos = {from};
-        ParticleEmitter emitter = new ParticleEmitter(() -> pos[0], () -> Vec2.ZERO, entry);
-        double length = to.distanceTo(from);
-        int segments = Math.max(1, (int) Math.ceil(length / 6.0));
-        emitter.previousPosition = from;
-        for (int i = 1; i <= segments; i++) {
-            pos[0] = from.add(to.subtract(from).scale(i / (double) segments));
-            emitter.tick(level);
+        FxNetwork.sendLine(level, entry, from, to);
+    }
+
+    /** A thin ring of bursts on the edge of an area (no centre), for areas that stay marked while they last. */
+    public static void ring(ServerLevel level, TimelineEntryData entry, Vec3 center, double radius, int points) {
+        for (int i = 0; i < points; i++) {
+            double a = 2 * Math.PI * i / points;
+            burst(level, entry, center.add(Math.cos(a) * radius, 0.1, Math.sin(a) * radius));
         }
     }
 

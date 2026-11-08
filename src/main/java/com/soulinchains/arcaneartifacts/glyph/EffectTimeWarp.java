@@ -53,7 +53,9 @@ public class EffectTimeWarp extends AreaEffect {
                 projectile.hurtMarked = true;
             }
         }
-        com.soulinchains.arcaneartifacts.fx.Fx.area(level, com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.TIME_WARP).main, point, radius);
+        var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.TIME_WARP).main;
+        com.soulinchains.arcaneartifacts.fx.Fx.area(level, style, point, radius);
+        com.soulinchains.arcaneartifacts.phenomena.Phenomena.add(new com.soulinchains.arcaneartifacts.phenomena.AreaMarker(level, shooter.getUUID(), point, radius, ticks, style));
         level.playSound(null, point.x, point.y, point.z, net.minecraft.sounds.SoundEvents.BELL_RESONATE, net.minecraft.sounds.SoundSource.PLAYERS, 1.0f, 0.5f);
     }
 

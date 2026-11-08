@@ -35,6 +35,10 @@ public abstract class ArcaneAccessoryItem extends ArsNouveauCurio {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
+        String lore = getDescriptionId() + ".lore";
+        if (net.minecraft.locale.Language.getInstance().has(lore)) {
+            tooltip.add(Component.translatable(lore).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
+        }
         for (int i = 1; i <= descriptionLines; i++) {
             tooltip.add(Component.translatable(getDescriptionId() + ".desc." + i).withStyle(ChatFormatting.GRAY));
         }

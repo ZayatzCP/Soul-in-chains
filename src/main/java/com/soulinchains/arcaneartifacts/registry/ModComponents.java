@@ -23,6 +23,11 @@ public final class ModComponents {
             REGISTER.registerComponentType("repelling", b -> b.persistent(com.mojang.serialization.Codec.BOOL)
                     .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.BOOL));
 
+    /** Team of an Oath Scroll or a sworn suit charm (bound forever). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.soulinchains.arcaneartifacts.team.TeamBond>> TEAM_BOND =
+            REGISTER.registerComponentType("team_bond", b -> b.persistent(com.soulinchains.arcaneartifacts.team.TeamBond.CODEC)
+                    .networkSynchronized(com.soulinchains.arcaneartifacts.team.TeamBond.STREAM_CODEC));
+
     private ModComponents() {
     }
 }

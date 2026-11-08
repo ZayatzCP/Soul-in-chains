@@ -67,5 +67,6 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
         event.register(BeltKey.KEY);
+        event.register(BeltKey.AMULET_KEY);
     }
 }

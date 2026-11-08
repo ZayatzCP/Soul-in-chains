@@ -68,8 +68,24 @@ public class ArcaneNotebookScreen extends Screen {
         g.blit(TEXTURE, x, y, 0, UI_V, 18, 18, TEX_W, TEX_H);
     }
 
+    /** Centered on the page; text wider than the page is scaled down so it never leaves the paper. */
     void drawCentered(GuiGraphics g, Component text, int pageX, int y, int color) {
-        g.drawString(font, text, pageX + (PAGE_WIDTH - font.width(text)) / 2, y, color, false);
+        drawFitted(g, font, text, pageX, y, PAGE_WIDTH, color, true);
+    }
+
+    /** Draws one line inside {@code width}; if it is wider, it is scaled down (never cut). */
+    static void drawFitted(GuiGraphics g, net.minecraft.client.gui.Font font, Component text, int x, int y, int width, int color, boolean centered) {
+        int textWidth = font.width(text);
+        if (textWidth <= width) {
+            g.drawString(font, text, centered ? x + (width - textWidth) / 2 : x, y, color, false);
+            return;
+        }
+        float scale = width / (float) textWidth;
+        g.pose().pushPose();
+        g.pose().translate(x, y + 4 * (1 - scale), 0);
+        g.pose().scale(scale, scale, 1f);
+        g.drawString(font, text, 0, 0, color, false);
+        g.pose().popPose();
     }
 
     @Override
@@ -126,7 +142,10 @@ public class ArcaneNotebookScreen extends Screen {
             boolean hover = mouseX >= pos[0] && mouseX < pos[0] + PAGE_WIDTH && mouseY >= pos[1] && mouseY < pos[1] + ROW;
             g.renderItem(entry.icon(), pos[0], pos[1]);
             Component title = entry.title();
-            String text = font.plainSubstrByWidth(title.getString(), PAGE_WIDTH - 20);
+            String text = title.getString();
+            if (font.width(text) > PAGE_WIDTH - 20) {
+                text = font.plainSubstrByWidth(text, PAGE_WIDTH - 20 - font.width("...")).stripTrailing() + "...";
+            }
             g.drawString(font, text, pos[0] + 19, pos[1] + 4, hover ? TITLE_COLOR : INK_COLOR, false);
             if (hover) {
                 g.fill(pos[0] + 19, pos[1] + 13, pos[0] + 19 + font.width(text), pos[1] + 14, 0x80_5B2A86);

@@ -3,10 +3,13 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "arcane_artifacts:rose_gold_ingot"
+      "item": "arcane_artifacts:rose_gold_block"
     },
     {
-      "item": "arcane_artifacts:rose_gold_ingot"
+      "item": "arcane_artifacts:rose_gold_block"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_block"
     },
     {
       "item": "minecraft:leather"
@@ -24,7 +27,10 @@
       "item": "ars_nouveau:manipulation_essence"
     },
     {
-      "item": "ars_nouveau:source_gem"
+      "item": "ars_nouveau:source_gem_block"
+    },
+    {
+      "item": "minecraft:ender_eye"
     }
   ],
   "reagent": {
@@ -34,5 +40,5 @@
     "count": 1,
     "id": "arcane_artifacts:bottomless_belt"
   },
-  "sourceCost": 8000
+  "sourceCost": 12000
 }

@@ -20,6 +20,8 @@ public final class ModCreativeTab {
                 output.accept(ModItems.RESEARCHER_NOTEBOOK.get());
                 output.accept(ModItems.OLD_PARCHMENT.get());
                 output.accept(ModItems.ROSE_GOLD_INGOT.get());
+                output.accept(ModItems.ROSE_GOLD_NUGGET.get());
+                output.accept(ModItems.ROSE_GOLD_BLOCK.get());
                 output.accept(ModItems.WREATH_OF_MANIPULATION.get());
                 output.accept(ModItems.FOCUSING_BOOTS.get());
                 output.accept(ModItems.FOCUSING_GLOVES.get());
@@ -29,6 +31,11 @@ public final class ModCreativeTab {
                 output.accept(ModItems.BOTTOMLESS_BELT.get());
                 output.accept(ModItems.AMULET_OF_OPPOSITES.get());
                 output.accept(ModItems.SPELL_QUIVER.get());
+                output.accept(ModItems.OATH_SCROLL.get());
+                output.accept(ModItems.HEART_CHARM.get());
+                output.accept(ModItems.DIAMOND_CHARM.get());
+                output.accept(ModItems.CLUB_CHARM.get());
+                output.accept(ModItems.SPADE_CHARM.get());
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
                     if (part.glyphItem != null) {
                         output.accept(part.glyphItem);

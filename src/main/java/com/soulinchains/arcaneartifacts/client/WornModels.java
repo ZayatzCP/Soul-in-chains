@@ -34,8 +34,8 @@ public final class WornModels {
      * {@code shakesInRush}: the model jitters sideways while the Battle Rush is active.
      */
     public record Placement(float pivotX, float pivotY, float pivotZ, float rotX, float rotY, float rotZ,
-                            float offsetX, float offsetY, float offsetZ, boolean shakesInRush) {
-        public static final Placement NONE = new Placement(0, 0, 0, 0, 0, 0, 0, 0, 0, false);
+                            float offsetX, float offsetY, float offsetZ, boolean shakesInRush, float turnY) {
+        public static final Placement NONE = new Placement(0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0);
     }
 
     public record Attachment(BodyPart part, ResourceLocation model, Placement placement) {
@@ -48,10 +48,11 @@ public final class WornModels {
 
     static {
         // The designer's wreath lies flat; Blockbench rotated it on two axes at once, which 1.21.1 model
-        // files cannot store, so the rotation lives here. The offset seats the ring on the crown of the head.
+        // files cannot store, so the rotation lives here. The offset seats the ring a little above the
+        // crown of the head; turnY faces it the other way round.
         ATTACHMENTS.put(ModItems.WREATH_OF_MANIPULATION, List.of(
                 new Attachment(BodyPart.HEAD, ArcaneArtifacts.id("item/worn/wreath_of_manipulation"),
-                        new Placement(7f, -2.81233f, 8.56392f, -105f, 0f, -180f, 1f, 17.8f, -0.56f, true))));
+                        new Placement(7f, -2.81233f, 8.56392f, -105f, 0f, -180f, 1f, 19.0f, -0.56f, true, 180f))));
         ATTACHMENTS.put(ModItems.FOCUSING_BOOTS, List.of(
                 worn(BodyPart.RIGHT_LEG, "focusing_boots_right"),
                 worn(BodyPart.LEFT_LEG, "focusing_boots_left")));

@@ -32,6 +32,7 @@ public final class Allies {
         if (a == null || b == null) return false;
         if (a == b) return true;
         if (a.isAlliedTo(b) || b.isAlliedTo(a)) return true;
+        if (com.soulinchains.arcaneartifacts.team.TeamHandler.sworn(a, b)) return true;
         return Objects.equals(controllerId(a), controllerId(b));
     }
 

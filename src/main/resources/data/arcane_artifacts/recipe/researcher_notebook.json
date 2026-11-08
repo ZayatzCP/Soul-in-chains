@@ -2,16 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "PPL",
-    "PPP",
-    "PPP"
+    "NPP",
+    "LPP",
+    "NPP"
   ],
   "key": {
-    "P": {
-      "item": "arcane_artifacts:old_parchment"
+    "N": {
+      "item": "arcane_artifacts:rose_gold_nugget"
     },
     "L": {
       "item": "minecraft:leather"
+    },
+    "P": {
+      "item": "arcane_artifacts:old_parchment"
     }
   },
   "result": {

@@ -28,7 +28,7 @@
     }
   ],
   "reagent": {
-    "item": "minecraft:diamond_boots"
+    "item": "minecraft:netherite_boots"
   },
   "result": {
     "count": 1,

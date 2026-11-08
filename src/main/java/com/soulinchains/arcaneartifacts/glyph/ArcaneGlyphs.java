@@ -20,7 +20,9 @@ public final class ArcaneGlyphs {
             EffectWeatherShift.INSTANCE,
             EffectCounterspell.INSTANCE,
             EffectMeteorShower.INSTANCE,
-            EffectTimeWarp.INSTANCE
+            EffectTimeWarp.INSTANCE,
+            EffectAnvilDrop.INSTANCE,
+            EffectSatiety.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */

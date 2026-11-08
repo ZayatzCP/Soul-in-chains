@@ -1,6 +1,6 @@
 {
   "type": "ars_nouveau:glyph",
-  "exp": 55,
+  "exp": 160,
   "inputs": [
     {
       "item": "ars_nouveau:wilden_spike"
@@ -12,7 +12,13 @@
       "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
       "item": "minecraft:amethyst_cluster"
+    },
+    {
+      "item": "minecraft:tnt"
     }
   ],
   "output": {

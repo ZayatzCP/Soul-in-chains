@@ -59,9 +59,17 @@
     "arcane": 2
   },
   "unlocks": [
-    "arcane_artifacts:glyph_parasitism"
+    "arcane_artifacts:glyph_parasitism",
+    "arcane_artifacts:glyph_satiety"
   ],
   "requires_glyphs": [
     "ars_nouveau:glyph_heal"
+  ],
+  "unlocks_items": [
+    "arcane_artifacts:oath_scroll",
+    "arcane_artifacts:heart_charm",
+    "arcane_artifacts:diamond_charm",
+    "arcane_artifacts:club_charm",
+    "arcane_artifacts:spade_charm"
   ]
 }

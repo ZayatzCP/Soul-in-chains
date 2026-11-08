@@ -25,8 +25,13 @@ public sealed interface NotebookPage {
                 return;
             }
             String[] words = text.split(" ");
+            Component whole = Component.literal(text).withStyle(style);
+            if (font.width(whole) > ArcaneNotebookScreen.PAGE_WIDTH) {
+                ArcaneNotebookScreen.drawFitted(graphics, font, whole, x, y, ArcaneNotebookScreen.PAGE_WIDTH, color, false);
+                return;
+            }
             if (!justify || words.length < 2) {
-                graphics.drawString(font, Component.literal(text).withStyle(style), x, y, color, false);
+                graphics.drawString(font, whole, x, y, color, false);
                 return;
             }
             int total = 0;

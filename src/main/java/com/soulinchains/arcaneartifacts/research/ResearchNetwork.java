@@ -58,9 +58,15 @@ public final class ResearchNetwork {
                 (payload, context) -> ClientResearch.acceptDefinitions(payload.definitions()));
         registrar.playToClient(ProgressPayload.TYPE, ProgressPayload.STREAM_CODEC,
                 (payload, context) -> ClientResearch.acceptProgress(payload.progress()));
+        registrar.playToClient(com.soulinchains.arcaneartifacts.fx.FxNetwork.LinePayload.TYPE,
+                com.soulinchains.arcaneartifacts.fx.FxNetwork.LinePayload.STREAM_CODEC,
+                com.soulinchains.arcaneartifacts.fx.FxNetwork::handleLine);
         registrar.playToServer(com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBeltPayload.TYPE,
                 com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBeltPayload.STREAM_CODEC,
                 (payload, context) -> com.soulinchains.arcaneartifacts.belt.BeltRegistry.handleOpen(context));
+        registrar.playToServer(com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.TogglePayload.TYPE,
+                com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.TogglePayload.STREAM_CODEC,
+                (payload, context) -> com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.handleToggle(context));
     }
 
     public static void sendDefinitions(ServerPlayer player) {

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "rose_gold_ingot",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "arcane_artifacts:rose_gold_nugget"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:rose_gold_ingot"
+  }
+}

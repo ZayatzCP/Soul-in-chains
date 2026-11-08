@@ -43,7 +43,7 @@ public class EffectBlackHole extends AreaEffect {
         float damage = (float) Math.max(0.0, Config.BLACK_HOLE_DAMAGE.get() + 1.5 * stats.getAmpMultiplier());
         double strength = Math.max(0.05, 0.22 + 0.05 * stats.getAmpMultiplier());
         var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.BLACK_HOLE);
-        Phenomena.add(new Vortex(level, shooter.getUUID(), Vortex.Kind.BLACK_HOLE, point, radius, duration, damage, strength, style.main));
+        Phenomena.add(new Vortex(level, shooter.getUUID(), Vortex.Kind.BLACK_HOLE, point, radius, duration, damage, strength, style.main, style.impact));
         com.soulinchains.arcaneartifacts.fx.Fx.area(level, style.impact, point, radius);
         level.playSound(null, point.x, point.y, point.z, net.minecraft.sounds.SoundEvents.END_PORTAL_SPAWN, net.minecraft.sounds.SoundSource.PLAYERS, 0.5f, 0.6f);
     }

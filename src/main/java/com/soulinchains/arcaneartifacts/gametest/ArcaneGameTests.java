@@ -124,7 +124,9 @@ public final class ArcaneGameTests {
                 "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_shrapnel", "glyph_pursuit",
                 "glyph_beam", "glyph_black_hole", "glyph_tornado", "glyph_weather_shift", "glyph_counterspell",
                 "glyph_meteor_shower", "glyph_time_warp", "old_parchment", "researcher_notebook", "research_table",
-                "spell_staff", "bottomless_belt", "amulet_of_opposites", "spell_quiver")) {
+                "spell_staff", "bottomless_belt", "amulet_of_opposites", "spell_quiver",
+                "glyph_anvil_drop", "glyph_satiety", "rose_gold_block", "rose_gold_nugget", "rose_gold_ingot_from_block",
+                "rose_gold_ingot_from_nuggets", "oath_scroll", "heart_charm", "diamond_charm", "club_charm", "spade_charm")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -395,7 +397,7 @@ public final class ArcaneGameTests {
         Vec3 center = helper.absoluteVec(new Vec3(4.5, 2.0, 4.5));
         double before = victim.position().distanceTo(center);
         Phenomena.add(new Vortex(level, java.util.UUID.randomUUID(), Vortex.Kind.BLACK_HOLE, center, 8.0, 40, 0f, 0.3,
-                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.BLACK_HOLE).main));
+                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.BLACK_HOLE).main, com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.BLACK_HOLE).impact));
         helper.runAfterDelay(15, () -> {
             double after = victim.position().distanceTo(center);
             helper.assertTrue(after < before - 1.0, "Black hole did not pull: " + before + " -> " + after);
@@ -414,7 +416,7 @@ public final class ArcaneGameTests {
         projectile.setPos(at.x, at.y, at.z);
         level.addFreshEntity(projectile);
         Phenomena.add(new Vortex(level, caster.getUUID(), Vortex.Kind.TORNADO, at, 3.0, 200, 0f, 1.0,
-                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO).main));
+                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO).main, com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO).impact));
         int undone = EffectCounterspell.counter(level, caster.getUUID(), caster.position());
         helper.assertTrue(undone >= 2, "Counterspell undid " + undone + " spells, expected the projectile and the tornado");
         helper.assertTrue(projectile.isRemoved(), "Spell projectile survived Counterspell");
@@ -466,5 +468,48 @@ public final class ArcaneGameTests {
         helper.assertTrue(other.build().getAmpMultiplier() == 0.0, "Spells from other casters must not be amplified");
         helper.assertTrue(com.hollingsworth.arsnouveau.api.registry.SpellCasterRegistry.from(staff).getMaxSlots() == 5, "The staff must have 5 slots");
         helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ batch 3
+
+    @GameTest(template = ARENA, timeoutTicks = 120)
+    public static void anvilDropCrushes(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Husk victim = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(4, 1, 4));
+        var style = com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.ANVIL_DROP);
+        Phenomena.add(new com.soulinchains.arcaneartifacts.phenomena.AnvilDrop(level, java.util.UUID.randomUUID(), victim.position(),
+                60f, 0, 1f, style.main, style.impact));
+        helper.succeedWhen(() -> helper.assertTrue(!victim.isAlive(), "The anvil has not crushed the husk yet"));
+    }
+
+    @GameTest(template = ARENA)
+    public static void wellFedKeepsHungerFull(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        player.getFoodData().setFoodLevel(4);
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(com.soulinchains.arcaneartifacts.registry.ModEffects.WELL_FED, 200));
+        helper.succeedWhen(() -> {
+            player.tick();
+            helper.assertTrue(player.getFoodData().getFoodLevel() == 20, "Hunger is " + player.getFoodData().getFoodLevel());
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void swornCompanionsAreAllies(GameTestHelper helper) {
+        Player first = player(helper, 3.5, 1, 3.5);
+        Player second = player(helper, 5.5, 1, 5.5);
+        Player stranger = player(helper, 6.5, 1, 6.5);
+        var bond = new com.soulinchains.arcaneartifacts.team.TeamBond(java.util.UUID.randomUUID(), "Test company");
+        ItemStack hearts = new ItemStack(ModItems.HEART_CHARM.get());
+        hearts.set(com.soulinchains.arcaneartifacts.registry.ModComponents.TEAM_BOND, bond);
+        ItemStack spades = new ItemStack(ModItems.SPADE_CHARM.get());
+        spades.set(com.soulinchains.arcaneartifacts.registry.ModComponents.TEAM_BOND, bond);
+        CuriosApi.getCuriosInventory(first).orElseThrow().setEquippedCurio("charm", 0, hearts);
+        CuriosApi.getCuriosInventory(second).orElseThrow().setEquippedCurio("charm", 0, spades);
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.team.TeamHandler.sworn(first, second), "Sworn companions are not recognised");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.util.Allies.areAllied(first, second), "Sworn companions must be allies");
+            helper.assertTrue(!com.soulinchains.arcaneartifacts.team.TeamHandler.sworn(first, stranger), "A stranger must not be sworn");
+            helper.succeed();
+        });
     }
 }

@@ -1,6 +1,6 @@
 {
   "type": "ars_nouveau:glyph",
-  "exp": 160,
+  "exp": 350,
   "inputs": [
     {
       "item": "ars_nouveau:fire_essence"
@@ -16,6 +16,12 @@
     },
     {
       "item": "minecraft:blaze_rod"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_block"
+    },
+    {
+      "item": "minecraft:netherite_scrap"
     }
   ],
   "output": {

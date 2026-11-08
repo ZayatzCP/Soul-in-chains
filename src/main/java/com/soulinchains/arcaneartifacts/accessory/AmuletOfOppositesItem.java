@@ -46,14 +46,47 @@ public class AmuletOfOppositesItem extends ArcaneAccessoryItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        toggle(player, stack);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    /** Flips the polarity of an amulet (right-click in hand, or the toggle key for the worn one). */
+    public static void toggle(Player player, ItemStack stack) {
+        Level level = player.level();
         boolean repel = !isRepelling(stack);
         stack.set(ModComponents.REPELLING, repel);
-        level.playSound(player, player.blockPosition(), repel ? SoundEvents.AMETHYST_BLOCK_BREAK : SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, repel ? 0.6f : 1.4f);
+        level.playSound(level.isClientSide ? player : null, player.blockPosition(), repel ? SoundEvents.AMETHYST_BLOCK_BREAK : SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, repel ? 0.6f : 1.4f);
         if (!level.isClientSide) {
             player.displayClientMessage(Component.translatable(repel ? "arcane_artifacts.amulet.repel" : "arcane_artifacts.amulet.attract")
                     .withStyle(repel ? ChatFormatting.RED : ChatFormatting.AQUA), true);
         }
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    /** Client to server: flip the worn (or held) amulet. */
+    public record TogglePayload() implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+        public static final Type<TogglePayload> TYPE = new Type<>(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id("toggle_amulet"));
+        public static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, TogglePayload> STREAM_CODEC =
+                net.minecraft.network.codec.StreamCodec.unit(new TogglePayload());
+
+        @Override
+        public Type<? extends net.minecraft.network.protocol.common.custom.CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public static void handleToggle(net.neoforged.neoforge.network.handling.IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            ItemStack stack = com.soulinchains.arcaneartifacts.util.CurioHelper
+                    .findEquipped(player, com.soulinchains.arcaneartifacts.registry.ModItems.AMULET_OF_OPPOSITES.get())
+                    .orElseGet(() -> player.getMainHandItem().getItem() instanceof AmuletOfOppositesItem ? player.getMainHandItem()
+                            : player.getOffhandItem().getItem() instanceof AmuletOfOppositesItem ? player.getOffhandItem() : ItemStack.EMPTY);
+            if (stack.isEmpty()) {
+                player.displayClientMessage(Component.translatable("arcane_artifacts.amulet.none").withStyle(ChatFormatting.GRAY), true);
+                return;
+            }
+            toggle(player, stack);
+        });
     }
 
     @Override

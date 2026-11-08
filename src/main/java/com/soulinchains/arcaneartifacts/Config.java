@@ -68,6 +68,9 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue METEOR_DAMAGE;
     public static final ModConfigSpec.DoubleValue TIME_WARP_RADIUS;
     public static final ModConfigSpec.IntValue TIME_WARP_SECONDS;
+    public static final ModConfigSpec.DoubleValue ANVIL_DAMAGE;
+    public static final ModConfigSpec.DoubleValue ANVIL_HEAVY_DAMAGE;
+    public static final ModConfigSpec.IntValue SATIETY_SECONDS;
 
     // Research
     public static final ModConfigSpec.BooleanValue RESEARCH_GATES_GLYPHS;
@@ -160,6 +163,9 @@ public final class Config {
         METEOR_DAMAGE = b.defineInRange("meteor_damage", 6.0, 0.0, 1000.0);
         TIME_WARP_RADIUS = b.defineInRange("time_warp_radius", 6.0, 1.0, 64.0);
         TIME_WARP_SECONDS = b.defineInRange("time_warp_seconds", 6, 1, 600);
+        ANVIL_DAMAGE = b.defineInRange("anvil_damage", 60.0, 0.0, 10000.0);
+        ANVIL_HEAVY_DAMAGE = b.comment("Anvil Drop damage with Amplify.").defineInRange("anvil_heavy_damage", 120.0, 0.0, 10000.0);
+        SATIETY_SECONDS = b.defineInRange("satiety_seconds", 60, 10, 36000);
         b.pop();
 
         b.push("research");

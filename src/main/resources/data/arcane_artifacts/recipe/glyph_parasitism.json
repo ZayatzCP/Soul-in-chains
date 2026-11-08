@@ -1,6 +1,6 @@
 {
   "type": "ars_nouveau:glyph",
-  "exp": 160,
+  "exp": 350,
   "inputs": [
     {
       "item": "ars_nouveau:abjuration_essence"
@@ -19,6 +19,9 @@
     },
     {
       "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_block"
     }
   ],
   "output": {

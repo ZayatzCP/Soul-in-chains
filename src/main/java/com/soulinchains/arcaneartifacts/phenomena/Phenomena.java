@@ -31,6 +31,10 @@ public final class Phenomena {
         UUID owner();
 
         boolean tick();
+
+        /** Called when the phenomenon is cancelled early (Counterspell): clean up anything it spawned. */
+        default void cancelled() {
+        }
     }
 
     public static void add(Phenomenon phenomenon) {
@@ -44,20 +48,36 @@ public final class Phenomena {
     /** Removes the phenomena of a caster (Counterspell). Returns how many were removed. */
     public static int cancelOwnedBy(UUID owner) {
         int before = ACTIVE.size();
-        ACTIVE.removeIf(p -> owner.equals(p.owner()));
+        ACTIVE.removeIf(p -> {
+            boolean hit = owner.equals(p.owner());
+            if (hit) p.cancelled();
+            return hit;
+        });
         return before - ACTIVE.size();
     }
 
     /** Removes every phenomenon centred within {@code radius} of the point (Counterspell on a block). */
     public static int cancelNear(ServerLevel level, net.minecraft.world.phys.Vec3 point, double radius) {
         int before = ACTIVE.size();
-        ACTIVE.removeIf(p -> p.level() == level && p instanceof Located located && located.center().distanceToSqr(point) <= radius * radius);
+        ACTIVE.removeIf(p -> {
+            boolean hit = p.level() == level && p instanceof Located located && located.center().distanceToSqr(point) <= radius * radius;
+            if (hit) p.cancelled();
+            return hit;
+        });
         return before - ACTIVE.size();
     }
 
     /** A phenomenon with a position. */
     public interface Located {
         net.minecraft.world.phys.Vec3 center();
+    }
+
+    /** Leftover visuals of a phenomenon that was running when the world was saved are dropped on load. */
+    @SubscribeEvent
+    public static void onEntityJoin(net.neoforged.neoforge.event.entity.EntityJoinLevelEvent event) {
+        if (event.loadedFromDisk() && event.getEntity().getTags().contains(AnvilDrop.TAG)) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent

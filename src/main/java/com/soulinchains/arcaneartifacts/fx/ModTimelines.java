@@ -52,6 +52,11 @@ public final class ModTimelines {
     public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> WEATHER_SHIFT =
             register("weather_shift", EffectWeatherShift.INSTANCE, TimelineOption.IMPACT, ModTimelines::impactOptions, BurstMotion::new, false);
 
+    public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> ANVIL_DROP =
+            register("anvil_drop", com.soulinchains.arcaneartifacts.glyph.EffectAnvilDrop.INSTANCE, TimelineOption.TRAIL, ModTimelines::trailOptions, TrailMotion::new, true);
+    public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> SATIETY =
+            register("satiety", com.soulinchains.arcaneartifacts.glyph.EffectSatiety.INSTANCE, TimelineOption.IMPACT, ModTimelines::impactOptions, BurstMotion::new, false);
+
     private ModTimelines() {
     }
 
@@ -61,7 +66,9 @@ public final class ModTimelines {
         AtomicReference<DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>>> ref = new AtomicReference<>();
         GlyphTimeline.Spec spec = new GlyphTimeline.Spec(() -> ref.get().get(), mainName, options, mainDefault, impact);
         DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> holder = REGISTER.register(name,
-                () -> new SimpleParticleTimelineType<>(part, GlyphTimeline.codec(spec), GlyphTimeline.streamCodec(spec), () -> new GlyphTimeline(spec)));
+                () -> new SimpleParticleTimelineType<>(part, GlyphTimeline.codec(spec), GlyphTimeline.streamCodec(spec), () -> new GlyphTimeline(spec),
+                        (timeline, level) -> new com.hollingsworth.arsnouveau.client.particle.timeline_previews.EmitterTimelinePreview(
+                                timeline.main, impact ? timeline.impact : null, level, new net.minecraft.world.phys.Vec3(0, -0.5, 0), 40, 30f, 3, 3)));
         ref.set(holder);
         return holder;
     }

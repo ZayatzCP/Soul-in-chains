@@ -110,6 +110,8 @@ Curios в папку `mods` клиента **и** сервера.
 | Counterspell (Отмена) | эффект | II | 60 |
 | Meteor Shower (Метеоритный дождь) | эффект | III | 150 |
 | Time Warp (Замедление времени) | эффект | II | 60 |
+| Anvil Drop (Падение наковальни) | эффект | III | 350 |
+| Satiety (Сытость) | эффект | II | 60 |
 
 * **Beam** — мгновенный луч на 24 блока (+8 за Ускорение), не проходит сквозь
   блоки, срабатывает на первом существе (Пронзание — ещё одно) или на блоке.
@@ -123,6 +125,11 @@ Curios в папку `mods` клиента **и** сервера.
 * **Meteor Shower** — 5 метеоритов вокруг цели, по 6 урона и поджог; блоки не ломаются.
 * **Time Warp** — Замедление IV и Усталость всем, кроме заклинателя, в радиусе 6
   блоков на 6 с; летящие снаряды теряют 3/4 скорости.
+* **Anvil Drop** — наковальня падает с высоты 14 блоков: 60 урона (Усиление — очень
+  тяжёлая, 120). Расширение: наковальня больше и бьёт по области как булава (половина
+  урона, отбрасывание). Блоки не ставятся. Исследование «Сингулярность».
+* **Satiety** — эффект «Сытость» на 60 с: голод и насыщение всё время полные.
+  Исследование «Жизненная связь».
 
 Новые глифы открываются исследованиями «Сингулярность» (Луч, Чёрная дыра,
 Торнадо, Замедление времени), «Небосвод» (Смена погоды, Метеоритный дождь) и
@@ -206,6 +213,25 @@ Curios в папку `mods` клиента **и** сервера.
 времени, Отмена, Смена погоды, Паразитизм) свой таймлайн частиц Ars: его можно перенастроить в
 редакторе стиля заклинания в книге Ars. Площадные глифы помечают область как Burst.
 
+## Братство четырёх мастей
+
+* **Свиток клятвы помощи** (верстак: `NGN / PWP / NSN` — самородки розового золота, золото,
+  старый пергамент, книга с пером, Source Gem). Первое использование основывает братство
+  (имя — имя свитка с наковальни или «Братство <игрок>»). С оберегом во второй руке —
+  оберег навсегда присягает братству.
+* **Обереги Червей / Бубен / Треф / Пик** (слот `charm`, Чародейский аппарат: бумага +
+  2 розовых золота, Source Gem, Abjuration Essence и предметы масти, 3000). Присягнувший
+  оберег даёт +2 сердца / +2 удачи / +1,5 урона / +2 брони. Носители оберегов одного
+  братства не наносят друг другу урон (и питомцам друг друга), глифы считают их союзниками.
+  Носить можно только один оберег масти. Исследование «Жизненная связь».
+
+## Прочее
+
+* `/arcane_artifacts unlock_all [игроки]` (уровень прав 2) — все исследования и все глифы сразу.
+* Клавиша **N** переворачивает надетый Амулет противоположностей (меняется в Управлении).
+* Колчан помечен тегами слотов `quiver`, `quivers`, `arrows`, `arrow`, `ammo`, `ammunition`.
+* Блок и самородок розового золота (9 ↔ 1), блок в тегах `c:storage_blocks/rose_gold`, годится для маяка.
+
 ## Крафт
 
 ### Розовое золото
@@ -216,8 +242,8 @@ Curios в папку `mods` клиента **и** сервера.
 ### Аксессуары — Чародейский аппарат
 | Аксессуар | Центр | Пьедесталы | Источник |
 |---|---|---|---|
-| Венок манипуляции | Алмазный шлем | 2 розовых золота, 2 блока Source Gem, 2 звезды Незера, Wilden Tribute, Magebloom Fiber, Air Essence, Abjuration Essence, Wilden Horn, Wilden Wing | 15 000 |
-| Фокусирующие ботинки | Алмазные ботинки | 2 розовых золота, 2 Magebloom Fiber, Air Essence, Source Gem, Spell Parchment, Abjuration Essence | 6 000 |
+| Венок манипуляции | Незеритовый шлем | 2 блока розового золота, самородок розового золота, 2 блока Magebloom, блок Source Gem, 2 звезды Незера, Air Essence, Abjuration Essence, Wilden Horn, Wilden Wing | 15 000 |
+| Фокусирующие ботинки | Незеритовые ботинки | 2 розовых золота, 2 Magebloom Fiber, Air Essence, Source Gem, Spell Parchment, Abjuration Essence | 6 000 |
 | Фокусирующие перчатки | Arcane Core | 3 розовых золота, 2 Source Gem, 2 Spell Parchment, Magebloom Fiber, Manipulation Essence, Wilden Spike | 12 000 |
 | Перстень обратного импульса | Золотой слиток | Розовое золото, 2 Source Gem, Abjuration Essence, Manipulation Essence, Redstone, Magebloom Fiber | 7 000 |
 | Мантия зеркального отражения | Фантомная мембрана | 4 розовых золота, 2 Source Gem, 2 Abjuration Essence, Wilden Wing, Spell Parchment, Magebloom Fiber, Air Essence | 18 000 |
@@ -228,8 +254,8 @@ Curios в папку `mods` клиента **и** сервера.
 ### Старый пергамент и Тайный блокнот исследователя
 * **Старый пергамент** — Камера впитывания: обычная бумага, 500 Источника, без
   пьедесталов (как осколок аметиста → Исходный самоцвет).
-* **Тайный блокнот исследователя** — верстак: 8 старых пергаментов и кожа в
-  правом верхнем углу (`PPL / PPP / PPP`). ПКМ открывает записи волшебника «???»:
+* **Тайный блокнот исследователя** — верстак: 6 старых пергаментов, кожа и 2
+  самородка розового золота в первом столбце (`NPP / LPP / NPP`). ПКМ открывает записи волшебника «???»:
   описания, лор и рецепты всех предметов и глифов мода. Это отдельная книга со
   своим интерфейсом, она не зависит от книги Ars (Засаленного блокнота).
 
@@ -239,18 +265,20 @@ Curios в папку `mods` клиента **и** сервера.
 ### Глифы — Стол писаря
 | Глиф | Тир | Опыт | Ингредиенты |
 |---|---|---|---|
-| Arcane Missile | II | 55 | Air Essence, Manipulation Essence, око Края, стрела |
-| Arcane Mark | I | 27 | Source Gem, светящийся чернильный мешок, осколок аметиста |
-| Parasitism | III | 160 | Abjuration Essence, Manipulation Essence, Wilden Horn, роза визера, слеза гаста, эхо-осколок |
-| Shrapnel | II | 55 | 2 Wilden Spike, розовое золото, аметистовая друза |
-| Pursuit | II | 55 | Air Essence, Wilden Wing, око Края, кроличья лапка |
-| Beam | II | 55 | Air Essence, подзорная труба, осколок аметиста, светопыль |
-| Black Hole | III | 160 | Manipulation Essence, плачущий обсидиан, око Края, эхо-осколок, обсидиан |
-| Tornado | II | 55 | 2 Air Essence, перо, фантомная мембрана |
-| Weather Shift | II | 55 | Air Essence, Water Essence, громоотвод, подсолнух |
-| Counterspell | II | 55 | Abjuration Essence, ведро молока, осколок аметиста, мокрая губка |
-| Meteor Shower | III | 160 | Fire Essence, Earth Essence, огненный заряд, магмовый блок, огненный стержень |
-| Time Warp | II | 55 | Manipulation Essence, часы, паутина, бутылочка мёда |
+| Arcane Missile | II | 160 | air essence, manipulation essence, ender eye, arrow, rose gold ingot, blaze powder |
+| Arcane Mark | I | 55 | source gem, glow ink sac, amethyst shard, rose gold nugget, rose gold nugget |
+| Parasitism | III | 350 | abjuration essence, manipulation essence, wilden horn, wither rose, ghast tear, echo shard, rose gold block |
+| Shrapnel | II | 160 | wilden spike, wilden spike, rose gold ingot, rose gold ingot, amethyst cluster, tnt |
+| Pursuit | II | 160 | air essence, wilden wing, ender eye, rabbit foot, rose gold ingot, compass |
+| Beam | II | 160 | air essence, spyglass, amethyst shard, glowstone, rose gold ingot, end rod |
+| Black Hole | III | 350 | manipulation essence, crying obsidian, ender eye, echo shard, obsidian, rose gold block, nether star |
+| Tornado | II | 160 | air essence, air essence, feather, phantom membrane, rose gold ingot, breeze rod |
+| Weather Shift | II | 160 | air essence, water essence, lightning rod, sunflower, rose gold ingot, trident |
+| Counterspell | II | 160 | abjuration essence, milk bucket, amethyst shard, wet sponge, rose gold ingot, source gem |
+| Meteor Shower | III | 350 | fire essence, earth essence, fire charge, magma block, blaze rod, rose gold block, netherite scrap |
+| Time Warp | II | 160 | manipulation essence, clock, cobweb, honey bottle, rose gold ingot, recovery compass |
+| Anvil Drop | III | 350 | earth essence, manipulation essence, anvil, anvil, rose gold block, heavy core, iron block |
+| Satiety | II | 160 | conjuration essence, golden carrot, cake, honey bottle, rose gold ingot, rabbit stew |
 
 ### Материалы Ars Nouveau (стандартные рецепты, сверены с исходниками 5.13.2)
 * **Source Gem** — Камера впитывания: осколок аметиста или лазурит, 500 Источника.

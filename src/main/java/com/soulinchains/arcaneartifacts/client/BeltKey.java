@@ -19,6 +19,10 @@ public final class BeltKey {
     public static final KeyMapping KEY = new KeyMapping("key.arcane_artifacts.open_belt", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.categories.arcane_artifacts");
 
+    /** Flips the polarity of the worn Amulet of Opposites (N by default, rebindable). */
+    public static final KeyMapping AMULET_KEY = new KeyMapping("key.arcane_artifacts.toggle_amulet", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.categories.arcane_artifacts");
+
     private BeltKey() {
     }
 
@@ -28,6 +32,11 @@ public final class BeltKey {
         while (KEY.consumeClick()) {
             if (minecraft.player != null && minecraft.screen == null) {
                 PacketDistributor.sendToServer(new BeltRegistry.OpenBeltPayload());
+            }
+        }
+        while (AMULET_KEY.consumeClick()) {
+            if (minecraft.player != null && minecraft.screen == null) {
+                PacketDistributor.sendToServer(new com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.TogglePayload());
             }
         }
     }

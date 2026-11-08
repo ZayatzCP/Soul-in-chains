@@ -63,7 +63,8 @@
     "arcane_artifacts:glyph_beam",
     "arcane_artifacts:glyph_black_hole",
     "arcane_artifacts:glyph_tornado",
-    "arcane_artifacts:glyph_time_warp"
+    "arcane_artifacts:glyph_time_warp",
+    "arcane_artifacts:glyph_anvil_drop"
   ],
   "requires_glyphs": [
     "ars_nouveau:glyph_pull"
