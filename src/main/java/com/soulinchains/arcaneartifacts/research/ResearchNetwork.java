@@ -58,6 +58,9 @@ public final class ResearchNetwork {
                 (payload, context) -> ClientResearch.acceptDefinitions(payload.definitions()));
         registrar.playToClient(ProgressPayload.TYPE, ProgressPayload.STREAM_CODEC,
                 (payload, context) -> ClientResearch.acceptProgress(payload.progress()));
+        registrar.playToServer(com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBeltPayload.TYPE,
+                com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBeltPayload.STREAM_CODEC,
+                (payload, context) -> com.soulinchains.arcaneartifacts.belt.BeltRegistry.handleOpen(context));
     }
 
     public static void sendDefinitions(ServerPlayer player) {

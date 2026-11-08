@@ -1,6 +1,8 @@
 package com.soulinchains.arcaneartifacts.phenomena;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.hollingsworth.arsnouveau.api.particle.ParticleEmitter;
+import com.hollingsworth.arsnouveau.api.particle.timelines.TimelineEntryData;
+import com.soulinchains.arcaneartifacts.fx.Fx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,10 +32,13 @@ public final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
     private final Vec3 velocity;
     private final float damage;
     private final double burstRadius;
+    private final TimelineEntryData impact;
+    private final ParticleEmitter trail;
     private int delay;
     private int life = 80;
 
-    public Meteor(ServerLevel level, UUID owner, Vec3 target, int delay, float damage, double burstRadius, double height) {
+    public Meteor(ServerLevel level, UUID owner, Vec3 target, int delay, float damage, double burstRadius, double height,
+                  TimelineEntryData trailStyle, TimelineEntryData impactStyle) {
         this.level = level;
         this.owner = owner;
         this.delay = delay;
@@ -42,6 +47,8 @@ public final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
         Vec3 drift = new Vec3(level.random.nextGaussian() * 0.15, -1, level.random.nextGaussian() * 0.15).normalize();
         this.velocity = drift.scale(SPEED);
         this.position = target.subtract(drift.scale(height));
+        this.impact = impactStyle;
+        this.trail = Fx.follow(trailStyle, () -> this.position);
     }
 
     @Override
@@ -71,8 +78,7 @@ public final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
         }
         Vec3 next = position.add(velocity);
         BlockHitResult hit = level.clip(new ClipContext(position, next, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty()));
-        level.sendParticles(ParticleTypes.FLAME, position.x, position.y, position.z, 4, 0.2, 0.2, 0.2, 0.02);
-        level.sendParticles(ParticleTypes.LARGE_SMOKE, position.x, position.y, position.z, 2, 0.1, 0.1, 0.1, 0.0);
+        trail.tick(level);
         if (hit.getType() != HitResult.Type.MISS || next.y < level.getMinBuildHeight()) {
             burst(hit.getType() != HitResult.Type.MISS ? hit.getLocation() : next);
             return false;
@@ -82,8 +88,7 @@ public final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
     }
 
     private void burst(Vec3 at) {
-        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-        level.sendParticles(ParticleTypes.LAVA, at.x, at.y, at.z, 12, 0.5, 0.3, 0.5, 0.1);
+        Fx.area(level, impact, at, burstRadius);
         level.playSound(null, at.x, at.y, at.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 1.2f, 0.9f + level.random.nextFloat() * 0.2f);
         Entity caster = level.getEntity(owner);
         DamageSource source = caster != null ? level.damageSources().indirectMagic(caster, caster) : level.damageSources().magic();

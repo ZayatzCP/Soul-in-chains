@@ -25,6 +25,10 @@ public final class ModCreativeTab {
                 output.accept(ModItems.FOCUSING_GLOVES.get());
                 output.accept(ModItems.RING_OF_REVERSAL.get());
                 output.accept(ModItems.MANTLE_OF_REFLECTION.get());
+                output.accept(ModItems.SPELL_STAFF.get());
+                output.accept(ModItems.BOTTOMLESS_BELT.get());
+                output.accept(ModItems.AMULET_OF_OPPOSITES.get());
+                output.accept(ModItems.SPELL_QUIVER.get());
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
                     if (part.glyphItem != null) {
                         output.accept(part.glyphItem);

@@ -43,11 +43,16 @@ final class NotebookContent {
         entries.add(itemEntry(font, ModItems.OLD_PARCHMENT.get(), 1));
         entries.add(itemEntry(font, ModItems.RESEARCHER_NOTEBOOK.get(), 1));
         entries.add(itemEntry(font, ModItems.ROSE_GOLD_INGOT.get(), 1));
-        entries.add(itemEntry(font, ModItems.WREATH_OF_MANIPULATION.get(), 2));
-        entries.add(itemEntry(font, ModItems.FOCUSING_BOOTS.get(), 2));
-        entries.add(itemEntry(font, ModItems.FOCUSING_GLOVES.get(), 2));
-        entries.add(itemEntry(font, ModItems.RING_OF_REVERSAL.get(), 2));
-        entries.add(itemEntry(font, ModItems.MANTLE_OF_REFLECTION.get(), 2));
+        Set<ResourceLocation> lockedItems = ArcaneDocumentation.lockedItems();
+        entries.add(gatedItemEntry(font, ModItems.WREATH_OF_MANIPULATION.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.FOCUSING_BOOTS.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.FOCUSING_GLOVES.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.RING_OF_REVERSAL.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MANTLE_OF_REFLECTION.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.SPELL_STAFF.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.BOTTOMLESS_BELT.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.AMULET_OF_OPPOSITES.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.SPELL_QUIVER.get(), 2, lockedItems));
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
@@ -91,6 +96,18 @@ final class NotebookContent {
         return new NotebookEntry(stack.getHoverName(), stack, result);
     }
 
+    /** Like {@link #itemEntry}, but an unreadable "???" page until the item's research is formulated. */
+    private static NotebookEntry gatedItemEntry(Font font, ItemLike item, int pages, Set<ResourceLocation> locked) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(item.asItem());
+        if (!locked.contains(id)) {
+            return itemEntry(font, item, pages);
+        }
+        Component mystery = Component.literal("???");
+        List<Paragraph> text = List.of(new Paragraph(
+                Component.translatable("arcane_artifacts.book.locked_item", ArcaneDocumentation.researchForItem(id)), ArcaneNotebookScreen.LORE_COLOR));
+        return new NotebookEntry(mystery, new ItemStack(net.minecraft.world.item.Items.PAPER), paginate(font, mystery, text));
+    }
+
     private static NotebookEntry glyphEntry(Font font, AbstractSpellPart part, boolean locked) {
         ResourceLocation id = part.getRegistryName();
         if (locked) {
@@ -105,9 +122,30 @@ final class NotebookContent {
                 new Paragraph(part.getBookDescLang(), ArcaneNotebookScreen.INK_COLOR),
                 new Paragraph(Component.translatable("arcane_artifacts.glyph_doc." + id.getPath()), ArcaneNotebookScreen.INK_COLOR),
                 new Paragraph(Component.translatable("arcane_artifacts.glyph_joke." + id.getPath()).withStyle(ChatFormatting.ITALIC), ArcaneNotebookScreen.LORE_COLOR));
+        paragraphs = new ArrayList<>(paragraphs);
+        paragraphs.addAll(augmentParagraphs(part));
         List<NotebookPage> pages = paginate(font, glyph.getHoverName(), paragraphs);
         pages.add(new NotebookPage.Recipe(ArcaneArtifacts.id(id.getPath())));
         return new NotebookEntry(glyph.getHoverName(), glyph, pages);
+    }
+
+    /** "Augments:" followed by every augment the glyph accepts and what it does to this glyph. */
+    private static List<Paragraph> augmentParagraphs(AbstractSpellPart part) {
+        List<Paragraph> result = new ArrayList<>();
+        var augments = new ArrayList<>(part.compatibleAugments);
+        if (augments.isEmpty()) {
+            return result;
+        }
+        augments.sort(java.util.Comparator.comparing(a -> a.getRegistryName().toString()));
+        result.add(new Paragraph(Component.translatable("arcane_artifacts.notebook.augments").withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
+        for (var augment : augments) {
+            String key = "ars_nouveau.augment_desc." + part.getRegistryName().getPath() + "_" + augment.getRegistryName().getPath();
+            Component desc = net.minecraft.client.resources.language.I18n.exists(key)
+                    ? Component.translatable(key) : augment.getBookDescLang();
+            result.add(new Paragraph(Component.literal("• ").append(Component.translatable(augment.getLocalizationKey()).withStyle(ChatFormatting.BOLD))
+                    .append(" — ").append(desc), ArcaneNotebookScreen.INK_COLOR));
+        }
+        return result;
     }
 
     /** Wraps the paragraphs to the page width and splits them into pages; the first page carries the title. */

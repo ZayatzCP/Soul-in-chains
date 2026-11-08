@@ -51,6 +51,11 @@ public final class WornModels {
                 worn(BodyPart.LEFT_ARM, "mantle_of_reflection_left_sleeve")));
     }
 
+    /** Focusing Gloves are held, not worn: while held, one glove is drawn on each arm (see GlovesRenderer). */
+    public static final List<Attachment> GLOVES = List.of(
+            worn(BodyPart.RIGHT_ARM, "focusing_gloves_right"),
+            worn(BodyPart.LEFT_ARM, "focusing_gloves_left"));
+
     private WornModels() {
     }
 

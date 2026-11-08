@@ -10,7 +10,6 @@ import com.soulinchains.arcaneartifacts.registry.ModDamageTypes;
 import com.soulinchains.arcaneartifacts.registry.ModEffects;
 import com.soulinchains.arcaneartifacts.registry.ModTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -33,7 +32,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.joml.Vector3f;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -69,14 +67,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
 public final class ParasitismManager {
-    private static final Vector3f LINK_COLOR = new Vector3f(0.37f, 0.06f, 0.23f);
-    private static final Vector3f LINK_GLOW = new Vector3f(0.18f, 0.84f, 0.71f);
 
     /** caster UUID -> link. Only touched from the server thread. */
     private static final Map<UUID, Link> LINKS = new ConcurrentHashMap<>();
     private static boolean redirecting;
 
-    private record Link(UUID caster, UUID host, ResourceKey<Level> dimension, long expiresAt) {
+    private record Link(UUID caster, UUID host, ResourceKey<Level> dimension, long expiresAt,
+                        com.hollingsworth.arsnouveau.api.particle.timelines.TimelineEntryData style) {
     }
 
     private ParasitismManager() {
@@ -92,6 +89,12 @@ public final class ParasitismManager {
 
     /** Creates a link from {@code caster} to {@code host} if every rule allows it. */
     public static boolean tryLink(ServerLevel level, LivingEntity caster, LivingEntity host) {
+        return tryLink(level, caster, host, com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.PARASITISM).main);
+    }
+
+    /** Same, with the tether drawn in the given Ars particle style (the casting spell's Parasitism timeline). */
+    public static boolean tryLink(ServerLevel level, LivingEntity caster, LivingEntity host,
+                                  com.hollingsworth.arsnouveau.api.particle.timelines.TimelineEntryData style) {
         if (host == caster || !host.isAlive() || !caster.isAlive() || host instanceof ArmorStand || host.level() != caster.level()) {
             return false;
         }
@@ -106,7 +109,7 @@ public final class ParasitismManager {
         long now = level.getGameTime();
         int duration = Config.PARASITISM_DURATION_TICKS.get();
         int cooldown = Config.PARASITISM_COOLDOWN_TICKS.get();
-        LINKS.put(caster.getUUID(), new Link(caster.getUUID(), host.getUUID(), level.dimension(), now + duration));
+        LINKS.put(caster.getUUID(), new Link(caster.getUUID(), host.getUUID(), level.dimension(), now + duration, style));
         caster.setData(ModAttachments.PARASITISM_COOLDOWN_UNTIL, now + cooldown);
 
         host.addEffect(new MobEffectInstance(ModEffects.PARASITE_HOST, duration, 0, false, true, true), caster);
@@ -227,8 +230,8 @@ public final class ParasitismManager {
                 }
                 continue;
             }
-            if (level.getGameTime() % 3 == 0) {
-                drawLink(level, caster, host);
+            if (level.getGameTime() % 4 == 0) {
+                drawLink(level, caster, host, link.style());
             }
         }
     }
@@ -250,18 +253,12 @@ public final class ParasitismManager {
         }
     }
 
-    /** A dust-particle tether between caster and host, sent to every nearby player. */
-    private static void drawLink(ServerLevel level, LivingEntity caster, LivingEntity host) {
+    /** A tether between caster and host, drawn with the spell's Ars particle style and sent to nearby players. */
+    private static void drawLink(ServerLevel level, LivingEntity caster, LivingEntity host,
+                                 com.hollingsworth.arsnouveau.api.particle.timelines.TimelineEntryData style) {
         Vec3 from = caster.position().add(0, caster.getBbHeight() * 0.6, 0);
         Vec3 to = host.position().add(0, host.getBbHeight() * 0.6, 0);
-        Vec3 delta = to.subtract(from);
-        int steps = Math.min(40, Math.max(4, (int) (delta.length() * 2)));
-        long phase = level.getGameTime() / 3;
-        for (int i = 0; i <= steps; i++) {
-            Vec3 p = from.add(delta.scale(i / (double) steps));
-            boolean glow = (i + phase) % 5 == 0;
-            level.sendParticles(new DustParticleOptions(glow ? LINK_GLOW : LINK_COLOR, glow ? 1.0f : 0.7f), p.x, p.y, p.z, 1, 0, 0, 0, 0);
-        }
+        com.soulinchains.arcaneartifacts.fx.Fx.line(level, style, from, to);
     }
 
     @SubscribeEvent

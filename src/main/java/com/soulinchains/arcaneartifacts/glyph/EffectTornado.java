@@ -39,7 +39,9 @@ public class EffectTornado extends AreaEffect {
         double radius = Math.max(2.0, Config.TORNADO_RADIUS.get() + 1.5 * stats.getAoeMultiplier());
         int duration = Math.max(20, Config.TORNADO_SECONDS.get() * 20 + stats.getDurationInTicks() * 2);
         double strength = Math.max(0.2, 1.0 + 0.25 * stats.getAmpMultiplier());
-        Phenomena.add(new Vortex(level, shooter.getUUID(), Vortex.Kind.TORNADO, base, radius, duration, 0f, strength));
+        var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO);
+        Phenomena.add(new Vortex(level, shooter.getUUID(), Vortex.Kind.TORNADO, base, radius, duration, 0f, strength, style.main));
+        com.soulinchains.arcaneartifacts.fx.Fx.area(level, style.impact, base, radius);
         level.playSound(null, base.x, base.y, base.z, net.minecraft.sounds.SoundEvents.ELYTRA_FLYING, net.minecraft.sounds.SoundSource.PLAYERS, 0.8f, 1.4f);
     }
 

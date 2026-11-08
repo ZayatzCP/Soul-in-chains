@@ -15,7 +15,6 @@ import com.soulinchains.arcaneartifacts.Config;
 import com.soulinchains.arcaneartifacts.accessory.GlovesHandler;
 import com.soulinchains.arcaneartifacts.phenomena.Phenomena;
 import com.soulinchains.arcaneartifacts.registry.ModEffects;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -50,6 +49,7 @@ public class EffectCounterspell extends AreaEffect {
     @Override
     protected void resolveAt(ServerLevel level, Vec3 point, @Nullable Entity target, LivingEntity shooter, SpellStats stats, SpellContext context) {
         int undone;
+        var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.COUNTERSPELL).main;
         if (target instanceof LivingEntity caster) {
             undone = counter(level, caster.getUUID(), caster.position());
             int ticks = Math.max(20, Config.COUNTERSPELL_SILENCE_SECONDS.get() * 20 + stats.getDurationInTicks());
@@ -57,8 +57,11 @@ public class EffectCounterspell extends AreaEffect {
         } else {
             double radius = Math.max(1.0, Config.COUNTERSPELL_RADIUS.get() + 2.0 * stats.getAoeMultiplier());
             undone = counterNear(level, point, radius);
+            com.soulinchains.arcaneartifacts.fx.Fx.area(level, style, point, radius);
         }
-        level.sendParticles(ParticleTypes.SMOKE, point.x, point.y, point.z, 20 + undone * 5, 0.5, 0.5, 0.5, 0.02);
+        if (target != null) {
+            com.soulinchains.arcaneartifacts.fx.Fx.burst(level, style, point);
+        }
         level.playSound(null, point.x, point.y, point.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.2f);
     }
 

@@ -36,7 +36,8 @@ public class EffectParasitism extends AbstractEffect {
         if (!(level instanceof ServerLevel serverLevel) || !(hit.getEntity() instanceof LivingEntity host)) {
             return;
         }
-        ParasitismManager.tryLink(serverLevel, shooter, host);
+        ParasitismManager.tryLink(serverLevel, shooter, host,
+                com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.PARASITISM).main);
     }
 
     @Override

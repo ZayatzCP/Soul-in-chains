@@ -39,8 +39,8 @@ import java.util.Set;
  */
 public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMenu> {
     private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/gui/research_table.png");
-    private static final int INK = 0x3B2A1A;
-    private static final int FADED = 0x8A7458;
+    private static final int INK = 0x2A1B10;
+    private static final int FADED = 0x6E5A40;
     private static final int RIGHT_X = 186;
     private static final int PAGE_WIDTH = 150;
 
@@ -184,7 +184,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
 
         int y = 53;
         if (state == ResearchState.UNKNOWN) {
-            y = paragraph(g, Component.translatable("arcane_artifacts.research_table.unknown"), x, y, PAGE_WIDTH, FADED, 3);
+            y = paragraph(g, Component.translatable("arcane_artifacts.research_table.unknown"), x, y, PAGE_WIDTH, FADED, 4);
             for (ResourceLocation required : def.requires()) {
                 if (y > 180) break;
                 ResearchState requiredState = stateOf(data, required);
@@ -199,12 +199,12 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                 y = paragraph(g, Component.translatable("arcane_artifacts.research_table.needs_glyph", glyphName(glyph)), x, y, PAGE_WIDTH, color, 2);
             }
         } else {
-            y = paragraph(g, Component.translatable(prefix + ".description"), x, y, PAGE_WIDTH, INK, 3) + 1;
+            y = paragraph(g, Component.translatable(prefix + ".description"), x, y, PAGE_WIDTH, INK, 6) + 2;
             if (!def.unlocks().isEmpty() || !def.unlocksItems().isEmpty()) {
-                y = paragraph(g, unlocksLine(def), x, y, PAGE_WIDTH, 0xA87A1C, 2) + 1;
+                y = paragraph(g, unlocksLine(def), x, y, PAGE_WIDTH, 0x8A5A0C, 3) + 2;
             }
             if (state == ResearchState.DISCOVERED) {
-                y = paragraph(g, Component.translatable("arcane_artifacts.research_table.observe_hint"), x, y, PAGE_WIDTH, FADED, 3);
+                y = paragraph(g, Component.translatable("arcane_artifacts.research_table.observe_hint"), x, y, PAGE_WIDTH, FADED, 4);
             } else {
                 PlayerResearch.Entry entry = data.entry(id);
                 for (ResearchDefinition.ExperimentDefinition experiment : def.experiments()) {
@@ -215,7 +215,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                     y = paragraph(g, line, x, y, PAGE_WIDTH, done ? 0x2E6B3A : INK, 2);
                 }
                 if (state.atLeast(ResearchState.PRINCIPLE) && y < 170) {
-                    y = paragraph(g, Component.translatable(prefix + ".principle").withStyle(ChatFormatting.ITALIC), x, y + 2, PAGE_WIDTH, 0x5B1A8E, 3);
+                    y = paragraph(g, Component.translatable(prefix + ".principle").withStyle(ChatFormatting.ITALIC), x, y + 2, PAGE_WIDTH, 0x5B1A8E, 4);
                 }
             }
             if (state == ResearchState.PRINCIPLE && !def.notesRequired().isEmpty() && y < 186) {
@@ -271,11 +271,11 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
 
     private static int stateColor(ResearchState state) {
         return switch (state) {
-            case UNKNOWN -> 0x9A8C78;
+            case UNKNOWN -> 0x7A6C58;
             case DISCOVERED -> 0x6B4E2A;
             case INVESTIGATING -> 0x1E6E9C;
             case PRINCIPLE -> 0x8A2BD2;
-            case UNLOCKED -> 0xA87A1C;
+            case UNLOCKED -> 0x8A5A0C;
             case RECORDED -> 0x2E6B3A;
         };
     }

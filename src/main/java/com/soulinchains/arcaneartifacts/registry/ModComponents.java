@@ -13,6 +13,16 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RushState>> RUSH_STATE =
             REGISTER.registerComponentType("rush_state", b -> b.persistent(RushState.CODEC).networkSynchronized(RushState.STREAM_CODEC));
 
+    /** The three pouches of the Belt of Bottomless Pouches. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.soulinchains.arcaneartifacts.belt.BeltContents>> BELT_CONTENTS =
+            REGISTER.registerComponentType("belt_contents", b -> b.persistent(com.soulinchains.arcaneartifacts.belt.BeltContents.CODEC)
+                    .networkSynchronized(com.soulinchains.arcaneartifacts.belt.BeltContents.STREAM_CODEC));
+
+    /** Polarity of the Amulet of Opposites: true = repels. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> REPELLING =
+            REGISTER.registerComponentType("repelling", b -> b.persistent(com.mojang.serialization.Codec.BOOL)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.BOOL));
+
     private ModComponents() {
     }
 }

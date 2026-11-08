@@ -1,0 +1,38 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "ars_nouveau:spell_parchment"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:glyph_dampen"
+    },
+    {
+      "item": "ars_nouveau:glyph_dampen"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:bow"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:spell_quiver"
+  },
+  "sourceCost": 6000
+}

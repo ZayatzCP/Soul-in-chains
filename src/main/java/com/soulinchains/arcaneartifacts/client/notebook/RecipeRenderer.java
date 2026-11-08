@@ -59,14 +59,14 @@ final class RecipeRenderer {
             screen.drawCentered(g, Component.translatable("arcane_artifacts.notebook.shapeless"), x, y + 96, ArcaneNotebookScreen.HINT_COLOR);
         } else if (recipe instanceof ImbuementRecipe imbuement) {
             station(g, screen, "ars_nouveau:imbuement_chamber", x, y);
-            circle(g, screen, imbuement.input, imbuement.pedestalItems, cx, y + 64, mouseX, mouseY);
-            output(g, screen, imbuement.output, cx - 9, y + 106, mouseX, mouseY);
-            source(g, screen, imbuement.source, x, y + 132);
+            circle(g, screen, imbuement.input, imbuement.pedestalItems, cx, y + 65, mouseX, mouseY);
+            output(g, screen, imbuement.output, cx - 9, y + 110, mouseX, mouseY);
+            source(g, screen, imbuement.source, x, y + 131);
         } else if (recipe instanceof EnchantingApparatusRecipe apparatus) {
             station(g, screen, "ars_nouveau:enchanting_apparatus", x, y);
-            circle(g, screen, apparatus.reagent(), apparatus.pedestalItems(), cx, y + 64, mouseX, mouseY);
-            output(g, screen, apparatus.result(), cx - 9, y + 106, mouseX, mouseY);
-            source(g, screen, apparatus.sourceCost(), x, y + 132);
+            circle(g, screen, apparatus.reagent(), apparatus.pedestalItems(), cx, y + 65, mouseX, mouseY);
+            output(g, screen, apparatus.result(), cx - 9, y + 110, mouseX, mouseY);
+            source(g, screen, apparatus.sourceCost(), x, y + 131);
         } else if (recipe instanceof GlyphRecipe glyph) {
             station(g, screen, "ars_nouveau:scribes_table", x, y);
             List<Ingredient> inputs = glyph.inputs;
@@ -97,7 +97,8 @@ final class RecipeRenderer {
     /** Central item with the pedestal items arranged around it. */
     private static void circle(GuiGraphics g, ArcaneNotebookScreen screen, Ingredient center, List<Ingredient> pedestals,
                                int cx, int cy, int mouseX, int mouseY) {
-        int radius = pedestals.size() > 8 ? 36 : 30;
+        // Fits between the station header (y+20) and the result (y+110): at most 34 px, wide enough for 12 pedestals.
+        int radius = pedestals.size() > 10 ? 34 : pedestals.size() > 6 ? 30 : 26;
         for (int i = 0; i < pedestals.size(); i++) {
             double angle = 2 * Math.PI * i / pedestals.size() - Math.PI / 2;
             int sx = cx - 9 + (int) Math.round(Math.cos(angle) * radius);

@@ -1,0 +1,68 @@
+{
+  "category": "material",
+  "icon": "minecraft:lodestone",
+  "sort": 90,
+  "subjects": [
+    "minecraft:hopper",
+    "minecraft:lodestone",
+    "minecraft:ender_chest"
+  ],
+  "properties": [
+    "bottomless",
+    "magnetic"
+  ],
+  "requires": [
+    "arcane_artifacts:source_resonance"
+  ],
+  "experiments": [
+    {
+      "id": "gather",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pickup",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pickup",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "attract",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pull",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "magnet",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:lodestone"
+        },
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:ender_chest"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "material": 1
+  },
+  "unlocks_items": [
+    "arcane_artifacts:bottomless_belt",
+    "arcane_artifacts:amulet_of_opposites"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_pickup"
+  ]
+}

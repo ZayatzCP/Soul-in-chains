@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "arcane_artifacts:item/amulet_of_opposites_repel"
+  }
+}

@@ -123,7 +123,8 @@ public final class ArcaneGameTests {
                 "wreath_of_manipulation", "focusing_boots", "focusing_gloves", "ring_of_reversal", "mantle_of_reflection",
                 "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_shrapnel", "glyph_pursuit",
                 "glyph_beam", "glyph_black_hole", "glyph_tornado", "glyph_weather_shift", "glyph_counterspell",
-                "glyph_meteor_shower", "glyph_time_warp", "old_parchment", "researcher_notebook", "research_table")) {
+                "glyph_meteor_shower", "glyph_time_warp", "old_parchment", "researcher_notebook", "research_table",
+                "spell_staff", "bottomless_belt", "amulet_of_opposites", "spell_quiver")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -393,7 +394,8 @@ public final class ArcaneGameTests {
         level.addFreshEntity(victim);
         Vec3 center = helper.absoluteVec(new Vec3(4.5, 2.0, 4.5));
         double before = victim.position().distanceTo(center);
-        Phenomena.add(new Vortex(level, java.util.UUID.randomUUID(), Vortex.Kind.BLACK_HOLE, center, 8.0, 40, 0f, 0.3));
+        Phenomena.add(new Vortex(level, java.util.UUID.randomUUID(), Vortex.Kind.BLACK_HOLE, center, 8.0, 40, 0f, 0.3,
+                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.BLACK_HOLE).main));
         helper.runAfterDelay(15, () -> {
             double after = victim.position().distanceTo(center);
             helper.assertTrue(after < before - 1.0, "Black hole did not pull: " + before + " -> " + after);
@@ -411,11 +413,58 @@ public final class ArcaneGameTests {
         Vec3 at = caster.position().add(1, 1, 0);
         projectile.setPos(at.x, at.y, at.z);
         level.addFreshEntity(projectile);
-        Phenomena.add(new Vortex(level, caster.getUUID(), Vortex.Kind.TORNADO, at, 3.0, 200, 0f, 1.0));
+        Phenomena.add(new Vortex(level, caster.getUUID(), Vortex.Kind.TORNADO, at, 3.0, 200, 0f, 1.0,
+                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO).main));
         int undone = EffectCounterspell.counter(level, caster.getUUID(), caster.position());
         helper.assertTrue(undone >= 2, "Counterspell undid " + undone + " spells, expected the projectile and the tornado");
         helper.assertTrue(projectile.isRemoved(), "Spell projectile survived Counterspell");
         helper.assertTrue(Phenomena.active().stream().noneMatch(p -> p.owner().equals(caster.getUUID())), "Tornado survived Counterspell");
+        helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ new items
+
+    @GameTest(template = ARENA)
+    public static void quiverAddsTwoDampen(GameTestHelper helper) {
+        Spell stored = new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE, com.hollingsworth.arsnouveau.common.spell.augment.AugmentAmplify.INSTANCE);
+        Spell arrow = com.soulinchains.arcaneartifacts.accessory.SpellQuiverItem.arrowSpell(stored);
+        long dampen = arrow.unsafeList().stream().filter(p -> p == com.hollingsworth.arsnouveau.common.spell.augment.AugmentDampen.INSTANCE).count();
+        helper.assertTrue(arrow.getCastMethod() == null, "The form must be removed, got " + arrow.getDisplayString());
+        helper.assertTrue(dampen == 2, "Expected two Dampen, got " + dampen + " in " + arrow.getDisplayString());
+        helper.assertTrue(arrow.unsafeList().get(0) == EffectHarm.INSTANCE && arrow.unsafeList().size() == 4, "Unexpected arrow spell " + arrow.getDisplayString());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void beltPouchesStackAnyAmount(GameTestHelper helper) {
+        var contents = com.soulinchains.arcaneartifacts.belt.BeltContents.EMPTY;
+        ItemStack cobble = new ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 64);
+        int pouch = contents.firstFree();
+        for (int i = 0; i < 2000; i++) {
+            contents = contents.add(pouch, cobble, 64);
+        }
+        helper.assertTrue(contents.get(pouch).count() == 128000L, "Pouch holds " + contents.get(pouch).count());
+        helper.assertTrue(contents.collects(new ItemStack(net.minecraft.world.item.Items.COBBLESTONE)), "Pouch must collect its own item");
+        helper.assertTrue(!contents.collects(new ItemStack(net.minecraft.world.item.Items.DIRT)), "Pouch must not collect other items");
+        contents = contents.remove(pouch, 128000L);
+        helper.assertTrue(contents.get(pouch).isEmpty(), "An emptied pouch must forget its item");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void staffAmplifiesOnlyItsOwnSpells(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        ItemStack staff = new ItemStack(ModItems.SPELL_STAFF.get());
+        SpellContext fromStaff = new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player), staff);
+        var builder = new com.hollingsworth.arsnouveau.api.spell.SpellStats.Builder();
+        ModItems.SPELL_STAFF.get().applyItemModifiers(staff, builder, EffectHarm.INSTANCE, null, level, player, fromStaff);
+        helper.assertTrue(builder.build().getAmpMultiplier() == 2.0, "Staff spells must get +2 Amplify, got " + builder.build().getAmpMultiplier());
+        SpellContext fromBook = new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player), new ItemStack(net.minecraft.world.item.Items.BOOK));
+        var other = new com.hollingsworth.arsnouveau.api.spell.SpellStats.Builder();
+        ModItems.SPELL_STAFF.get().applyItemModifiers(staff, other, EffectHarm.INSTANCE, null, level, player, fromBook);
+        helper.assertTrue(other.build().getAmpMultiplier() == 0.0, "Spells from other casters must not be amplified");
+        helper.assertTrue(com.hollingsworth.arsnouveau.api.registry.SpellCasterRegistry.from(staff).getMaxSlots() == 5, "The staff must have 5 slots");
         helper.succeed();
     }
 }

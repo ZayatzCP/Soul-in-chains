@@ -14,7 +14,6 @@ import com.hollingsworth.arsnouveau.common.spell.augment.AugmentPierce;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentSensitive;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.Config;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,7 +32,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -47,7 +45,6 @@ import java.util.Set;
  */
 public class MethodBeam extends AbstractCastMethod {
     public static final MethodBeam INSTANCE = new MethodBeam();
-    private static final Vector3f COLOR = new Vector3f(0.71f, 0.28f, 0.96f);
 
     private MethodBeam() {
         super(ArcaneArtifacts.id("glyph_beam"), "Beam");
@@ -81,18 +78,10 @@ public class MethodBeam extends AbstractCastMethod {
             resolver.onResolveEffect(level, blockHit);
         }
         if (level instanceof ServerLevel server) {
-            drawBeam(server, start.add(caster.getLookAngle().scale(0.6)), stop);
+            var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(resolver.spellContext, com.soulinchains.arcaneartifacts.fx.ModTimelines.BEAM);
+            com.soulinchains.arcaneartifacts.fx.Fx.line(server, style.main, start.add(caster.getLookAngle().scale(0.6)), stop);
+            com.soulinchains.arcaneartifacts.fx.Fx.burst(server, style.impact, stop);
             server.playSound(null, caster.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.6f, 1.8f);
-        }
-    }
-
-    private static void drawBeam(ServerLevel level, Vec3 from, Vec3 to) {
-        Vec3 path = to.subtract(from);
-        int steps = (int) Math.ceil(path.length() * 3);
-        DustParticleOptions dust = new DustParticleOptions(COLOR, 0.9f);
-        for (int i = 0; i <= steps; i++) {
-            Vec3 p = from.add(path.scale(i / (double) Math.max(1, steps)));
-            level.sendParticles(dust, p.x, p.y, p.z, 1, 0.02, 0.02, 0.02, 0);
         }
     }
 

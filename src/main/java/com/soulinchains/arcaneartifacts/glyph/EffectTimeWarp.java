@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -54,7 +53,7 @@ public class EffectTimeWarp extends AreaEffect {
                 projectile.hurtMarked = true;
             }
         }
-        level.sendParticles(ParticleTypes.ENCHANT, point.x, point.y, point.z, 80, radius / 2, 1.0, radius / 2, 0.5);
+        com.soulinchains.arcaneartifacts.fx.Fx.area(level, com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.TIME_WARP).main, point, radius);
         level.playSound(null, point.x, point.y, point.z, net.minecraft.sounds.SoundEvents.BELL_RESONATE, net.minecraft.sounds.SoundSource.PLAYERS, 1.0f, 0.5f);
     }
 

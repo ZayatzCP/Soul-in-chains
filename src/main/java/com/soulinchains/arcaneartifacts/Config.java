@@ -28,6 +28,10 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue RING_MAX_KNOCKBACK_BLOCKS;
     public static final ModConfigSpec.IntValue RING_COOLDOWN_TICKS;
 
+    // Amulet of Opposites
+    public static final ModConfigSpec.DoubleValue AMULET_ATTRACT_RADIUS;
+    public static final ModConfigSpec.DoubleValue AMULET_REPEL_RADIUS;
+
     // Mantle of Reflection
     public static final ModConfigSpec.DoubleValue MANTLE_REFLECT_CHANCE;
     public static final ModConfigSpec.IntValue MANTLE_COOLDOWN_TICKS;
@@ -67,6 +71,7 @@ public final class Config {
 
     // Research
     public static final ModConfigSpec.BooleanValue RESEARCH_GATES_GLYPHS;
+    public static final ModConfigSpec.BooleanValue RESEARCH_CREATIVE_BYPASS;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -100,6 +105,11 @@ public final class Config {
         RING_MAX_KNOCKBACK_BLOCKS = b.defineInRange("max_knockback_blocks", 48.0, 0.0, 256.0);
         RING_COOLDOWN_TICKS = b.comment("Cooldown after a negated hit, in ticks (0 = none).")
                 .defineInRange("cooldown_ticks", 0, 0, 72000);
+        b.pop();
+
+        b.push("amulet_of_opposites");
+        AMULET_ATTRACT_RADIUS = b.defineInRange("attract_radius", 10.0, 1.0, 64.0);
+        AMULET_REPEL_RADIUS = b.defineInRange("repel_radius", 5.0, 1.0, 64.0);
         b.pop();
 
         b.push("mantle_of_reflection");
@@ -153,8 +163,10 @@ public final class Config {
         b.pop();
 
         b.push("research");
-        RESEARCH_GATES_GLYPHS = b.comment("Glyphs listed in a research's \"unlocks\" can only be crafted/learned after that research is formulated. Creative players are never blocked.")
+        RESEARCH_GATES_GLYPHS = b.comment("Glyphs listed in a research's \"unlocks\" can only be crafted/learned after that research is formulated. Creative players are blocked too unless creative_bypasses_research is true.")
                 .define("research_gates_glyphs", true);
+        RESEARCH_CREATIVE_BYPASS = b.comment("Let creative-mode players craft, learn and cast locked glyphs and artifacts without research.")
+                .define("creative_bypasses_research", false);
         b.pop();
 
         SPEC = b.build();

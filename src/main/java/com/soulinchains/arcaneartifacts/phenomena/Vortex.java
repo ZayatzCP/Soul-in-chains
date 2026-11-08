@@ -1,6 +1,8 @@
 package com.soulinchains.arcaneartifacts.phenomena;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.hollingsworth.arsnouveau.api.particle.ParticleEmitter;
+import com.hollingsworth.arsnouveau.api.particle.timelines.TimelineEntryData;
+import com.soulinchains.arcaneartifacts.fx.Fx;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -32,10 +34,12 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
     private final double radius;
     private final float damage;
     private final double strength;
+    private final ParticleEmitter emitter;
     private int ticksLeft;
     private int age;
 
-    public Vortex(ServerLevel level, UUID owner, Kind kind, Vec3 center, double radius, int durationTicks, float damage, double strength) {
+    public Vortex(ServerLevel level, UUID owner, Kind kind, Vec3 center, double radius, int durationTicks, float damage, double strength,
+                  TimelineEntryData style) {
         this.level = level;
         this.owner = owner;
         this.kind = kind;
@@ -44,6 +48,7 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
         this.ticksLeft = durationTicks;
         this.damage = damage;
         this.strength = strength;
+        this.emitter = Fx.follow(style, () -> center);
     }
 
     @Override
@@ -117,26 +122,10 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
         entity.hurtMarked = true;
     }
 
+    /** Drawn with the glyph's Ars particle timeline (restylable in the spell book). */
     private void particles() {
-        if (age % 2 != 0) {
-            return;
-        }
-        double angle = age * 0.35;
-        if (kind == Kind.BLACK_HOLE) {
-            level.sendParticles(ParticleTypes.SQUID_INK, center.x, center.y, center.z, 6, 0.25, 0.25, 0.25, 0.01);
-            for (int i = 0; i < 6; i++) {
-                double a = angle + i * Math.PI / 3;
-                double r = radius * 0.6;
-                level.sendParticles(ParticleTypes.REVERSE_PORTAL, center.x + Math.cos(a) * r, center.y + Math.sin(a * 0.5) * 0.6,
-                        center.z + Math.sin(a) * r, 1, 0, 0, 0, 0.02);
-            }
-        } else {
-            for (int i = 0; i < 10; i++) {
-                double h = (i / 10.0) * radius * 2;
-                double a = angle + i * 0.7;
-                double r = 0.5 + h * 0.35;
-                level.sendParticles(ParticleTypes.CLOUD, center.x + Math.cos(a) * r, center.y + h, center.z + Math.sin(a) * r, 1, 0, 0, 0, 0.0);
-            }
+        if (age % 2 == 0) {
+            emitter.tick(level);
         }
     }
 }

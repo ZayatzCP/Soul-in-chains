@@ -227,9 +227,24 @@ public final class ResearchService {
 
     // ------------------------------------------------------------------ glyph gating
 
+    /** Creative players skip research only when the server allows it ({@code creative_bypasses_research}). */
+    public static boolean bypasses(Player player) {
+        return player.isCreative() && Config.RESEARCH_CREATIVE_BYPASS.get();
+    }
+
+    /** The first glyph of the spell that the player has not unlocked yet, or null. */
+    public static @org.jetbrains.annotations.Nullable ResourceLocation firstLockedGlyph(Player player, com.hollingsworth.arsnouveau.api.spell.Spell spell) {
+        for (var part : spell.unsafeList()) {
+            if (part != null && !isGlyphAvailable(player, part.getRegistryName())) {
+                return part.getRegistryName();
+            }
+        }
+        return null;
+    }
+
     /** True if research does not lock this glyph for the player (or locking is disabled). */
     public static boolean isGlyphAvailable(Player player, ResourceLocation glyphId) {
-        if (!Config.RESEARCH_GATES_GLYPHS.get() || player.isCreative() || !ResearchManager.gatedGlyphs().contains(glyphId)) {
+        if (!Config.RESEARCH_GATES_GLYPHS.get() || bypasses(player) || !ResearchManager.gatedGlyphs().contains(glyphId)) {
             return true;
         }
         PlayerResearch data = data(player);
@@ -243,7 +258,7 @@ public final class ResearchService {
 
     /** True if research does not lock this item's apparatus recipe for the player. */
     public static boolean isItemAvailable(Player player, ResourceLocation itemId) {
-        if (!Config.RESEARCH_GATES_GLYPHS.get() || player.isCreative() || !ResearchManager.gatedItems().contains(itemId)) {
+        if (!Config.RESEARCH_GATES_GLYPHS.get() || bypasses(player) || !ResearchManager.gatedItems().contains(itemId)) {
             return true;
         }
         PlayerResearch data = data(player);

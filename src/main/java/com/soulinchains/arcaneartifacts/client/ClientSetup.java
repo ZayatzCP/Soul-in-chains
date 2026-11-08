@@ -31,6 +31,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerScreens(net.neoforged.neoforge.client.event.RegisterMenuScreensEvent event) {
         event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_MENU.get(), ResearchTableScreen::new);
+        event.register(com.soulinchains.arcaneartifacts.belt.BeltRegistry.MENU.get(), BeltScreen::new);
     }
 
     @SubscribeEvent
@@ -41,11 +42,30 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerWornModels(ModelEvent.RegisterAdditional event) {
         WornModels.all().values().forEach(list -> list.forEach(attachment -> event.register(attachment.location())));
+        WornModels.GLOVES.forEach(attachment -> event.register(attachment.location()));
     }
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> WornModels.all().forEach((item, attachments) ->
-                CuriosRendererRegistry.register(item.get(), () -> new AccessoryCurioRenderer(attachments))));
+        event.enqueueWork(() -> {
+            WornModels.all().forEach((item, attachments) ->
+                    CuriosRendererRegistry.register(item.get(), () -> new AccessoryCurioRenderer(attachments)));
+            net.minecraft.client.renderer.item.ItemProperties.register(ModItems.AMULET_OF_OPPOSITES.get(), ArcaneArtifacts.id("repelling"),
+                    (stack, level, entity, seed) -> com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.isRepelling(stack) ? 1.0F : 0.0F);
+        });
+    }
+
+    @SubscribeEvent
+    public static void addPlayerLayers(EntityRenderersEvent.AddLayers event) {
+        for (net.minecraft.client.resources.PlayerSkin.Model skin : event.getSkins()) {
+            if (event.getSkin(skin) instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer renderer) {
+                renderer.addLayer(new GlovesRenderer.Layer(renderer));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
+        event.register(BeltKey.KEY);
     }
 }

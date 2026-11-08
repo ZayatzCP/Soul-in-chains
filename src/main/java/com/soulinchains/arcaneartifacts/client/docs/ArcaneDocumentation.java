@@ -114,6 +114,36 @@ public final class ArcaneDocumentation {
         DocumentationRegistry.registerEntry(glyphCategory, mystery);
     }
 
+    /** Items whose research is not formulated yet (shown as "???" in the Researcher's Notebook). */
+    public static Set<ResourceLocation> lockedItems() {
+        PlayerResearch data = ClientResearch.progress();
+        Set<ResourceLocation> locked = new HashSet<>();
+        for (ResourceLocation item : ResearchManager.gatedItems()) {
+            boolean unlocked = false;
+            for (Map.Entry<ResourceLocation, ResearchDefinition> e : ResearchManager.all().entrySet()) {
+                if (e.getValue().unlocksItems().contains(item) && ResearchService.state(data, e.getKey()).atLeast(ResearchState.UNLOCKED)) {
+                    unlocked = true;
+                    break;
+                }
+            }
+            if (!unlocked) {
+                locked.add(item);
+            }
+        }
+        return locked;
+    }
+
+    /** The research that unlocks an item, or "???" while the player has not discovered it. */
+    public static Component researchForItem(ResourceLocation itemId) {
+        PlayerResearch data = ClientResearch.progress();
+        for (Map.Entry<ResourceLocation, ResearchDefinition> e : ResearchManager.all().entrySet()) {
+            if (e.getValue().unlocksItems().contains(itemId) && ResearchService.state(data, e.getKey()) != ResearchState.UNKNOWN) {
+                return Component.translatable(ResearchDefinition.langPrefix(e.getKey()) + ".title");
+            }
+        }
+        return Component.literal("???");
+    }
+
     /** The research that unlocks a glyph, or "???" while the player has not discovered it. */
     public static Component researchFor(ResourceLocation glyphId) {
         PlayerResearch data = ClientResearch.progress();

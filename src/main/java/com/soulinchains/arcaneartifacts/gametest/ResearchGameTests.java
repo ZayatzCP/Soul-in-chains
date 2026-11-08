@@ -51,7 +51,7 @@ public final class ResearchGameTests {
     @GameTest(template = ARENA)
     public static void researchDataLoads(GameTestHelper helper) {
         for (String id : new String[]{"source_resonance", "trajectories", "arcane_marking", "fragmentation", "life_bond",
-                "flesh_adaptation", "focusing", "reflection", "singularity", "firmament", "nullification"}) {
+                "flesh_adaptation", "focusing", "reflection", "singularity", "firmament", "nullification", "hoarding"}) {
             helper.assertTrue(ResearchManager.get(ArcaneArtifacts.id(id)) != null, "Research not loaded: " + id);
         }
         helper.assertTrue(ResearchManager.gatedGlyphs().contains(PARASITISM), "Parasitism is not gated by any research");
@@ -121,6 +121,20 @@ public final class ResearchGameTests {
 
         ResearchService.data(player).setState(LIFE_BOND, ResearchState.UNLOCKED);
         helper.assertTrue(ResearchService.isGlyphAvailable(player, PARASITISM), "Glyph still locked after its research was formulated");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void castingLockedGlyphIsRefused(GameTestHelper helper) {
+        Player player = player(helper);
+        com.hollingsworth.arsnouveau.api.spell.Spell spell = new com.hollingsworth.arsnouveau.api.spell.Spell(
+                com.hollingsworth.arsnouveau.common.spell.method.MethodProjectile.INSTANCE,
+                com.soulinchains.arcaneartifacts.glyph.EffectParasitism.INSTANCE);
+        var context = new com.hollingsworth.arsnouveau.api.spell.SpellContext(helper.getLevel(), spell, player,
+                com.hollingsworth.arsnouveau.api.spell.wrapped_caster.LivingCaster.from(player));
+        var event = new com.hollingsworth.arsnouveau.api.event.SpellCastEvent(spell, context);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(event);
+        helper.assertTrue(event.isCanceled(), "A spell with an unresearched glyph must not be cast");
         helper.succeed();
     }
 }

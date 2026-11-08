@@ -1,0 +1,144 @@
+{
+  "textures": {
+    "gloves": "arcane_artifacts:item/worn/gloves",
+    "particle": "arcane_artifacts:item/worn/gloves"
+  },
+  "elements": [
+    {
+      "from": [
+        4.6,
+        -2.4,
+        5.6
+      ],
+      "to": [
+        9.4,
+        2.6,
+        10.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#gloves"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#gloves"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#gloves"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#gloves"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#gloves"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#gloves"
+        }
+      }
+    },
+    {
+      "from": [
+        4.4,
+        2.6,
+        5.4
+      ],
+      "to": [
+        9.6,
+        3.6,
+        10.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            10,
+            16,
+            16
+          ],
+          "texture": "#gloves"
+        },
+        "south": {
+          "uv": [
+            0,
+            10,
+            16,
+            16
+          ],
+          "texture": "#gloves"
+        },
+        "east": {
+          "uv": [
+            0,
+            10,
+            16,
+            16
+          ],
+          "texture": "#gloves"
+        },
+        "west": {
+          "uv": [
+            0,
+            10,
+            16,
+            16
+          ],
+          "texture": "#gloves"
+        },
+        "up": {
+          "uv": [
+            0,
+            10,
+            16,
+            16
+          ],
+          "texture": "#gloves"
+        },
+        "down": {
+          "uv": [
+            0,
+            10,
+            16,
+            16
+          ],
+          "texture": "#gloves"
+        }
+      }
+    }
+  ]
+}

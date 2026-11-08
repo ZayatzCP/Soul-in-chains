@@ -11,7 +11,6 @@ import com.hollingsworth.arsnouveau.common.spell.augment.AugmentDurationDown;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentExtendTime;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.Config;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -55,7 +54,7 @@ public class EffectWeatherShift extends AreaEffect {
         int ticks = Math.max(1200, Config.WEATHER_SECONDS.get() * 20 + stats.getDurationInTicks() * 30);
         Weather weather = weatherFor(stats);
         apply(level, weather, ticks);
-        level.sendParticles(ParticleTypes.CLOUD, shooter.getX(), shooter.getY() + 2.5, shooter.getZ(), 30, 1.0, 0.3, 1.0, 0.02);
+        com.soulinchains.arcaneartifacts.fx.Fx.area(level, com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.WEATHER_SHIFT).main, shooter.position().add(0, 0.2, 0), 3.0);
         level.playSound(null, shooter.blockPosition(), weather == Weather.THUNDER ? SoundEvents.LIGHTNING_BOLT_THUNDER : SoundEvents.AMETHYST_BLOCK_RESONATE,
                 SoundSource.WEATHER, 0.8f, 1.0f);
         if (shooter instanceof Player player) {
