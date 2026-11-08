@@ -38,7 +38,12 @@ public final class WornModels {
         public static final Placement NONE = new Placement(0, 0, 0, 0, 0, 0, 0, 0, 0, false, 0);
     }
 
-    public record Attachment(BodyPart part, ResourceLocation model, Placement placement) {
+    public record Attachment(BodyPart part, ResourceLocation model, Placement placement,
+                             java.util.function.Predicate<net.minecraft.world.item.ItemStack> when) {
+        public Attachment(BodyPart part, ResourceLocation model, Placement placement) {
+            this(part, model, placement, stack -> true);
+        }
+
         public ModelResourceLocation location() {
             return ModelResourceLocation.standalone(model);
         }
@@ -63,6 +68,17 @@ public final class WornModels {
                 worn(BodyPart.HEAD, "mantle_of_reflection_hood"),
                 worn(BodyPart.RIGHT_ARM, "mantle_of_reflection_right_sleeve"),
                 worn(BodyPart.LEFT_ARM, "mantle_of_reflection_left_sleeve")));
+        ATTACHMENTS.put(ModItems.BOTTOMLESS_BELT, List.of(worn(BodyPart.BODY, "bottomless_belt")));
+        // The worn amulet follows its polarity, like the icon.
+        ATTACHMENTS.put(ModItems.AMULET_OF_OPPOSITES, List.of(
+                new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/amulet_of_opposites"), Placement.NONE,
+                        stack -> !com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.isRepelling(stack)),
+                new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/amulet_of_opposites_repel"), Placement.NONE,
+                        com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem::isRepelling)));
+        ATTACHMENTS.put(ModItems.HEART_CHARM, List.of(worn(BodyPart.BODY, "heart_charm")));
+        ATTACHMENTS.put(ModItems.DIAMOND_CHARM, List.of(worn(BodyPart.BODY, "diamond_charm")));
+        ATTACHMENTS.put(ModItems.CLUB_CHARM, List.of(worn(BodyPart.BODY, "club_charm")));
+        ATTACHMENTS.put(ModItems.SPADE_CHARM, List.of(worn(BodyPart.BODY, "spade_charm")));
     }
 
     /** Focusing Gloves are held, not worn: while held, one glove is drawn on each arm (see GlovesRenderer). */

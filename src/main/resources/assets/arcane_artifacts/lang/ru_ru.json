@@ -405,7 +405,7 @@
   "ars_nouveau.augment_desc.glyph_anvil_drop_glyph_amplify": "Очень тяжёлая наковальня: 120 урона вместо 60.",
   "arcane_artifacts.glyph_joke.glyph_anvil_drop": "Совет: посмотрите вверх. Нет, в другой верх.",
   "arcane_artifacts.glyph_doc.glyph_anvil_drop": "Как работает: наковальня появляется в 14 блоках над целью и падает всё быстрее. Кто стоит под ней, получает 60 урона (120 с Усилением). С Расширением наковальня растёт и приземляется как булава: всё в радиусе 3 блоков (+1,5 за Расширение) получает половину урона и отлетает. Блоки не ставятся и не ломаются. Стоит 350 маны. Пока наковальня падает, область отмечена, так что у цели есть ровно столько времени, чтобы пожалеть.",
-  "arcane_artifacts.glyph_name.glyph_satiety": "Сытость",
+  "arcane_artifacts.glyph_name.glyph_satiety": "Сытно и точка.",
   "arcane_artifacts.glyph_desc.glyph_satiety": "Наполняет голод цели и держит его полным (Сытость) минуту. Если заклинание попало в блок, кормит заклинателя.",
   "ars_nouveau.augment_desc.glyph_satiety_glyph_extend_time": "Сытость держится дольше.",
   "ars_nouveau.augment_desc.glyph_satiety_glyph_duration_down": "Голод возвращается раньше.",

@@ -45,7 +45,7 @@ public class AccessoryCurioRenderer implements ICurioRenderer {
         BakedModel missing = models.getMissingModel();
         for (WornModels.Attachment attachment : attachments) {
             BakedModel model = models.getModel(attachment.location());
-            if (model == null || model == missing) {
+            if (model == null || model == missing || !attachment.when().test(stack)) {
                 continue;
             }
             ModelPart part = switch (attachment.part()) {

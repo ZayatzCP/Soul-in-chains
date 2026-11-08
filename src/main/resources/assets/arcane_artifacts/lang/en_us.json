@@ -405,7 +405,7 @@
   "ars_nouveau.augment_desc.glyph_anvil_drop_glyph_amplify": "A very heavy anvil: 120 damage instead of 60.",
   "arcane_artifacts.glyph_joke.glyph_anvil_drop": "Tip: look up. No, the other up.",
   "arcane_artifacts.glyph_doc.glyph_anvil_drop": "How it works: an anvil appears 14 blocks above the target and falls, faster and faster. Whatever stands under it takes 60 damage (120 with Amplify). With AOE the anvil grows and lands like a mace: everything within 3 blocks (+1.5 per AOE) takes half damage and is knocked away. No block is placed and nothing is broken. Costs 350 mana. The area is marked while the anvil falls, so the target has exactly enough time to regret.",
-  "arcane_artifacts.glyph_name.glyph_satiety": "Satiety",
+  "arcane_artifacts.glyph_name.glyph_satiety": "Full. Period.",
   "arcane_artifacts.glyph_desc.glyph_satiety": "Fills the target's hunger and keeps it full (Well Fed) for a minute. Cast on a block, it feeds the caster.",
   "ars_nouveau.augment_desc.glyph_satiety_glyph_extend_time": "Stay full for longer.",
   "ars_nouveau.augment_desc.glyph_satiety_glyph_duration_down": "Hunger returns sooner.",

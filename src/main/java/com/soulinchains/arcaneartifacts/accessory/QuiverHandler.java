@@ -80,4 +80,22 @@ public final class QuiverHandler {
         SpellContext context = new SpellContext(level, spell, player, LivingCaster.from(player), quiver.get());
         new SpellResolver(context).onResolveEffect(level, event.getRayTraceResult());
     }
+
+    /**
+     * Quiver slots come from other mods and often accept only their own items (a custom slot validator
+     * instead of the curios item tag). The Spell Quiver is let into any slot whose id says it holds
+     * quivers or arrows, whatever its validator.
+     */
+    @SubscribeEvent
+    public static void onCanEquip(top.theillusivec4.curios.api.event.CurioCanEquipEvent event) {
+        if (!(event.getStack().getItem() instanceof SpellQuiverItem quiver)
+                || event.getEquipResult() != net.neoforged.neoforge.common.util.TriState.FALSE) {
+            return;
+        }
+        String slot = event.getSlotContext().identifier().toLowerCase(java.util.Locale.ROOT);
+        if ((slot.contains("quiver") || slot.contains("arrow") || slot.contains("ammo"))
+                && quiver.canEquip(event.getSlotContext(), event.getStack())) {
+            event.setEquipResult(net.neoforged.neoforge.common.util.TriState.TRUE);
+        }
+    }
 }

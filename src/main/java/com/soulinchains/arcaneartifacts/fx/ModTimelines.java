@@ -2,7 +2,6 @@ package com.soulinchains.arcaneartifacts.fx;
 
 import com.hollingsworth.arsnouveau.api.particle.configurations.IParticleMotionType;
 import com.hollingsworth.arsnouveau.api.particle.configurations.SpiralMotion;
-import com.hollingsworth.arsnouveau.api.particle.configurations.TornadoMotion;
 import com.hollingsworth.arsnouveau.api.particle.configurations.TrailMotion;
 import com.hollingsworth.arsnouveau.api.particle.configurations.BurstMotion;
 import com.hollingsworth.arsnouveau.api.particle.configurations.ParticleMotion;
@@ -40,7 +39,7 @@ public final class ModTimelines {
     public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> BLACK_HOLE =
             register("black_hole", EffectBlackHole.INSTANCE, TimelineOption.TICK, ModTimelines::tickOptions, () -> new SpiralMotion(new PropMap()), true);
     public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> TORNADO =
-            register("tornado", EffectTornado.INSTANCE, TimelineOption.TICK, ModTimelines::tickOptions, () -> new TornadoMotion(new PropMap()), true);
+            register("tornado", EffectTornado.INSTANCE, TimelineOption.TRAIL, ModTimelines::trailOptions, TrailMotion::new, true);
     public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> METEOR_SHOWER =
             register("meteor_shower", EffectMeteorShower.INSTANCE, TimelineOption.TRAIL, ModTimelines::trailOptions, TrailMotion::new, true);
     public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> PARASITISM =
