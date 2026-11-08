@@ -84,8 +84,6 @@ def mantle():
 
 MODELS = {
     'wreath_of_manipulation': wreath(),
-    'focusing_gloves_right': gloves(7, 11),
-    'focusing_gloves_left': gloves(5, 9),
     'focusing_boots_right': boots(),
     'focusing_boots_left': boots(),
     'ring_of_reversal': ring(),
