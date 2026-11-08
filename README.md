@@ -28,7 +28,7 @@
 Workflow `.github/workflows/build.yml` собирает jar при каждом push и
 прикладывает его к запуску как артефакт.
 
-Установка: положите `arcane_artifacts-1.21.1-1.0.0.jar` вместе с Ars Nouveau и
+Установка: положите `arcane_artifacts-1.21.1-1.1.0.jar` вместе с Ars Nouveau и
 Curios в папку `mods` клиента **и** сервера.
 
 ## Аксессуары
