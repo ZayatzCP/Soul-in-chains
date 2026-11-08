@@ -45,7 +45,7 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue PARASITISM_RADIUS;
     public static final ModConfigSpec.IntValue PARASITISM_COOLDOWN_TICKS;
 
-    // Arcane Missile / Pursuit / Splitting
+    // Arcane Missile / Pursuit / Shrapnel
     public static final ModConfigSpec.DoubleValue MISSILE_SEARCH_RADIUS;
     public static final ModConfigSpec.IntValue MISSILE_LIFETIME_TICKS;
     public static final ModConfigSpec.DoubleValue MISSILE_TURN_RATE;
@@ -132,7 +132,7 @@ public final class Config {
         PURSUIT_LIFETIME_BONUS_TICKS = b.defineInRange("pursuit_lifetime_bonus_ticks", 100, 0, 72000);
         b.pop();
 
-        b.push("splitting");
+        b.push("shrapnel");
         SPLIT_PROJECTILE_COUNT = b.defineInRange("projectile_count", 2, 1, 8);
         SPLIT_DAMAGE_MULTIPLIER = b.defineInRange("damage_multiplier", 0.5, 0.0, 1.0);
         SPLIT_CHILD_LIFETIME_TICKS = b.defineInRange("child_lifetime_ticks", 80, 10, 1200);

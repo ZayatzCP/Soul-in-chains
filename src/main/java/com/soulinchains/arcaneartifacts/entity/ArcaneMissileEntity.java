@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Homing spell projectile used by the Arcane Missile form and by Splitting.
+ * Homing spell projectile used by the Arcane Missile form and by Shrapnel.
  * <p>
  * It reuses all of Ars Nouveau's projectile behaviour (resolver, pierce, prisms, portals, hit events)
  * and only replaces movement: every tick the velocity is steered toward the current target. The target

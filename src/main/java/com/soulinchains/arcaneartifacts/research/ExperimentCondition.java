@@ -22,16 +22,19 @@ import java.util.Optional;
  * @param block   block id or #tag of the affected block
  * @param item    item id or #tag
  * @param effect  mob effect id
+ * @param damageType damage type id or #tag (for the damage_taken trigger)
  */
 public record ExperimentCondition(ResourceLocation trigger, Optional<ResourceLocation> glyph, Optional<String> entity,
-                                  Optional<String> block, Optional<String> item, Optional<ResourceLocation> effect) {
+                                  Optional<String> block, Optional<String> item, Optional<ResourceLocation> effect,
+                                  Optional<String> damageType) {
     public static final Codec<ExperimentCondition> CODEC = RecordCodecBuilder.create(i -> i.group(
             ResourceLocation.CODEC.fieldOf("trigger").forGetter(ExperimentCondition::trigger),
             ResourceLocation.CODEC.optionalFieldOf("glyph").forGetter(ExperimentCondition::glyph),
             Codec.STRING.optionalFieldOf("entity").forGetter(ExperimentCondition::entity),
             Codec.STRING.optionalFieldOf("block").forGetter(ExperimentCondition::block),
             Codec.STRING.optionalFieldOf("item").forGetter(ExperimentCondition::item),
-            ResourceLocation.CODEC.optionalFieldOf("effect").forGetter(ExperimentCondition::effect)
+            ResourceLocation.CODEC.optionalFieldOf("effect").forGetter(ExperimentCondition::effect),
+            Codec.STRING.optionalFieldOf("damage_type").forGetter(ExperimentCondition::damageType)
     ).apply(i, ExperimentCondition::new));
 
     public boolean matches(ResearchEvent event) {
@@ -41,7 +44,16 @@ public record ExperimentCondition(ResourceLocation trigger, Optional<ResourceLoc
         if (block.isPresent() && (event.block() == null || !matchesBlock(block.get(), event.block()))) return false;
         if (item.isPresent() && (event.item() == null || !matchesItem(item.get(), event.item()))) return false;
         if (effect.isPresent() && (event.effect() == null || !event.effect().is(effect.get()))) return false;
+        if (damageType.isPresent() && (event.damage() == null || !matchesDamage(damageType.get(), event.damage()))) return false;
         return true;
+    }
+
+    static boolean matchesDamage(String filter, net.minecraft.core.Holder<net.minecraft.world.damagesource.DamageType> type) {
+        if (filter.equals("*")) return true;
+        if (filter.startsWith("#")) {
+            return type.is(TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.parse(filter.substring(1))));
+        }
+        return type.is(ResourceLocation.parse(filter));
     }
 
     static boolean matchesItem(String filter, Item item) {

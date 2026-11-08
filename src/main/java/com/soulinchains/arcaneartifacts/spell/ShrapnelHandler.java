@@ -9,7 +9,7 @@ import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.Config;
 import com.soulinchains.arcaneartifacts.entity.ArcaneMissileEntity;
 import com.soulinchains.arcaneartifacts.glyph.AugmentPursuit;
-import com.soulinchains.arcaneartifacts.glyph.AugmentSplitting;
+import com.soulinchains.arcaneartifacts.glyph.AugmentShrapnel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -23,7 +23,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
 /**
- * Splitting: when a projectile carrying the Splitting augment hits a creature, two child missiles are
+ * Shrapnel: when a projectile carrying the Shrapnel augment hits a creature, two child missiles are
  * spawned at the impact point. Children:
  * <ul>
  *     <li>are marked through {@link SpellContext#tag} so their spell damage is scaled by
@@ -34,10 +34,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
  * </ul>
  */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
-public final class SplittingHandler {
+public final class ShrapnelHandler {
     public static final String SPLIT_CHILD_TAG = ArcaneArtifacts.MODID + ":split_child";
 
-    private SplittingHandler() {
+    private ShrapnelHandler() {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -61,8 +61,8 @@ public final class SplittingHandler {
             return;
         }
         var caster = resolver.spellContext.getUnwrappedCaster();
-        int splitting = resolver.spell.getBuffsAtIndex(0, caster, AugmentSplitting.INSTANCE);
-        if (splitting <= 0) {
+        int shrapnel = resolver.spell.getBuffsAtIndex(0, caster, AugmentShrapnel.INSTANCE);
+        if (shrapnel <= 0) {
             return;
         }
         int pursuit = resolver.spell.getBuffsAtIndex(0, caster, AugmentPursuit.INSTANCE);

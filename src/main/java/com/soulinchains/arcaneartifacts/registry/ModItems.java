@@ -4,6 +4,7 @@ import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.accessory.FocusingBootsItem;
 import com.soulinchains.arcaneartifacts.accessory.FocusingGlovesItem;
 import com.soulinchains.arcaneartifacts.accessory.MantleOfReflectionItem;
+import com.soulinchains.arcaneartifacts.accessory.ResearcherNotebookItem;
 import com.soulinchains.arcaneartifacts.accessory.RingOfReversalItem;
 import com.soulinchains.arcaneartifacts.accessory.WreathOfManipulationItem;
 import net.minecraft.world.item.BlockItem;
@@ -15,6 +16,9 @@ public final class ModItems {
     public static final DeferredRegister.Items REGISTER = DeferredRegister.createItems(ArcaneArtifacts.MODID);
 
     public static final DeferredItem<BlockItem> RESEARCH_TABLE = REGISTER.registerSimpleBlockItem(ModBlocks.RESEARCH_TABLE);
+
+    public static final DeferredItem<Item> OLD_PARCHMENT = REGISTER.register("old_parchment", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<ResearcherNotebookItem> RESEARCHER_NOTEBOOK = REGISTER.register("researcher_notebook", ResearcherNotebookItem::new);
 
     public static final DeferredItem<Item> ROSE_GOLD_INGOT = REGISTER.register("rose_gold_ingot", () -> new Item(new Item.Properties()));
 

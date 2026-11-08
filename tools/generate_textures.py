@@ -115,7 +115,7 @@ GLYPHS = {
         '............',
     ],
     # one bolt forking into two
-    'glyph_splitting': [
+    'glyph_shrapnel': [
         '............',
         '.........##.',
         '........##..',
@@ -454,6 +454,48 @@ ROSE_GOLD_INGOT = [
 ROSE_GOLD_PAL = {'h': '#C77B66', 'H': '#E7A08B', 'L': '#FFE1D6', 'd': '#8E4B3B'}
 
 
+OLD_PARCHMENT = [
+    '................',
+    '..dddddddddd....',
+    '.dPPPPPPPPPPd...',
+    '.dPpPPPPPPPPd...',
+    '..dPPiiiPiPPd...',
+    '..dPPPPPPPPPd...',
+    '..dPiiPiiiPPd...',
+    '..dPPPPPPPPPPd..',
+    '..dPPiiiiPPPPd..',
+    '..dPPPPPPPPpPd..',
+    '..dPiiPiiPPPPd..',
+    '...dPPPPPPPPPd..',
+    '...dPPPPPPPPtd..',
+    '...dddddddddd...',
+    '................',
+    '................',
+]
+OLD_PARCHMENT_PAL = {'d': '#7A5A32', 'P': '#D9C28F', 'p': '#B89A62', 'i': '#5B3E8A', 't': '#2FD6B5'}
+
+RESEARCHER_NOTEBOOK = [
+    '................',
+    '...bbbbbbbbbb...',
+    '..bLLLLLLLLLLPb.',
+    '..bLLLLLLLLLLPb.',
+    '..bLLyyyyyyLLPb.',
+    '..bLLy....yLLPb.',
+    '..bLLy.qq.yLLPb.',
+    '..bLLy.qq.yLLPb.',
+    '..bLLy....yLLPb.',
+    '..bLLyyyyyyLLPb.',
+    '..bLLLLLLLLLLPb.',
+    '..bLLLLLLLLLLPb.',
+    '..bbbbbbbbbbbbb.',
+    '...ccc..........',
+    '...c............',
+    '................',
+]
+RESEARCHER_NOTEBOOK_PAL = {'b': '#3A2414', 'L': '#7B4A26', 'P': '#E3D2A2', 'y': '#C9962B',
+                           'q': '#B44CF0', 'c': '#2FD6B5'}
+
+
 def main():
     save(sprite(ROSE_GOLD_INGOT, ROSE_GOLD_PAL), 'item', 'rose_gold_ingot.png')
     for name, rows in GLYPHS.items():
@@ -473,6 +515,8 @@ def main():
     save(sprite(BOOTS, BOOTS_PAL), 'item', 'focusing_boots.png')
     save(sprite(GLOVES, GLOVES_PAL), 'item', 'focusing_gloves.png')
     save(sprite(RING, RING_PAL), 'item', 'ring_of_reversal.png')
+    save(sprite(OLD_PARCHMENT, OLD_PARCHMENT_PAL), 'item', 'old_parchment.png')
+    save(sprite(RESEARCHER_NOTEBOOK, RESEARCHER_NOTEBOOK_PAL), 'item', 'researcher_notebook.png')
     save(sprite(MANTLE, MANTLE_PAL), 'item', 'mantle_of_reflection.png')
 
     save(sprite(MISSILE, MISSILE_PAL), 'entity', 'arcane_missile.png')
@@ -481,7 +525,6 @@ def main():
     for name, (rows, pal) in EFFECTS.items():
         save(sprite(rows, pal), 'mob_effect', name + '.png')
 
-    save(sprite(FEET_SLOT, {'o': (255, 255, 255, 70)}), 'slot', 'empty_feet_slot.png')
 
     # Mod list logo: the five artifacts on a dark violet card, scaled 4x.
     logo = Image.new('RGBA', (96, 32), hexc('#1A1030'))

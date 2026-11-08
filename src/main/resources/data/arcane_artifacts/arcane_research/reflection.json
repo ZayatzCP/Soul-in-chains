@@ -1,0 +1,55 @@
+{
+  "category": "spatial",
+  "icon": "minecraft:shulker_shell",
+  "sort": 70,
+  "subjects": [
+    "minecraft:shulker_shell",
+    "minecraft:shield"
+  ],
+  "properties": [
+    "deflecting",
+    "mirrored"
+  ],
+  "requires": [
+    "arcane_artifacts:trajectories"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_bounce"
+  ],
+  "experiments": [
+    {
+      "id": "struck",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "#minecraft:is_projectile"
+        },
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "ars_nouveau:spell"
+        }
+      ]
+    },
+    {
+      "id": "rebound",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_bounce"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_knockback",
+          "entity": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "spatial": 2
+  },
+  "unlocks_items": [
+    "arcane_artifacts:mantle_of_reflection"
+  ]
+}

@@ -12,7 +12,7 @@ public final class ArcaneGlyphs {
             MethodArcaneMissile.INSTANCE,
             EffectArcaneMark.INSTANCE,
             EffectParasitism.INSTANCE,
-            AugmentSplitting.INSTANCE,
+            AugmentShrapnel.INSTANCE,
             AugmentPursuit.INSTANCE
     );
 
@@ -24,14 +24,14 @@ public final class ArcaneGlyphs {
     }
 
     /**
-     * Lets the plain Ars Projectile form accept Splitting (the addon-supported way, through
+     * Lets the plain Ars Projectile form accept Shrapnel (the addon-supported way, through
      * {@link AbstractSpellPart#compatibleAugments}). Pursuit stays exclusive to homing forms, since
      * the plain projectile has no homing to improve.
      */
     public static void postInit() {
-        MethodProjectile.INSTANCE.compatibleAugments.add(AugmentSplitting.INSTANCE);
-        MethodProjectile.INSTANCE.augmentDescriptions.put(AugmentSplitting.INSTANCE,
-                Component.translatable("ars_nouveau.augment_desc.glyph_projectile_glyph_splitting"));
+        MethodProjectile.INSTANCE.compatibleAugments.add(AugmentShrapnel.INSTANCE);
+        MethodProjectile.INSTANCE.augmentDescriptions.put(AugmentShrapnel.INSTANCE,
+                Component.translatable("ars_nouveau.augment_desc.glyph_projectile_glyph_shrapnel"));
     }
 
     private ArcaneGlyphs() {

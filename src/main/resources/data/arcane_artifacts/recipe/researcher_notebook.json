@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPL",
+    "PPP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "arcane_artifacts:old_parchment"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:researcher_notebook"
+  }
+}

@@ -95,7 +95,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         List<ResourceLocation> order = ResearchTableMenu.researchOrder();
         ResourceLocation id = selected < order.size() ? order.get(selected) : null;
         observe.active = !sample.isEmpty();
-        formulate.visible = id != null && ResearchService.state(ClientResearch.progress(), id) == ResearchState.PRINCIPLE;
+        formulate.visible = id != null && stateOf(ClientResearch.progress(), id) == ResearchState.PRINCIPLE;
         formulate.active = id != null && ResearchService.canFormulate(ClientResearch.progress(), id);
         previous.visible = next.visible = order.size() > 1;
     }
@@ -138,7 +138,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         Set<String> properties = new LinkedHashSet<>();
         boolean anyObserved = false;
         for (ResourceLocation id : relevant) {
-            if (ResearchService.state(data, id).atLeast(ResearchState.INVESTIGATING)) {
+            if (stateOf(data, id).atLeast(ResearchState.INVESTIGATING)) {
                 anyObserved = true;
                 properties.addAll(ResearchManager.get(id).properties());
             }
@@ -154,7 +154,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         }
         for (ResourceLocation id : relevant) {
             if (y > 130) break;
-            ResearchState state = ResearchService.state(data, id);
+            ResearchState state = stateOf(data, id);
             g.drawString(font, researchTitle(id, state).copy().withStyle(ChatFormatting.ITALIC), 12, y, stateColor(state), false);
             y += 9;
         }
@@ -172,7 +172,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         selected = Math.min(selected, order.size() - 1);
         ResourceLocation id = order.get(selected);
         ResearchDefinition def = ResearchManager.get(id);
-        ResearchState state = ResearchService.state(data, id);
+        ResearchState state = stateOf(data, id);
         String prefix = ResearchDefinition.langPrefix(id);
 
         Component title = researchTitle(id, state);
@@ -187,11 +187,22 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
             y = paragraph(g, Component.translatable("arcane_artifacts.research_table.unknown"), x, y, PAGE_WIDTH, FADED, 3);
             for (ResourceLocation required : def.requires()) {
                 if (y > 180) break;
-                g.drawString(font, Component.literal("• ").append(researchTitle(required, ResearchService.state(data, required))), x, y, FADED, false);
-                y += 9;
+                ResearchState requiredState = stateOf(data, required);
+                int color = requiredState.atLeast(ResearchState.PRINCIPLE) ? 0x2E6B3A : FADED;
+                y = paragraph(g, Component.translatable("arcane_artifacts.research_table.needs_research",
+                        researchTitle(required, requiredState)), x, y, PAGE_WIDTH, color, 2);
+            }
+            var knows = ResearchService.glyphKnowledge(minecraft == null ? null : minecraft.player);
+            for (ResourceLocation glyph : def.requiresGlyphs()) {
+                if (y > 180) break;
+                int color = knows.test(glyph) ? 0x2E6B3A : FADED;
+                y = paragraph(g, Component.translatable("arcane_artifacts.research_table.needs_glyph", glyphName(glyph)), x, y, PAGE_WIDTH, color, 2);
             }
         } else {
-            y = paragraph(g, Component.translatable(prefix + ".description"), x, y, PAGE_WIDTH, INK, 4) + 2;
+            y = paragraph(g, Component.translatable(prefix + ".description"), x, y, PAGE_WIDTH, INK, 3) + 1;
+            if (!def.unlocks().isEmpty() || !def.unlocksItems().isEmpty()) {
+                y = paragraph(g, unlocksLine(def), x, y, PAGE_WIDTH, 0xA87A1C, 2) + 1;
+            }
             if (state == ResearchState.DISCOVERED) {
                 y = paragraph(g, Component.translatable("arcane_artifacts.research_table.observe_hint"), x, y, PAGE_WIDTH, FADED, 3);
             } else {
@@ -228,6 +239,31 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     }
 
     // ------------------------------------------------------------------ helpers
+
+    private ResearchState stateOf(PlayerResearch data, ResourceLocation id) {
+        return ResearchService.state(data, id, ResearchService.glyphKnowledge(minecraft == null ? null : minecraft.player));
+    }
+
+    private static Component glyphName(ResourceLocation id) {
+        var part = com.hollingsworth.arsnouveau.api.registry.GlyphRegistry.getSpellPart(id);
+        return part == null ? Component.literal(id.toString()) : Component.translatable(part.getLocalizationKey());
+    }
+
+    /** "Unlocks: Arcane Missile, Pursuit, ..." for glyphs and items of a research. */
+    private static Component unlocksLine(ResearchDefinition def) {
+        MutableComponent line = Component.translatable("arcane_artifacts.research_table.unlocks");
+        boolean first = true;
+        for (ResourceLocation glyph : def.unlocks()) {
+            line.append(first ? " " : ", ").append(glyphName(glyph));
+            first = false;
+        }
+        for (ResourceLocation item : def.unlocksItems()) {
+            Item value = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(item);
+            line.append(first ? " " : ", ").append(value.getDescription());
+            first = false;
+        }
+        return line;
+    }
 
     private Component researchTitle(ResourceLocation id, ResearchState state) {
         return state == ResearchState.UNKNOWN ? Component.literal("???") : Component.translatable(ResearchDefinition.langPrefix(id) + ".title");

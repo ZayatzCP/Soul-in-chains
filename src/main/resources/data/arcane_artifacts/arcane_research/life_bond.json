@@ -60,5 +60,8 @@
   },
   "unlocks": [
     "arcane_artifacts:glyph_parasitism"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_heal"
   ]
 }

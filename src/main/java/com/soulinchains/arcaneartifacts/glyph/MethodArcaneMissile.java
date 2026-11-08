@@ -94,14 +94,14 @@ public class MethodArcaneMissile extends AbstractCastMethod {
     @Override
     protected void addDefaultAugmentLimits(Map<ResourceLocation, Integer> defaults) {
         defaults.put(AugmentPursuit.INSTANCE.getRegistryName(), 3);
-        defaults.put(AugmentSplitting.INSTANCE.getRegistryName(), 1);
+        defaults.put(AugmentShrapnel.INSTANCE.getRegistryName(), 1);
     }
 
     @NotNull
     @Override
     public Set<AbstractAugment> getCompatibleAugments() {
         return augmentSetOf(AugmentPierce.INSTANCE, AugmentSplit.INSTANCE, AugmentAccelerate.INSTANCE,
-                AugmentDecelerate.INSTANCE, AugmentSensitive.INSTANCE, AugmentPursuit.INSTANCE, AugmentSplitting.INSTANCE);
+                AugmentDecelerate.INSTANCE, AugmentSensitive.INSTANCE, AugmentPursuit.INSTANCE, AugmentShrapnel.INSTANCE);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MethodArcaneMissile extends AbstractCastMethod {
         map.put(AugmentDecelerate.INSTANCE, "The missile flies slower.");
         map.put(AugmentSensitive.INSTANCE, "The missile also collides with plants and other non-solid blocks.");
         map.put(AugmentPursuit.INSTANCE, "Wider search radius, sharper turns and a longer lifetime.");
-        map.put(AugmentSplitting.INSTANCE, "On hitting a creature, splits into two half-damage missiles that seek other targets.");
+        map.put(AugmentShrapnel.INSTANCE, "On hitting a creature, splits into two half-damage missiles that seek other targets.");
     }
 
     @Override

@@ -29,7 +29,7 @@
 |---|---|---|---|
 | Венок манипуляции | `wreath_of_manipulation.json` | `wreath_of_manipulation_worn.json` | голова |
 | Фокусирующие ботинки | `focusing_boots.json` | `focusing_boots_worn.json` (на обе ноги) или `_worn_right` / `_worn_left` | ноги |
-| Фокусирующие перчатки | `focusing_gloves.json` | `focusing_gloves_worn_right.json` (+ `_worn_left`, иначе левая отзеркалится автоматически) | руки |
+| Фокусирующие перчатки | `focusing_gloves.json` (держатся в руке как инструмент) | — | — |
 | Перстень обратного импульса | `ring_of_reversal.json` | `ring_of_reversal_worn.json` | правая рука |
 | Мантия зеркального отражения | `mantle_of_reflection.json` | `mantle_of_reflection_worn.json` | туловище |
 | Розовое золото | `rose_gold_ingot.json` | — | — |

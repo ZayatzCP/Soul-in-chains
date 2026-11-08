@@ -17,6 +17,8 @@ public final class ModCreativeTab {
             .icon(() -> ModItems.WREATH_OF_MANIPULATION.get().getDefaultInstance())
             .displayItems((params, output) -> {
                 output.accept(ModItems.RESEARCH_TABLE.get());
+                output.accept(ModItems.RESEARCHER_NOTEBOOK.get());
+                output.accept(ModItems.OLD_PARCHMENT.get());
                 output.accept(ModItems.ROSE_GOLD_INGOT.get());
                 output.accept(ModItems.WREATH_OF_MANIPULATION.get());
                 output.accept(ModItems.FOCUSING_BOOTS.get());

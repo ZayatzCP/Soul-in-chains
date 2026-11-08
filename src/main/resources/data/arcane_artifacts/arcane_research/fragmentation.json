@@ -44,6 +44,9 @@
     "spatial": 1
   },
   "unlocks": [
-    "arcane_artifacts:glyph_splitting"
+    "arcane_artifacts:glyph_shrapnel"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_split"
   ]
 }

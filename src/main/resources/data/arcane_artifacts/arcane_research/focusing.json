@@ -1,0 +1,56 @@
+{
+  "category": "arcane",
+  "icon": "ars_nouveau:spell_parchment",
+  "sort": 60,
+  "subjects": [
+    "ars_nouveau:spell_parchment",
+    "minecraft:leather"
+  ],
+  "properties": [
+    "inscribable",
+    "channeling"
+  ],
+  "requires": [
+    "arcane_artifacts:trajectories"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_self"
+  ],
+  "experiments": [
+    {
+      "id": "self",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_self"
+        }
+      ]
+    },
+    {
+      "id": "touch",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_touch"
+        }
+      ]
+    },
+    {
+      "id": "projectile",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_projectile"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "spatial": 1
+  },
+  "unlocks_items": [
+    "arcane_artifacts:focusing_boots",
+    "arcane_artifacts:focusing_gloves"
+  ]
+}

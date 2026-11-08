@@ -12,8 +12,7 @@ File names decide what is replaced:
   wreath_of_manipulation.json    wreath_of_manipulation_worn.json            (head)
   focusing_boots.json            focusing_boots_worn.json                    (both legs)
                                  or focusing_boots_worn_right/_left.json
-  focusing_gloves.json           focusing_gloves_worn_right.json             (right arm)
-                                 focusing_gloves_worn_left.json              (optional: mirrored from right)
+  focusing_gloves.json           -  (held casting tool, no worn model)
   ring_of_reversal.json          ring_of_reversal_worn.json                  (right arm)
   mantle_of_reflection.json      mantle_of_reflection_worn.json              (body)
   rose_gold_ingot.json
@@ -31,15 +30,13 @@ import sys
 
 NS = 'arcane_artifacts'
 ICONS = ['wreath_of_manipulation', 'focusing_boots', 'focusing_gloves', 'ring_of_reversal',
-         'mantle_of_reflection', 'rose_gold_ingot']
+         'mantle_of_reflection', 'rose_gold_ingot', 'old_parchment', 'researcher_notebook']
 # export name -> list of (target worn model, mirror?)
 WORN = {
     'wreath_of_manipulation_worn': [('wreath_of_manipulation', False)],
     'focusing_boots_worn': [('focusing_boots_right', False), ('focusing_boots_left', False)],
     'focusing_boots_worn_right': [('focusing_boots_right', False)],
     'focusing_boots_worn_left': [('focusing_boots_left', False)],
-    'focusing_gloves_worn_right': [('focusing_gloves_right', False)],
-    'focusing_gloves_worn_left': [('focusing_gloves_left', False)],
     'ring_of_reversal_worn': [('ring_of_reversal', False)],
     'mantle_of_reflection_worn': [('mantle_of_reflection', False)],
 }
@@ -128,10 +125,6 @@ def main():
         if export + '.json' in files:
             jobs.append((export, files[export + '.json'],
                          [(os.path.join('models', 'item', 'worn', t + '.json'), mirror) for t, mirror in targets]))
-    # Left glove mirrored from the right one when no explicit left model was exported.
-    if 'focusing_gloves_worn_right.json' in files and 'focusing_gloves_worn_left.json' not in files:
-        jobs.append(('focusing_gloves_worn_right (mirrored)', files['focusing_gloves_worn_right.json'],
-                     [(os.path.join('models', 'item', 'worn', 'focusing_gloves_left.json'), True)]))
 
     known = {n + '.json' for n in ICONS} | {n + '.json' for n in WORN}
     for f in files:

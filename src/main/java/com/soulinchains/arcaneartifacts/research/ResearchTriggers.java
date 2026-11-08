@@ -33,6 +33,7 @@ import java.util.Set;
  *     <li>{@code arcane_artifacts:spell_cast} - the player casts a spell (glyph: any glyph of the spell);</li>
  *     <li>{@code arcane_artifacts:effect_applied} - the player applies a mob effect to an entity (effect, entity);</li>
  *     <li>{@code arcane_artifacts:observe} - an item is observed at a Research Table (item);</li>
+ *     <li>{@code arcane_artifacts:damage_taken} - the player really took damage (damage_type, entity = attacker);</li>
  *     <li>custom ids fired by this mod's own glyphs and blocks (see {@link #fire}).</li>
  * </ul>
  * Only researches already in the INVESTIGATING state listen, so nothing done before a research was
@@ -44,6 +45,7 @@ public final class ResearchTriggers {
     public static final ResourceLocation SPELL_CAST = ArcaneArtifacts.id("spell_cast");
     public static final ResourceLocation EFFECT_APPLIED = ArcaneArtifacts.id("effect_applied");
     public static final ResourceLocation OBSERVE = ArcaneArtifacts.id("observe");
+    public static final ResourceLocation DAMAGE_TAKEN = ArcaneArtifacts.id("damage_taken");
 
     private ResearchTriggers() {
     }
@@ -112,6 +114,16 @@ public final class ResearchTriggers {
             ResearchService.fire(player, ResearchEvent.of(EFFECT_APPLIED)
                     .withEffect(event.getEffectInstance().getEffect())
                     .withEntity(event.getEntity().getType()));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onDamageTaken(net.neoforged.neoforge.event.entity.living.LivingDamageEvent.Post event) {
+        if (event.getEntity() instanceof ServerPlayer player && event.getNewDamage() > 0) {
+            var attacker = event.getSource().getEntity();
+            ResearchService.fire(player, ResearchEvent.of(DAMAGE_TAKEN)
+                    .withDamage(event.getSource().typeHolder())
+                    .withEntity(attacker == null ? null : attacker.getType()));
         }
     }
 

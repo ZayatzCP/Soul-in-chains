@@ -59,5 +59,8 @@
   "unlocks": [
     "arcane_artifacts:glyph_arcane_missile",
     "arcane_artifacts:glyph_pursuit"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_projectile"
   ]
 }

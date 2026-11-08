@@ -42,9 +42,6 @@ public final class WornModels {
         ATTACHMENTS.put(ModItems.FOCUSING_BOOTS, List.of(
                 worn(BodyPart.RIGHT_LEG, "focusing_boots_right"),
                 worn(BodyPart.LEFT_LEG, "focusing_boots_left")));
-        ATTACHMENTS.put(ModItems.FOCUSING_GLOVES, List.of(
-                worn(BodyPart.RIGHT_ARM, "focusing_gloves_right"),
-                worn(BodyPart.LEFT_ARM, "focusing_gloves_left")));
         ATTACHMENTS.put(ModItems.RING_OF_REVERSAL, List.of(
                 worn(BodyPart.RIGHT_ARM, "ring_of_reversal")));
         ATTACHMENTS.put(ModItems.MANTLE_OF_REFLECTION, List.of(

@@ -1,0 +1,12 @@
+{
+  "type": "ars_nouveau:imbuement",
+  "input": {
+    "item": "minecraft:paper"
+  },
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:old_parchment"
+  },
+  "pedestalItems": [],
+  "source": 500
+}

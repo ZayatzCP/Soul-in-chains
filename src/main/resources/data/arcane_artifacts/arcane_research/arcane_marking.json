@@ -49,5 +49,8 @@
   },
   "unlocks": [
     "arcane_artifacts:glyph_arcane_mark"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_light"
   ]
 }

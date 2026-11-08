@@ -19,6 +19,7 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Server-side research rules. Every state change goes through here and is followed by a sync of the
@@ -32,8 +33,17 @@ public final class ResearchService {
         return player.getData(ModAttachments.RESEARCH);
     }
 
-    /** Effective state: stored state, or DISCOVERED/UNKNOWN derived from prerequisites. */
+    /**
+     * Effective state ignoring glyph requirements: stored state, or DISCOVERED/UNKNOWN derived from the
+     * required researches. Use {@link #state(PlayerResearch, ResourceLocation, Predicate)} where the
+     * player's known glyphs matter (discovery).
+     */
     public static ResearchState state(PlayerResearch data, ResourceLocation id) {
+        return state(data, id, glyph -> true);
+    }
+
+    /** Effective state; {@code knowsGlyph} tells whether the player knows an Ars Nouveau glyph. */
+    public static ResearchState state(PlayerResearch data, ResourceLocation id, Predicate<ResourceLocation> knowsGlyph) {
         PlayerResearch.Entry entry = data.entry(id);
         if (entry != null) {
             return entry.state();
@@ -48,11 +58,30 @@ public final class ResearchService {
                 return ResearchState.UNKNOWN;
             }
         }
+        for (ResourceLocation glyph : def.requiresGlyphs()) {
+            if (!knowsGlyph.test(glyph)) {
+                return ResearchState.UNKNOWN;
+            }
+        }
         return ResearchState.DISCOVERED;
     }
 
     public static ResearchState state(Player player, ResourceLocation id) {
-        return state(data(player), id);
+        return state(data(player), id, glyphKnowledge(player));
+    }
+
+    /**
+     * Whether the player knows a glyph: learned glyphs (Ars player data, synced to the client too),
+     * starter glyphs, or every glyph in creative. Unknown glyph ids count as known so a datapack
+     * referring to a missing addon does not lock a research forever.
+     */
+    public static Predicate<ResourceLocation> glyphKnowledge(Player player) {
+        ANPlayerDataCap cap = player == null ? null : CapabilityRegistry.getPlayerDataCap(player);
+        return glyphId -> {
+            AbstractSpellPart part = GlyphRegistry.getSpellPart(glyphId);
+            if (part == null || player == null || player.isCreative()) return true;
+            return GlyphRegistry.getDefaultStartingSpells().contains(part) || (cap != null && cap.knowsGlyph(part));
+        };
     }
 
     // ------------------------------------------------------------------ stage I: observation
@@ -78,10 +107,11 @@ public final class ResearchService {
             return 0;
         }
         PlayerResearch data = data(player);
+        Predicate<ResourceLocation> knows = glyphKnowledge(player);
         int started = 0;
         boolean locked = false;
         for (ResourceLocation id : researchesFor(data, stack)) {
-            ResearchState state = state(data, id);
+            ResearchState state = state(data, id, knows);
             if (state == ResearchState.DISCOVERED) {
                 data.setState(id, ResearchState.INVESTIGATING);
                 started++;
@@ -209,6 +239,30 @@ public final class ResearchService {
             }
         }
         return false;
+    }
+
+    /** True if research does not lock this item's apparatus recipe for the player. */
+    public static boolean isItemAvailable(Player player, ResourceLocation itemId) {
+        if (!Config.RESEARCH_GATES_GLYPHS.get() || player.isCreative() || !ResearchManager.gatedItems().contains(itemId)) {
+            return true;
+        }
+        PlayerResearch data = data(player);
+        for (Map.Entry<ResourceLocation, ResearchDefinition> e : ResearchManager.all().entrySet()) {
+            if (e.getValue().unlocksItems().contains(itemId) && state(data, e.getKey()).atLeast(ResearchState.UNLOCKED)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Name of the research that unlocks the item, for messages. */
+    public static Component itemResearchName(ResourceLocation itemId) {
+        for (Map.Entry<ResourceLocation, ResearchDefinition> e : ResearchManager.all().entrySet()) {
+            if (e.getValue().unlocksItems().contains(itemId)) {
+                return Component.translatable(ResearchDefinition.langPrefix(e.getKey()) + ".title");
+            }
+        }
+        return Component.literal(itemId.toString());
     }
 
     /** Name of the research that unlocks the glyph, for messages. */

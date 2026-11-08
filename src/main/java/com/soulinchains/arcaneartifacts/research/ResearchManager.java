@@ -25,6 +25,7 @@ public final class ResearchManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().create();
     private static volatile Map<ResourceLocation, ResearchDefinition> definitions = Map.of();
     private static volatile Set<ResourceLocation> gatedGlyphs = Set.of();
+    private static volatile Set<ResourceLocation> gatedItems = Set.of();
 
     public ResearchManager() {
         super(GSON, "arcane_research");
@@ -50,9 +51,14 @@ public final class ResearchManager extends SimpleJsonResourceReloadListener {
                         : a.getKey().compareTo(b.getKey()))
                 .forEach(e -> sorted.put(e.getKey(), e.getValue()));
         Set<ResourceLocation> gated = new HashSet<>();
-        sorted.values().forEach(d -> gated.addAll(d.unlocks()));
+        Set<ResourceLocation> items = new HashSet<>();
+        sorted.values().forEach(d -> {
+            gated.addAll(d.unlocks());
+            items.addAll(d.unlocksItems());
+        });
         definitions = Collections.unmodifiableMap(sorted);
         gatedGlyphs = Collections.unmodifiableSet(gated);
+        gatedItems = Collections.unmodifiableSet(items);
     }
 
     /** All researches in display order (sort, then id). */
@@ -67,5 +73,10 @@ public final class ResearchManager extends SimpleJsonResourceReloadListener {
     /** Glyphs that some research unlocks, i.e. glyphs that are locked until researched. */
     public static Set<ResourceLocation> gatedGlyphs() {
         return gatedGlyphs;
+    }
+
+    /** Items whose Enchanting Apparatus recipe is locked until some research formulates them. */
+    public static Set<ResourceLocation> gatedItems() {
+        return gatedItems;
     }
 }

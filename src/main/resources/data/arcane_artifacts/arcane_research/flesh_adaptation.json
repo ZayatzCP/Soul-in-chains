@@ -1,0 +1,69 @@
+{
+  "category": "biological",
+  "icon": "minecraft:magma_cream",
+  "sort": 50,
+  "subjects": [
+    "minecraft:magma_cream",
+    "minecraft:pufferfish",
+    "minecraft:turtle_scute"
+  ],
+  "properties": [
+    "adaptive",
+    "resilient"
+  ],
+  "requires": [
+    "arcane_artifacts:source_resonance"
+  ],
+  "requires_glyphs": [
+    "ars_nouveau:glyph_self"
+  ],
+  "experiments": [
+    {
+      "id": "burn",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "#minecraft:is_fire"
+        }
+      ]
+    },
+    {
+      "id": "breathless",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "#minecraft:is_drowning"
+        },
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "minecraft:in_wall"
+        }
+      ]
+    },
+    {
+      "id": "endure",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "minecraft:mob_attack"
+        },
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "minecraft:arrow"
+        },
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "minecraft:player_attack"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "arcane": 1
+  },
+  "unlocks_items": [
+    "arcane_artifacts:wreath_of_manipulation",
+    "arcane_artifacts:ring_of_reversal"
+  ]
+}

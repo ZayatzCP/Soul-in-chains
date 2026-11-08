@@ -20,10 +20,10 @@ import com.soulinchains.arcaneartifacts.accessory.WreathOfManipulationItem;
 import com.soulinchains.arcaneartifacts.damage.ParasitismManager;
 import com.soulinchains.arcaneartifacts.entity.ArcaneMissileEntity;
 import com.soulinchains.arcaneartifacts.glyph.ArcaneGlyphs;
-import com.soulinchains.arcaneartifacts.glyph.AugmentSplitting;
+import com.soulinchains.arcaneartifacts.glyph.AugmentShrapnel;
 import com.soulinchains.arcaneartifacts.glyph.MethodArcaneMissile;
 import com.soulinchains.arcaneartifacts.registry.ModItems;
-import com.soulinchains.arcaneartifacts.spell.SplittingHandler;
+import com.soulinchains.arcaneartifacts.spell.ShrapnelHandler;
 import com.soulinchains.arcaneartifacts.util.CurioHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -118,7 +118,7 @@ public final class ArcaneGameTests {
         var recipes = helper.getLevel().getRecipeManager();
         for (String id : List.of("rose_gold_ingot",
                 "wreath_of_manipulation", "focusing_boots", "focusing_gloves", "ring_of_reversal", "mantle_of_reflection",
-                "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_splitting", "glyph_pursuit")) {
+                "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_shrapnel", "glyph_pursuit")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -130,7 +130,7 @@ public final class ArcaneGameTests {
             helper.assertTrue(GlyphRegistry.getSpellPart(part.getRegistryName()) == part, "Glyph not in GlyphRegistry: " + part.getRegistryName());
             helper.assertTrue(BuiltInRegistries.ITEM.containsKey(part.getRegistryName()), "Glyph item not registered: " + part.getRegistryName());
         }
-        helper.assertTrue(MethodProjectile.INSTANCE.compatibleAugments.contains(AugmentSplitting.INSTANCE), "Projectile does not accept Splitting");
+        helper.assertTrue(MethodProjectile.INSTANCE.compatibleAugments.contains(AugmentShrapnel.INSTANCE), "Projectile does not accept Shrapnel");
         helper.succeed();
     }
 
@@ -268,11 +268,17 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
-    public static void glovesPatternMatching(GameTestHelper helper) {
-        List<AbstractSpellPart> projectile = FocusingGlovesItem.pattern(new ItemStack(ModItems.FOCUSING_GLOVES.get()));
-        helper.assertTrue(projectile.equals(List.of(MethodProjectile.INSTANCE)), "Default pattern must be Projectile, was " + projectile);
-        helper.assertTrue(FocusingGlovesItem.matches(projectile, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE)), "Projectile -> Harm should match");
-        helper.assertTrue(!FocusingGlovesItem.matches(projectile, new Spell(MethodArcaneMissile.INSTANCE, EffectHarm.INSTANCE)), "Missile spell must not match Projectile pattern");
+    public static void glovesDefaultToProjectile(GameTestHelper helper) {
+        ItemStack gloves = new ItemStack(ModItems.FOCUSING_GLOVES.get());
+        helper.assertTrue(FocusingGlovesItem.castableSpell(gloves).getCastMethod() == MethodProjectile.INSTANCE, "Empty gloves must default to Projectile");
+        var caster = FocusingGlovesItem.storedSpell(gloves);
+        helper.assertTrue(caster.isEmpty(), "New gloves must hold no spell");
+        com.hollingsworth.arsnouveau.api.spell.SpellCaster spellCaster = gloves.get(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER);
+        gloves.set(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER, spellCaster.setSpell(new Spell(EffectHarm.INSTANCE)));
+        Spell effective = FocusingGlovesItem.castableSpell(gloves);
+        helper.assertTrue(effective.getCastMethod() == MethodProjectile.INSTANCE && effective.unsafeList().size() == 2, "A formless spell must be cast as Projectile -> Harm, got " + effective.getDisplayString());
+        gloves.set(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER, spellCaster.setSpell(new Spell(MethodArcaneMissile.INSTANCE, EffectHarm.INSTANCE)));
+        helper.assertTrue(FocusingGlovesItem.castableSpell(gloves).getCastMethod() == MethodArcaneMissile.INSTANCE, "A spell with its own form must keep it");
         helper.succeed();
     }
 
@@ -328,13 +334,13 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA, timeoutTicks = 160)
-    public static void splittingHitsSecondTarget(GameTestHelper helper) {
+    public static void shrapnelHitsSecondTarget(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Husk first = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(4, 1, 4));
         Husk second = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 7));
         Player caster = player(helper, 1.5, 1, 1.5);
         SpellResolver resolver = new SpellResolver(new SpellContext(level,
-                new Spell(MethodArcaneMissile.INSTANCE, AugmentSplitting.INSTANCE, EffectHarm.INSTANCE), caster, LivingCaster.from(caster)));
+                new Spell(MethodArcaneMissile.INSTANCE, AugmentShrapnel.INSTANCE, EffectHarm.INSTANCE), caster, LivingCaster.from(caster)));
         ArcaneMissileEntity missile = new ArcaneMissileEntity(level, resolver);
         missile.configure(0, false);
         Vec3 start = helper.absoluteVec(new Vec3(1.5, 2.0, 1.5));
@@ -353,7 +359,7 @@ public final class ArcaneGameTests {
         Husk target = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(4, 1, 4));
         Player caster = player(helper, 1.5, 1, 1.5);
         SpellContext context = new SpellContext(level, new Spell(), caster, LivingCaster.from(caster));
-        context.tag.putBoolean(SplittingHandler.SPLIT_CHILD_TAG, true);
+        context.tag.putBoolean(ShrapnelHandler.SPLIT_CHILD_TAG, true);
         SpellDamageEvent.Pre child = new SpellDamageEvent.Pre(level.damageSources().magic(), caster, target, 8f, context);
         NeoForge.EVENT_BUS.post(child);
         helper.assertTrue(Math.abs(child.damage - 8f * Config.SPLIT_DAMAGE_MULTIPLIER.get().floatValue()) < 0.001f, "Split damage not scaled: " + child.damage);

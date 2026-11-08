@@ -40,11 +40,15 @@ import java.util.Map;
  * @param subjects      items (or #item tags) that can be observed at the Research Table to start the research
  * @param notes         notes of {@code category} awarded when every experiment is done
  * @param notesRequired notes the player must already hold to formulate the principle (not consumed)
+ * @param requiresGlyphs Ars Nouveau glyphs the player must already know before the research is discovered
  * @param unlocks       glyph ids whose Scribes Table recipe becomes available once formulated
+ * @param unlocksItems  item ids whose Enchanting Apparatus recipe becomes available once formulated
  */
 public record ResearchDefinition(NoteCategory category, Item icon, int sort, List<String> subjects, List<String> properties,
-                                 List<ResourceLocation> requires, List<ExperimentDefinition> experiments, int notes,
-                                 Map<NoteCategory, Integer> notesRequired, List<ResourceLocation> unlocks) {
+                                 List<ResourceLocation> requires, List<ResourceLocation> requiresGlyphs,
+                                 List<ExperimentDefinition> experiments, int notes,
+                                 Map<NoteCategory, Integer> notesRequired, List<ResourceLocation> unlocks,
+                                 List<ResourceLocation> unlocksItems) {
 
     public static final Codec<ResearchDefinition> CODEC = RecordCodecBuilder.create(i -> i.group(
             NoteCategory.CODEC.fieldOf("category").forGetter(ResearchDefinition::category),
@@ -53,10 +57,12 @@ public record ResearchDefinition(NoteCategory category, Item icon, int sort, Lis
             Codec.STRING.listOf().optionalFieldOf("subjects", List.of()).forGetter(ResearchDefinition::subjects),
             Codec.STRING.listOf().optionalFieldOf("properties", List.of()).forGetter(ResearchDefinition::properties),
             ResourceLocation.CODEC.listOf().optionalFieldOf("requires", List.of()).forGetter(ResearchDefinition::requires),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("requires_glyphs", List.of()).forGetter(ResearchDefinition::requiresGlyphs),
             ExperimentDefinition.CODEC.listOf().fieldOf("experiments").forGetter(ResearchDefinition::experiments),
             Codec.INT.optionalFieldOf("notes", 1).forGetter(ResearchDefinition::notes),
             Codec.unboundedMap(NoteCategory.CODEC, Codec.INT).optionalFieldOf("notes_required", Map.of()).forGetter(ResearchDefinition::notesRequired),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("unlocks", List.of()).forGetter(ResearchDefinition::unlocks)
+            ResourceLocation.CODEC.listOf().optionalFieldOf("unlocks", List.of()).forGetter(ResearchDefinition::unlocks),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("unlocks_items", List.of()).forGetter(ResearchDefinition::unlocksItems)
     ).apply(i, ResearchDefinition::new));
 
     public static final StreamCodec<ByteBuf, ResearchDefinition> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
