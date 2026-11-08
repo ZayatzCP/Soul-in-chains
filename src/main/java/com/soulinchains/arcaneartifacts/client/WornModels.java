@@ -45,7 +45,10 @@ public final class WornModels {
         ATTACHMENTS.put(ModItems.RING_OF_REVERSAL, List.of(
                 worn(BodyPart.RIGHT_ARM, "ring_of_reversal")));
         ATTACHMENTS.put(ModItems.MANTLE_OF_REFLECTION, List.of(
-                worn(BodyPart.BODY, "mantle_of_reflection")));
+                worn(BodyPart.BODY, "mantle_of_reflection"),
+                worn(BodyPart.HEAD, "mantle_of_reflection_hood"),
+                worn(BodyPart.RIGHT_ARM, "mantle_of_reflection_right_sleeve"),
+                worn(BodyPart.LEFT_ARM, "mantle_of_reflection_left_sleeve")));
     }
 
     private WornModels() {

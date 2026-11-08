@@ -1,0 +1,77 @@
+{
+  "credit": "Mantle of Reflection by the mod's designer (Blockbench), split per body part",
+  "textures": {
+    "mantle": "arcane_artifacts:item/worn/mantle_of_reflection",
+    "particle": "arcane_artifacts:item/worn/mantle_of_reflection"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        6,
+        3
+      ],
+      "to": [
+        13,
+        16,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            6,
+            4,
+            8
+          ],
+          "texture": "#mantle"
+        },
+        "east": {
+          "uv": [
+            0,
+            6,
+            2,
+            8
+          ],
+          "texture": "#mantle"
+        },
+        "south": {
+          "uv": [
+            6,
+            6,
+            8,
+            8
+          ],
+          "texture": "#mantle"
+        },
+        "west": {
+          "uv": [
+            2,
+            6,
+            0,
+            8
+          ],
+          "texture": "#mantle"
+        },
+        "up": {
+          "uv": [
+            4,
+            6,
+            2,
+            4
+          ],
+          "texture": "#mantle"
+        },
+        "down": {
+          "uv": [
+            6,
+            4,
+            4,
+            6
+          ],
+          "texture": "#mantle"
+        }
+      }
+    }
+  ]
+}

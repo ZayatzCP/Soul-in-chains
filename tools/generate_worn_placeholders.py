@@ -87,7 +87,6 @@ MODELS = {
     'focusing_boots_right': boots(),
     'focusing_boots_left': boots(),
     'ring_of_reversal': ring(),
-    'mantle_of_reflection': mantle(),
 }
 
 

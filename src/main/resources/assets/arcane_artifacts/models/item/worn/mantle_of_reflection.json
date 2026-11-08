@@ -1,211 +1,75 @@
 {
+  "credit": "Mantle of Reflection by the mod's designer (Blockbench), split per body part",
   "textures": {
-    "mantle": "arcane_artifacts:item/worn/mantle",
-    "clasp": "arcane_artifacts:item/worn/clasp",
-    "particle": "arcane_artifacts:item/worn/mantle"
+    "mantle": "arcane_artifacts:item/worn/mantle_of_reflection",
+    "particle": "arcane_artifacts:item/worn/mantle_of_reflection"
   },
   "elements": [
     {
       "from": [
-        3.5,
-        -4.5,
-        10.25
-      ],
-      "to": [
-        12.5,
-        8.25,
-        11
-      ],
-      "faces": {
-        "north": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#mantle"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#mantle"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#mantle"
-        },
-        "west": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#mantle"
-        },
-        "up": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#mantle"
-        },
-        "down": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#mantle"
-        }
-      }
-    },
-    {
-      "from": [
-        3.5,
-        7.75,
-        5.75
-      ],
-      "to": [
-        12.5,
-        8.75,
-        10.25
-      ],
-      "faces": {
-        "north": {
-          "uv": [
-            0,
-            0,
-            16,
-            4
-          ],
-          "texture": "#mantle"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            4
-          ],
-          "texture": "#mantle"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            16,
-            4
-          ],
-          "texture": "#mantle"
-        },
-        "west": {
-          "uv": [
-            0,
-            0,
-            16,
-            4
-          ],
-          "texture": "#mantle"
-        },
-        "up": {
-          "uv": [
-            0,
-            0,
-            16,
-            4
-          ],
-          "texture": "#mantle"
-        },
-        "down": {
-          "uv": [
-            0,
-            0,
-            16,
-            4
-          ],
-          "texture": "#mantle"
-        }
-      }
-    },
-    {
-      "from": [
-        7,
-        6.5,
+        3.25,
+        -12.75,
         5.25
       ],
       "to": [
-        9,
-        8,
-        5.75
+        12.75,
+        8.75,
+        10.75
       ],
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            16,
-            16
+            1,
+            9,
+            3,
+            14
           ],
-          "texture": "#clasp"
-        },
-        "south": {
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ],
-          "texture": "#clasp"
+          "texture": "#mantle"
         },
         "east": {
           "uv": [
             0,
-            0,
-            16,
-            16
+            9,
+            1,
+            14
           ],
-          "texture": "#clasp"
+          "texture": "#mantle"
+        },
+        "south": {
+          "uv": [
+            4,
+            9,
+            6,
+            14
+          ],
+          "texture": "#mantle"
         },
         "west": {
           "uv": [
+            1,
+            9,
             0,
-            0,
-            16,
-            16
+            14
           ],
-          "texture": "#clasp"
+          "texture": "#mantle"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            16,
-            16
+            3,
+            9,
+            1,
+            8
           ],
-          "texture": "#clasp"
+          "texture": "#mantle"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            16,
-            16
+            5,
+            8,
+            3,
+            9
           ],
-          "texture": "#clasp"
+          "texture": "#mantle"
         }
       }
     }

@@ -109,7 +109,7 @@
 - **Визуал:** фиолетовый плащ с бирюзовой полосой по центру, золотая застёжка на груди.
 - **Файлы:**
   - иконка: `textures/item/mantle_of_reflection.png`;
-  - надетая модель: `models/item/worn/mantle_of_reflection.json`, текстуры `textures/item/worn/mantle.png`, `clasp.png`.
+  - надетая модель (готова, от дизайнера): `models/item/worn/mantle_of_reflection.json` (туловище), `mantle_of_reflection_hood.json` (голова), `_right_sleeve` / `_left_sleeve` (руки); текстура 64×64 `textures/item/worn/mantle_of_reflection.png`.
 - **Критерии приёмки:** плащ читается как ткань, полоса и застёжка различимы.
 
 ---

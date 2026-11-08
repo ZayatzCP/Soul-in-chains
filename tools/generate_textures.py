@@ -572,8 +572,6 @@ WORN_TEXTURES = {
     'boots': (['yyyyyyyyyyyyyyyy'] * 3 + ['vVvVvVvVvVvVvVvV', 'VvVvVvVvVvVvVvVv'] * 5 + ['dddddddddddddddd'] * 3, BOOTS_PAL),
     'ring': (['yYyYyYyYyYyYyYyY', 'YyYyYyYyYyYyYyYy'] * 8, RING_PAL),
     'gem': (['tTtTtTtTtTtTtTtT', 'TtTtTtTtTtTtTtTt'] * 8, RING_PAL),
-    'mantle': (['vVvVvVvVvVvVvVvV', 'VvVvVvVvVvVvVvVv'] * 6 + ['pvpvpvpvpvpvpvpv'] * 2 + ['tttttttttttttttt'] * 2, MANTLE_PAL),
-    'clasp': (['yYyYyYyYyYyYyYyY', 'YyYyYyYyYyYyYyYy'] * 8, MANTLE_PAL),
 }
 
 
