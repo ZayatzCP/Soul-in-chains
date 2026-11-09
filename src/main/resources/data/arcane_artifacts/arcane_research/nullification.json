@@ -4,7 +4,8 @@
   "sort": 80,
   "subjects": [
     "ars_nouveau:abjuration_essence",
-    "minecraft:milk_bucket"
+    "minecraft:milk_bucket",
+    "minecraft:sponge"
   ],
   "properties": [
     "nullifying",

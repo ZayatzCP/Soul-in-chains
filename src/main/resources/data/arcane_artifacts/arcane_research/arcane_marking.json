@@ -4,7 +4,8 @@
   "sort": 20,
   "subjects": [
     "minecraft:glow_ink_sac",
-    "minecraft:spectral_arrow"
+    "minecraft:spectral_arrow",
+    "minecraft:glowstone_dust"
   ],
   "properties": [
     "luminous",

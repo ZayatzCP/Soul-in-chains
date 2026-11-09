@@ -75,14 +75,21 @@ public final class ResearchGameTests {
         helper.assertTrue(gem.getCount() == 1, "Observation consumed the sample");
         helper.assertTrue(ResearchService.state(data, ROOT) == ResearchState.INVESTIGATING, "Root research not investigating");
 
-        // Stage II: experiments, each completed once, with alternatives.
-        // The third experiment does not count before the first two (they are done in order).
+        // Stage II: three experiments, each revealed by the next sample.
         ResearchService.fire(player, ResearchEvent.of(ResearchTriggers.SPELL_EFFECT)
                 .withGlyphs(Set.of(ResourceLocation.parse("ars_nouveau:glyph_heal"))).withEntity(EntityType.COW));
         helper.assertTrue(!data.entry(ROOT).done().contains("touch_life"), "An experiment was completed out of order");
         ResearchService.fire(player, ResearchEvent.of(ResearchTriggers.SPELL_CAST).withGlyphs(Set.of(ResourceLocation.parse("ars_nouveau:glyph_touch"))));
-        ResearchService.observe(player, new ItemStack(Items.LAPIS_LAZULI)); // the "compare" experiment's second alternative
-        helper.assertTrue(ResearchService.state(data, ROOT) == ResearchState.INVESTIGATING, "Completed before all experiments");
+        helper.assertTrue(data.entry(ROOT).done().contains("cast"), "First experiment not done");
+        ResearchService.observe(player, new ItemStack(Items.LAPIS_LAZULI));
+        helper.assertTrue(!data.entry(ROOT).done().contains("compare"), "The second experiment must wait for the second sample");
+        ResearchService.observe(player, new ItemStack(Items.AMETHYST_SHARD)); // second sample: reveals "compare"
+        ResearchService.observe(player, new ItemStack(Items.LAPIS_LAZULI));
+        helper.assertTrue(data.entry(ROOT).done().contains("compare"), "Second experiment not done after the second sample");
+        ResearchService.fire(player, ResearchEvent.of(ResearchTriggers.SPELL_EFFECT)
+                .withGlyphs(Set.of(ResourceLocation.parse("ars_nouveau:glyph_heal"))).withEntity(EntityType.COW));
+        helper.assertTrue(ResearchService.state(data, ROOT) == ResearchState.INVESTIGATING, "The third experiment must wait for the third sample");
+        ResearchService.observe(player, new ItemStack(Items.GLOWSTONE_DUST)); // third sample: reveals "touch_life"
         ResearchService.fire(player, ResearchEvent.of(ResearchTriggers.SPELL_EFFECT)
                 .withGlyphs(Set.of(ResourceLocation.parse("ars_nouveau:glyph_heal"))).withEntity(EntityType.COW));
 

@@ -208,18 +208,25 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                 y = paragraph(g, Component.translatable("arcane_artifacts.research_table.observe_hint"), x, y, PAGE_WIDTH, FADED, 4);
             } else {
                 PlayerResearch.Entry entry = data.entry(id);
-                boolean revealed = true;
-                for (ResearchDefinition.ExperimentDefinition experiment : def.experiments()) {
+                java.util.Set<String> doneSet = entry == null ? java.util.Set.of() : entry.done();
+                int pending = def.pendingSubject(doneSet);
+                for (int index = 0; index < def.experiments().size(); index++) {
                     if (y > 170) break;
-                    boolean done = entry != null && entry.done().contains(experiment.id());
-                    // Only the first unfinished experiment is readable; the ones after it stay hidden.
-                    MutableComponent line = Component.literal(done ? "✔ " : "○ ")
-                            .append(revealed ? Component.translatable(prefix + ".experiment." + experiment.id())
-                                    : Component.translatable("arcane_artifacts.research_table.hidden_experiment"));
-                    if (!done) {
-                        revealed = false;
+                    ResearchDefinition.ExperimentDefinition experiment = def.experiments().get(index);
+                    boolean done = doneSet.contains(experiment.id());
+                    Component text;
+                    int color = done ? 0x2E6B3A : INK;
+                    if (done || def.experimentAvailable(doneSet, index)) {
+                        text = Component.translatable(prefix + ".experiment." + experiment.id());
+                    } else if (index == pending) {
+                        // The next sample to study is revealed; the experiment behind it is not yet.
+                        text = Component.translatable("arcane_artifacts.research_table.observe_next", subjectName(def.subjects().get(index)));
+                        color = 0x1E6E9C;
+                    } else {
+                        text = Component.translatable("arcane_artifacts.research_table.hidden_experiment");
+                        color = FADED;
                     }
-                    y = paragraph(g, line, x, y, PAGE_WIDTH, done ? 0x2E6B3A : INK, 2);
+                    y = paragraph(g, Component.literal(done ? "✔ " : "○ ").append(text), x, y, PAGE_WIDTH, color, 2);
                 }
                 if (state.atLeast(ResearchState.PRINCIPLE) && y < 170) {
                     y = paragraph(g, Component.translatable(prefix + ".principle").withStyle(ChatFormatting.ITALIC), x, y + 2, PAGE_WIDTH, 0x5B1A8E, 4);
@@ -249,6 +256,18 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
 
     private ResearchState stateOf(PlayerResearch data, ResourceLocation id) {
         return ResearchService.state(data, id, ResearchService.glyphKnowledge(minecraft == null ? null : minecraft.player));
+    }
+
+    /** Display name of a research subject ("minecraft:shield" or "#minecraft:arrows"). */
+    private static Component subjectName(String subject) {
+        if (subject.startsWith("#")) {
+            var tag = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, ResourceLocation.parse(subject.substring(1)));
+            for (var holder : net.minecraft.core.registries.BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+                return holder.value().getDescription();
+            }
+            return Component.literal(subject);
+        }
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.parse(subject)).getDescription();
     }
 
     private static Component glyphName(ResourceLocation id) {

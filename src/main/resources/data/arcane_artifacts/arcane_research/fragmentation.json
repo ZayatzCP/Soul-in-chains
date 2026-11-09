@@ -4,7 +4,8 @@
   "sort": 30,
   "subjects": [
     "minecraft:amethyst_cluster",
-    "ars_nouveau:wilden_spike"
+    "ars_nouveau:wilden_spike",
+    "minecraft:tnt"
   ],
   "properties": [
     "brittle",

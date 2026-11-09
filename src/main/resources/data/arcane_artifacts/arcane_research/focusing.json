@@ -4,7 +4,8 @@
   "sort": 60,
   "subjects": [
     "ars_nouveau:spell_parchment",
-    "minecraft:leather"
+    "minecraft:leather",
+    "minecraft:lapis_lazuli"
   ],
   "properties": [
     "inscribable",

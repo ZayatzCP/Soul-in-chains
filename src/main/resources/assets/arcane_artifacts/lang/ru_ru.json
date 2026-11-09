@@ -125,7 +125,7 @@
   "arcane_artifacts.research.arcane_artifacts.source_resonance.title": "Резонанс Источника",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.description": "Исходные самоцветы гудят рядом с магией. Выясните, о чём они гудят.",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.cast": "Примените любое заклинание (любое, мы не привередливы)",
-  "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.compare": "Для сравнения изучите осколок аметиста или лазурит",
+  "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.compare": "Для сравнения изучите лазурит",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.touch_life": "Пусть заклинание коснётся живого существа",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.principle": "Источник — не топливо, а дорога: заклинания едут по нему и принимают форму того, чего касаются.",
   "arcane_artifacts.research.arcane_artifacts.trajectories.title": "Траектории",
@@ -487,7 +487,7 @@
   "arcane_artifacts.calm_ring.dragon": "Ох. Ох нет. ДРАКОН (%s). Я буду у тебя в кармане.",
   "arcane_artifacts.calm_ring.wither": "Иссушитель (%s). Чья это была идея? Твоя. Это была твоя идея.",
   "arcane_artifacts.calm_ring.other": "Рядом что-то враждебное (%s). Мне не нравится его лицо.",
-  "arcane_artifacts.page1.enchanted_poisonous_potato": "Восемь блоков розового золота вокруг одной ядовитой картофелины. Съешьте: Поглощение III, Поглощение магии III (щит в 12 единиц от магического урона), Регенерация II, Регенерация маны II, Урон заклинаний и - раз уж это всё та же картошка - несколько секунд Тошноты.",
+  "arcane_artifacts.page1.enchanted_poisonous_potato": "Восемь блоков розового золота вокруг одной ядовитой картофелины. Съешьте: Поглощение магии III (щит в 12 единиц от магического урона), Регенерация II, Регенерация маны II, Урон заклинаний и - раз уж это всё та же картошка - несколько секунд Тошноты.",
   "arcane_artifacts.lore.enchanted_poisonous_potato": "«Самая дорогая картошка в истории. Всё ещё немного ядовита. Из принципа». - Хеллмерус Морра",
   "arcane_artifacts.page1.gilded_pufferfish": "Восемь слитков розового золота вокруг иглобрюха. Съешьте: Подводное дыхание на 3 минуты, Грация дельфина, Сопротивление и короткая Тошнота. Колючки тоже позолочены.",
   "arcane_artifacts.lore.gilded_pufferfish": "«Золото не делает его менее колючим. Оно делает уколы дороже». - Хеллмерус Морра",
@@ -509,7 +509,9 @@
   "arcane_artifacts.research.arcane_artifacts.arcane_marking.experiment.light": "Осветите блок или существо глифом Свет",
   "arcane_artifacts.research.arcane_artifacts.fragmentation.experiment.blast": "Взорвите что-нибудь глифом Взрыв",
   "arcane_artifacts.research.arcane_artifacts.reflection.experiment.swap": "Поменяйтесь местами глифом Обмен",
-  "arcane_artifacts.research_table.hidden_experiment": "??? (сначала выполните задание выше)",
+  "arcane_artifacts.research_table.hidden_experiment": "??? (пока неизвестно)",
   "effect.arcane_artifacts.magic_absorption": "Поглощение магии",
-  "arcane_artifacts.effect_doc.magic_absorption": "Как Поглощение, но только для магии: щит по 4 единицы за уровень принимает магический урон (заклинания, зелья, Ars Nouveau) раньше вашего здоровья. Кончается, когда щит израсходован."
+  "arcane_artifacts.effect_doc.magic_absorption": "Как Поглощение, но только для магии: щит по 4 единицы за уровень принимает магический урон (заклинания, зелья, Ars Nouveau) раньше вашего здоровья. Кончается, когда щит израсходован.",
+  "arcane_artifacts.research.revealed": "Новый образец открывает следующее задание",
+  "arcane_artifacts.research_table.observe_next": "Изучите на столе: %s"
 }

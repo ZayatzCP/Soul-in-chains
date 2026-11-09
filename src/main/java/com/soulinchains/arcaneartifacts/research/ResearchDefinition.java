@@ -75,6 +75,41 @@ public record ResearchDefinition(NoteCategory category, Item icon, int sort, Lis
         return false;
     }
 
+    /** Whether the stack is the {@code index}-th subject (0 = the one that starts the research). */
+    public boolean isSubject(ItemStack stack, int index) {
+        return !stack.isEmpty() && index >= 0 && index < subjects.size() && ExperimentCondition.matchesItem(subjects.get(index), stack.getItem());
+    }
+
+    /** Marker stored with the done experiments once the {@code index}-th subject has been observed. */
+    public static String observedMarker(int index) {
+        return "#observed_" + index;
+    }
+
+    /**
+     * Experiments come in order and each one after the first needs the next subject observed first:
+     * the subject number {@code i} (from 0) is revealed when experiment {@code i - 1} is done, and
+     * observing it reveals experiment {@code i}.
+     */
+    public boolean experimentAvailable(java.util.Set<String> done, int index) {
+        if (index == 0) {
+            return true;
+        }
+        if (!done.contains(experiments.get(index - 1).id())) {
+            return false;
+        }
+        return index >= subjects.size() || done.contains(observedMarker(index));
+    }
+
+    /** The subject the player must observe next, or -1 if none is waiting. */
+    public int pendingSubject(java.util.Set<String> done) {
+        for (int i = 1; i < experiments.size() && i < subjects.size(); i++) {
+            if (done.contains(experiments.get(i - 1).id()) && !done.contains(observedMarker(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static String langPrefix(ResourceLocation id) {
         return "arcane_artifacts.research." + id.getNamespace() + "." + id.getPath().replace('/', '.');
     }

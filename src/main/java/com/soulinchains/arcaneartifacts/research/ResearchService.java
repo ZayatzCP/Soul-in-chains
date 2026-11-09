@@ -90,8 +90,20 @@ public final class ResearchService {
     public static List<ResourceLocation> researchesFor(PlayerResearch data, ItemStack stack) {
         List<ResourceLocation> result = new ArrayList<>();
         for (Map.Entry<ResourceLocation, ResearchDefinition> e : ResearchManager.all().entrySet()) {
-            if (e.getValue().isSubject(stack)) {
+            ResearchDefinition def = e.getValue();
+            if (def.isSubject(stack, 0)) {
                 result.add(e.getKey());
+                continue;
+            }
+            // Later subjects only count once they have been revealed by the experiments.
+            PlayerResearch.Entry entry = data.entry(e.getKey());
+            if (entry != null) {
+                for (int i = 1; i < def.subjects().size(); i++) {
+                    if (def.isSubject(stack, i) && i <= def.experiments().size() && entry.done().contains(def.experiments().get(i - 1).id())) {
+                        result.add(e.getKey());
+                        break;
+                    }
+                }
             }
         }
         return result;
@@ -110,14 +122,29 @@ public final class ResearchService {
         Predicate<ResourceLocation> knows = glyphKnowledge(player);
         int started = 0;
         boolean locked = false;
+        int revealed = 0;
         for (ResourceLocation id : researchesFor(data, stack)) {
             ResearchState state = state(data, id, knows);
-            if (state == ResearchState.DISCOVERED) {
+            ResearchDefinition def = ResearchManager.get(id);
+            if (state == ResearchState.INVESTIGATING && def != null) {
+                // The next subject of a research in progress reveals its next experiment.
+                int pending = def.pendingSubject(data.entry(id).done());
+                if (pending > 0 && def.isSubject(stack, pending)) {
+                    data.markDone(id, ResearchDefinition.observedMarker(pending));
+                    revealed++;
+                }
+                continue;
+            }
+            if (state == ResearchState.DISCOVERED && def != null && def.isSubject(stack, 0)) {
                 data.setState(id, ResearchState.INVESTIGATING);
                 started++;
             } else if (state == ResearchState.UNKNOWN) {
                 locked = true;
             }
+        }
+        if (revealed > 0) {
+            player.displayClientMessage(Component.translatable("arcane_artifacts.research.revealed").withStyle(ChatFormatting.LIGHT_PURPLE), true);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1f, 1.3f);
         }
         if (started > 0) {
             player.displayClientMessage(Component.translatable("arcane_artifacts.research.started", started).withStyle(ChatFormatting.LIGHT_PURPLE), true);
@@ -148,11 +175,12 @@ public final class ResearchService {
                 continue;
             }
             // Experiments are done in order: the next one is revealed only when the previous one is done.
-            for (ResearchDefinition.ExperimentDefinition experiment : def.experiments()) {
+            for (int index = 0; index < def.experiments().size(); index++) {
+                ResearchDefinition.ExperimentDefinition experiment = def.experiments().get(index);
                 if (e.getValue().done().contains(experiment.id())) {
                     continue;
                 }
-                if (!experiment.matches(event)) {
+                if (!def.experimentAvailable(e.getValue().done(), index) || !experiment.matches(event)) {
                     break;
                 }
                 {

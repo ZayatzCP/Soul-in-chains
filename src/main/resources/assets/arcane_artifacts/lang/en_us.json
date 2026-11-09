@@ -125,7 +125,7 @@
   "arcane_artifacts.research.arcane_artifacts.source_resonance.title": "Source Resonance",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.description": "Source gems hum when magic is near. Find out what they are humming about.",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.cast": "Cast any spell (any at all, we are not picky)",
-  "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.compare": "Observe an amethyst shard or lapis lazuli for comparison",
+  "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.compare": "Observe lapis lazuli for comparison",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.experiment.touch_life": "Let a spell touch a living creature",
   "arcane_artifacts.research.arcane_artifacts.source_resonance.principle": "Source is not fuel, it is a road: spells travel along it and take the shape of what they touch.",
   "arcane_artifacts.research.arcane_artifacts.trajectories.title": "Trajectories",
@@ -487,7 +487,7 @@
   "arcane_artifacts.calm_ring.dragon": "Oh. Oh no. The DRAGON (%s). I will be in your pocket.",
   "arcane_artifacts.calm_ring.wither": "The Wither (%s). Whose idea was this? Yours. It was yours.",
   "arcane_artifacts.calm_ring.other": "Something hostile is near (%s). I do not like its face.",
-  "arcane_artifacts.page1.enchanted_poisonous_potato": "Eight blocks of rose gold around one poisonous potato. Eat it: Absorption III, Magic Absorption III (a 12-point shield against magic damage), Regeneration II, Mana Regeneration II, Spell Damage and, because it is still that potato, a few seconds of Nausea.",
+  "arcane_artifacts.page1.enchanted_poisonous_potato": "Eight blocks of rose gold around one poisonous potato. Eat it: Magic Absorption III (a 12-point shield against magic damage), Regeneration II, Mana Regeneration II, Spell Damage and, because it is still that potato, a few seconds of Nausea.",
   "arcane_artifacts.lore.enchanted_poisonous_potato": "\"The most expensive potato in history. Still poisonous, a little. Out of principle.\" - Hellmerus Morra",
   "arcane_artifacts.page1.gilded_pufferfish": "Eight rose gold ingots around a pufferfish. Eat it: Water Breathing for 3 minutes, Dolphin's Grace, Resistance and a short Nausea. The spikes are gilded too.",
   "arcane_artifacts.lore.gilded_pufferfish": "\"Gold does not make it less spiky. It makes it more expensive to be spiked by.\" - Hellmerus Morra",
@@ -509,7 +509,9 @@
   "arcane_artifacts.research.arcane_artifacts.arcane_marking.experiment.light": "Shine Light on a block or a creature",
   "arcane_artifacts.research.arcane_artifacts.fragmentation.experiment.blast": "Blow something up with Explosion",
   "arcane_artifacts.research.arcane_artifacts.reflection.experiment.swap": "Trade places with Exchange",
-  "arcane_artifacts.research_table.hidden_experiment": "??? (finish the experiment above)",
+  "arcane_artifacts.research_table.hidden_experiment": "??? (unknown yet)",
   "effect.arcane_artifacts.magic_absorption": "Magic Absorption",
-  "arcane_artifacts.effect_doc.magic_absorption": "Like Absorption, but only for magic: a shield of 4 points per level soaks up magic damage (spells, potions, Ars Nouveau) before your health does. Ends when the shield is used up."
+  "arcane_artifacts.effect_doc.magic_absorption": "Like Absorption, but only for magic: a shield of 4 points per level soaks up magic damage (spells, potions, Ars Nouveau) before your health does. Ends when the shield is used up.",
+  "arcane_artifacts.research.revealed": "A new sample reveals the next experiment",
+  "arcane_artifacts.research_table.observe_next": "Study at the table: %s"
 }

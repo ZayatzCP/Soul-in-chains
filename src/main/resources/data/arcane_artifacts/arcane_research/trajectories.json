@@ -4,7 +4,8 @@
   "sort": 10,
   "subjects": [
     "#minecraft:arrows",
-    "minecraft:ender_eye"
+    "minecraft:ender_eye",
+    "minecraft:feather"
   ],
   "properties": [
     "ballistic",

@@ -4,7 +4,8 @@
   "sort": 0,
   "subjects": [
     "ars_nouveau:source_gem",
-    "minecraft:amethyst_shard"
+    "minecraft:amethyst_shard",
+    "minecraft:glowstone_dust"
   ],
   "properties": [
     "resonant",
@@ -22,10 +23,6 @@
     {
       "id": "compare",
       "any_of": [
-        {
-          "trigger": "arcane_artifacts:observe",
-          "item": "minecraft:amethyst_shard"
-        },
         {
           "trigger": "arcane_artifacts:observe",
           "item": "minecraft:lapis_lazuli"
