@@ -57,7 +57,7 @@ public final class WornModels {
         // crown of the head; turnY faces it the other way round.
         ATTACHMENTS.put(ModItems.WREATH_OF_MANIPULATION, List.of(
                 new Attachment(BodyPart.HEAD, ArcaneArtifacts.id("item/worn/wreath_of_manipulation"),
-                        new Placement(7f, -2.81233f, 8.56392f, -105f, 0f, -180f, 1f, 19.0f, -0.56f, true, 180f))));
+                        new Placement(7f, -2.81233f, 8.56392f, -105f, 0f, -180f, 1f, 20.2f, -0.56f, true, 180f))));
         ATTACHMENTS.put(ModItems.FOCUSING_BOOTS, List.of(
                 worn(BodyPart.RIGHT_LEG, "focusing_boots_right"),
                 worn(BodyPart.LEFT_LEG, "focusing_boots_left")));
@@ -68,6 +68,10 @@ public final class WornModels {
                 worn(BodyPart.HEAD, "mantle_of_reflection_hood"),
                 worn(BodyPart.RIGHT_ARM, "mantle_of_reflection_right_sleeve"),
                 worn(BodyPart.LEFT_ARM, "mantle_of_reflection_left_sleeve")));
+        ATTACHMENTS.put(ModItems.HOP_SLIPPERS, List.of(
+                worn(BodyPart.RIGHT_LEG, "hop_slippers_right"),
+                worn(BodyPart.LEFT_LEG, "hop_slippers_left")));
+        ATTACHMENTS.put(ModItems.RING_OF_CALM, List.of(worn(BodyPart.RIGHT_ARM, "ring_of_calm")));
         ATTACHMENTS.put(ModItems.BOTTOMLESS_BELT, List.of(worn(BodyPart.BODY, "bottomless_belt")));
         // The worn amulet follows its polarity, like the icon.
         ATTACHMENTS.put(ModItems.AMULET_OF_OPPOSITES, List.of(

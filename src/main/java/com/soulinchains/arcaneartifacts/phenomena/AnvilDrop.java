@@ -38,6 +38,7 @@ public final class AnvilDrop implements Phenomena.Phenomenon, Phenomena.Located 
     private final float damage;
     private final double radius;
     private final float size;
+    private final boolean bonk;
     private final TimelineEntryData impact;
     private final ParticleEmitter trail;
     private final @Nullable Display.BlockDisplay display;
@@ -46,7 +47,8 @@ public final class AnvilDrop implements Phenomena.Phenomenon, Phenomena.Located 
     private int ticks;
 
     public AnvilDrop(ServerLevel level, UUID owner, Vec3 target, float damage, double radius, float size,
-                     TimelineEntryData trailStyle, TimelineEntryData impactStyle) {
+                     boolean bonk, TimelineEntryData trailStyle, TimelineEntryData impactStyle) {
+        this.bonk = bonk;
         this.level = level;
         this.owner = owner;
         this.target = target;
@@ -132,7 +134,12 @@ public final class AnvilDrop implements Phenomena.Phenomenon, Phenomena.Located 
             }
             // Directly under the anvil: full damage; caught by the shockwave: half, like a mace slam.
             float dealt = distance <= 1.2 ? damage : damage * 0.5f;
-            living.hurt(source, dealt);
+            if (dealt > 0) {
+                living.hurt(source, dealt);
+            }
+            if (bonk) {
+                com.soulinchains.arcaneartifacts.effect.Bonk.apply(living, com.soulinchains.arcaneartifacts.effect.Bonk.DEFAULT_TICKS);
+            }
             Vec3 push = living.position().subtract(target).multiply(1, 0, 1);
             push = push.lengthSqr() > 1.0E-4 ? push.normalize().scale(0.6) : Vec3.ZERO;
             living.push(push.x, 0.45, push.z);

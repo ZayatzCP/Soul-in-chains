@@ -30,7 +30,13 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SPELL_STAFF.get());
                 output.accept(ModItems.BOTTOMLESS_BELT.get());
                 output.accept(ModItems.AMULET_OF_OPPOSITES.get());
-                output.accept(ModItems.SPELL_QUIVER.get());
+                output.accept(ModItems.RING_OF_CALM.get());
+                output.accept(ModItems.HOP_SLIPPERS.get());
+                output.accept(ModItems.MIRROR_SHIELD.get());
+                output.accept(ModItems.FOCUSING_SHIELD.get());
+                output.accept(ModItems.ENCHANTED_POISONOUS_POTATO.get());
+                output.accept(ModItems.GILDED_PUFFERFISH.get());
+                output.accept(ModItems.GILDED_FERMENTED_SPIDER_EYE.get());
                 output.accept(ModItems.OATH_SCROLL.get());
                 output.accept(ModItems.HEART_CHARM.get());
                 output.accept(ModItems.DIAMOND_CHARM.get());

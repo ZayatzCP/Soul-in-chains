@@ -52,6 +52,7 @@
   "unlocks_items": [
     "arcane_artifacts:focusing_boots",
     "arcane_artifacts:focusing_gloves",
-    "arcane_artifacts:spell_staff"
+    "arcane_artifacts:spell_staff",
+    "arcane_artifacts:focusing_shield"
   ]
 }

@@ -75,7 +75,7 @@ public final class MantleHandler {
         return !projectile.getType().is(ModTags.UNREFLECTABLE_PROJECTILES);
     }
 
-    private static void reflect(Projectile projectile, Player wearer, @Nullable LivingEntity caster) {
+    public static void reflect(Projectile projectile, Player wearer, @Nullable LivingEntity caster) {
         Vec3 velocity = projectile.getDeltaMovement();
         double speed = Math.max(velocity.length(), 0.3);
         Vec3 back = velocity.lengthSqr() > 1.0E-6 ? velocity.scale(-1).normalize() : wearer.getLookAngle();

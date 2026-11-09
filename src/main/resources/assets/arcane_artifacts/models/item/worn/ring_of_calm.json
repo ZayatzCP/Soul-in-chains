@@ -1,0 +1,77 @@
+{
+  "credit": "Designer's Blockbench model, converted to the worn-model convention (joint at 8,8,8)",
+  "textures": {
+    "ring": "arcane_artifacts:item/worn/ring_of_calm_3d",
+    "particle": "arcane_artifacts:item/worn/ring_of_calm_3d"
+  },
+  "elements": [
+    {
+      "from": [
+        9.5,
+        -3.25,
+        7.75
+      ],
+      "to": [
+        11.5,
+        -1.25,
+        9.75
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.5,
+            1,
+            1,
+            2
+          ],
+          "texture": "#ring"
+        },
+        "east": {
+          "uv": [
+            0,
+            2,
+            2,
+            4
+          ],
+          "texture": "#ring"
+        },
+        "south": {
+          "uv": [
+            1.5,
+            1,
+            2,
+            2
+          ],
+          "texture": "#ring"
+        },
+        "west": {
+          "uv": [
+            4,
+            2,
+            6,
+            4
+          ],
+          "texture": "#ring"
+        },
+        "up": {
+          "uv": [
+            1,
+            1,
+            0.5,
+            0
+          ],
+          "texture": "#ring"
+        },
+        "down": {
+          "uv": [
+            1.5,
+            0,
+            1,
+            1
+          ],
+          "texture": "#ring"
+        }
+      }
+    }
+  ]
+}

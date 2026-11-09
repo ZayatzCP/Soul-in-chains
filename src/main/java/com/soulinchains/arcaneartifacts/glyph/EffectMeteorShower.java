@@ -37,7 +37,7 @@ public class EffectMeteorShower extends AreaEffect {
     protected void resolveAt(ServerLevel level, Vec3 point, @Nullable Entity target, LivingEntity shooter, SpellStats stats, SpellContext context) {
         int count = Math.max(1, Config.METEOR_COUNT.get() + 2 * (int) Math.round(stats.getAoeMultiplier()));
         double spread = 2.5 + 1.5 * Math.max(0, stats.getAoeMultiplier());
-        float damage = (float) Math.max(1.0, Config.METEOR_DAMAGE.get() + 2.0 * stats.getAmpMultiplier());
+        float damage = com.soulinchains.arcaneartifacts.effect.MagicHandler.isHarmless(context) ? 0f : (float) Math.max(1.0, Config.METEOR_DAMAGE.get() + 2.0 * stats.getAmpMultiplier());
         var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.METEOR_SHOWER);
         Phenomena.add(new com.soulinchains.arcaneartifacts.phenomena.AreaMarker(level, shooter.getUUID(), point.subtract(0, 0.4, 0), spread + 2.5, count * 6 + 30, style.impact));
         for (int i = 0; i < count; i++) {

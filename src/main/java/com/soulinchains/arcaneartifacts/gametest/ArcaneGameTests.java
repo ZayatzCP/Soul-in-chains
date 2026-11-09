@@ -124,9 +124,11 @@ public final class ArcaneGameTests {
                 "glyph_arcane_missile", "glyph_arcane_mark", "glyph_parasitism", "glyph_shrapnel", "glyph_pursuit",
                 "glyph_beam", "glyph_black_hole", "glyph_tornado", "glyph_weather_shift", "glyph_counterspell",
                 "glyph_meteor_shower", "glyph_time_warp", "old_parchment", "researcher_notebook", "research_table",
-                "spell_staff", "bottomless_belt", "amulet_of_opposites", "spell_quiver",
+                "spell_staff", "bottomless_belt", "amulet_of_opposites",
                 "glyph_anvil_drop", "glyph_satiety", "rose_gold_block", "rose_gold_nugget", "rose_gold_ingot_from_block",
-                "rose_gold_ingot_from_nuggets", "oath_scroll", "heart_charm", "diamond_charm", "club_charm", "spade_charm")) {
+                "rose_gold_ingot_from_nuggets", "oath_scroll", "heart_charm", "diamond_charm", "club_charm", "spade_charm",
+                "enchanted_poisonous_potato", "gilded_pufferfish", "gilded_fermented_spider_eye", "glyph_pity", "glyph_cupid",
+                "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -427,17 +429,6 @@ public final class ArcaneGameTests {
     // ------------------------------------------------------------------ new items
 
     @GameTest(template = ARENA)
-    public static void quiverAddsTwoDampen(GameTestHelper helper) {
-        Spell stored = new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE, com.hollingsworth.arsnouveau.common.spell.augment.AugmentAmplify.INSTANCE);
-        Spell arrow = com.soulinchains.arcaneartifacts.accessory.SpellQuiverItem.arrowSpell(stored);
-        long dampen = arrow.unsafeList().stream().filter(p -> p == com.hollingsworth.arsnouveau.common.spell.augment.AugmentDampen.INSTANCE).count();
-        helper.assertTrue(arrow.getCastMethod() == null, "The form must be removed, got " + arrow.getDisplayString());
-        helper.assertTrue(dampen == 2, "Expected two Dampen, got " + dampen + " in " + arrow.getDisplayString());
-        helper.assertTrue(arrow.unsafeList().get(0) == EffectHarm.INSTANCE && arrow.unsafeList().size() == 4, "Unexpected arrow spell " + arrow.getDisplayString());
-        helper.succeed();
-    }
-
-    @GameTest(template = ARENA)
     public static void beltPouchesStackAnyAmount(GameTestHelper helper) {
         var contents = com.soulinchains.arcaneartifacts.belt.BeltContents.EMPTY;
         ItemStack cobble = new ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 64);
@@ -478,7 +469,7 @@ public final class ArcaneGameTests {
         Husk victim = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(4, 1, 4));
         var style = com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.ANVIL_DROP);
         Phenomena.add(new com.soulinchains.arcaneartifacts.phenomena.AnvilDrop(level, java.util.UUID.randomUUID(), victim.position(),
-                60f, 0, 1f, style.main, style.impact));
+                60f, 0, 1f, false, style.main, style.impact));
         helper.succeedWhen(() -> helper.assertTrue(!victim.isAlive(), "The anvil has not crushed the husk yet"));
     }
 
@@ -511,5 +502,58 @@ public final class ArcaneGameTests {
             helper.assertTrue(!com.soulinchains.arcaneartifacts.team.TeamHandler.sworn(first, stranger), "A stranger must not be sworn");
             helper.succeed();
         });
+    }
+
+    // ------------------------------------------------------------------ batch 4
+
+    @GameTest(template = ARENA)
+    public static void pityWeakensSpells(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(com.soulinchains.arcaneartifacts.registry.ModEffects.PITY, 200));
+        SpellContext context = new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player));
+        var stats = new com.hollingsworth.arsnouveau.api.spell.SpellStats.Builder().build(EffectHarm.INSTANCE, null, level, player, context);
+        helper.assertTrue(stats.getAmpMultiplier() == -2.0, "Pity must act like two Dampen, got " + stats.getAmpMultiplier());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void bonkStunsAndCannotBeExtended(GameTestHelper helper) {
+        Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(4, 1, 4));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.effect.Bonk.apply(husk, 160), "BONK! was not applied");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.effect.Bonk.apply(husk, 160), "A running BONK! must not be extended");
+        var bonk = husk.getEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.BONK);
+        helper.assertTrue(bonk != null && bonk.getDuration() == 160, "BONK! must last 8 seconds");
+        helper.assertTrue(husk.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED) == 0.0, "A bonked creature must not move");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void harmlessFitsEveryEffect(GameTestHelper helper) {
+        helper.assertTrue(EffectHarm.INSTANCE.compatibleAugments.contains(com.soulinchains.arcaneartifacts.glyph.AugmentHarmless.INSTANCE), "Harm must accept Harmless");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.glyph.EffectCupid.INSTANCE.compatibleAugments.contains(com.soulinchains.arcaneartifacts.glyph.AugmentHarmless.INSTANCE)
+                && com.soulinchains.arcaneartifacts.glyph.EffectCupid.INSTANCE.compatibleAugments.isEmpty(), "Cupid takes no augments");
+        Player caster = player(helper, 4.5, 1, 4.5);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.effect.MagicHandler.isHarmless(new SpellContext(helper.getLevel(),
+                new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE, com.soulinchains.arcaneartifacts.glyph.AugmentHarmless.INSTANCE),
+                caster, LivingCaster.from(caster))), "Harmless spell not recognised");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void calmRingKnowsItsMonsters(GameTestHelper helper) {
+        var creeper = helper.spawnWithNoFreeWill(EntityType.CREEPER, new BlockPos(3, 1, 3));
+        var zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(5, 1, 5));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.category(creeper).equals("explosive"), "Creeper is not explosive");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.category(zombie).equals("undead"), "Zombie is not undead");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void enchantmentsAreRegistered(GameTestHelper helper) {
+        var registry = helper.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        helper.assertTrue(registry.getHolder(com.soulinchains.arcaneartifacts.effect.Bonk.HARD_HAT).isPresent(), "Hard Hat missing");
+        helper.assertTrue(registry.getHolder(com.soulinchains.arcaneartifacts.enchant.HeavyProjectile.KEY).isPresent(), "Heavy Projectile missing");
+        helper.succeed();
     }
 }

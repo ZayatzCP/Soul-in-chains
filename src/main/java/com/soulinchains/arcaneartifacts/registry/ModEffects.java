@@ -38,6 +38,13 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> WELL_FED = REGISTER.register("well_fed",
             com.soulinchains.arcaneartifacts.effect.WellFedEffect::new);
 
+    /** Pity (glyph, gilded spider eye, after a Battle Rush): every spell is weakened like two Dampen per level. */
+    public static final DeferredHolder<MobEffect, MobEffect> PITY = REGISTER.register("pity",
+            () -> new ArcaneStatusEffect(MobEffectCategory.HARMFUL, 0x8C9A5B, true));
+    /** BONK! The creature cannot move, jump or turn. Not curable and never extended. */
+    public static final DeferredHolder<MobEffect, MobEffect> BONK = REGISTER.register("bonk",
+            com.soulinchains.arcaneartifacts.effect.BonkEffect::new);
+
     private ModEffects() {
     }
 }

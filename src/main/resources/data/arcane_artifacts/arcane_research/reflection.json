@@ -50,6 +50,8 @@
     "spatial": 2
   },
   "unlocks_items": [
-    "arcane_artifacts:mantle_of_reflection"
+    "arcane_artifacts:mantle_of_reflection",
+    "arcane_artifacts:mirror_shield",
+    "arcane_artifacts:ring_of_calm"
   ]
 }

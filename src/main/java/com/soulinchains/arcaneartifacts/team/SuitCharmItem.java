@@ -47,7 +47,10 @@ public class SuitCharmItem extends ArcaneAccessoryItem {
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, ResourceLocation id, ItemStack stack) {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = LinkedHashMultimap.create();
         if (TeamBond.of(stack) != null && !slotContext.cosmetic()) {
-            modifiers.put(suit.attribute(), new AttributeModifier(id, suit.amount(), AttributeModifier.Operation.ADD_VALUE));
+            int i = 0;
+            for (Suit.Bonus bonus : suit.bonuses()) {
+                modifiers.put(bonus.attribute().get(), new AttributeModifier(id.withSuffix("_" + i++), bonus.amount(), bonus.operation()));
+            }
         }
         return modifiers;
     }

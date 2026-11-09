@@ -54,7 +54,13 @@ final class NotebookContent {
         entries.add(gatedItemEntry(font, ModItems.SPELL_STAFF.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.BOTTOMLESS_BELT.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.AMULET_OF_OPPOSITES.get(), 2, lockedItems));
-        entries.add(gatedItemEntry(font, ModItems.SPELL_QUIVER.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.RING_OF_CALM.get(), 2, lockedItems));
+        entries.add(itemEntry(font, ModItems.HOP_SLIPPERS.get(), 1));
+        entries.add(gatedItemEntry(font, ModItems.MIRROR_SHIELD.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.FOCUSING_SHIELD.get(), 2, lockedItems));
+        entries.add(itemEntry(font, ModItems.ENCHANTED_POISONOUS_POTATO.get(), 1));
+        entries.add(itemEntry(font, ModItems.GILDED_PUFFERFISH.get(), 1));
+        entries.add(itemEntry(font, ModItems.GILDED_FERMENTED_SPIDER_EYE.get(), 1));
         entries.add(gatedItemEntry(font, ModItems.OATH_SCROLL.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.HEART_CHARM.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.DIAMOND_CHARM.get(), 1, lockedItems));
@@ -63,12 +69,15 @@ final class NotebookContent {
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
-        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed"}) {
+        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk"}) {
             effects.add(new Paragraph(Component.translatable("effect.arcane_artifacts." + effect).withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
             effects.add(new Paragraph(Component.translatable("arcane_artifacts.effect_doc." + effect), ArcaneNotebookScreen.INK_COLOR));
         }
         entries.add(new NotebookEntry(Component.translatable("arcane_artifacts.page.status_effects"),
                 new ItemStack(ModItems.WREATH_OF_MANIPULATION.get()), paginate(font, Component.translatable("arcane_artifacts.page.status_effects"), effects)));
+
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.enchantments"),
+                new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK), "enchantments", 2, null));
 
         Set<ResourceLocation> locked = ArcaneDocumentation.lockedGlyphs();
         for (AbstractSpellPart part : ArcaneGlyphs.ALL) {

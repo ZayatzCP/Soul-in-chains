@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NNN",
+    "NEN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "arcane_artifacts:rose_gold_nugget"
+    },
+    "E": {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:gilded_fermented_spider_eye"
+  }
+}

@@ -62,8 +62,5 @@
   ],
   "requires_glyphs": [
     "ars_nouveau:glyph_projectile"
-  ],
-  "unlocks_items": [
-    "arcane_artifacts:spell_quiver"
   ]
 }

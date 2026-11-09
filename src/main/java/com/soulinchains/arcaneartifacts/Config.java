@@ -71,6 +71,8 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue ANVIL_DAMAGE;
     public static final ModConfigSpec.DoubleValue ANVIL_HEAVY_DAMAGE;
     public static final ModConfigSpec.IntValue SATIETY_SECONDS;
+    public static final ModConfigSpec.IntValue PITY_SECONDS;
+    public static final ModConfigSpec.DoubleValue ANVIL_BONK_DAMAGE;
 
     // Research
     public static final ModConfigSpec.BooleanValue RESEARCH_GATES_GLYPHS;
@@ -166,6 +168,8 @@ public final class Config {
         ANVIL_DAMAGE = b.defineInRange("anvil_damage", 60.0, 0.0, 10000.0);
         ANVIL_HEAVY_DAMAGE = b.comment("Anvil Drop damage with Amplify.").defineInRange("anvil_heavy_damage", 120.0, 0.0, 10000.0);
         SATIETY_SECONDS = b.defineInRange("satiety_seconds", 60, 10, 36000);
+        PITY_SECONDS = b.defineInRange("pity_seconds", 20, 1, 3600);
+        ANVIL_BONK_DAMAGE = b.comment("Anvil Drop damage with Extend Time (it stuns with BONK! instead).").defineInRange("anvil_bonk_damage", 12.0, 0.0, 10000.0);
         b.pop();
 
         b.push("research");

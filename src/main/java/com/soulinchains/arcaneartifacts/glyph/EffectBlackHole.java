@@ -40,7 +40,7 @@ public class EffectBlackHole extends AreaEffect {
     protected void resolveAt(ServerLevel level, Vec3 point, @Nullable Entity target, LivingEntity shooter, SpellStats stats, SpellContext context) {
         double radius = Math.max(2.0, Config.BLACK_HOLE_RADIUS.get() + 2.0 * stats.getAoeMultiplier());
         int duration = Math.max(20, Config.BLACK_HOLE_SECONDS.get() * 20 + stats.getDurationInTicks() * 2);
-        float damage = (float) Math.max(0.0, Config.BLACK_HOLE_DAMAGE.get() + 1.5 * stats.getAmpMultiplier());
+        float damage = com.soulinchains.arcaneartifacts.effect.MagicHandler.isHarmless(context) ? 0f : (float) Math.max(0.0, Config.BLACK_HOLE_DAMAGE.get() + 1.5 * stats.getAmpMultiplier());
         double strength = Math.max(0.05, 0.22 + 0.05 * stats.getAmpMultiplier());
         var style = com.soulinchains.arcaneartifacts.fx.Fx.timeline(context, com.soulinchains.arcaneartifacts.fx.ModTimelines.BLACK_HOLE);
         Phenomena.add(new Vortex(level, shooter.getUUID(), Vortex.Kind.BLACK_HOLE, point, radius, duration, damage, strength, style.main, style.impact));

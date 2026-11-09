@@ -1,0 +1,76 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "arcane_artifacts:item/focusing_shield"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        45,
+        135,
+        0
+      ],
+      "translation": [
+        3.5,
+        0,
+        2
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        45,
+        135,
+        0
+      ],
+      "translation": [
+        3.5,
+        0,
+        2
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        -90,
+        -5
+      ],
+      "translation": [
+        -2,
+        3,
+        -2
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        -5
+      ],
+      "translation": [
+        -2,
+        3,
+        -2
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  }
+}

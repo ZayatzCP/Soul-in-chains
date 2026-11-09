@@ -8,6 +8,7 @@ import com.hollingsworth.arsnouveau.api.spell.SpellStats;
 import com.hollingsworth.arsnouveau.api.spell.SpellTier;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAOE;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAmplify;
+import com.hollingsworth.arsnouveau.common.spell.augment.AugmentExtendTime;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.Config;
 import com.soulinchains.arcaneartifacts.fx.Fx;
@@ -46,8 +47,15 @@ public class EffectAnvilDrop extends AreaEffect {
         float damage = (float) (heavy ? Config.ANVIL_HEAVY_DAMAGE.getAsDouble() : Config.ANVIL_DAMAGE.getAsDouble());
         double radius = aoe == 0 ? 0 : 1.5 + 1.5 * aoe;
         float size = 1.0f + 0.6f * aoe + (heavy ? 0.4f : 0f);
+        boolean bonk = stats.getDurationMultiplier() > 0 || context.getSpell().unsafeList().contains(AugmentExtendTime.INSTANCE);
+        if (bonk) {
+            damage = (float) Config.ANVIL_BONK_DAMAGE.getAsDouble();
+        }
+        if (com.soulinchains.arcaneartifacts.effect.MagicHandler.isHarmless(context)) {
+            damage = 0f;
+        }
         var style = Fx.timeline(context, ModTimelines.ANVIL_DROP);
-        Phenomena.add(new AnvilDrop(level, shooter.getUUID(), ground, damage, radius, size, style.main, style.impact));
+        Phenomena.add(new AnvilDrop(level, shooter.getUUID(), ground, damage, radius, size, bonk, style.main, style.impact));
     }
 
     /** The floor under a point (up to 8 blocks down). */
@@ -69,7 +77,7 @@ public class EffectAnvilDrop extends AreaEffect {
     @NotNull
     @Override
     public Set<AbstractAugment> getCompatibleAugments() {
-        return augmentSetOf(AugmentAOE.INSTANCE, AugmentAmplify.INSTANCE);
+        return augmentSetOf(AugmentAOE.INSTANCE, AugmentAmplify.INSTANCE, AugmentExtendTime.INSTANCE);
     }
 
     @Override
@@ -77,6 +85,7 @@ public class EffectAnvilDrop extends AreaEffect {
         super.addAugmentDescriptions(map);
         map.put(AugmentAOE.INSTANCE, "A bigger anvil and a slam that hits everything around (half damage).");
         map.put(AugmentAmplify.INSTANCE, "A very heavy anvil: 120 damage instead of 60.");
+        map.put(AugmentExtendTime.INSTANCE, "BONK! Only 12 damage, but the target is stunned for 8 seconds.");
     }
 
     @Override

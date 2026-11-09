@@ -3,36 +3,36 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "minecraft:leather"
-    },
-    {
-      "item": "minecraft:leather"
-    },
-    {
       "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
       "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
-      "item": "ars_nouveau:spell_parchment"
+      "item": "arcane_artifacts:rose_gold_ingot"
     },
     {
       "item": "ars_nouveau:source_gem"
     },
     {
-      "item": "ars_nouveau:glyph_dampen"
+      "item": "ars_nouveau:source_gem"
     },
     {
-      "item": "ars_nouveau:glyph_dampen"
+      "item": "ars_nouveau:spell_parchment"
+    },
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
     }
   ],
   "reagent": {
-    "item": "minecraft:bow"
+    "item": "minecraft:shield"
   },
   "result": {
     "count": 1,
-    "id": "arcane_artifacts:spell_quiver"
+    "id": "arcane_artifacts:focusing_shield"
   },
-  "sourceCost": 6000
+  "sourceCost": 9000
 }

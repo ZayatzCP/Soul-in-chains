@@ -46,6 +46,13 @@ public class WreathOfManipulationItem extends ArcaneAccessoryItem {
         if (level.isClientSide || slotContext.cosmetic() || !(wearer instanceof Player player) || level.getGameTime() % 5 != 0) {
             return;
         }
+        if (!player.hasEffect(ModEffects.BATTLE_RUSH) && !player.hasEffect(ModEffects.PITY)) {
+            // After the rush, Pity weighs on every spell for as long as the cooldown lasts.
+            var exhaustion = player.getEffect(ModEffects.RUSH_EXHAUSTION);
+            if (exhaustion != null && exhaustion.getDuration() > 5) {
+                player.addEffect(new MobEffectInstance(ModEffects.PITY, exhaustion.getDuration(), 0, false, true, true));
+            }
+        }
         if (player.hasEffect(ModEffects.BATTLE_RUSH) || player.hasEffect(ModEffects.RUSH_EXHAUSTION) || !isManaDepleted(player)) {
             return;
         }

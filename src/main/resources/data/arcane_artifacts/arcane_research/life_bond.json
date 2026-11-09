@@ -60,7 +60,8 @@
   },
   "unlocks": [
     "arcane_artifacts:glyph_parasitism",
-    "arcane_artifacts:glyph_satiety"
+    "arcane_artifacts:glyph_satiety",
+    "arcane_artifacts:glyph_cupid"
   ],
   "requires_glyphs": [
     "ars_nouveau:glyph_heal"
