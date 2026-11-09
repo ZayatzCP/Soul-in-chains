@@ -147,14 +147,22 @@ public final class ResearchService {
             if (def == null) {
                 continue;
             }
+            // Experiments are done in order: the next one is revealed only when the previous one is done.
             for (ResearchDefinition.ExperimentDefinition experiment : def.experiments()) {
-                if (!e.getValue().done().contains(experiment.id()) && experiment.matches(event)) {
+                if (e.getValue().done().contains(experiment.id())) {
+                    continue;
+                }
+                if (!experiment.matches(event)) {
+                    break;
+                }
+                {
                     data.markDone(e.getKey(), experiment.id());
                     changed = true;
                     player.displayClientMessage(Component.translatable("arcane_artifacts.research.experiment_done",
                             Component.translatable(ResearchDefinition.langPrefix(e.getKey()) + ".experiment." + experiment.id())).withStyle(ChatFormatting.AQUA), true);
                     player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 0.8f, 1.4f);
                 }
+                break;
             }
             if (data.entry(e.getKey()).done().size() >= def.experiments().size()
                     && def.experiments().stream().allMatch(x -> data.entry(e.getKey()).done().contains(x.id()))) {

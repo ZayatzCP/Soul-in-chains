@@ -170,7 +170,7 @@ public final class Config {
         ANVIL_HEAVY_DAMAGE = b.comment("Anvil Drop damage with Amplify.").defineInRange("anvil_heavy_damage", 120.0, 0.0, 10000.0);
         SATIETY_SECONDS = b.defineInRange("satiety_seconds", 60, 10, 36000);
         PITY_SECONDS = b.defineInRange("pity_seconds", 20, 1, 3600);
-        CALM_RING_SECONDS = b.comment("Ring of Calm: seconds without hostile creatures nearby before its bonuses start.").defineInRange("calm_ring_seconds", 30, 0, 3600);
+        CALM_RING_SECONDS = b.comment("Ring of Calm: cooldown in seconds after a hostile creature shows up; the bonuses return once it has passed with no hostile creatures nearby.").defineInRange("calm_ring_cooldown_seconds", 60, 0, 3600);
         ANVIL_BONK_DAMAGE = b.comment("Anvil Drop damage with Extend Time (it stuns with BONK! instead).").defineInRange("anvil_bonk_damage", 12.0, 0.0, 10000.0);
         b.pop();
 

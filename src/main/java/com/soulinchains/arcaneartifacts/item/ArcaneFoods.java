@@ -12,6 +12,7 @@ public final class ArcaneFoods {
     public static final FoodProperties ENCHANTED_POISONOUS_POTATO = new FoodProperties.Builder()
             .nutrition(4).saturationModifier(1.2f).alwaysEdible()
             .effect(() -> new MobEffectInstance(MobEffects.ABSORPTION, 2400, 2), 1.0f)
+            .effect(() -> new MobEffectInstance(ModEffects.MAGIC_ABSORPTION, 2400, 2), 1.0f)
             .effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 600, 1), 1.0f)
             .effect(() -> new MobEffectInstance(ModPotions.MANA_REGEN_EFFECT, 2400, 1), 1.0f)
             .effect(() -> new MobEffectInstance(ModPotions.SPELL_DAMAGE_EFFECT, 1200, 0), 1.0f)

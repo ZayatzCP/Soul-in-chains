@@ -76,6 +76,10 @@ public final class ResearchGameTests {
         helper.assertTrue(ResearchService.state(data, ROOT) == ResearchState.INVESTIGATING, "Root research not investigating");
 
         // Stage II: experiments, each completed once, with alternatives.
+        // The third experiment does not count before the first two (they are done in order).
+        ResearchService.fire(player, ResearchEvent.of(ResearchTriggers.SPELL_EFFECT)
+                .withGlyphs(Set.of(ResourceLocation.parse("ars_nouveau:glyph_heal"))).withEntity(EntityType.COW));
+        helper.assertTrue(!data.entry(ROOT).done().contains("touch_life"), "An experiment was completed out of order");
         ResearchService.fire(player, ResearchEvent.of(ResearchTriggers.SPELL_CAST).withGlyphs(Set.of(ResourceLocation.parse("ars_nouveau:glyph_touch"))));
         ResearchService.observe(player, new ItemStack(Items.LAPIS_LAZULI)); // the "compare" experiment's second alternative
         helper.assertTrue(ResearchService.state(data, ROOT) == ResearchState.INVESTIGATING, "Completed before all experiments");

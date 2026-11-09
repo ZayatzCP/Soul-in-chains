@@ -43,6 +43,21 @@
           "entity": "*"
         }
       ]
+    },
+    {
+      "id": "swap",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_exchange",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_exchange",
+          "block": "*"
+        }
+      ]
     }
   ],
   "notes": 1,

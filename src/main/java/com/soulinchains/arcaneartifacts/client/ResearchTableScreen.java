@@ -208,11 +208,17 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                 y = paragraph(g, Component.translatable("arcane_artifacts.research_table.observe_hint"), x, y, PAGE_WIDTH, FADED, 4);
             } else {
                 PlayerResearch.Entry entry = data.entry(id);
+                boolean revealed = true;
                 for (ResearchDefinition.ExperimentDefinition experiment : def.experiments()) {
                     if (y > 170) break;
                     boolean done = entry != null && entry.done().contains(experiment.id());
+                    // Only the first unfinished experiment is readable; the ones after it stay hidden.
                     MutableComponent line = Component.literal(done ? "✔ " : "○ ")
-                            .append(Component.translatable(prefix + ".experiment." + experiment.id()));
+                            .append(revealed ? Component.translatable(prefix + ".experiment." + experiment.id())
+                                    : Component.translatable("arcane_artifacts.research_table.hidden_experiment"));
+                    if (!done) {
+                        revealed = false;
+                    }
                     y = paragraph(g, line, x, y, PAGE_WIDTH, done ? 0x2E6B3A : INK, 2);
                 }
                 if (state.atLeast(ResearchState.PRINCIPLE) && y < 170) {

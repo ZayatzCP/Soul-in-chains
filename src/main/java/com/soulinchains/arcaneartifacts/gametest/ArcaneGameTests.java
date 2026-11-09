@@ -556,4 +556,17 @@ public final class ArcaneGameTests {
         helper.assertTrue(registry.getHolder(com.soulinchains.arcaneartifacts.enchant.HeavyProjectile.KEY).isPresent(), "Heavy Projectile missing");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void magicAbsorptionSoaksMagicOnly(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(com.soulinchains.arcaneartifacts.registry.ModEffects.MAGIC_ABSORPTION, 600, 0));
+        float before = player.getHealth();
+        hurtFresh(player, helper.getLevel().damageSources().magic(), 3f);
+        helper.assertTrue(player.getHealth() == before, "Magic damage must be soaked up, health " + before + " -> " + player.getHealth());
+        hurtFresh(player, helper.getLevel().damageSources().magic(), 3f);
+        helper.assertTrue(player.getHealth() < before && !player.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.MAGIC_ABSORPTION),
+                "A 4-point shield must break after 4 magic damage");
+        helper.succeed();
+    }
 }

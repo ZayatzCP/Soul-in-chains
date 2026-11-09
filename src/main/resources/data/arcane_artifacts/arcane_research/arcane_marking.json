@@ -41,6 +41,21 @@
           "entity": "*"
         }
       ]
+    },
+    {
+      "id": "light",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_light",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_light",
+          "entity": "*"
+        }
+      ]
     }
   ],
   "notes": 1,

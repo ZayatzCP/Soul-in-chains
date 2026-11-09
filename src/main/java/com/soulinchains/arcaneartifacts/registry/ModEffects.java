@@ -45,6 +45,10 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> BONK = REGISTER.register("bonk",
             com.soulinchains.arcaneartifacts.effect.BonkEffect::new);
 
+    /** Magic Absorption: like Absorption, but only magic damage is soaked up (4 points per level). */
+    public static final DeferredHolder<MobEffect, MobEffect> MAGIC_ABSORPTION = REGISTER.register("magic_absorption",
+            () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0x9B6BFF, true));
+
     private ModEffects() {
     }
 }

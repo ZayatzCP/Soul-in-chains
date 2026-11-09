@@ -37,6 +37,21 @@
           "block": "*"
         }
       ]
+    },
+    {
+      "id": "blast",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_explosion",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_explosion",
+          "entity": "*"
+        }
+      ]
     }
   ],
   "notes": 1,
