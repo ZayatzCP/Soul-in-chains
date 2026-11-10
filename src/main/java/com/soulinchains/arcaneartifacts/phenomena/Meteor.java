@@ -93,12 +93,15 @@ public final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
         Entity caster = level.getEntity(owner);
         DamageSource source = caster != null ? level.damageSources().indirectMagic(caster, caster) : level.damageSources().magic();
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(burstRadius),
-                e -> e.isAlive() && !e.getUUID().equals(owner))) {
+                LivingEntity::isAlive)) {
             double distance = living.position().distanceTo(at);
             if (distance > burstRadius) {
                 continue;
             }
             float scaled = (float) (damage * (1.0 - 0.5 * distance / burstRadius));
+            if (living != caster) {
+                com.soulinchains.arcaneartifacts.effect.MagicHandler.recoil(caster instanceof LivingEntity l ? l : null, living, scaled);
+            }
             if (living.hurt(source, scaled)) {
                 living.igniteForSeconds(3);
                 Vec3 push = living.position().subtract(at).normalize().scale(0.6);

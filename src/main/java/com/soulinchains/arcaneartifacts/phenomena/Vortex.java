@@ -22,7 +22,7 @@ import java.util.UUID;
  *     <li>{@link Kind#TORNADO}: spins creatures and items around its axis and lifts them up; what it
  *     carries falls down when it ends.</li>
  * </ul>
- * The caster is never affected, nor are spectators and creative players. Blocks are never broken.
+ * The caster is never pulled (but is hurt by the core like anyone else), nor are spectators and creative players. Blocks are never broken.
  */
 public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
     public enum Kind { BLACK_HOLE, TORNADO }
@@ -122,6 +122,7 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
         entity.fallDistance = 0;
         if (distance < 1.6 && age % 10 == 0 && entity instanceof LivingEntity living && damage > 0) {
             DamageSource source = caster != null ? level.damageSources().indirectMagic(caster, caster) : level.damageSources().magic();
+            com.soulinchains.arcaneartifacts.effect.MagicHandler.recoil(caster instanceof LivingEntity l ? l : null, living, damage);
             living.hurt(source, damage);
         }
     }

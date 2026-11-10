@@ -127,7 +127,7 @@ public final class AnvilDrop implements Phenomena.Phenomenon, Phenomena.Located 
         DamageSource source = caster != null ? level.damageSources().anvil(caster) : level.damageSources().anvil(null);
         double reach = Math.max(1.2, radius);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(target, target).inflate(reach, 2.0, reach),
-                e -> e.isAlive() && !e.getUUID().equals(owner))) {
+                LivingEntity::isAlive)) {
             double distance = Math.hypot(living.getX() - target.x, living.getZ() - target.z);
             if (distance > reach) {
                 continue;
@@ -135,6 +135,9 @@ public final class AnvilDrop implements Phenomena.Phenomenon, Phenomena.Located 
             // Directly under the anvil: full damage; caught by the shockwave: half, like a mace slam.
             float dealt = distance <= 1.2 ? damage : damage * 0.5f;
             if (dealt > 0) {
+                if (living != caster) {
+                    com.soulinchains.arcaneartifacts.effect.MagicHandler.recoil(caster instanceof LivingEntity l ? l : null, living, dealt);
+                }
                 living.hurt(source, dealt);
             }
             if (bonk) {

@@ -571,17 +571,18 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
-    public static void spellsDoNotHurtTheirCaster(GameTestHelper helper) {
+    public static void spellsHurtTheirCasterToo(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = player(helper, 4.5, 1, 4.5);
         float before = player.getHealth();
-        SpellResolver resolver = new SpellResolver(new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player)));
-        resolver.onResolveEffect(level, new net.minecraft.world.phys.EntityHitResult(player));
-        helper.assertTrue(player.getHealth() == before, "A projectile Harm hurt its own caster: " + before + " -> " + player.getHealth());
         Husk husk = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(6, 1, 6));
         float huskBefore = husk.getHealth();
+        SpellResolver resolver = new SpellResolver(new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player)));
         resolver.onResolveEffect(level, new net.minecraft.world.phys.EntityHitResult(husk));
-        helper.assertTrue(husk.getHealth() < huskBefore, "Harm must still hurt other creatures");
-        helper.succeed();
+        helper.assertTrue(husk.getHealth() < huskBefore, "Harm must hurt its target");
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(player.getHealth() < before, "The caster must be hurt by their own damaging spell: " + before + " -> " + player.getHealth());
+            helper.succeed();
+        });
     }
 }
