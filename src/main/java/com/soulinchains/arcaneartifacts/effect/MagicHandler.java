@@ -33,8 +33,57 @@ public final class MagicHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onSpellDamage(SpellDamageEvent.Pre event) {
-        if (isHarmless(event.context)) {
+        if (isHarmless(event.context) || (event.target == event.caster && !selfCast(event.context))) {
             event.damage = 0;
+            event.setCanceled(true);
+        }
+    }
+
+    // ------------------------------------------------------------------ no friendly fire on the caster
+
+    /** Casters whose spell effects are resolving right now (server thread), innermost last. */
+    private static final java.util.ArrayDeque<net.minecraft.world.entity.LivingEntity> RESOLVING = new java.util.ArrayDeque<>();
+    private static final java.util.ArrayDeque<Boolean> RESOLVING_SELF = new java.util.ArrayDeque<>();
+
+    /** A spell whose form is Self is meant for the caster: only then may it hurt them. */
+    public static boolean selfCast(@Nullable SpellContext context) {
+        return context != null && context.getSpell().getCastMethod() instanceof com.hollingsworth.arsnouveau.common.spell.method.MethodSelf;
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onResolveStart(com.hollingsworth.arsnouveau.api.event.EffectResolveEvent.Pre event) {
+        if (!event.isCanceled() && !event.world.isClientSide) {
+            RESOLVING.addLast(event.shooter);
+            RESOLVING_SELF.addLast(selfCast(event.context));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onResolveEnd(com.hollingsworth.arsnouveau.api.event.EffectResolveEvent.Post event) {
+        if (!event.world.isClientSide && !RESOLVING.isEmpty()) {
+            RESOLVING.removeLast();
+            RESOLVING_SELF.removeLast();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onTickEnd(net.neoforged.neoforge.event.tick.ServerTickEvent.Post event) {
+        RESOLVING.clear();
+        RESOLVING_SELF.clear();
+    }
+
+    /**
+     * While a spell effect resolves, damage the caster would deal to themselves (explosions, fire,
+     * area damage of any Ars or addon glyph) is cancelled, unless the spell was cast on Self.
+     */
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onSelfHarm(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
+        if (RESOLVING.isEmpty() || event.getEntity().level().isClientSide) {
+            return;
+        }
+        var victim = event.getEntity();
+        if (RESOLVING.peekLast() == victim && !RESOLVING_SELF.peekLast()
+                && (event.getSource().getEntity() == victim || event.getSource().getEntity() == null)) {
             event.setCanceled(true);
         }
     }
