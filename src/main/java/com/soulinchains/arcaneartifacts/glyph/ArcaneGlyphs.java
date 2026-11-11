@@ -25,7 +25,9 @@ public final class ArcaneGlyphs {
             EffectSatiety.INSTANCE,
             EffectPity.INSTANCE,
             EffectCupid.INSTANCE,
-            AugmentHarmless.INSTANCE
+            AugmentHarmless.INSTANCE,
+            AugmentAura.INSTANCE,
+            EffectFear.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */
@@ -42,6 +44,12 @@ public final class ArcaneGlyphs {
      */
     public static void postInit() {
         MethodProjectile.INSTANCE.compatibleAugments.add(AugmentShrapnel.INSTANCE);
+        MethodProjectile.INSTANCE.compatibleAugments.add(AugmentAura.INSTANCE);
+        MethodProjectile.INSTANCE.augmentDescriptions.put(AugmentAura.INSTANCE,
+                Component.translatable("ars_nouveau.augment_desc.glyph_projectile_glyph_aura"));
+        MethodArcaneMissile.INSTANCE.compatibleAugments.add(AugmentAura.INSTANCE);
+        MethodArcaneMissile.INSTANCE.augmentDescriptions.put(AugmentAura.INSTANCE,
+                Component.translatable("ars_nouveau.augment_desc.glyph_projectile_glyph_aura"));
         MethodProjectile.INSTANCE.augmentDescriptions.put(AugmentShrapnel.INSTANCE,
                 Component.translatable("ars_nouveau.augment_desc.glyph_projectile_glyph_shrapnel"));
         // Harmless can follow any effect, from Ars or from any addon.

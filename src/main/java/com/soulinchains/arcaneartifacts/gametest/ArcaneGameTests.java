@@ -128,7 +128,8 @@ public final class ArcaneGameTests {
                 "glyph_anvil_drop", "glyph_satiety", "rose_gold_block", "rose_gold_nugget", "rose_gold_ingot_from_block",
                 "rose_gold_ingot_from_nuggets", "oath_scroll", "heart_charm", "diamond_charm", "club_charm", "spade_charm",
                 "enchanted_poisonous_potato", "gilded_pufferfish", "gilded_fermented_spider_eye", "glyph_pity", "glyph_cupid",
-                "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield")) {
+                "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
+                "crystal_ball", "glyph_aura", "glyph_fear")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -584,5 +585,45 @@ public final class ArcaneGameTests {
             helper.assertTrue(player.getHealth() < before, "The caster must be hurt by their own damaging spell: " + before + " -> " + player.getHealth());
             helper.succeed();
         });
+    }
+
+    // ------------------------------------------------------------------ batch 5
+
+    @GameTest(template = ARENA)
+    public static void crystalBallAddsTwoAoe(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        ItemStack ball = new ItemStack(ModItems.CRYSTAL_BALL.get());
+        SpellContext context = new SpellContext(level, new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE), player, LivingCaster.from(player), ball);
+        var builder = new com.hollingsworth.arsnouveau.api.spell.SpellStats.Builder();
+        ModItems.CRYSTAL_BALL.get().applyItemModifiers(ball, builder, EffectHarm.INSTANCE, null, level, player, context);
+        helper.assertTrue(builder.build().getAoeMultiplier() == 2.0, "Crystal Ball spells must get +2 AOE, got " + builder.build().getAoeMultiplier());
+        helper.assertTrue(com.hollingsworth.arsnouveau.api.registry.SpellCasterRegistry.from(ball).getMaxSlots() == 3, "The Crystal Ball must have 3 slots");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void fearMakesMobsFlee(GameTestHelper helper) {
+        Player player = player(helper, 2.5, 1, 2.5);
+        var zombie = helper.spawn(EntityType.ZOMBIE, new BlockPos(4, 1, 4));
+        zombie.setTarget(player);
+        com.soulinchains.arcaneartifacts.effect.FearEffect.setSource(zombie, player);
+        zombie.addEffect(new net.minecraft.world.effect.MobEffectInstance(com.soulinchains.arcaneartifacts.registry.ModEffects.FEAR, 100, 0));
+        helper.runAfterDelay(3, () -> {
+            helper.assertTrue(zombie.getTarget() == null, "A frightened zombie must forget its target");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void calmRingDoesNotSpam(GameTestHelper helper) {
+        java.util.UUID id = java.util.UUID.randomUUID();
+        var ring = com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.class;
+        helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.shouldAnnounce(id, EntityType.ZOMBIE, 1000), "First zombie must be announced");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.shouldAnnounce(id, EntityType.ZOMBIE, 1400), "The same kind must not be announced again so soon");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.shouldAnnounce(id, EntityType.CREEPER, 1100), "The ring must keep 10 seconds between remarks");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.shouldAnnounce(id, EntityType.CREEPER, 1300), "A new kind may be announced after 10 seconds");
+        helper.assertTrue(ring != null && MethodProjectile.INSTANCE.compatibleAugments.contains(com.soulinchains.arcaneartifacts.glyph.AugmentAura.INSTANCE), "Projectile must accept Aura");
+        helper.succeed();
     }
 }

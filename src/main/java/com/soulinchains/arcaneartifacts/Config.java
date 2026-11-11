@@ -73,6 +73,8 @@ public final class Config {
     public static final ModConfigSpec.IntValue SATIETY_SECONDS;
     public static final ModConfigSpec.IntValue PITY_SECONDS;
     public static final ModConfigSpec.IntValue CALM_RING_SECONDS;
+    public static final ModConfigSpec.IntValue FEAR_SECONDS;
+    public static final ModConfigSpec.IntValue CALM_RING_REPEAT_SECONDS;
     public static final ModConfigSpec.DoubleValue CASTER_RECOIL_FRACTION;
     public static final ModConfigSpec.DoubleValue ANVIL_BONK_DAMAGE;
 
@@ -172,6 +174,8 @@ public final class Config {
         SATIETY_SECONDS = b.defineInRange("satiety_seconds", 60, 10, 36000);
         PITY_SECONDS = b.defineInRange("pity_seconds", 20, 1, 3600);
         CASTER_RECOIL_FRACTION = b.comment("Every damaging spell also hurts its caster by this fraction of the damage (once per tick, the strongest hit). 0 turns it off.").defineInRange("caster_recoil_fraction", 0.5, 0.0, 10.0);
+        FEAR_SECONDS = b.defineInRange("fear_seconds", 6, 1, 600);
+        CALM_RING_REPEAT_SECONDS = b.comment("Ring of Calm: the same kind of creature is announced again only after this many seconds.").defineInRange("calm_ring_repeat_seconds", 300, 0, 86400);
         CALM_RING_SECONDS = b.comment("Ring of Calm: cooldown in seconds after a hostile creature shows up; the bonuses return once it has passed with no hostile creatures nearby.").defineInRange("calm_ring_cooldown_seconds", 60, 0, 3600);
         ANVIL_BONK_DAMAGE = b.comment("Anvil Drop damage with Extend Time (it stuns with BONK! instead).").defineInRange("anvil_bonk_damage", 12.0, 0.0, 10000.0);
         b.pop();

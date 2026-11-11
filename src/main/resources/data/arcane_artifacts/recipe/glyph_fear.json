@@ -1,0 +1,28 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 160,
+  "inputs": [
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "minecraft:skeleton_skull"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "minecraft:goat_horn"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "minecraft:wither_rose"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_fear"
+  }
+}

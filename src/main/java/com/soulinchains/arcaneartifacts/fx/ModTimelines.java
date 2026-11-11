@@ -61,6 +61,9 @@ public final class ModTimelines {
     public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> CUPID =
             register("cupid", com.soulinchains.arcaneartifacts.glyph.EffectCupid.INSTANCE, TimelineOption.IMPACT, ModTimelines::impactOptions, BurstMotion::new, false);
 
+    public static final DeferredHolder<IParticleTimelineType<?>, IParticleTimelineType<GlyphTimeline>> FEAR =
+            register("fear", com.soulinchains.arcaneartifacts.glyph.EffectFear.INSTANCE, TimelineOption.IMPACT, ModTimelines::impactOptions, BurstMotion::new, false);
+
     private ModTimelines() {
     }
 

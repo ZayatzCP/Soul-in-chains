@@ -51,7 +51,8 @@
   "unlocks": [
     "arcane_artifacts:glyph_counterspell",
     "arcane_artifacts:glyph_pity",
-    "arcane_artifacts:glyph_harmless"
+    "arcane_artifacts:glyph_harmless",
+    "arcane_artifacts:glyph_fear"
   ],
   "requires_glyphs": [
     "ars_nouveau:glyph_dispel"

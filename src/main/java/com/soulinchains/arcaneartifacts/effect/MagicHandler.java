@@ -138,6 +138,9 @@ public final class MagicHandler {
 
     @SubscribeEvent
     public static void onEffectGone(net.neoforged.neoforge.event.entity.living.MobEffectEvent.Remove event) {
+        if (event.getEffect().is(ModEffects.FEAR)) {
+            FearEffect.forget(event.getEntity());
+        }
         if (event.getEffect().is(ModEffects.MAGIC_ABSORPTION)) {
             event.getEntity().getPersistentData().remove(MAGIC_SHIELD);
         }
@@ -145,8 +148,20 @@ public final class MagicHandler {
 
     @SubscribeEvent
     public static void onEffectExpired(net.neoforged.neoforge.event.entity.living.MobEffectEvent.Expired event) {
+        if (event.getEffectInstance() != null && event.getEffectInstance().getEffect().is(ModEffects.FEAR)) {
+            FearEffect.forget(event.getEntity());
+        }
         if (event.getEffectInstance() != null && event.getEffectInstance().getEffect().is(ModEffects.MAGIC_ABSORPTION)) {
             event.getEntity().getPersistentData().remove(MAGIC_SHIELD);
+        }
+    }
+
+    /** A frightened creature attacks nobody. */
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onFrightenedAttack(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
+        if (event.getSource().getEntity() instanceof net.minecraft.world.entity.LivingEntity attacker
+                && event.getSource().getDirectEntity() == attacker && attacker.hasEffect(ModEffects.FEAR)) {
+            event.setCanceled(true);
         }
     }
 

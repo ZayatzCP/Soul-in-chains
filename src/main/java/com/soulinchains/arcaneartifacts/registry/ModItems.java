@@ -66,6 +66,9 @@ public final class ModItems {
     public static final DeferredItem<com.soulinchains.arcaneartifacts.shield.FocusingShieldItem> FOCUSING_SHIELD =
             REGISTER.register("focusing_shield", com.soulinchains.arcaneartifacts.shield.FocusingShieldItem::new);
 
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.item.CrystalBallItem> CRYSTAL_BALL =
+            REGISTER.register("crystal_ball", com.soulinchains.arcaneartifacts.item.CrystalBallItem::new);
+
     private ModItems() {
     }
 }

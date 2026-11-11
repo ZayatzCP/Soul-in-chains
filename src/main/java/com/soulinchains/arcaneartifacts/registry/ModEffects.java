@@ -49,6 +49,10 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> MAGIC_ABSORPTION = REGISTER.register("magic_absorption",
             () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0x9B6BFF, true));
 
+    /** Fear: runs away from whoever frightened it and does nothing of its own will. */
+    public static final DeferredHolder<MobEffect, MobEffect> FEAR = REGISTER.register("fear",
+            com.soulinchains.arcaneartifacts.effect.FearEffect::new);
+
     private ModEffects() {
     }
 }

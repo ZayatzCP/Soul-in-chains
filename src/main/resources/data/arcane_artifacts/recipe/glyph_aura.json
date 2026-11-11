@@ -1,0 +1,28 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 160,
+  "inputs": [
+    {
+      "item": "ars_nouveau:air_essence"
+    },
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "minecraft:glowstone"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "minecraft:end_crystal"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_aura"
+  }
+}

@@ -37,6 +37,10 @@ public class RingOfCalmItem extends ArcaneAccessoryItem {
     /** Per player: when the last hostile was seen, and which creatures the ring has already announced. */
     private static final Map<UUID, Long> LAST_THREAT = new HashMap<>();
     private static final Map<UUID, Set<UUID>> ANNOUNCED = new HashMap<>();
+    /** Per player: when each kind of creature was last announced, and when the ring last spoke at all. */
+    private static final Map<UUID, Map<EntityType<?>, Long>> LAST_KIND = new HashMap<>();
+    private static final Map<UUID, Long> LAST_MESSAGE = new HashMap<>();
+    private static final long MIN_GAP_TICKS = 200;
 
     public RingOfCalmItem() {
         super(new Item.Properties().rarity(Rarity.RARE), 2);
@@ -68,13 +72,33 @@ public class RingOfCalmItem extends ArcaneAccessoryItem {
                 .filter(mob -> !announced.contains(mob.getUUID()))
                 .min(Comparator.comparingDouble(mob -> mob.distanceToSqr(player)))
                 .ifPresent(mob -> {
-                    // One remark per new kind of trouble: the rest of the pack is counted as announced.
+                    // The whole pack of that kind counts as announced, said or not.
                     threats.stream().filter(other -> other.getType() == mob.getType()).forEach(other -> announced.add(other.getUUID()));
+                    if (!shouldAnnounce(id, mob.getType(), now)) {
+                        return;
+                    }
                     player.displayClientMessage(Component.translatable("arcane_artifacts.calm_ring.prefix")
                             .append(Component.translatable("arcane_artifacts.calm_ring." + category(mob), mob.getName()))
                             .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.ITALIC), false);
                     player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1f, 0.7f);
                 });
+    }
+
+    /**
+     * No spam: a kind of creature is announced again only after {@code calm_ring_repeat_seconds}, and
+     * the ring never speaks twice within 10 seconds. Records the announcement when it returns true.
+     */
+    public static boolean shouldAnnounce(UUID player, EntityType<?> kind, long now) {
+        long gap = Config.CALM_RING_REPEAT_SECONDS.get() * 20L;
+        Map<EntityType<?>, Long> kinds = LAST_KIND.computeIfAbsent(player, k -> new HashMap<>());
+        Long lastKind = kinds.get(kind);
+        Long lastAny = LAST_MESSAGE.get(player);
+        if ((lastKind != null && now - lastKind < gap) || (lastAny != null && now - lastAny < MIN_GAP_TICKS)) {
+            return false;
+        }
+        kinds.put(kind, now);
+        LAST_MESSAGE.put(player, now);
+        return true;
     }
 
     /** Which joke the ring makes about a creature. */
