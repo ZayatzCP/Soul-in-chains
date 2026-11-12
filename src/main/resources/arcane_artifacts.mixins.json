@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ScribesTileMixin",
-    "EnchantingApparatusTileMixin"
+    "EnchantingApparatusTileMixin",
+    "OverworldBiomeBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

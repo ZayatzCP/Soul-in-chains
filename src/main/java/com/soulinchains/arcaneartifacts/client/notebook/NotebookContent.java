@@ -62,6 +62,18 @@ final class NotebookContent {
         entries.add(itemEntry(font, ModItems.ENCHANTED_POISONOUS_POTATO.get(), 1));
         entries.add(itemEntry(font, ModItems.GILDED_PUFFERFISH.get(), 1));
         entries.add(itemEntry(font, ModItems.GILDED_FERMENTED_SPIDER_EYE.get(), 1));
+        entries.add(itemEntry(font, ModItems.ALCHEMICAL_DISTILLER.get(), 2));
+        entries.add(itemEntry(font, ModItems.MUDZYA_HIVE.get(), 1));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.bottle_of_source"),
+                new ItemStack(ModItems.BOTTLE_OF_SOURCE.get()), "bottle_of_source", 1, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mudzya"),
+                new ItemStack(ModItems.MUDZYA_SPAWN_EGG.get()), "mudzya", 1, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mushroom_caves"),
+                new ItemStack(ModItems.MUSHROOM_MOSS.get()), "mushroom_caves", 2, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mushrooms"),
+                new ItemStack(ModItems.MUSHROOMS.get(com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.BLUE).get()), "mushrooms", 2, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.gribushka"),
+                new ItemStack(ModItems.GRIBUSHKA_SPAWN_EGG.get()), "gribushka", 2, null));
         entries.add(gatedItemEntry(font, ModItems.OATH_SCROLL.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.HEART_CHARM.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.DIAMOND_CHARM.get(), 1, lockedItems));

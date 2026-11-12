@@ -77,6 +77,10 @@ public final class Config {
     public static final ModConfigSpec.IntValue CALM_RING_REPEAT_SECONDS;
     public static final ModConfigSpec.DoubleValue CASTER_RECOIL_FRACTION;
     public static final ModConfigSpec.DoubleValue ANVIL_BONK_DAMAGE;
+    public static final ModConfigSpec.IntValue MUDZYA_CHARGE_SECONDS;
+    public static final ModConfigSpec.IntValue MUDZYA_SOURCE_PER_DELIVERY;
+    public static final ModConfigSpec.IntValue DISTILLER_BREW_TICKS;
+    public static final ModConfigSpec.IntValue DISTILLER_SOURCE_COST;
 
     // Research
     public static final ModConfigSpec.BooleanValue RESEARCH_GATES_GLYPHS;
@@ -178,6 +182,17 @@ public final class Config {
         CALM_RING_REPEAT_SECONDS = b.comment("Ring of Calm: the same kind of creature is announced again only after this many seconds.").defineInRange("calm_ring_repeat_seconds", 300, 0, 86400);
         CALM_RING_SECONDS = b.comment("Ring of Calm: cooldown in seconds after a hostile creature shows up; the bonuses return once it has passed with no hostile creatures nearby.").defineInRange("calm_ring_cooldown_seconds", 60, 0, 3600);
         ANVIL_BONK_DAMAGE = b.comment("Anvil Drop damage with Extend Time (it stuns with BONK! instead).").defineInRange("anvil_bonk_damage", 12.0, 0.0, 10000.0);
+        b.pop();
+
+        b.push("creatures");
+        MUDZYA_CHARGE_SECONDS = b.comment("How long a Mudzya needs to fill up with Source, in seconds (plus up to half again at random).")
+                .defineInRange("mudzya_charge_seconds", 150, 5, 36000);
+        MUDZYA_SOURCE_PER_DELIVERY = b.comment("Source a full Mudzya brings to its hive.").defineInRange("mudzya_source_per_delivery", 50, 1, 10000);
+        b.pop();
+
+        b.push("alchemical_distiller");
+        DISTILLER_BREW_TICKS = b.defineInRange("brew_ticks", 400, 20, 72000);
+        DISTILLER_SOURCE_COST = b.comment("Source taken from Source Jars within 6 blocks for every brew.").defineInRange("source_cost", 200, 0, 100000);
         b.pop();
 
         b.push("research");

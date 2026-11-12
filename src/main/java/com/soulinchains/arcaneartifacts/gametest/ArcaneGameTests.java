@@ -25,6 +25,7 @@ import com.soulinchains.arcaneartifacts.entity.ArcaneMissileEntity;
 import com.soulinchains.arcaneartifacts.glyph.ArcaneGlyphs;
 import com.soulinchains.arcaneartifacts.glyph.AugmentShrapnel;
 import com.soulinchains.arcaneartifacts.glyph.MethodArcaneMissile;
+import com.soulinchains.arcaneartifacts.registry.ModBlocks;
 import com.soulinchains.arcaneartifacts.registry.ModItems;
 import com.soulinchains.arcaneartifacts.spell.ShrapnelHandler;
 import com.soulinchains.arcaneartifacts.util.CurioHelper;
@@ -129,7 +130,7 @@ public final class ArcaneGameTests {
                 "rose_gold_ingot_from_nuggets", "oath_scroll", "heart_charm", "diamond_charm", "club_charm", "spade_charm",
                 "enchanted_poisonous_potato", "gilded_pufferfish", "gilded_fermented_spider_eye", "glyph_pity", "glyph_cupid",
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
-                "crystal_ball", "glyph_aura", "glyph_fear")) {
+                "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -624,6 +625,84 @@ public final class ArcaneGameTests {
         helper.assertTrue(!com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.shouldAnnounce(id, EntityType.CREEPER, 1100), "The ring must keep 10 seconds between remarks");
         helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.RingOfCalmItem.shouldAnnounce(id, EntityType.CREEPER, 1300), "A new kind may be announced after 10 seconds");
         helper.assertTrue(ring != null && MethodProjectile.INSTANCE.compatibleAugments.contains(com.soulinchains.arcaneartifacts.glyph.AugmentAura.INSTANCE), "Projectile must accept Aura");
+        helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ batch 6
+
+    @GameTest(template = ARENA)
+    public static void mushroomCavesAreRegistered(GameTestHelper helper) {
+        var access = helper.getLevel().registryAccess();
+        helper.assertTrue(access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME)
+                .containsKey(com.soulinchains.arcaneartifacts.world.ModBiomes.MUSHROOM_CAVES), "Mushroom Caves biome missing");
+        var placed = access.registryOrThrow(net.minecraft.core.registries.Registries.PLACED_FEATURE);
+        for (String id : List.of("mushroom_moss_coat", "huge_blue_mushroom", "gribushka_colony", "patch_blue_mushroom", "patch_sourcecap")) {
+            helper.assertTrue(placed.containsKey(ArcaneArtifacts.id(id)), "Placed feature missing: " + id);
+        }
+        var parameters = net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD.usedBiomes().toList();
+        helper.assertTrue(parameters.contains(com.soulinchains.arcaneartifacts.world.ModBiomes.MUSHROOM_CAVES), "Mushroom Caves are not in the overworld layout");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void blueMushroomGrowsHuge(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos floor = helper.absolutePos(new BlockPos(4, 1, 4));
+        level.setBlockAndUpdate(floor, ModBlocks.MUSHROOM_MOSS.get().defaultBlockState());
+        BlockPos stem = floor.above();
+        helper.assertTrue(com.soulinchains.arcaneartifacts.world.HugeBlueMushroomFeature.grow(level, stem, 4), "The huge blue mushroom did not grow");
+        helper.assertTrue(level.getBlockState(stem).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM), "No stem");
+        helper.assertTrue(level.getBlockState(stem.above(4)).is(ModBlocks.BLUE_MUSHROOM_BLOCK.get()), "No cap on top of the stem");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void distillerBrewsSeveralEffects(GameTestHelper helper) {
+        var state = ModBlocks.ALCHEMICAL_DISTILLER.get().defaultBlockState();
+        var distiller = new com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlockEntity(helper.absolutePos(new BlockPos(1, 1, 1)), state);
+        distiller.setItem(0, new ItemStack(net.minecraft.world.item.Items.SUGAR));
+        distiller.setItem(1, new ItemStack(ModItems.MUSHROOMS.get(com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.EMBERCAP).get()));
+        distiller.setItem(2, new ItemStack(net.minecraft.world.item.Items.RABBIT_FOOT));
+        distiller.setItem(4, new ItemStack(net.minecraft.world.item.Items.REDSTONE));
+        ItemStack water = net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.POTION, net.minecraft.world.item.alchemy.Potions.WATER);
+        distiller.setItem(6, water);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlockEntity.isBaseBottle(water), "Water must be accepted");
+        distiller.brewNow();
+        var contents = distiller.getItem(6).get(net.minecraft.core.component.DataComponents.POTION_CONTENTS);
+        int effects = 0;
+        if (contents != null) {
+            for (var ignored : contents.getAllEffects()) {
+                effects++;
+            }
+        }
+        helper.assertTrue(effects == 3, "Expected a potion with 3 effects, got " + effects);
+        helper.assertTrue(distiller.getItem(0).isEmpty() && distiller.getItem(4).isEmpty(), "Ingredients and the modifier must be used up");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void mudzyaFillsABottle(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        var mudzya = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.MUDZYA.get(), new BlockPos(5, 2, 5));
+        mudzya.setCharged(true);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
+        mudzya.mobInteract(player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(player.getMainHandItem().is(ModItems.BOTTLE_OF_SOURCE.get()), "No Bottle of Source, got " + player.getMainHandItem());
+        helper.assertTrue(!mudzya.isCharged(), "The Mudzya must be empty after bottling");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void gribushkasTradeMushrooms(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        for (var mushroom : com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.values()) {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.entity.Gribushka.isTradeItem(level, new ItemStack(ModItems.MUSHROOMS.get(mushroom).get())),
+                    "No Gribushka trade for " + mushroom.id());
+        }
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.entity.Gribushka.isTradeItem(level, new ItemStack(net.minecraft.world.item.Items.DIRT)),
+                "Gribushkas must not take dirt");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.spell.AuraZone.radiusFor(5) == 6.0 && com.soulinchains.arcaneartifacts.spell.AuraZone.radiusFor(1) == 4.0,
+                "Aura zone radius must be 2 + 2 per AOE, at most 6");
         helper.succeed();
     }
 }

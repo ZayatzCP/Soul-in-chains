@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GBG",
+    "RSR",
+    "NNN"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "B": {
+      "item": "minecraft:brewing_stand"
+    },
+    "R": {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    "S": {
+      "item": "arcane_artifacts:bottle_of_source"
+    },
+    "N": {
+      "item": "minecraft:nether_wart_block"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:alchemical_distiller"
+  }
+}

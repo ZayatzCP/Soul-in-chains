@@ -21,6 +21,13 @@ public final class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(ArcaneArtifacts.MODID + ":arcane_missile"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Mudzya>> MUDZYA = REGISTER.register("mudzya",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Mudzya::new, MobCategory.CREATURE)
+                    .sized(0.5F, 0.45F).clientTrackingRange(8).build(ArcaneArtifacts.MODID + ":mudzya"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Gribushka>> GRIBUSHKA = REGISTER.register("gribushka",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Gribushka::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.1F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":gribushka"));
+
     private ModEntities() {
     }
 }

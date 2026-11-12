@@ -21,6 +21,25 @@ public final class ClientSetup {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // Rendered exactly like an Ars Nouveau spell projectile (spell style + particle timeline).
         event.registerEntityRenderer(ModEntities.ARCANE_MISSILE.get(), com.hollingsworth.arsnouveau.client.renderer.entity.StyledSpellRender::new);
+        event.registerEntityRenderer(ModEntities.MUDZYA.get(), CreatureRenderers.MudzyaRenderer::new);
+        event.registerEntityRenderer(ModEntities.GRIBUSHKA.get(), CreatureRenderers.GribushkaRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(MudzyaModel.LAYER, MudzyaModel::createLayer);
+        event.registerLayerDefinition(GribushkaModel.LAYER, GribushkaModel::createLayer);
+    }
+
+    /** Mushroom moss shifts from light blue to purple across the cave (by position, like grass by biome). */
+    @SubscribeEvent
+    public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+        event.register((state, level, pos, tint) -> pos == null ? 0x8FD3F0 : MossColors.at(pos), com.soulinchains.arcaneartifacts.registry.ModBlocks.MUSHROOM_MOSS.get());
+    }
+
+    @SubscribeEvent
+    public static void registerMossItemColor(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tint) -> 0x8FD3F0, com.soulinchains.arcaneartifacts.registry.ModItems.MUSHROOM_MOSS.get());
     }
 
     @SubscribeEvent
@@ -32,6 +51,7 @@ public final class ClientSetup {
     public static void registerScreens(net.neoforged.neoforge.client.event.RegisterMenuScreensEvent event) {
         event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_MENU.get(), ResearchTableScreen::new);
         event.register(com.soulinchains.arcaneartifacts.belt.BeltRegistry.MENU.get(), BeltScreen::new);
+        event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.ALCHEMICAL_DISTILLER_MENU.get(), AlchemicalDistillerScreen::new);
     }
 
     @SubscribeEvent

@@ -37,6 +37,7 @@ public final class ArcaneArtifacts {
         ModEffects.REGISTER.register(modBus);
         com.soulinchains.arcaneartifacts.fx.ModTimelines.REGISTER.register(modBus);
         ModEntities.REGISTER.register(modBus);
+        com.soulinchains.arcaneartifacts.world.ModFeatures.REGISTER.register(modBus);
         ModBlocks.BLOCKS.register(modBus);
         ModBlocks.BLOCK_ENTITIES.register(modBus);
         com.soulinchains.arcaneartifacts.belt.BeltRegistry.init();

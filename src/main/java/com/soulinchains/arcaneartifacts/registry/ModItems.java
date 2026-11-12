@@ -69,6 +69,29 @@ public final class ModItems {
     public static final DeferredItem<com.soulinchains.arcaneartifacts.item.CrystalBallItem> CRYSTAL_BALL =
             REGISTER.register("crystal_ball", com.soulinchains.arcaneartifacts.item.CrystalBallItem::new);
 
+    // ------------------------------------------------------------------ batch 6
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.item.BottleOfSourceItem> BOTTLE_OF_SOURCE =
+            REGISTER.register("bottle_of_source", com.soulinchains.arcaneartifacts.item.BottleOfSourceItem::new);
+    public static final DeferredItem<BlockItem> MUSHROOM_MOSS = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_MOSS);
+    public static final DeferredItem<BlockItem> BLUE_MUSHROOM_BLOCK = REGISTER.registerSimpleBlockItem(ModBlocks.BLUE_MUSHROOM_BLOCK);
+    public static final DeferredItem<BlockItem> MUDZYA_HIVE = REGISTER.registerSimpleBlockItem(ModBlocks.MUDZYA_HIVE);
+    public static final DeferredItem<BlockItem> ALCHEMICAL_DISTILLER = REGISTER.registerSimpleBlockItem(ModBlocks.ALCHEMICAL_DISTILLER);
+    public static final java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>> MUSHROOMS = mushrooms();
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> MUDZYA_SPAWN_EGG = REGISTER.register("mudzya_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.MUDZYA, 0x6B3FA0, 0xE0A8FF, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> GRIBUSHKA_SPAWN_EGG = REGISTER.register("gribushka_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.GRIBUSHKA, 0x8FD3F0, 0x8A4FC8, new Item.Properties()));
+
+    private static java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>> mushrooms() {
+        var map = new java.util.EnumMap<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>>(
+                com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.class);
+        for (var mushroom : com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.values()) {
+            map.put(mushroom, REGISTER.register(mushroom.id(),
+                    () -> new BlockItem(ModBlocks.MUSHROOMS.get(mushroom).get(), new Item.Properties().food(mushroom.food()))));
+        }
+        return java.util.Collections.unmodifiableMap(map);
+    }
+
     private ModItems() {
     }
 }

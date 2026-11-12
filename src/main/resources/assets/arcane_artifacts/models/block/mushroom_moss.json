@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/leaves",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "all": "arcane_artifacts:block/mushroom_moss"
+  }
+}

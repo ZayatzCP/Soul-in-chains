@@ -38,6 +38,14 @@ public final class ModCreativeTab {
                 output.accept(ModItems.ENCHANTED_POISONOUS_POTATO.get());
                 output.accept(ModItems.GILDED_PUFFERFISH.get());
                 output.accept(ModItems.GILDED_FERMENTED_SPIDER_EYE.get());
+                output.accept(ModItems.ALCHEMICAL_DISTILLER.get());
+                output.accept(ModItems.MUDZYA_HIVE.get());
+                output.accept(ModItems.BOTTLE_OF_SOURCE.get());
+                output.accept(ModItems.MUSHROOM_MOSS.get());
+                output.accept(ModItems.BLUE_MUSHROOM_BLOCK.get());
+                ModItems.MUSHROOMS.values().forEach(item -> output.accept(item.get()));
+                output.accept(ModItems.MUDZYA_SPAWN_EGG.get());
+                output.accept(ModItems.GRIBUSHKA_SPAWN_EGG.get());
                 output.accept(ModItems.OATH_SCROLL.get());
                 output.accept(ModItems.HEART_CHARM.get());
                 output.accept(ModItems.DIAMOND_CHARM.get());

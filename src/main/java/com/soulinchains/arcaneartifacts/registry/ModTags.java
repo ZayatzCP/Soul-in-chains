@@ -18,6 +18,12 @@ public final class ModTags {
     /** Projectiles the Mantle never reflects, even if they are Ars spell projectiles. */
     public static final TagKey<EntityType<?>> UNREFLECTABLE_PROJECTILES = TagKey.create(Registries.ENTITY_TYPE, ArcaneArtifacts.id("unreflectable_projectiles"));
 
+    /** Blocks the Mushroom Caves cover with mushroom moss. */
+    public static final TagKey<net.minecraft.world.level.block.Block> MUSHROOM_MOSS_REPLACEABLE =
+            TagKey.create(Registries.BLOCK, ArcaneArtifacts.id("mushroom_moss_replaceable"));
+    /** What Mudzyas follow and breed with. */
+    public static final TagKey<net.minecraft.world.item.Item> MUDZYA_FOOD = TagKey.create(Registries.ITEM, ArcaneArtifacts.id("mudzya_food"));
+
     private ModTags() {
     }
 }

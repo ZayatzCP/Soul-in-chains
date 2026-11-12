@@ -1,0 +1,100 @@
+{
+  "values": {
+    "minecraft:sugar": {
+      "effect": "minecraft:speed",
+      "duration": 3600
+    },
+    "minecraft:rabbit_foot": {
+      "effect": "minecraft:jump_boost",
+      "duration": 3600
+    },
+    "minecraft:blaze_powder": {
+      "effect": "minecraft:strength",
+      "duration": 3600
+    },
+    "minecraft:glistering_melon_slice": {
+      "effect": "minecraft:instant_health",
+      "duration": 1
+    },
+    "minecraft:spider_eye": {
+      "effect": "minecraft:poison",
+      "duration": 900
+    },
+    "minecraft:ghast_tear": {
+      "effect": "minecraft:regeneration",
+      "duration": 900
+    },
+    "minecraft:magma_cream": {
+      "effect": "minecraft:fire_resistance",
+      "duration": 3600
+    },
+    "minecraft:pufferfish": {
+      "effect": "minecraft:water_breathing",
+      "duration": 3600
+    },
+    "minecraft:golden_carrot": {
+      "effect": "minecraft:night_vision",
+      "duration": 3600
+    },
+    "minecraft:phantom_membrane": {
+      "effect": "minecraft:slow_falling",
+      "duration": 1800
+    },
+    "minecraft:fermented_spider_eye": {
+      "effect": "minecraft:weakness",
+      "duration": 1800
+    },
+    "minecraft:turtle_scute": {
+      "effect": "minecraft:resistance",
+      "duration": 1200
+    },
+    "arcane_artifacts:blue_mushroom": {
+      "effect": "minecraft:night_vision",
+      "duration": 4800
+    },
+    "arcane_artifacts:sourcecap": {
+      "effect": "ars_nouveau:mana_regen",
+      "duration": 3600
+    },
+    "arcane_artifacts:brawncap": {
+      "effect": "minecraft:strength",
+      "duration": 3600
+    },
+    "arcane_artifacts:embercap": {
+      "effect": "minecraft:fire_resistance",
+      "duration": 4800
+    },
+    "arcane_artifacts:swiftcap": {
+      "effect": "minecraft:speed",
+      "duration": 4800
+    },
+    "arcane_artifacts:leapcap": {
+      "effect": "minecraft:jump_boost",
+      "duration": 4800
+    },
+    "arcane_artifacts:mendcap": {
+      "effect": "minecraft:regeneration",
+      "duration": 1200
+    },
+    "arcane_artifacts:ghostcap": {
+      "effect": "minecraft:invisibility",
+      "duration": 3600
+    },
+    "arcane_artifacts:toxcap": {
+      "effect": "minecraft:poison",
+      "duration": 1200
+    },
+    "arcane_artifacts:stonecap": {
+      "effect": "minecraft:resistance",
+      "duration": 2400
+    },
+    "arcane_artifacts:tidecap": {
+      "effect": "minecraft:water_breathing",
+      "duration": 4800
+    },
+    "arcane_artifacts:bottle_of_source": {
+      "effect": "ars_nouveau:mana_regen",
+      "duration": 2400
+    }
+  }
+}

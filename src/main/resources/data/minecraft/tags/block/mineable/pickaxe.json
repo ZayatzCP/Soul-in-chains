@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:rose_gold_block"
+    "arcane_artifacts:rose_gold_block",
+    "arcane_artifacts:alchemical_distiller"
   ]
 }

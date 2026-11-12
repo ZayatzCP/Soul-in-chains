@@ -28,6 +28,46 @@ public final class ModBlocks {
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PINK)
                     .requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL)));
 
+    // ------------------------------------------------------------------ Mushroom Caves
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
+            () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)
+                    .strength(0.6f).sound(SoundType.MOSS).lightLevel(state -> 2)));
+    public static final DeferredBlock<net.minecraft.world.level.block.HugeMushroomBlock> BLUE_MUSHROOM_BLOCK = BLOCKS.register("blue_mushroom_block",
+            () -> new net.minecraft.world.level.block.HugeMushroomBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.BROWN_MUSHROOM_BLOCK)
+                    .mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(state -> 7)));
+    public static final java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredBlock<com.soulinchains.arcaneartifacts.block.ArcaneMushroomBlock>> MUSHROOMS =
+            mushrooms();
+
+    private static java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredBlock<com.soulinchains.arcaneartifacts.block.ArcaneMushroomBlock>> mushrooms() {
+        var map = new java.util.EnumMap<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredBlock<com.soulinchains.arcaneartifacts.block.ArcaneMushroomBlock>>(
+                com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.class);
+        for (var mushroom : com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.values()) {
+            map.put(mushroom, BLOCKS.register(mushroom.id(), () -> new com.soulinchains.arcaneartifacts.block.ArcaneMushroomBlock(
+                    com.soulinchains.arcaneartifacts.world.ModFeatures.HUGE_BLUE_MUSHROOM_KEY, mushroom.growsHuge(),
+                    BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.BROWN_MUSHROOM)
+                            .mapColor(mushroom.mapColor()).lightLevel(state -> mushroom.light()))));
+        }
+        return java.util.Collections.unmodifiableMap(map);
+    }
+
+    // ------------------------------------------------------------------ Mudzya Hive and Alchemical Distiller
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock> MUDZYA_HIVE = BLOCKS.register("mudzya_hive",
+            () -> new com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
+                    .strength(0.6f).sound(SoundType.WOOD).lightLevel(state -> 4)));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlock> ALCHEMICAL_DISTILLER = BLOCKS.register("alchemical_distiller",
+            () -> new com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
+                    .strength(3.0f).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion().lightLevel(state -> 5)));
+
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.block.MudzyaHiveBlockEntity>> MUDZYA_HIVE_ENTITY =
+            BLOCK_ENTITIES.register("mudzya_hive", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.block.MudzyaHiveBlockEntity::new, MUDZYA_HIVE.get()).build(null));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlockEntity>> ALCHEMICAL_DISTILLER_ENTITY =
+            BLOCK_ENTITIES.register("alchemical_distiller", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlockEntity::new, ALCHEMICAL_DISTILLER.get()).build(null));
+    public static final DeferredHolder<MenuType<?>, MenuType<com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerMenu>> ALCHEMICAL_DISTILLER_MENU =
+            MENUS.register("alchemical_distiller", () -> new MenuType<>(com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerMenu::new,
+                    net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS));
+
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResearchTableBlockEntity>> RESEARCH_TABLE_ENTITY =
             BLOCK_ENTITIES.register("research_table", () -> BlockEntityType.Builder.of(ResearchTableBlockEntity::new, RESEARCH_TABLE.get()).build(null));

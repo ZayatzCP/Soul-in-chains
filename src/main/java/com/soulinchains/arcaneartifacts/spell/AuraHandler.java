@@ -6,6 +6,7 @@ import com.hollingsworth.arsnouveau.common.spell.augment.AugmentAOE;
 import com.hollingsworth.arsnouveau.common.spell.augment.AugmentSensitive;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.glyph.AugmentAura;
+import com.soulinchains.arcaneartifacts.phenomena.Phenomena;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,7 +33,7 @@ import java.util.UUID;
 public final class AuraHandler {
     private static final int PERIOD = 5;
 
-    private record Aura(EntityProjectileSpell projectile, double radius, boolean blocks, Set<UUID> touched, Set<BlockPos> touchedBlocks) {
+    private record Aura(EntityProjectileSpell projectile, double radius, boolean sensitive, int aoe, int extend, Set<UUID> touched) {
     }
 
     private static final List<Aura> ACTIVE = new ArrayList<>();
@@ -54,8 +55,9 @@ public final class AuraHandler {
             return;
         }
         int aoe = (int) parts.stream().filter(p -> p == AugmentAOE.INSTANCE).count();
-        boolean blocks = parts.contains(AugmentSensitive.INSTANCE);
-        ACTIVE.add(new Aura(projectile, radiusFor(aoe), blocks, new HashSet<>(), new HashSet<>()));
+        boolean sensitive = parts.contains(AugmentSensitive.INSTANCE);
+        int extend = (int) parts.stream().filter(p -> p == com.hollingsworth.arsnouveau.common.spell.augment.AugmentExtendTime.INSTANCE).count();
+        ACTIVE.add(new Aura(projectile, radiusFor(aoe), sensitive, aoe, extend, new HashSet<>()));
     }
 
     @SubscribeEvent
@@ -70,6 +72,11 @@ public final class AuraHandler {
             EntityProjectileSpell projectile = aura.projectile();
             if (projectile.isRemoved() || !projectile.isAlive()) {
                 it.remove();
+                if (aura.sensitive() && projectile.level() == level && projectile.spellResolver != null) {
+                    // With Sensitive the aura stays where the projectile landed.
+                    Phenomena.add(new AuraZone(level, projectile.getOwner() == null ? null : projectile.getOwner().getUUID(),
+                            projectile.position(), AuraZone.radiusFor(aura.aoe()), AuraZone.durationFor(aura.extend()), projectile.spellResolver));
+                }
                 continue;
             }
             if (projectile.level() != level || projectile.tickCount % PERIOD != 0) {
@@ -93,22 +100,10 @@ public final class AuraHandler {
                 resolveCopy(level, base, new EntityHitResult(living));
             }
         }
-        if (aura.blocks()) {
-            BlockPos under = BlockPos.containing(at);
-            for (int dy = 0; dy <= (int) Math.ceil(r); dy++) {
-                BlockPos pos = under.below(dy);
-                if (!level.getBlockState(pos).isAir()) {
-                    if (aura.touchedBlocks().add(pos)) {
-                        resolveCopy(level, base, new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false));
-                    }
-                    break;
-                }
-            }
-        }
     }
 
     /** Resolves the projectile's spell on a copy of its context, so the projectile itself keeps flying intact. */
-    private static void resolveCopy(ServerLevel level, SpellResolver base, net.minecraft.world.phys.HitResult hit) {
+    static void resolveCopy(ServerLevel level, SpellResolver base, net.minecraft.world.phys.HitResult hit) {
         try {
             SpellResolver copy = base.getNewResolver(base.spellContext.clone());
             copy.onResolveEffect(level, hit);
