@@ -18,17 +18,22 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Mana Tank: stores Source. Like Create's fluid tank, tank blocks that touch merge into one tank (at most
- * 3 × 3 wide and 5 high); a block that would make the tank bigger cannot be placed against it. The UP
- * and DOWN properties hide the inner rims so a stack looks like one tall tank.
+ * 3 × 3 wide and 5 high); a block that would make the tank bigger cannot be placed against it. The six
+ * connection properties hide the inner walls, so the tank looks like one structure with tall windows.
  */
 public class ManaTankBlock extends BaseEntityBlock {
     public static final MapCodec<ManaTankBlock> CODEC = simpleCodec(ManaTankBlock::new);
     public static final BooleanProperty UP = BlockStateProperties.UP;
     public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
+    public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
+    public static final BooleanProperty EAST = BlockStateProperties.EAST;
+    public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
+    public static final BooleanProperty WEST = BlockStateProperties.WEST;
 
     public ManaTankBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(UP, false).setValue(DOWN, false));
+        registerDefaultState(stateDefinition.any().setValue(UP, false).setValue(DOWN, false)
+                .setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false));
     }
 
     @Override
@@ -38,7 +43,7 @@ public class ManaTankBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(UP, DOWN);
+        builder.add(UP, DOWN, NORTH, EAST, SOUTH, WEST);
     }
 
     @Override
@@ -51,21 +56,28 @@ public class ManaTankBlock extends BaseEntityBlock {
         if (!ManaTanks.canJoin(context.getLevel(), context.getClickedPos())) {
             return null;
         }
-        BlockPos pos = context.getClickedPos();
-        return defaultBlockState()
-                .setValue(UP, context.getLevel().getBlockState(pos.above()).is(this))
-                .setValue(DOWN, context.getLevel().getBlockState(pos.below()).is(this));
+        BlockState state = defaultBlockState();
+        for (Direction direction : Direction.values()) {
+            state = state.setValue(property(direction), context.getLevel().getBlockState(context.getClickedPos().relative(direction)).is(this));
+        }
+        return state;
     }
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (direction == Direction.UP) {
-            return state.setValue(UP, neighbor.is(this));
-        }
-        if (direction == Direction.DOWN) {
-            return state.setValue(DOWN, neighbor.is(this));
-        }
-        return state;
+        return state.setValue(property(direction), neighbor.is(this));
+    }
+
+    /** True on a side means "another tank block is there": that wall is inside the tank and is not drawn. */
+    public static BooleanProperty property(Direction direction) {
+        return switch (direction) {
+            case UP -> UP;
+            case DOWN -> DOWN;
+            case NORTH -> NORTH;
+            case EAST -> EAST;
+            case SOUTH -> SOUTH;
+            case WEST -> WEST;
+        };
     }
 
     @Override

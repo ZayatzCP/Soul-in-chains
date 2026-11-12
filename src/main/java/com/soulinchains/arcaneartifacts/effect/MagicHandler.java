@@ -25,6 +25,10 @@ public final class MagicHandler {
         if (event.caster == null) {
             return;
         }
+        MobEffectInstance duel = event.caster.getEffect(ModEffects.DUEL_FOCUS);
+        if (duel != null) {
+            event.builder.addAmplification(duel.getAmplifier() + 1);
+        }
         MobEffectInstance pity = event.caster.getEffect(ModEffects.PITY);
         if (pity != null) {
             event.builder.addAmplification(-PITY_DAMPEN * (pity.getAmplifier() + 1));

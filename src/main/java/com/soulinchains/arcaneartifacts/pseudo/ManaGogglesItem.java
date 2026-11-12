@@ -10,8 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 
 /**
- * Pseudomage's Goggles (head, or a Curios head slot): looking at a Mana Tank, a Source Jar or a Mana
- * Dispenser shows exactly how much Source is inside. They give no mana and no mana regeneration.
+ * Pseudomage's Goggles (head, or a Curios head slot): looking at a Mana Tank or a Source Jar shows exactly how much Source is inside. They give no mana and no mana regeneration.
  */
 public class ManaGogglesItem extends ArcaneAccessoryItem implements Equipable {
     public ManaGogglesItem() {
@@ -25,6 +24,7 @@ public class ManaGogglesItem extends ArcaneAccessoryItem implements Equipable {
 
     public static boolean isWearing(Player player) {
         return player.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.MANA_GOGGLES.get())
-                || CurioHelper.findEquipped(player, ModItems.MANA_GOGGLES.get()).isPresent();
+                || CurioHelper.findEquipped(player, ModItems.MANA_GOGGLES.get()).isPresent()
+                || CurioHelper.findEquipped(player, ModItems.SOMBRERO.get()).isPresent();
     }
 }

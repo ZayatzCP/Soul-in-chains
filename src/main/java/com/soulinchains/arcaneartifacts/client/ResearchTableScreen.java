@@ -46,9 +46,11 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     private static final int LEFT_WIDTH = 154, LEFT_BOTTOM = 144, RIGHT_BOTTOM = 196;
 
     private int selected;
-    /** Which school is shown: the Arcane Mage (false) or the Pseudomage (true). */
-    private boolean pseudoTab;
-    private PageButton arcaneTab, pseudoTabButton;
+    /** Which school is shown: 0 Arcane Mage, 1 Pseudomage, 2 Druid. */
+    private int school;
+    private static final String[] TABS = {"arcane_artifacts.research_table.tab_arcane", "arcane_artifacts.research_table.tab_pseudo",
+            "arcane_artifacts.research_table.tab_druid"};
+    private final PageButton[] tabs = new PageButton[3];
     private Item lastSample;
     private PageButton observe, formulate, previous, next;
 
@@ -72,10 +74,11 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                         click(ResearchTableMenu.BUTTON_FORMULATE + ResearchTableMenu.researchOrder().indexOf(order.get(selected)));
                     }
                 }));
-        arcaneTab = addRenderableWidget(new PageButton(leftPos + 16, topPos - 14, 110, 13,
-                Component.translatable("arcane_artifacts.research_table.tab_arcane"), () -> switchTab(false)));
-        pseudoTabButton = addRenderableWidget(new PageButton(leftPos + 130, topPos - 14, 110, 13,
-                Component.translatable("arcane_artifacts.research_table.tab_pseudo"), () -> switchTab(true)));
+        for (int i = 0; i < tabs.length; i++) {
+            final int tab = i;
+            tabs[i] = addRenderableWidget(new PageButton(leftPos + 8 + i * 114, topPos - 14, 110, 13,
+                    Component.translatable(TABS[i]), () -> switchTab(tab)));
+        }
         previous = addRenderableWidget(new PageButton(leftPos + RIGHT_X, topPos + 8, 12, 12, Component.literal("<"), () -> move(-1)));
         next = addRenderableWidget(new PageButton(leftPos + RIGHT_X + PAGE_WIDTH - 12, topPos + 8, 12, 12, Component.literal(">"), () -> move(1)));
     }
@@ -89,7 +92,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     /** The researches of the open tab, in display order. */
     private List<ResourceLocation> order() {
         List<ResourceLocation> all = ResearchTableMenu.researchOrder();
-        all.removeIf(id -> ResearchDefinition.isPseudomage(id) != pseudoTab);
+        all.removeIf(id -> ResearchDefinition.school(id) != school);
         return all;
     }
 
@@ -97,9 +100,9 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         return open ? Component.literal("» ").append(Component.translatable(key)).append(" «") : Component.translatable(key);
     }
 
-    private void switchTab(boolean pseudo) {
-        if (pseudoTab != pseudo) {
-            pseudoTab = pseudo;
+    private void switchTab(int tab) {
+        if (school != tab) {
+            school = tab;
             selected = 0;
         }
     }
@@ -120,14 +123,15 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
             lastSample = current;
             List<ResourceLocation> relevant = ResearchService.researchesFor(ClientResearch.progress(), sample);
             if (!relevant.isEmpty()) {
-                pseudoTab = ResearchDefinition.isPseudomage(relevant.get(0));
+                school = ResearchDefinition.school(relevant.get(0));
                 selected = Math.max(0, order().indexOf(relevant.get(0)));
             }
         }
         List<ResourceLocation> order = order();
         // The open tab is marked with arrows.
-        arcaneTab.setMessage(tabLabel("arcane_artifacts.research_table.tab_arcane", !pseudoTab));
-        pseudoTabButton.setMessage(tabLabel("arcane_artifacts.research_table.tab_pseudo", pseudoTab));
+        for (int i = 0; i < tabs.length; i++) {
+            tabs[i].setMessage(tabLabel(TABS[i], i == school));
+        }
         ResourceLocation id = selected < order.size() ? order.get(selected) : null;
         observe.active = !sample.isEmpty();
         formulate.visible = id != null && stateOf(ClientResearch.progress(), id) == ResearchState.PRINCIPLE;

@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "arcane_artifacts:block/amber_cluster"
+    },
+    "facing=down": {
+      "model": "arcane_artifacts:block/amber_cluster",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "arcane_artifacts:block/amber_cluster",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "arcane_artifacts:block/amber_cluster",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "arcane_artifacts:block/amber_cluster",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "arcane_artifacts:block/amber_cluster",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

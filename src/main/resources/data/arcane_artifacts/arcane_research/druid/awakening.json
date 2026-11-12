@@ -1,0 +1,47 @@
+{
+  "category": "biological",
+  "icon": "minecraft:oak_sapling",
+  "sort": 300,
+  "subjects": [
+    "minecraft:oak_sapling",
+    "minecraft:moss_block",
+    "minecraft:bone_meal"
+  ],
+  "properties": [
+    "living",
+    "rooted"
+  ],
+  "experiments": [
+    {
+      "id": "grow",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_grow",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "harvest",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_harvest",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "heal",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_heal",
+          "entity": "*"
+        }
+      ]
+    }
+  ],
+  "notes": 1
+}

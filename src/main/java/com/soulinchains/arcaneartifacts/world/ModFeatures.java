@@ -19,6 +19,11 @@ public final class ModFeatures {
     public static final DeferredHolder<Feature<?>, GribushkaColonyFeature> GRIBUSHKA_COLONY =
             REGISTER.register("gribushka_colony", () -> new GribushkaColonyFeature(NoneFeatureConfiguration.CODEC));
 
+    public static final DeferredHolder<Feature<?>, AmberFeature> AMBER =
+            REGISTER.register("amber", () -> new AmberFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, MudzyaNestFeature> MUDZYA_NEST =
+            REGISTER.register("mudzya_nest", () -> new MudzyaNestFeature(NoneFeatureConfiguration.CODEC));
+
     /** The configured feature grown from a blue mushroom with bone meal. */
     public static final ResourceKey<ConfiguredFeature<?, ?>> HUGE_BLUE_MUSHROOM_KEY =
             ResourceKey.create(Registries.CONFIGURED_FEATURE, ArcaneArtifacts.id("huge_blue_mushroom"));

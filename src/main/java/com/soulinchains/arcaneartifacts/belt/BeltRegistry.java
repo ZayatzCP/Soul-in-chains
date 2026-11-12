@@ -29,7 +29,14 @@ public final class BeltRegistry {
     public static void handleOpen(net.neoforged.neoforge.network.handling.IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer player) {
-                BeltHandler.openMenu(player);
+                var bandolier = com.soulinchains.arcaneartifacts.pseudo.FalseMana.bandolier(player);
+                boolean belt = com.soulinchains.arcaneartifacts.util.CurioHelper
+                        .findEquipped(player, com.soulinchains.arcaneartifacts.registry.ModItems.BOTTOMLESS_BELT.get()).isPresent();
+                if (!belt && !bandolier.isEmpty()) {
+                    com.soulinchains.arcaneartifacts.pseudo.BandolierItem.open(player, bandolier);
+                } else {
+                    BeltHandler.openMenu(player);
+                }
             }
         });
     }

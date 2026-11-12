@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "L L",
-    "GRG"
+    "GAG"
   ],
   "key": {
     "L": {
@@ -12,8 +12,8 @@
     "G": {
       "item": "minecraft:glass"
     },
-    "R": {
-      "item": "arcane_artifacts:rose_gold_ingot"
+    "A": {
+      "item": "arcane_artifacts:amber"
     }
   },
   "result": {

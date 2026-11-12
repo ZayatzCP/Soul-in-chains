@@ -64,6 +64,9 @@ public class Mudzya extends Animal implements FlyingAnimal {
 
     private int chargeTimer;
     private @Nullable BlockPos hivePos;
+    /** The hive this Mudzya lives at; it never strays more than {@link #HOME_RANGE} blocks from it. */
+    private @Nullable BlockPos home;
+    public static final int HOME_RANGE = 8;
 
     public Mudzya(EntityType<? extends Mudzya> type, Level level) {
         super(type, level);
@@ -108,6 +111,7 @@ public class Mudzya extends Animal implements FlyingAnimal {
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.15, stack -> stack.is(ModTags.MUDZYA_FOOD), false));
         this.goalSelector.addGoal(4, new DeliverSourceGoal(this));
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1));
+        this.goalSelector.addGoal(6, new net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal(this, 1.0));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1.0));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -130,6 +134,35 @@ public class Mudzya extends Animal implements FlyingAnimal {
         this.entityData.set(CHARGED, charged);
         if (!charged) {
             this.chargeTimer = nextChargeDelay(this.random);
+        }
+    }
+
+    /** Settles at a hive: from now on it lives around it. */
+    public void setHome(BlockPos pos) {
+        this.home = pos.immutable();
+        restrictTo(this.home, HOME_RANGE);
+    }
+
+    public @Nullable BlockPos getHome() {
+        return home;
+    }
+
+    /** A homeless Mudzya adopts the nearest hive within 16 blocks (wild or built by a player). */
+    private void findHome() {
+        BlockPos center = blockPosition();
+        BlockPos best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-16, -8, -16), center.offset(16, 8, 16))) {
+            if (level().getBlockState(pos).is(com.soulinchains.arcaneartifacts.registry.ModBlocks.MUDZYA_HIVE.get())) {
+                double distance = pos.distSqr(center);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    best = pos.immutable();
+                }
+            }
+        }
+        if (best != null) {
+            setHome(best);
         }
     }
 
@@ -161,6 +194,15 @@ public class Mudzya extends Animal implements FlyingAnimal {
         }
         if (!isCharged() && !isBaby() && --this.chargeTimer <= 0) {
             setCharged(true);
+        }
+        if (this.tickCount % 100 == 0) {
+            if (this.home != null && !level().getBlockState(this.home).is(com.soulinchains.arcaneartifacts.registry.ModBlocks.MUDZYA_HIVE.get())) {
+                this.home = null;
+                clearRestriction();
+            }
+            if (this.home == null) {
+                findHome();
+            }
         }
     }
 
@@ -222,6 +264,11 @@ public class Mudzya extends Animal implements FlyingAnimal {
         super.addAdditionalSaveData(tag);
         tag.putBoolean("Charged", isCharged());
         tag.putInt("ChargeTimer", this.chargeTimer);
+        if (this.home != null) {
+            tag.putInt("HomeX", this.home.getX());
+            tag.putInt("HomeY", this.home.getY());
+            tag.putInt("HomeZ", this.home.getZ());
+        }
         if (this.hivePos != null) {
             tag.putInt("HiveX", this.hivePos.getX());
             tag.putInt("HiveY", this.hivePos.getY());
@@ -237,6 +284,9 @@ public class Mudzya extends Animal implements FlyingAnimal {
             this.chargeTimer = tag.getInt("ChargeTimer");
         }
         this.hivePos = tag.contains("HiveX") ? new BlockPos(tag.getInt("HiveX"), tag.getInt("HiveY"), tag.getInt("HiveZ")) : null;
+        if (tag.contains("HomeX")) {
+            setHome(new BlockPos(tag.getInt("HomeX"), tag.getInt("HomeY"), tag.getInt("HomeZ")));
+        }
     }
 
     /** A full Mudzya that was called by a hive flies to it and unloads its Source. */

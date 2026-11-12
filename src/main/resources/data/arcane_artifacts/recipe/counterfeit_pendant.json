@@ -4,14 +4,14 @@
   "pattern": [
     " S ",
     "S S",
-    " E "
+    " A "
   ],
   "key": {
     "S": {
       "item": "minecraft:string"
     },
-    "E": {
-      "item": "minecraft:emerald"
+    "A": {
+      "item": "arcane_artifacts:amber"
     }
   },
   "result": {

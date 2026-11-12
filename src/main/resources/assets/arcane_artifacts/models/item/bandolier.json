@@ -2,5 +2,25 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "arcane_artifacts:item/bandolier"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arcane_artifacts:filled": 0.01
+      },
+      "model": "arcane_artifacts:item/bandolier_1"
+    },
+    {
+      "predicate": {
+        "arcane_artifacts:filled": 0.4
+      },
+      "model": "arcane_artifacts:item/bandolier_2"
+    },
+    {
+      "predicate": {
+        "arcane_artifacts:filled": 0.8
+      },
+      "model": "arcane_artifacts:item/bandolier_3"
+    }
+  ]
 }

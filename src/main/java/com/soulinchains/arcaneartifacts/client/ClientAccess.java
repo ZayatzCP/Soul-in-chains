@@ -13,9 +13,9 @@ public final class ClientAccess {
         return Minecraft.getInstance().level;
     }
 
-    /** Opens the False Mage's Guide (the Pseudomage's book). */
-    public static void openFalseMageGuide() {
-        Minecraft.getInstance().setScreen(new com.soulinchains.arcaneartifacts.client.notebook.ArcaneNotebookScreen(true));
+    /** Opens one of the three books (notebook, False Mage's Guide, Druid's Herbarium). */
+    public static void openBook(com.soulinchains.arcaneartifacts.accessory.ResearcherNotebookItem.Book book) {
+        Minecraft.getInstance().setScreen(new com.soulinchains.arcaneartifacts.client.notebook.ArcaneNotebookScreen(book));
     }
 
     /** Opens the Researcher's Secret Notebook, the addon's own book. */

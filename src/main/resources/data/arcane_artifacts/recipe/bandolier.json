@@ -3,15 +3,15 @@
   "category": "misc",
   "pattern": [
     "L L",
-    "CLC",
+    "ALA",
     "L L"
   ],
   "key": {
     "L": {
       "item": "minecraft:leather"
     },
-    "C": {
-      "item": "arcane_artifacts:magic_cartridge"
+    "A": {
+      "item": "arcane_artifacts:amber"
     }
   },
   "result": {

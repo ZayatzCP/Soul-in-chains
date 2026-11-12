@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " H ",
+    "HAH",
+    "SSS"
+  ],
+  "key": {
+    "H": {
+      "item": "minecraft:wheat"
+    },
+    "A": {
+      "item": "arcane_artifacts:amber"
+    },
+    "S": {
+      "item": "minecraft:hay_block"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:sombrero"
+  }
+}

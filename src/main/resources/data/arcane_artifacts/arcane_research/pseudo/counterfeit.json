@@ -50,6 +50,8 @@
   },
   "unlocks_items": [
     "arcane_artifacts:counterfeit_ring",
-    "arcane_artifacts:counterfeit_pendant"
+    "arcane_artifacts:counterfeit_pendant",
+    "arcane_artifacts:poncho",
+    "arcane_artifacts:sombrero"
   ]
 }

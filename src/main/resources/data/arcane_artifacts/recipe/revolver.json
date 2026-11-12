@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "IIR",
+    "IIA",
     "SG ",
     "L  "
   ],
@@ -10,8 +10,8 @@
     "I": {
       "item": "minecraft:iron_ingot"
     },
-    "R": {
-      "item": "arcane_artifacts:rose_gold_ingot"
+    "A": {
+      "item": "arcane_artifacts:amber"
     },
     "S": {
       "item": "arcane_artifacts:bottle_of_source"

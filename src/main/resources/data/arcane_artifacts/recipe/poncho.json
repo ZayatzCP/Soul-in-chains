@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WAW",
+    "WWW",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:wool"
+    },
+    "A": {
+      "item": "arcane_artifacts:amber"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:poncho"
+  }
+}

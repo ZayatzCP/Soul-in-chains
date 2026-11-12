@@ -35,8 +35,7 @@ import java.util.List;
 /**
  * A Pseudomage firearm. One glyph is set inside it at the Scribes Table: a single effect, no form, no
  * augments. It needs no mana: each shot uses a round from the magazine, and the magazine is loaded
- * (when empty, or crouch + use) with false mana first ({@link FalseMana#DIVISION} per round), then with
- * magic cartridges from the worn bandolier, then from the inventory.
+ * (when empty, or crouch + use) with magic cartridges from the worn bandolier, then from the inventory.
  */
 public class MagicGunItem extends Item implements ICasterTool {
     private final int magazine;
@@ -133,20 +132,14 @@ public class MagicGunItem extends Item implements ICasterTool {
                 SoundSource.PLAYERS, pellets > 1 ? 0.6f : 1.0f, pellets > 1 ? 1.6f : 0.8f);
     }
 
-    /** Loads rounds: false mana first, then cartridges from the bandolier, then from the inventory. */
+    /** Loads rounds: cartridges from the worn bandolier first, then from the inventory. */
     private void reload(Player player, ItemStack gun) {
         int rounds = rounds(gun);
         int needed = magazine - rounds;
         int loaded = 0;
-        while (loaded < needed && FalseMana.spend(player, FalseMana.DIVISION)) {
-            loaded++;
-        }
-        ItemStack bandolier = CurioHelper.findEquipped(player, ModItems.BANDOLIER.get()).orElse(ItemStack.EMPTY);
-        if (loaded < needed && !bandolier.isEmpty()) {
-            int inside = BandolierItem.cartridges(bandolier);
-            int take = Math.min(inside, needed - loaded);
-            BandolierItem.setCartridges(bandolier, inside - take);
-            loaded += take;
+        ItemStack bandolier = FalseMana.bandolier(player);
+        if (!bandolier.isEmpty()) {
+            loaded += BandolierItem.take(bandolier, needed - loaded);
         }
         if (loaded < needed && !player.getAbilities().instabuild) {
             var inventory = player.getInventory();

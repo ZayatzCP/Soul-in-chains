@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_beach",
+  "features": "arcane_artifacts:mudzya_nest",
+  "step": "vegetal_decoration"
+}

@@ -53,6 +53,10 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> FEAR = REGISTER.register("fear",
             com.soulinchains.arcaneartifacts.effect.FearEffect::new);
 
+    /** Pseudomage's Poncho: one Amplify per level on every spell, built up by standing still. */
+    public static final DeferredHolder<MobEffect, MobEffect> DUEL_FOCUS = REGISTER.register("duel_focus",
+            () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0xD9A441, false));
+
     private ModEffects() {
     }
 }

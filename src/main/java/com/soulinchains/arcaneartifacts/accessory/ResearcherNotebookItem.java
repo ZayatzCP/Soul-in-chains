@@ -19,26 +19,24 @@ import java.util.List;
  * Ars Nouveau book interface (descriptions, lore and recipes of every artifact).
  */
 public class ResearcherNotebookItem extends Item {
-    private final boolean pseudomage;
+    /** The three books: the Arcane Mage's notebook, the Pseudomage's guide and the Druid's herbarium. */
+    public enum Book { ARCANE, PSEUDOMAGE, DRUID }
+
+    private final Book book;
 
     public ResearcherNotebookItem() {
-        this(false);
+        this(Book.ARCANE);
     }
 
-    /** {@code pseudomage}: the False Mage's Guide, the Pseudomage's own book. */
-    public ResearcherNotebookItem(boolean pseudomage) {
+    public ResearcherNotebookItem(Book book) {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
-        this.pseudomage = pseudomage;
+        this.book = book;
     }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         if (level.isClientSide) {
-            if (pseudomage) {
-                com.soulinchains.arcaneartifacts.client.ClientAccess.openFalseMageGuide();
-            } else {
-                com.soulinchains.arcaneartifacts.client.ClientAccess.openNotebook();
-            }
+            com.soulinchains.arcaneartifacts.client.ClientAccess.openBook(book);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
     }

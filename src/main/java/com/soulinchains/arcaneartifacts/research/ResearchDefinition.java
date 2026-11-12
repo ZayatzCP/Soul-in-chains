@@ -115,6 +115,12 @@ public record ResearchDefinition(NoteCategory category, Item icon, int sort, Lis
         return id.getPath().startsWith("pseudo/");
     }
 
+    /** The school (Research Table tab) of a research: 0 Arcane Mage, 1 Pseudomage ({@code pseudo/}), 2 Druid ({@code druid/}). */
+    public static int school(ResourceLocation id) {
+        String path = id.getPath();
+        return path.startsWith("pseudo/") ? 1 : path.startsWith("druid/") ? 2 : 0;
+    }
+
     public static String langPrefix(ResourceLocation id) {
         return "arcane_artifacts.research." + id.getNamespace() + "." + id.getPath().replace('/', '.');
     }

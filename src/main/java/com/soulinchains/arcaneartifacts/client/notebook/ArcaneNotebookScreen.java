@@ -40,23 +40,30 @@ public class ArcaneNotebookScreen extends Screen {
     private int left, top;
     private @Nullable ItemStack hovered;
 
-    private final boolean pseudomage;
+    private final com.soulinchains.arcaneartifacts.accessory.ResearcherNotebookItem.Book book;
 
     public ArcaneNotebookScreen() {
-        this(false);
+        this(com.soulinchains.arcaneartifacts.accessory.ResearcherNotebookItem.Book.ARCANE);
     }
 
-    /** {@code pseudomage}: the False Mage's Guide instead of the Researcher's Secret Notebook. */
-    public ArcaneNotebookScreen(boolean pseudomage) {
-        super(Component.translatable(pseudomage ? "item.arcane_artifacts.false_mage_guide" : "item.arcane_artifacts.researcher_notebook"));
-        this.pseudomage = pseudomage;
+    public ArcaneNotebookScreen(com.soulinchains.arcaneartifacts.accessory.ResearcherNotebookItem.Book book) {
+        super(Component.translatable(switch (book) {
+            case ARCANE -> "item.arcane_artifacts.researcher_notebook";
+            case PSEUDOMAGE -> "item.arcane_artifacts.false_mage_guide";
+            case DRUID -> "item.arcane_artifacts.druid_herbarium";
+        }));
+        this.book = book;
     }
 
     @Override
     protected void init() {
         left = (width - BOOK_W) / 2;
         top = (height - BOOK_H) / 2;
-        entries = pseudomage ? NotebookContent.buildPseudomage(font) : NotebookContent.build(font);
+        entries = switch (book) {
+            case ARCANE -> NotebookContent.build(font);
+            case PSEUDOMAGE -> NotebookContent.buildPseudomage(font);
+            case DRUID -> NotebookContent.buildDruid(font);
+        };
         if (current != null) {
             // Rebuilt after a resize: reopen the same chapter by title.
             NotebookEntry previous = current;

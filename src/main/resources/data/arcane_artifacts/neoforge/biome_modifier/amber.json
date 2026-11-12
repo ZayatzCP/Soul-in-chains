@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_desert",
+  "features": [
+    "arcane_artifacts:amber_surface",
+    "arcane_artifacts:amber_cave"
+  ],
+  "step": "vegetal_decoration"
+}

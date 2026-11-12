@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LPP",
+    "SPP",
+    "LPP"
+  ],
+  "key": {
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "S": {
+      "tag": "minecraft:saplings"
+    },
+    "P": {
+      "item": "arcane_artifacts:old_parchment"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:druid_herbarium"
+  }
+}

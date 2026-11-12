@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "p": "arcane_artifacts:item/worn/poncho",
+    "particle": "arcane_artifacts:item/worn/poncho"
+  },
+  "elements": [
+    {
+      "from": [
+        6.6,
+        3.5,
+        5.6
+      ],
+      "to": [
+        11.4,
+        10.4,
+        10.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#p",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "east": {
+          "texture": "#p",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "south": {
+          "texture": "#p",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "west": {
+          "texture": "#p",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "up": {
+          "texture": "#p",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        },
+        "down": {
+          "texture": "#p",
+          "uv": [
+            0,
+            0,
+            8,
+            8
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -84,25 +84,32 @@ public final class ModItems {
 
     // ------------------------------------------------------------------ Pseudomage
     public static final DeferredItem<ResearcherNotebookItem> FALSE_MAGE_GUIDE = REGISTER.register("false_mage_guide",
-            () -> new ResearcherNotebookItem(true));
+            () -> new ResearcherNotebookItem(ResearcherNotebookItem.Book.PSEUDOMAGE));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.MagicGunItem> REVOLVER = REGISTER.register("revolver",
             () -> new com.soulinchains.arcaneartifacts.pseudo.MagicGunItem(6, 1, 0.5F, 0, 6, 50));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.MagicGunItem> SAWN_OFF = REGISTER.register("sawn_off",
             () -> new com.soulinchains.arcaneartifacts.pseudo.MagicGunItem(2, 6, 9.0F, 2, 12, 40));
-    public static final DeferredItem<Item> MAGIC_CARTRIDGE = REGISTER.register("magic_cartridge", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> MAGIC_CARTRIDGE = REGISTER.register("magic_cartridge", () -> new Item(new Item.Properties().stacksTo(16)));
     /** Only the look of a flying bullet; not obtainable. */
     public static final DeferredItem<Item> BULLET = REGISTER.register("bullet", () -> new Item(new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.BandolierItem> BANDOLIER = REGISTER.register("bandolier",
             com.soulinchains.arcaneartifacts.pseudo.BandolierItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem> COUNTERFEIT_RING = REGISTER.register("counterfeit_ring",
-            () -> new com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem(40, 2));
+            () -> new com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem(com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem.Kind.RING));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem> COUNTERFEIT_PENDANT = REGISTER.register("counterfeit_pendant",
-            () -> new com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem(60, 2));
+            () -> new com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem(com.soulinchains.arcaneartifacts.pseudo.CounterfeitManaItem.Kind.PENDANT));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.ManaGogglesItem> MANA_GOGGLES = REGISTER.register("mana_goggles",
             com.soulinchains.arcaneartifacts.pseudo.ManaGogglesItem::new);
     public static final DeferredItem<BlockItem> MANA_TANK = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_TANK);
+    public static final DeferredItem<Item> AMBER = REGISTER.register("amber", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<BlockItem> AMBER_CLUSTER = REGISTER.registerSimpleBlockItem(ModBlocks.AMBER_CLUSTER);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.PonchoItem> PONCHO = REGISTER.register("poncho",
+            com.soulinchains.arcaneartifacts.pseudo.PonchoItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.SombreroItem> SOMBRERO = REGISTER.register("sombrero",
+            com.soulinchains.arcaneartifacts.pseudo.SombreroItem::new);
+    public static final DeferredItem<ResearcherNotebookItem> DRUID_HERBARIUM = REGISTER.register("druid_herbarium",
+            () -> new ResearcherNotebookItem(ResearcherNotebookItem.Book.DRUID));
     public static final DeferredItem<BlockItem> MANA_PIPE = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_PIPE);
-    public static final DeferredItem<BlockItem> MANA_DISPENSER = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_DISPENSER);
 
     private static java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>> mushrooms() {
         var map = new java.util.EnumMap<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>>(

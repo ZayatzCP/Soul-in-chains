@@ -54,9 +54,13 @@ public final class ModCreativeTab {
                 output.accept(ModItems.COUNTERFEIT_RING.get());
                 output.accept(ModItems.COUNTERFEIT_PENDANT.get());
                 output.accept(ModItems.MANA_GOGGLES.get());
+                output.accept(ModItems.PONCHO.get());
+                output.accept(ModItems.SOMBRERO.get());
+                output.accept(ModItems.AMBER.get());
+                output.accept(ModItems.AMBER_CLUSTER.get());
+                output.accept(ModItems.DRUID_HERBARIUM.get());
                 output.accept(ModItems.MANA_TANK.get());
                 output.accept(ModItems.MANA_PIPE.get());
-                output.accept(ModItems.MANA_DISPENSER.get());
                 output.accept(ModItems.OATH_SCROLL.get());
                 output.accept(ModItems.HEART_CHARM.get());
                 output.accept(ModItems.DIAMOND_CHARM.get());

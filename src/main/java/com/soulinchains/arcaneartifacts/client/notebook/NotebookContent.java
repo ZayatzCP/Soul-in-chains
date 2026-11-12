@@ -82,7 +82,7 @@ final class NotebookContent {
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
-        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear"}) {
+        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus"}) {
             effects.add(new Paragraph(Component.translatable("effect.arcane_artifacts." + effect).withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
             effects.add(new Paragraph(Component.translatable("arcane_artifacts.effect_doc." + effect), ArcaneNotebookScreen.INK_COLOR));
         }
@@ -96,6 +96,15 @@ final class NotebookContent {
         for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
             entries.add(glyphEntry(font, part, locked.contains(part.getRegistryName())));
         }
+        return entries;
+    }
+
+    /** The Druid's Herbarium: the druid is still being written; the book says what is coming. */
+    static List<NotebookEntry> buildDruid(Font font) {
+        List<NotebookEntry> entries = new ArrayList<>();
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.druid"),
+                new ItemStack(ModItems.DRUID_HERBARIUM.get()), "druid", 2, null));
+        entries.add(itemEntry(font, ModItems.DRUID_HERBARIUM.get(), 1));
         return entries;
     }
 
@@ -115,9 +124,12 @@ final class NotebookContent {
         entries.add(gatedItemEntry(font, ModItems.COUNTERFEIT_RING.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.COUNTERFEIT_PENDANT.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MANA_GOGGLES.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.PONCHO.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.SOMBRERO.get(), 1, lockedItems));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.amber"),
+                new ItemStack(ModItems.AMBER.get()), "amber", 1, null));
         entries.add(gatedItemEntry(font, ModItems.MANA_TANK.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MANA_PIPE.get(), 1, lockedItems));
-        entries.add(gatedItemEntry(font, ModItems.MANA_DISPENSER.get(), 1, lockedItems));
         return entries;
     }
 

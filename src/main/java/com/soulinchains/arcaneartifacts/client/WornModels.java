@@ -73,6 +73,20 @@ public final class WornModels {
                 worn(BodyPart.LEFT_LEG, "hop_slippers_left")));
         ATTACHMENTS.put(ModItems.RING_OF_CALM, List.of(worn(BodyPart.RIGHT_ARM, "ring_of_calm")));
         ATTACHMENTS.put(ModItems.BOTTOMLESS_BELT, List.of(worn(BodyPart.BODY, "bottomless_belt")));
+        // Pseudomage: the bandolier shows its cartridges once there are any.
+        ATTACHMENTS.put(ModItems.BANDOLIER, List.of(
+                new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/bandolier"), Placement.NONE,
+                        stack -> com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack) == 0),
+                new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/bandolier_loaded"), Placement.NONE,
+                        stack -> com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack) > 0)));
+        ATTACHMENTS.put(ModItems.COUNTERFEIT_RING, List.of(worn(BodyPart.RIGHT_ARM, "counterfeit_ring")));
+        ATTACHMENTS.put(ModItems.COUNTERFEIT_PENDANT, List.of(worn(BodyPart.BODY, "counterfeit_pendant")));
+        ATTACHMENTS.put(ModItems.MANA_GOGGLES, List.of(worn(BodyPart.HEAD, "mana_goggles")));
+        ATTACHMENTS.put(ModItems.SOMBRERO, List.of(worn(BodyPart.HEAD, "sombrero")));
+        ATTACHMENTS.put(ModItems.PONCHO, List.of(
+                worn(BodyPart.BODY, "poncho"),
+                worn(BodyPart.RIGHT_ARM, "poncho_right"),
+                worn(BodyPart.LEFT_ARM, "poncho_left")));
         // The worn amulet follows its polarity, like the icon.
         ATTACHMENTS.put(ModItems.AMULET_OF_OPPOSITES, List.of(
                 new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/amulet_of_opposites"), Placement.NONE,

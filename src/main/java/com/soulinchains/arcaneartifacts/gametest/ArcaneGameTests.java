@@ -132,7 +132,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "mana_dispenser")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -737,23 +737,6 @@ public final class ArcaneGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = ARENA, timeoutTicks = 100)
-    public static void dispenserFillsJarsFromTanks(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
-        BlockPos tankPos = helper.absolutePos(new BlockPos(2, 1, 4));
-        level.setBlockAndUpdate(tankPos, ModBlocks.MANA_TANK.get().defaultBlockState());
-        com.soulinchains.arcaneartifacts.pseudo.ManaTanks.insert(level, tankPos, 5000);
-        level.setBlockAndUpdate(tankPos.east(), ModBlocks.MANA_PIPE.get().defaultBlockState());
-        level.setBlockAndUpdate(tankPos.east(2), ModBlocks.MANA_DISPENSER.get().defaultBlockState());
-        BlockPos jarPos = tankPos.east(4);
-        level.setBlockAndUpdate(jarPos, com.hollingsworth.arsnouveau.setup.registry.BlockRegistry.SOURCE_JAR.get().defaultBlockState());
-        helper.succeedWhen(() -> {
-            var jar = level.getBlockEntity(jarPos);
-            helper.assertTrue(jar instanceof com.hollingsworth.arsnouveau.common.block.tile.SourceJarTile j && j.getSource() > 0,
-                    "The dispenser has not filled the jar yet");
-        });
-    }
-
     @GameTest(template = ARENA)
     public static void revolverFiresAndReloads(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
@@ -778,13 +761,66 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
-    public static void counterfeitGivesFalseMana(GameTestHelper helper) {
+    public static void bandolierCartridgesAreFalseMana(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
         Player player = player(helper, 4.5, 1, 4.5);
-        equip(helper, player, "ring", ModItems.COUNTERFEIT_RING.get());
-        helper.runAfterDelay(3, () -> {
-            float max = com.soulinchains.arcaneartifacts.pseudo.FalseMana.max(player);
-            helper.assertTrue(max == 40f, "The counterfeit ring must give 40 false mana, got " + max);
+        helper.assertTrue(new ItemStack(ModItems.MAGIC_CARTRIDGE.get()).getMaxStackSize() == 16, "Cartridges must stack to 16");
+        equip(helper, player, "body", ModItems.BANDOLIER.get());
+        afterEquip(helper, player, ModItems.BANDOLIER.get(), () -> {
+            ItemStack bandolier = com.soulinchains.arcaneartifacts.pseudo.FalseMana.bandolier(player);
+            helper.assertTrue(!bandolier.isEmpty(), "The worn bandolier must be found");
+            com.soulinchains.arcaneartifacts.pseudo.BandolierItem.setPouches(bandolier, List.of(
+                    new ItemStack(ModItems.MAGIC_CARTRIDGE.get(), 16), new ItemStack(ModItems.MAGIC_CARTRIDGE.get(), 4)));
+            int falseMana = com.soulinchains.arcaneartifacts.pseudo.FalseMana.get(player);
+            helper.assertTrue(falseMana == 20 && com.soulinchains.arcaneartifacts.pseudo.FalseMana.max(player) == 128,
+                    "False mana must be the bandolier's cartridges (20 / 128), got " + falseMana);
+            ItemStack revolver = new ItemStack(ModItems.REVOLVER.get());
+            revolver.set(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER,
+                    revolver.get(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER).setSpell(new Spell(EffectHarm.INSTANCE)));
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, revolver);
+            ModItems.REVOLVER.get().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
+            int left = com.soulinchains.arcaneartifacts.pseudo.FalseMana.get(player);
+            helper.assertTrue(left == 14, "Reloading must take 6 cartridges from the bandolier, " + left + " left");
             helper.succeed();
         });
+    }
+
+    @GameTest(template = ARENA)
+    public static void pipesActAsSourceJars(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos tank = helper.absolutePos(new BlockPos(3, 1, 3));
+        level.setBlockAndUpdate(tank, ModBlocks.MANA_TANK.get().defaultBlockState());
+        level.setBlockAndUpdate(tank.above(), ModBlocks.MANA_TANK.get().defaultBlockState());
+        level.setBlockAndUpdate(tank.east(), ModBlocks.MANA_PIPE.get().defaultBlockState());
+        level.setBlockAndUpdate(tank.east(2), ModBlocks.MANA_PIPE.get().defaultBlockState());
+        helper.assertTrue(level.getBlockState(tank).getValue(com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock.UP)
+                && !level.getBlockState(tank).getValue(com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock.DOWN), "Stacked tank blocks must know their neighbours");
+        var network = new com.soulinchains.arcaneartifacts.pseudo.ManaNetwork(level, tank.east(2));
+        int added = network.addSource(700);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(level, tank.above()) == 700,
+                "Source given to a pipe must reach the tank, stored " + com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(level, tank) + " (added " + added + ")");
+        network.removeSource(200);
+        helper.assertTrue(network.getSource() == 500, "Source taken from a pipe must leave the tank, got " + network.getSource());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void amberDropsAndPonchoFocuses(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos pos = helper.absolutePos(new BlockPos(3, 2, 3));
+        level.setBlockAndUpdate(pos, ModBlocks.AMBER_CLUSTER.get().defaultBlockState());
+        helper.assertTrue(level.getBlockState(pos).is(ModBlocks.AMBER_CLUSTER.get()), "An amber cluster must stand on the floor");
+        var drops = net.minecraft.world.level.block.Block.getDrops(level.getBlockState(pos), level, pos, null);
+        helper.assertTrue(!drops.isEmpty() && drops.get(0).is(ModItems.AMBER.get()), "An amber cluster must drop amber, got " + drops);
+        Player player = player(helper, 4.5, 1, 4.5);
+        player.setOnGround(true);
+        ItemStack poncho = new ItemStack(ModItems.PONCHO.get());
+        var context = new top.theillusivec4.curios.api.SlotContext("back", player, 0, false, true);
+        for (int i = 0; i < 2 * com.soulinchains.arcaneartifacts.pseudo.PonchoItem.TICKS_PER_FOCUS + 1; i++) {
+            ModItems.PONCHO.get().curioTick(context, poncho);
+        }
+        var focus = player.getEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.DUEL_FOCUS);
+        helper.assertTrue(focus != null && focus.getAmplifier() == 1, "Standing still 4 seconds in the poncho must give Duel Focus II, got " + focus);
+        helper.succeed();
     }
 }

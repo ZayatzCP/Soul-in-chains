@@ -1,6 +1,5 @@
 package com.soulinchains.arcaneartifacts.pseudo;
 
-import com.hollingsworth.arsnouveau.common.block.tile.SourceJarTile;
 import com.soulinchains.arcaneartifacts.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,8 +17,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.EnumMap;
 import java.util.Map;
 
-/** Mana Pipe: joins Mana Tanks, Mana Dispensers and Source Jars into one network. */
-public class ManaPipeBlock extends Block {
+/**
+ * Mana Pipe: joins Mana Tanks into one network and connects them to Ars Nouveau. Machines within reach of
+ * a pipe draw Source straight from the tanks, Source Links and Mudzya Hives pour into them.
+ */
+public class ManaPipeBlock extends net.minecraft.world.level.block.BaseEntityBlock {
+    public static final com.mojang.serialization.MapCodec<ManaPipeBlock> CODEC = simpleCodec(ManaPipeBlock::new);
     private static final VoxelShape CORE = Block.box(5, 5, 5, 11, 11, 11);
     private static final Map<Direction, VoxelShape> ARMS = new EnumMap<>(Direction.class);
 
@@ -46,11 +49,26 @@ public class ManaPipeBlock extends Block {
         builder.add(PipeBlock.NORTH, PipeBlock.EAST, PipeBlock.SOUTH, PipeBlock.WEST, PipeBlock.UP, PipeBlock.DOWN);
     }
 
-    /** Pipes connect to pipes, tanks, dispensers and Source Jars. */
+    @Override
+    protected com.mojang.serialization.MapCodec<? extends net.minecraft.world.level.block.BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    protected net.minecraft.world.level.block.RenderShape getRenderShape(BlockState state) {
+        return net.minecraft.world.level.block.RenderShape.MODEL;
+    }
+
+    @Override
+    public net.minecraft.world.level.block.entity.BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new ManaPipeBlockEntity(pos, state);
+    }
+
+    /** Pipes visibly connect to pipes, tanks, Mudzya Hives and anything of Ars that holds Source. */
     public static boolean connectsTo(BlockGetter level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        return state.is(ModBlocks.MANA_PIPE.get()) || state.is(ModBlocks.MANA_TANK.get()) || state.is(ModBlocks.MANA_DISPENSER.get())
-                || level.getBlockEntity(pos) instanceof SourceJarTile;
+        return state.is(ModBlocks.MANA_PIPE.get()) || state.is(ModBlocks.MANA_TANK.get()) || state.is(ModBlocks.MUDZYA_HIVE.get())
+                || level.getBlockEntity(pos) instanceof com.hollingsworth.arsnouveau.api.source.ISourceTile;
     }
 
     private BlockState connections(BlockGetter level, BlockPos pos, BlockState state) {

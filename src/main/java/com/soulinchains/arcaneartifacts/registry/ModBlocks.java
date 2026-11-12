@@ -58,6 +58,10 @@ public final class ModBlocks {
             () -> new com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                     .strength(3.0f).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion().lightLevel(state -> 5)));
 
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.AmberClusterBlock> AMBER_CLUSTER = BLOCKS.register("amber_cluster",
+            () -> new com.soulinchains.arcaneartifacts.block.AmberClusterBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.SMALL_AMETHYST_BUD)
+                    .mapColor(MapColor.COLOR_ORANGE).lightLevel(state -> 3)));
+
     // ------------------------------------------------------------------ Pseudomage logistics
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock> MANA_TANK = BLOCKS.register("mana_tank",
             () -> new com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
@@ -65,15 +69,12 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlock> MANA_PIPE = BLOCKS.register("mana_pipe",
             () -> new com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
                     .strength(1.0f).sound(SoundType.COPPER).noOcclusion()));
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.ManaDispenserBlock> MANA_DISPENSER = BLOCKS.register("mana_dispenser",
-            () -> new com.soulinchains.arcaneartifacts.pseudo.ManaDispenserBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
-                    .strength(2.0f).sound(SoundType.COPPER).requiresCorrectToolForDrops()));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlockEntity>> MANA_PIPE_ENTITY =
+            BLOCK_ENTITIES.register("mana_pipe", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlockEntity::new, MANA_PIPE.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaTankBlockEntity>> MANA_TANK_ENTITY =
             BLOCK_ENTITIES.register("mana_tank", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaTankBlockEntity::new, MANA_TANK.get()).build(null));
-    @SuppressWarnings("DataFlowIssue")
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaDispenserBlockEntity>> MANA_DISPENSER_ENTITY =
-            BLOCK_ENTITIES.register("mana_dispenser", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaDispenserBlockEntity::new, MANA_DISPENSER.get()).build(null));
 
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.block.MudzyaHiveBlockEntity>> MUDZYA_HIVE_ENTITY =
