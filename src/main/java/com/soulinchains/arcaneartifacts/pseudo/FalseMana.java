@@ -49,8 +49,14 @@ public final class FalseMana {
     private FalseMana() {
     }
 
+    /** Sum of the false mana of every counterfeit worn in a (non-cosmetic) Curios slot. */
     public static float max(Player player) {
-        return player.getAttributes().hasAttribute(MAX) ? (float) player.getAttributeValue(MAX) : 0f;
+        return top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player)
+                .map(inventory -> (float) inventory.findCurios(stack -> stack.getItem() instanceof CounterfeitManaItem).stream()
+                        .filter(result -> !result.slotContext().cosmetic())
+                        .mapToDouble(result -> ((CounterfeitManaItem) result.stack().getItem()).falseMana())
+                        .sum())
+                .orElse(0f);
     }
 
     public static float get(Player player) {
