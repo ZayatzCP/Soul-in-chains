@@ -29,7 +29,6 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(MudzyaModel.LAYER, MudzyaModel::createLayer);
-        event.registerLayerDefinition(GribushkaModel.LAYER, GribushkaModel::createLayer);
     }
 
     /** Mushroom moss shifts from light blue to purple across the cave (by position, like grass by biome). */

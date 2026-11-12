@@ -42,20 +42,24 @@ public final class CreatureRenderers {
     }
 
     public static final class GribushkaRenderer extends MobRenderer<Gribushka, GribushkaModel> {
-        private static final ResourceLocation[] TEXTURES = {
-                ArcaneArtifacts.id("textures/entity/gribushka_blue.png"),
-                ArcaneArtifacts.id("textures/entity/gribushka_purple.png"),
-                ArcaneArtifacts.id("textures/entity/gribushka_brown.png")
-        };
+        /** One texture; the variants are tinted by the model. */
+        private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/entity/gribushka.png");
+        /** The designer's model is 30 pixels tall: scaled to the Gribushka's size. */
+        private static final float SCALE = 0.6F;
 
         public GribushkaRenderer(EntityRendererProvider.Context context) {
-            super(context, new GribushkaModel(context.bakeLayer(GribushkaModel.LAYER)), 0.4F);
+            super(context, new GribushkaModel(context.getResourceManager()), 0.4F);
             addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         }
 
         @Override
+        protected void scale(Gribushka entity, com.mojang.blaze3d.vertex.PoseStack pose, float partialTick) {
+            pose.scale(SCALE, SCALE, SCALE);
+        }
+
+        @Override
         public ResourceLocation getTextureLocation(Gribushka entity) {
-            return TEXTURES[entity.getVariant()];
+            return TEXTURE;
         }
     }
 }
