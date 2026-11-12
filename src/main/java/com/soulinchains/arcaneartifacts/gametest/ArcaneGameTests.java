@@ -652,7 +652,13 @@ public final class ArcaneGameTests {
         BlockPos stem = floor.above();
         helper.assertTrue(com.soulinchains.arcaneartifacts.world.HugeBlueMushroomFeature.grow(level, stem, 4), "The huge blue mushroom did not grow");
         helper.assertTrue(level.getBlockState(stem).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM), "No stem");
-        helper.assertTrue(level.getBlockState(stem.above(4)).is(ModBlocks.BLUE_MUSHROOM_BLOCK.get()), "No cap on top of the stem");
+        // Under a low ceiling the mushroom grows as tall as it can (3 blocks of stem at least): find its cap.
+        boolean capped = false;
+        for (int dy = 3; dy <= 4; dy++) {
+            capped |= level.getBlockState(stem.above(dy)).is(ModBlocks.BLUE_MUSHROOM_BLOCK.get())
+                    && level.getBlockState(stem.above(dy - 1)).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM);
+        }
+        helper.assertTrue(capped, "No cap on top of the stem");
         helper.succeed();
     }
 
