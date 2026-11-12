@@ -26,6 +26,15 @@ public final class CreatureRenderers {
             return entity.isCharged() ? CHARGED : TEXTURE;
         }
 
+        /** The jelly is see-through. */
+        @Override
+        protected net.minecraft.client.renderer.RenderType getRenderType(Mudzya entity, boolean bodyVisible, boolean translucent, boolean glowing) {
+            if (bodyVisible || translucent) {
+                return net.minecraft.client.renderer.RenderType.entityTranslucent(getTextureLocation(entity));
+            }
+            return glowing ? net.minecraft.client.renderer.RenderType.outline(getTextureLocation(entity)) : null;
+        }
+
         @Override
         protected int getBlockLightLevel(Mudzya entity, net.minecraft.core.BlockPos pos) {
             return entity.isCharged() ? 12 : super.getBlockLightLevel(entity, pos);

@@ -29,14 +29,14 @@ save(sprite([
     '......aaaaaa......', '..................'], AMBER), 'mob_effect', 'duel_focus.png')
 
 L, A, S = 'minecraft:leather', NS + ':amber', 'minecraft:string'
-shaped('revolver', ["IIA", "BGL", "P  "], {"I": "minecraft:iron_ingot", "A": A, "B": NS + ":bottle_of_source",
+shaped('revolver', ["IIA", "BGL", "P  "], {"I": "minecraft:gold_ingot", "A": A, "B": NS + ":bottle_of_source",
                                            "G": "minecraft:gunpowder", "L": L, "P": "#minecraft:planks"})
-shaped('sawn_off', ["IIA", "IGB", "PL "], {"I": "minecraft:iron_ingot", "A": A, "B": NS + ":bottle_of_source",
+shaped('sawn_off', ["IIA", "IGB", "PL "], {"I": "minecraft:gold_ingot", "A": A, "B": NS + ":bottle_of_source",
                                            "G": "minecraft:gunpowder", "L": L, "P": "#minecraft:planks"})
 shaped('bandolier', ["LSL", "ACA", "LSL"], {"L": L, "S": S, "A": A, "C": "minecraft:copper_ingot"})
 shaped('counterfeit_ring', [" A ", "G G", " G "], {"A": A, "G": "minecraft:gold_ingot"})
 shaped('counterfeit_pendant', ["SLS", "L L", " A "], {"S": S, "L": L, "A": A})
-shaped('mana_goggles', ["LSL", "AIA"], {"L": L, "S": S, "A": A, "I": "minecraft:iron_ingot"})
+shaped('mana_goggles', ["LSL", "AIA"], {"L": L, "S": S, "A": A, "I": "minecraft:gold_ingot"})
 shaped('poncho', ["WLW", "WAW", "W W"], {"W": "#minecraft:wool", "L": L, "A": A})
 shaped('sombrero', [" W ", "LGL", "WLW"], {"W": "minecraft:wheat", "L": L, "G": NS + ":mana_goggles"})
 shaped('mana_tank', ["CAC", "G G", "CGC"], {"C": "minecraft:copper_ingot", "A": A, "G": "minecraft:glass"})

@@ -6,7 +6,7 @@
     "liquid": "arcane_artifacts:block/distiller_liquid",
     "particle": "arcane_artifacts:block/distiller_metal"
   },
-  "render_type": "minecraft:cutout",
+  "render_type": "minecraft:translucent",
   "elements": [
     {
       "from": [

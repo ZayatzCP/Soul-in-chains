@@ -74,10 +74,14 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                         click(ResearchTableMenu.BUTTON_FORMULATE + ResearchTableMenu.researchOrder().indexOf(order.get(selected)));
                     }
                 }));
+        // The school tabs sit in the left page's header, inside the book, so they are always on screen.
+        int tabX = leftPos + 10;
         for (int i = 0; i < tabs.length; i++) {
             final int tab = i;
-            tabs[i] = addRenderableWidget(new PageButton(leftPos + 8 + i * 114, topPos - 14, 110, 13,
-                    Component.translatable(TABS[i]), () -> switchTab(tab)));
+            Component label = Component.translatable(TABS[i]);
+            int width = font.width(label) + 8;
+            tabs[i] = addRenderableWidget(new PageButton(tabX, topPos + 6, width, 12, label, () -> switchTab(tab)));
+            tabX += width + 2;
         }
         previous = addRenderableWidget(new PageButton(leftPos + RIGHT_X, topPos + 8, 12, 12, Component.literal("<"), () -> move(-1)));
         next = addRenderableWidget(new PageButton(leftPos + RIGHT_X + PAGE_WIDTH - 12, topPos + 8, 12, 12, Component.literal(">"), () -> move(1)));
@@ -94,10 +98,6 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         List<ResourceLocation> all = ResearchTableMenu.researchOrder();
         all.removeIf(id -> ResearchDefinition.school(id) != school);
         return all;
-    }
-
-    private static Component tabLabel(String key, boolean open) {
-        return open ? Component.literal("» ").append(Component.translatable(key)).append(" «") : Component.translatable(key);
     }
 
     private void switchTab(int tab) {
@@ -128,15 +128,28 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
             }
         }
         List<ResourceLocation> order = order();
-        // The open tab is marked with arrows.
         for (int i = 0; i < tabs.length; i++) {
-            tabs[i].setMessage(tabLabel(TABS[i], i == school));
+            tabs[i].highlighted = i == school;
         }
         ResourceLocation id = selected < order.size() ? order.get(selected) : null;
         observe.active = !sample.isEmpty();
         formulate.visible = id != null && stateOf(ClientResearch.progress(), id) == ResearchState.PRINCIPLE;
         formulate.active = id != null && ResearchService.canFormulate(ClientResearch.progress(), id);
         previous.visible = next.visible = order.size() > 1;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            for (int i = 0; i < tabs.length; i++) {
+                if (tabs[i] != null && tabs[i].isMouseOver(mouseX, mouseY)) {
+                    tabs[i].playDownSound(net.minecraft.client.Minecraft.getInstance().getSoundManager());
+                    switchTab(i);
+                    return true;
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -160,7 +173,6 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     // ------------------------------------------------------------------ left page
 
     private void renderLeftPage(GuiGraphics g, PlayerResearch data) {
-        g.drawString(font, Component.translatable("block.arcane_artifacts.research_table"), 16, 10, INK, false);
         ItemStack sample = menu.sample();
         int y = 104;
         if (sample.isEmpty()) {
@@ -397,6 +409,8 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     /** Text-only button in ink, underlined on hover, faded when inactive. */
     private static final class PageButton extends AbstractButton {
         private final Runnable action;
+        /** The open tab: drawn pressed in. */
+        boolean highlighted;
 
         PageButton(int x, int y, int width, int height, Component message, Runnable action) {
             super(x, y, width, height, message);
@@ -411,8 +425,11 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         @Override
         protected void renderWidget(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
             var font = net.minecraft.client.Minecraft.getInstance().font;
-            int color = !active ? FADED : isHoveredOrFocused() ? 0x8A2BD2 : INK;
-            g.fill(getX(), getY(), getX() + width, getY() + height, active && isHoveredOrFocused() ? 0x30B44CF0 : 0x18000000);
+            int color = highlighted ? 0x5B1A8E : !active ? FADED : isHoveredOrFocused() ? 0x8A2BD2 : INK;
+            g.fill(getX(), getY(), getX() + width, getY() + height, highlighted ? 0x55B44CF0 : active && isHoveredOrFocused() ? 0x30B44CF0 : 0x18000000);
+            if (highlighted) {
+                g.fill(getX(), getY() + height - 1, getX() + width, getY() + height, 0xFF5B1A8E);
+            }
             int tx = getX() + width / 2 - font.width(getMessage()) / 2;
             g.drawString(font, getMessage(), tx, getY() + (height - 8) / 2, color, false);
             if (active && isHoveredOrFocused()) {
