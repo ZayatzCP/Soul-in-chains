@@ -2,18 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "L L",
-    "GAG"
+    "LSL",
+    "AIA"
   ],
   "key": {
     "L": {
       "item": "minecraft:leather"
     },
-    "G": {
-      "item": "minecraft:glass"
+    "S": {
+      "item": "minecraft:string"
     },
     "A": {
       "item": "arcane_artifacts:amber"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
     }
   },
   "result": {

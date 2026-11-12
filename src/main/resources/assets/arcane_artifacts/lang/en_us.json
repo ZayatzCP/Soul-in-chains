@@ -645,7 +645,7 @@
   "arcane_artifacts.lore.counterfeit_pendant": "\"Wear it to parties. Never to duels.\" - Hellmerus Morra",
   "arcane_artifacts.page1.mana_goggles": "On the head (or in a Curios head slot). Looking at a Mana Tank shows its exact Source and size, at a Source Jar its exact Source.",
   "arcane_artifacts.lore.mana_goggles": "\"Finally, a way to see magic that does not involve years of meditation.\" - Hellmerus Morra",
-  "arcane_artifacts.page1.mana_tank": "Holds 10 000 Source per block. Like a big tank of liquids, blocks placed against each other merge into one tank up to 3 × 3 wide and 5 high (a block that would make it bigger cannot be placed there). Source fills from the bottom up.",
+  "arcane_artifacts.page1.mana_tank": "Holds 10 000 Source per block. Blocks placed against each other merge into one tank up to 3 × 3 wide and 5 high. Build the base (1 × 1, 2 × 2 or 3 × 3), then put one tank on top: the whole new layer is built at once, using tanks from your inventory. Source fills from the bottom up.",
   "arcane_artifacts.page2.mana_tank": "Fill it with Bottles of Source, or connect it with Mana Pipes: Ars machines next to a pipe (Sourcelinks, the Mudzya Hive, Imbuement Chambers, Enchanting Apparatus...) put Source into the tanks and take it from them as if they were Source Jars. No jars needed.",
   "arcane_artifacts.lore.mana_tank": "\"Mana in a barrel. The ancients are spinning in their crypts.\" - Hellmerus Morra",
   "arcane_artifacts.page1.mana_pipe": "Copper and glass, 8 per craft. Connects Mana Tanks into a network; every pipe acts as a Source Jar for nearby Ars blocks, filling and draining the tanks it reaches.",
@@ -707,5 +707,7 @@
   "item.arcane_artifacts.amber": "Amber",
   "block.arcane_artifacts.amber_cluster": "Amber Cluster",
   "arcane_artifacts.page.amber": "Amber",
-  "arcane_artifacts.page1.amber": "Orange crystals lie in deserts like flowers on the sand, and grow on cave walls and ceilings under them. Break a cluster for 1-2 Amber (Fortune helps, Silk Touch takes the cluster). Every Pseudomage craft is made with Amber."
+  "arcane_artifacts.page1.amber": "Orange crystals lie in deserts like flowers on the sand, and grow on cave walls and ceilings under them. Break a cluster for 1-2 Amber (Fortune helps, Silk Touch takes the cluster). Every Pseudomage craft is made with Amber.",
+  "arcane_artifacts.mana_tank.blocked": "Something is in the way of the new tank layer.",
+  "arcane_artifacts.mana_tank.need": "The new layer needs %s Mana Tanks, you have %s."
 }

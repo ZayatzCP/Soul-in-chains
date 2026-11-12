@@ -3,8 +3,8 @@
   "category": "misc",
   "pattern": [
     "IIA",
-    "IGS",
-    "L  "
+    "IGB",
+    "PL "
   ],
   "key": {
     "I": {
@@ -13,13 +13,16 @@
     "A": {
       "item": "arcane_artifacts:amber"
     },
-    "S": {
+    "B": {
       "item": "arcane_artifacts:bottle_of_source"
     },
     "G": {
       "item": "minecraft:gunpowder"
     },
     "L": {
+      "item": "minecraft:leather"
+    },
+    "P": {
       "tag": "minecraft:planks"
     }
   },

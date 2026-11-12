@@ -786,6 +786,25 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void stackedTankBuildsWholeLayer(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var block = ModBlocks.MANA_TANK.get();
+        BlockPos base = helper.absolutePos(new BlockPos(3, 1, 3));
+        for (BlockPos pos : List.of(base, base.east(), base.south(), base.east().south())) {
+            level.setBlockAndUpdate(pos, block.defaultBlockState());
+        }
+        BlockPos top = base.above();
+        level.setBlockAndUpdate(top, block.defaultBlockState());
+        block.setPlacedBy(level, top, level.getBlockState(top), null, new ItemStack(block));
+        for (BlockPos pos : List.of(top.east(), top.south(), top.east().south())) {
+            helper.assertTrue(level.getBlockState(pos).is(block), "Stacking one tank on a 2 x 2 tank must build the whole layer, missing " + pos);
+        }
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.ManaTanks.group(level, base).size() == 8, "The tank must be 2 x 2 x 2");
+        helper.assertTrue(level.getBlockState(top.east()).getValue(com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock.DOWN), "The new layer must connect down");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void pipesActAsSourceJars(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos tank = helper.absolutePos(new BlockPos(3, 1, 3));

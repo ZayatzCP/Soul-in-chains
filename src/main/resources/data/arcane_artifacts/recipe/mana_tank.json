@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "CGC",
+    "CAC",
     "G G",
     "CGC"
   ],
   "key": {
     "C": {
       "item": "minecraft:copper_ingot"
+    },
+    "A": {
+      "item": "arcane_artifacts:amber"
     },
     "G": {
       "item": "minecraft:glass"

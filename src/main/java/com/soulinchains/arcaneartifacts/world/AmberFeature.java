@@ -27,7 +27,7 @@ public class AmberFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos origin = context.origin();
         int placed = 0;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        for (int attempt = 0; attempt < 24 && placed < 4; attempt++) {
+        for (int attempt = 0; attempt < 16 && placed < 2; attempt++) {
             pos.setWithOffset(origin, random.nextInt(7) - 3, random.nextInt(5) - 2, random.nextInt(7) - 3);
             if (!level.getBlockState(pos).isAir()) {
                 continue;

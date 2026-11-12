@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " H ",
-    "HAH",
-    "SSS"
+    " W ",
+    "LGL",
+    "WLW"
   ],
   "key": {
-    "H": {
+    "W": {
       "item": "minecraft:wheat"
     },
-    "A": {
-      "item": "arcane_artifacts:amber"
+    "L": {
+      "item": "minecraft:leather"
     },
-    "S": {
-      "item": "minecraft:hay_block"
+    "G": {
+      "item": "arcane_artifacts:mana_goggles"
     }
   },
   "result": {

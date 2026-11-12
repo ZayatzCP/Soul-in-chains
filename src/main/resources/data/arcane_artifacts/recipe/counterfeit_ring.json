@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " G ",
-    "GAG",
+    " A ",
+    "G G",
     " G "
   ],
   "key": {
-    "G": {
-      "item": "minecraft:gold_nugget"
-    },
     "A": {
       "item": "arcane_artifacts:amber"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
     }
   },
   "result": {

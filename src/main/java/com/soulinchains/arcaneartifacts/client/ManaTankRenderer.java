@@ -3,6 +3,7 @@ package com.soulinchains.arcaneartifacts.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
+import com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock;
 import com.soulinchains.arcaneartifacts.pseudo.ManaTankBlockEntity;
 import com.soulinchains.arcaneartifacts.pseudo.ManaTanks;
 import net.minecraft.client.Minecraft;
@@ -13,17 +14,18 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix4f;
 
 import java.util.List;
 
 /**
- * Draws the Source of a whole Mana Tank as one body of liquid. Only the tank's lowest corner block draws
- * it, over the full width and up to the level of the whole tank (stored / capacity).
+ * Draws the Source of a whole Mana Tank as one body of liquid: the level is that of the whole tank
+ * (stored / capacity over all its layers), and each block draws its own part of it, without the faces
+ * that touch another tank block, so the liquid fills any shape of tank seamlessly.
  */
 public class ManaTankRenderer implements BlockEntityRenderer<ManaTankBlockEntity> {
-    private static final float INSET = 1.0f / 16f;
+    private static final float EDGE = 0.02f;
 
     public ManaTankRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -35,19 +37,14 @@ public class ManaTankRenderer implements BlockEntityRenderer<ManaTankBlockEntity
             return;
         }
         List<BlockPos> group = ManaTanks.group(level, tank.getBlockPos());
-        if (group.isEmpty() || !group.get(0).equals(tank.getBlockPos())) {
+        if (group.isEmpty()) {
             return;
         }
-        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
         int stored = 0;
         for (BlockPos pos : group) {
-            minX = Math.min(minX, pos.getX());
-            maxX = Math.max(maxX, pos.getX());
             minY = Math.min(minY, pos.getY());
             maxY = Math.max(maxY, pos.getY());
-            minZ = Math.min(minZ, pos.getZ());
-            maxZ = Math.max(maxZ, pos.getZ());
             if (level.getBlockEntity(pos) instanceof ManaTankBlockEntity part) {
                 stored += part.getSource();
             }
@@ -56,23 +53,40 @@ public class ManaTankRenderer implements BlockEntityRenderer<ManaTankBlockEntity
         if (stored <= 0 || capacity <= 0) {
             return;
         }
-        BlockPos origin = tank.getBlockPos();
-        float x0 = minX - origin.getX() + INSET, x1 = maxX - origin.getX() + 1 - INSET;
-        float z0 = minZ - origin.getZ() + INSET, z1 = maxZ - origin.getZ() + 1 - INSET;
-        float y0 = INSET;
-        float height = (maxY - minY + 1) - 2 * INSET;
-        float y1 = y0 + height * Math.min(1f, (float) stored / capacity);
+        float surface = (maxY - minY + 1) * Math.min(1f, (float) stored / capacity);
+        float fill = Math.min(1f, surface - (tank.getBlockPos().getY() - minY));
+        if (fill <= 0.005f) {
+            return;
+        }
+        BlockState state = tank.getBlockState();
+        boolean up = state.getValue(ManaTankBlock.UP), down = state.getValue(ManaTankBlock.DOWN);
+        boolean north = state.getValue(ManaTankBlock.NORTH), south = state.getValue(ManaTankBlock.SOUTH);
+        boolean west = state.getValue(ManaTankBlock.WEST), east = state.getValue(ManaTankBlock.EAST);
+        float x0 = west ? 0 : EDGE, x1 = east ? 1 : 1 - EDGE;
+        float z0 = north ? 0 : EDGE, z1 = south ? 1 : 1 - EDGE;
+        float y0 = down ? 0 : EDGE;
+        boolean full = fill >= 0.999f && up;
+        float y1 = full ? 1 : Math.min(fill, 1 - EDGE);
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(ArcaneArtifacts.id("block/mana_tank_liquid"));
         VertexConsumer buffer = buffers.getBuffer(RenderType.translucent());
         Matrix4f m = pose.last().pose();
         int bright = 0xF000F0;
-        // Top surface and the four sides of the liquid body.
-        face(buffer, m, sprite, bright, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, 0, 1, 0);
-        face(buffer, m, sprite, bright, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0, 0, 0, -1);
-        face(buffer, m, sprite, bright, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1, 0, 0, 1);
-        face(buffer, m, sprite, bright, x0, y0, z1, x0, y1, z1, x0, y1, z0, x0, y0, z0, -1, 0, 0);
-        face(buffer, m, sprite, bright, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, 1, 0, 0);
+        if (!full) {
+            face(buffer, m, sprite, bright, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, 0, 1, 0);
+        }
+        if (!north) {
+            face(buffer, m, sprite, bright, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0, 0, 0, -1);
+        }
+        if (!south) {
+            face(buffer, m, sprite, bright, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1, 0, 0, 1);
+        }
+        if (!west) {
+            face(buffer, m, sprite, bright, x0, y0, z1, x0, y1, z1, x0, y1, z0, x0, y0, z0, -1, 0, 0);
+        }
+        if (!east) {
+            face(buffer, m, sprite, bright, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, 1, 0, 0);
+        }
     }
 
     private static void face(VertexConsumer b, Matrix4f m, TextureAtlasSprite s, int light,
@@ -87,16 +101,5 @@ public class ManaTankRenderer implements BlockEntityRenderer<ManaTankBlockEntity
 
     private static void vertex(VertexConsumer b, Matrix4f m, float x, float y, float z, float u, float v, int light, float nx, float ny, float nz) {
         b.addVertex(m, x, y, z).setColor(255, 255, 255, 210).setUv(u, v).setLight(light).setNormal(nx, ny, nz);
-    }
-
-    @Override
-    public boolean shouldRenderOffScreen(ManaTankBlockEntity tank) {
-        return true;
-    }
-
-    @Override
-    public AABB getRenderBoundingBox(ManaTankBlockEntity tank) {
-        BlockPos pos = tank.getBlockPos();
-        return new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + ManaTanks.MAX_WIDTH, pos.getY() + ManaTanks.MAX_HEIGHT, pos.getZ() + ManaTanks.MAX_WIDTH);
     }
 }

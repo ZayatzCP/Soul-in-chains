@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
+    "WLW",
     "WAW",
-    "WWW",
     "W W"
   ],
   "key": {
     "W": {
       "tag": "minecraft:wool"
+    },
+    "L": {
+      "item": "minecraft:leather"
     },
     "A": {
       "item": "arcane_artifacts:amber"
