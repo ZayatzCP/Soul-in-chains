@@ -19,7 +19,11 @@ jobs:
       - name: Build mod jar
         run: ./gradlew build --stacktrace --no-daemon
       - name: Run game tests (headless server with Ars Nouveau + Curios)
-        run: ./gradlew runGameTestServer --stacktrace --no-daemon
+        run: |
+          set -o pipefail
+          ./gradlew runGameTestServer --stacktrace --no-daemon 2>&1 | tee gametest-output.log
+          # The game test server can crash on start and still exit with 0: insist on the success line.
+          grep -q "required tests passed" gametest-output.log
       - name: Upload game test logs
         if: always()
         uses: actions/upload-artifact@v4

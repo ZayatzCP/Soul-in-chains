@@ -22,6 +22,11 @@ import java.util.function.Consumer;
 public abstract class OverworldBiomeBuilderMixin {
     @Inject(method = "addUndergroundBiomes", at = @At("TAIL"))
     private void arcaneArtifacts$addMushroomCaves(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, CallbackInfo ci) {
+        // The built-in (code) registries know only vanilla biomes; ours comes from the mod's data pack.
+        // Building those registries (dev-time validation, data generation) must not reference it.
+        if (arcaneArtifacts$buildingVanillaRegistries()) {
+            return;
+        }
         Climate.Parameter full = Climate.Parameter.span(-1.0F, 1.0F);
         consumer.accept(Pair.of(Climate.parameters(
                 full,                                   // temperature
@@ -31,5 +36,11 @@ public abstract class OverworldBiomeBuilderMixin {
                 Climate.Parameter.span(0.2F, 0.9F),     // depth: underground, like the vanilla cave biomes
                 full,                                   // weirdness
                 0.0F), ModBiomes.MUSHROOM_CAVES));
+    }
+
+    private static boolean arcaneArtifacts$buildingVanillaRegistries() {
+        return StackWalker.getInstance().walk(frames -> frames.anyMatch(frame ->
+                frame.getClassName().startsWith("net.minecraft.data.registries.VanillaRegistries")
+                        || frame.getClassName().startsWith("net.minecraft.data.")));
     }
 }
