@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "arcane_artifacts:item/revolver"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "arcane_artifacts:item/revolver_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "arcane_artifacts:item/revolver_icon"
+    }
   }
 }

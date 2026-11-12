@@ -50,7 +50,8 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     private int school;
     private static final String[] TABS = {"arcane_artifacts.research_table.tab_arcane", "arcane_artifacts.research_table.tab_pseudo",
             "arcane_artifacts.research_table.tab_druid"};
-    private final PageButton[] tabs = new PageButton[3];
+    private final TabButton[] tabs = new TabButton[3];
+    private static final int TAB_WIDTH = 28, TAB_HEIGHT = 24;
     private Item lastSample;
     private PageButton observe, formulate, previous, next;
 
@@ -74,14 +75,13 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                         click(ResearchTableMenu.BUTTON_FORMULATE + ResearchTableMenu.researchOrder().indexOf(order.get(selected)));
                     }
                 }));
-        // The school tabs sit in the left page's header, inside the book, so they are always on screen.
-        int tabX = leftPos + 10;
+        // The school tabs are bookmarks sticking out of the book's left edge, one icon each.
+        net.minecraft.world.level.ItemLike[] icons = {com.soulinchains.arcaneartifacts.registry.ModItems.RESEARCHER_NOTEBOOK.get(),
+                com.soulinchains.arcaneartifacts.registry.ModItems.REVOLVER.get(), com.soulinchains.arcaneartifacts.registry.ModItems.DRUID_HERBARIUM.get()};
         for (int i = 0; i < tabs.length; i++) {
             final int tab = i;
-            Component label = Component.translatable(TABS[i]);
-            int width = font.width(label) + 8;
-            tabs[i] = addRenderableWidget(new PageButton(tabX, topPos + 6, width, 12, label, () -> switchTab(tab)));
-            tabX += width + 2;
+            tabs[i] = addRenderableWidget(new TabButton(leftPos - TAB_WIDTH + 3, topPos + 14 + i * (TAB_HEIGHT + 4),
+                    Component.translatable(TABS[i]), icons[i], () -> switchTab(tab)));
         }
         previous = addRenderableWidget(new PageButton(leftPos + RIGHT_X, topPos + 8, 12, 12, Component.literal("<"), () -> move(-1)));
         next = addRenderableWidget(new PageButton(leftPos + RIGHT_X + PAGE_WIDTH - 12, topPos + 8, 12, 12, Component.literal(">"), () -> move(1)));
@@ -173,6 +173,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     // ------------------------------------------------------------------ left page
 
     private void renderLeftPage(GuiGraphics g, PlayerResearch data) {
+        g.drawString(font, Component.translatable("block.arcane_artifacts.research_table"), 16, 10, INK, false);
         ItemStack sample = menu.sample();
         int y = 104;
         if (sample.isEmpty()) {
@@ -407,10 +408,47 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     }
 
     /** Text-only button in ink, underlined on hover, faded when inactive. */
+    /** A bookmark on the book's left edge with the school's icon; the open one sticks out further. */
+    private static final class TabButton extends AbstractButton {
+        private final Runnable action;
+        private final ItemStack icon;
+        boolean highlighted;
+
+        TabButton(int x, int y, Component message, net.minecraft.world.level.ItemLike icon, Runnable action) {
+            super(x, y, TAB_WIDTH, TAB_HEIGHT, message);
+            this.action = action;
+            this.icon = new ItemStack(icon);
+            setTooltip(net.minecraft.client.gui.components.Tooltip.create(message));
+        }
+
+        @Override
+        public void onPress() {
+            action.run();
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+            int x = getX() - (highlighted ? 4 : 0);
+            int y = getY();
+            int border = highlighted ? 0xFF5B1A8E : 0xFF4A3420;
+            int fill = highlighted ? 0xFFE9D6F5 : isHoveredOrFocused() ? 0xFFF3E6C8 : 0xFFE2CFA4;
+            g.fill(x, y, x + width + (highlighted ? 4 : 0), y + height, border);
+            g.fill(x + 1, y + 1, x + width + (highlighted ? 4 : 0), y + height - 1, fill);
+            if (highlighted) {
+                g.fill(x + 1, y + 1, x + 3, y + height - 1, 0xFFB44CF0);
+            }
+            g.renderItem(icon, x + 7, y + (height - 16) / 2);
+        }
+
+        @Override
+        protected void updateWidgetNarration(NarrationElementOutput output) {
+            defaultButtonNarrationText(output);
+        }
+    }
+
     private static final class PageButton extends AbstractButton {
         private final Runnable action;
-        /** The open tab: drawn pressed in. */
-        boolean highlighted;
+        private boolean highlighted;
 
         PageButton(int x, int y, int width, int height, Component message, Runnable action) {
             super(x, y, width, height, message);

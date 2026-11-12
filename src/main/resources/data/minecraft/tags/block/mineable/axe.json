@@ -3,6 +3,7 @@
   "values": [
     "arcane_artifacts:research_table",
     "arcane_artifacts:blue_mushroom_block",
-    "arcane_artifacts:mudzya_hive"
+    "arcane_artifacts:mudzya_hive",
+    "arcane_artifacts:wild_mudzya_hive"
   ]
 }

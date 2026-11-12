@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arcane_artifacts:block/mana_pump"
+    },
+    "facing=south": {
+      "model": "arcane_artifacts:block/mana_pump",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "arcane_artifacts:block/mana_pump",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "arcane_artifacts:block/mana_pump",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "arcane_artifacts:block/mana_pump",
+      "x": 270
+    },
+    "facing=down": {
+      "model": "arcane_artifacts:block/mana_pump",
+      "x": 90
+    }
+  }
+}

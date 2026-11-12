@@ -1,8 +1,8 @@
 {
   "render_type": "minecraft:translucent",
   "textures": {
-    "side": "arcane_artifacts:block/mana_tank_side_single",
-    "particle": "arcane_artifacts:block/mana_tank_top"
+    "side": "arcane_artifacts:block/mana_tank_side",
+    "particle": "arcane_artifacts:block/mana_tank_lid"
   },
   "elements": [
     {
@@ -14,13 +14,25 @@
       "to": [
         16,
         16,
-        0.01
+        0
       ],
       "faces": {
         "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
           "texture": "#side"
         },
         "south": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
           "texture": "#side"
         }
       }

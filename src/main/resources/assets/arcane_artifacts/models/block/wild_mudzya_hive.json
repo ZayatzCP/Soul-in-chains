@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "arcane_artifacts:block/wild_mudzya_hive_side",
+    "top": "arcane_artifacts:block/wild_mudzya_hive_top",
+    "bottom": "arcane_artifacts:block/wild_mudzya_hive_bottom"
+  }
+}

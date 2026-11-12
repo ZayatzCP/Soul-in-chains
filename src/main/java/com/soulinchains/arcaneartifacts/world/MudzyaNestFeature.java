@@ -25,7 +25,7 @@ public class MudzyaNestFeature extends Feature<NoneFeatureConfiguration> {
         if (!level.getBlockState(pos).isAir() || !level.getBlockState(pos.below()).is(BlockTags.SAND)) {
             return false;
         }
-        level.setBlock(pos, ModBlocks.MUDZYA_HIVE.get().defaultBlockState(), 2);
+        level.setBlock(pos, ModBlocks.WILD_MUDZYA_HIVE.get().defaultBlockState(), 2);
         int count = 2 + context.random().nextInt(2);
         for (int i = 0; i < count; i++) {
             Mudzya mudzya = ModEntities.MUDZYA.get().create(level.getLevel());

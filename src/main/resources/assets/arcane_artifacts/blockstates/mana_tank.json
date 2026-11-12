@@ -5,7 +5,7 @@
         "up": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_lid_top"
+        "model": "arcane_artifacts:block/mana_tank_lid_up"
       }
     },
     {
@@ -13,178 +13,275 @@
         "down": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_lid_bottom"
+        "model": "arcane_artifacts:block/mana_tank_lid_down"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_side"
       }
     },
     {
       "when": {
         "north": "false",
+        "up": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_top"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "down": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_bottom"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_cw"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_ccw"
+      }
+    },
+    {
+      "when": {
         "up": "false",
-        "down": "false"
+        "north": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_single"
+        "model": "arcane_artifacts:block/mana_tank_frame_up"
       }
     },
     {
       "when": {
-        "north": "false",
-        "up": "false",
-        "down": "true"
+        "down": "false",
+        "north": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_top"
+        "model": "arcane_artifacts:block/mana_tank_frame_down"
       }
     },
     {
       "when": {
-        "north": "false",
-        "up": "true",
-        "down": "true"
+        "east": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_middle"
-      }
-    },
-    {
-      "when": {
-        "north": "false",
-        "up": "true",
-        "down": "false"
-      },
-      "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_bottom"
-      }
-    },
-    {
-      "when": {
-        "east": "false",
-        "up": "false",
-        "down": "false"
-      },
-      "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_single",
+        "model": "arcane_artifacts:block/mana_tank_side",
         "y": 90
       }
     },
     {
       "when": {
         "east": "false",
-        "up": "false",
-        "down": "true"
+        "up": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_top",
+        "model": "arcane_artifacts:block/mana_tank_frame_side_top",
         "y": 90
       }
     },
     {
       "when": {
         "east": "false",
-        "up": "true",
-        "down": "true"
+        "down": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_middle",
+        "model": "arcane_artifacts:block/mana_tank_frame_side_bottom",
         "y": 90
       }
     },
     {
       "when": {
         "east": "false",
-        "up": "true",
-        "down": "false"
+        "north": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_bottom",
+        "model": "arcane_artifacts:block/mana_tank_frame_side_cw",
         "y": 90
       }
     },
     {
       "when": {
-        "south": "false",
+        "east": "false",
+        "south": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_ccw",
+        "y": 90
+      }
+    },
+    {
+      "when": {
         "up": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_up",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_down",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_side",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "up": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_top",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "false",
         "down": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_single",
+        "model": "arcane_artifacts:block/mana_tank_frame_side_bottom",
         "y": 180
       }
     },
     {
       "when": {
         "south": "false",
+        "east": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_cw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_ccw",
+        "y": 180
+      }
+    },
+    {
+      "when": {
         "up": "false",
-        "down": "true"
+        "south": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_top",
+        "model": "arcane_artifacts:block/mana_tank_frame_up",
         "y": 180
       }
     },
     {
       "when": {
-        "south": "false",
-        "up": "true",
-        "down": "true"
+        "down": "false",
+        "south": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_middle",
+        "model": "arcane_artifacts:block/mana_tank_frame_down",
         "y": 180
       }
     },
     {
       "when": {
-        "south": "false",
-        "up": "true",
-        "down": "false"
+        "west": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_bottom",
-        "y": 180
-      }
-    },
-    {
-      "when": {
-        "west": "false",
-        "up": "false",
-        "down": "false"
-      },
-      "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_single",
+        "model": "arcane_artifacts:block/mana_tank_side",
         "y": 270
       }
     },
     {
       "when": {
         "west": "false",
-        "up": "false",
-        "down": "true"
+        "up": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_top",
+        "model": "arcane_artifacts:block/mana_tank_frame_side_top",
         "y": 270
       }
     },
     {
       "when": {
         "west": "false",
-        "up": "true",
-        "down": "true"
-      },
-      "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_middle",
-        "y": 270
-      }
-    },
-    {
-      "when": {
-        "west": "false",
-        "up": "true",
         "down": "false"
       },
       "apply": {
-        "model": "arcane_artifacts:block/mana_tank_wall_bottom",
+        "model": "arcane_artifacts:block/mana_tank_frame_side_bottom",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "south": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_cw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "north": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_side_ccw",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_up",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/mana_tank_frame_down",
         "y": 270
       }
     }

@@ -36,6 +36,11 @@ public class MudzyaHiveBlock extends BaseEntityBlock {
         super(properties);
     }
 
+    /** Both the hive a player crafts and the wild one Mudzyas build on beaches. */
+    public static boolean isHive(BlockState state) {
+        return state.getBlock() instanceof MudzyaHiveBlock;
+    }
+
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;

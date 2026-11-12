@@ -6,6 +6,7 @@
     "arcane_artifacts:mana_tank",
     "arcane_artifacts:mana_pipe",
     "arcane_artifacts:mana_dispenser",
-    "arcane_artifacts:amber_cluster"
+    "arcane_artifacts:amber_cluster",
+    "arcane_artifacts:mana_pump"
   ]
 }

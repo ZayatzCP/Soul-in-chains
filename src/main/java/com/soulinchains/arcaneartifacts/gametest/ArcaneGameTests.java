@@ -132,7 +132,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -801,6 +801,32 @@ public final class ArcaneGameTests {
         }
         helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.ManaTanks.group(level, base).size() == 8, "The tank must be 2 x 2 x 2");
         helper.assertTrue(level.getBlockState(top.east()).getValue(com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock.DOWN), "The new layer must connect down");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void pumpMovesSourceBetweenTanks(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos tankA = helper.absolutePos(new BlockPos(1, 1, 3));
+        BlockPos tankB = helper.absolutePos(new BlockPos(6, 1, 3));
+        level.setBlockAndUpdate(tankA, ModBlocks.MANA_TANK.get().defaultBlockState());
+        level.setBlockAndUpdate(tankB, ModBlocks.MANA_TANK.get().defaultBlockState());
+        level.setBlockAndUpdate(tankA.east(), ModBlocks.MANA_PIPE.get().defaultBlockState());
+        level.setBlockAndUpdate(tankA.east(2), ModBlocks.MANA_PIPE.get().defaultBlockState());
+        BlockPos pump = tankA.east(3);
+        level.setBlockAndUpdate(pump, ModBlocks.MANA_PUMP.get().defaultBlockState()
+                .setValue(com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlock.FACING, net.minecraft.core.Direction.EAST));
+        level.setBlockAndUpdate(pump.east(), ModBlocks.MANA_PIPE.get().defaultBlockState());
+        com.soulinchains.arcaneartifacts.pseudo.ManaTanks.insert(level, tankA, 3000);
+        int moved = com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlockEntity.pump(level, pump, net.minecraft.core.Direction.EAST, 1000);
+        helper.assertTrue(moved == 1000, "The pump must move 1000 Source, moved " + moved);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(level, tankA) == 2000
+                && com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(level, tankB) == 1000, "Source must go from tank A to tank B");
+        int back = com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlockEntity.pump(level, pump, net.minecraft.core.Direction.WEST, 5000);
+        helper.assertTrue(back == 1000 && com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(level, tankA) == 3000,
+                "Turned around, the pump must move what tank B has, moved " + back);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock.isHive(ModBlocks.WILD_MUDZYA_HIVE.get().defaultBlockState()),
+                "The wild hive must be a Mudzya hive");
         helper.succeed();
     }
 

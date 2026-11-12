@@ -130,6 +130,7 @@ final class NotebookContent {
                 new ItemStack(ModItems.AMBER.get()), "amber", 1, null));
         entries.add(gatedItemEntry(font, ModItems.MANA_TANK.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MANA_PIPE.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MANA_PUMP.get(), 1, lockedItems));
         return entries;
     }
 

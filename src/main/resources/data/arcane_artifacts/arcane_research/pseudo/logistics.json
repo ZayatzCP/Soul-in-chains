@@ -51,6 +51,7 @@
   "unlocks_items": [
     "arcane_artifacts:mana_tank",
     "arcane_artifacts:mana_pipe",
-    "arcane_artifacts:mana_goggles"
+    "arcane_artifacts:mana_goggles",
+    "arcane_artifacts:mana_pump"
   ]
 }

@@ -54,6 +54,10 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock> MUDZYA_HIVE = BLOCKS.register("mudzya_hive",
             () -> new com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
                     .strength(0.6f).sound(SoundType.WOOD).lightLevel(state -> 4)));
+    /** The hive Mudzyas build themselves on beaches. */
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock> WILD_MUDZYA_HIVE = BLOCKS.register("wild_mudzya_hive",
+            () -> new com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
+                    .strength(0.6f).sound(SoundType.WOOD).lightLevel(state -> 6)));
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlock> ALCHEMICAL_DISTILLER = BLOCKS.register("alchemical_distiller",
             () -> new com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL)
                     .strength(3.0f).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion().lightLevel(state -> 5)));
@@ -72,13 +76,19 @@ public final class ModBlocks {
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlockEntity>> MANA_PIPE_ENTITY =
             BLOCK_ENTITIES.register("mana_pipe", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlockEntity::new, MANA_PIPE.get()).build(null));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlock> MANA_PUMP = BLOCKS.register("mana_pump",
+            () -> new com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
+                    .strength(2.0f).sound(SoundType.COPPER).noOcclusion().requiresCorrectToolForDrops()));
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlockEntity>> MANA_PUMP_ENTITY =
+            BLOCK_ENTITIES.register("mana_pump", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlockEntity::new, MANA_PUMP.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaTankBlockEntity>> MANA_TANK_ENTITY =
             BLOCK_ENTITIES.register("mana_tank", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaTankBlockEntity::new, MANA_TANK.get()).build(null));
 
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.block.MudzyaHiveBlockEntity>> MUDZYA_HIVE_ENTITY =
-            BLOCK_ENTITIES.register("mudzya_hive", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.block.MudzyaHiveBlockEntity::new, MUDZYA_HIVE.get()).build(null));
+            BLOCK_ENTITIES.register("mudzya_hive", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.block.MudzyaHiveBlockEntity::new, MUDZYA_HIVE.get(), WILD_MUDZYA_HIVE.get()).build(null));
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlockEntity>> ALCHEMICAL_DISTILLER_ENTITY =
             BLOCK_ENTITIES.register("alchemical_distiller", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.alchemy.AlchemicalDistillerBlockEntity::new, ALCHEMICAL_DISTILLER.get()).build(null));

@@ -1,0 +1,32 @@
+{
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "frame": "arcane_artifacts:block/mana_tank_frame",
+    "particle": "arcane_artifacts:block/mana_tank_lid"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        -0.02,
+        0
+      ],
+      "to": [
+        16,
+        -0.02,
+        3
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#frame"
+        }
+      }
+    }
+  ]
+}

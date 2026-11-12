@@ -153,7 +153,7 @@ public class Mudzya extends Animal implements FlyingAnimal {
         BlockPos best = null;
         double bestDistance = Double.MAX_VALUE;
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-16, -8, -16), center.offset(16, 8, 16))) {
-            if (level().getBlockState(pos).is(com.soulinchains.arcaneartifacts.registry.ModBlocks.MUDZYA_HIVE.get())) {
+            if (com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock.isHive(level().getBlockState(pos))) {
                 double distance = pos.distSqr(center);
                 if (distance < bestDistance) {
                     bestDistance = distance;
@@ -196,7 +196,7 @@ public class Mudzya extends Animal implements FlyingAnimal {
             setCharged(true);
         }
         if (this.tickCount % 100 == 0) {
-            if (this.home != null && !level().getBlockState(this.home).is(com.soulinchains.arcaneartifacts.registry.ModBlocks.MUDZYA_HIVE.get())) {
+            if (this.home != null && !com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock.isHive(level().getBlockState(this.home))) {
                 this.home = null;
                 clearRestriction();
             }

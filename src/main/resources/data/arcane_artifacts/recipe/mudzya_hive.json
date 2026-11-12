@@ -8,7 +8,7 @@
   ],
   "key": {
     "P": {
-      "tag": "minecraft:planks"
+      "tag": "c:planks/archwood"
     },
     "H": {
       "item": "minecraft:honeycomb"

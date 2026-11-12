@@ -66,14 +66,22 @@ public class ManaPipeBlock extends net.minecraft.world.level.block.BaseEntityBlo
 
     /** Pipes visibly connect to pipes, tanks, Mudzya Hives and anything of Ars that holds Source. */
     public static boolean connectsTo(BlockGetter level, BlockPos pos) {
+        return connectsTo(level, pos, null);
+    }
+
+    /** Like {@link #connectsTo(BlockGetter, BlockPos)}; a Mana Pump only connects on its intake and outlet. */
+    public static boolean connectsTo(BlockGetter level, BlockPos pos, @org.jetbrains.annotations.Nullable Direction towards) {
         BlockState state = level.getBlockState(pos);
-        return state.is(ModBlocks.MANA_PIPE.get()) || state.is(ModBlocks.MANA_TANK.get()) || state.is(ModBlocks.MUDZYA_HIVE.get())
+        if (state.is(ModBlocks.MANA_PUMP.get())) {
+            return towards == null || state.getValue(ManaPumpBlock.FACING).getAxis() == towards.getAxis();
+        }
+        return state.is(ModBlocks.MANA_PIPE.get()) || state.is(ModBlocks.MANA_TANK.get()) || com.soulinchains.arcaneartifacts.block.MudzyaHiveBlock.isHive(state)
                 || level.getBlockEntity(pos) instanceof com.hollingsworth.arsnouveau.api.source.ISourceTile;
     }
 
     private BlockState connections(BlockGetter level, BlockPos pos, BlockState state) {
         for (Direction direction : Direction.values()) {
-            state = state.setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), connectsTo(level, pos.relative(direction)));
+            state = state.setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), connectsTo(level, pos.relative(direction), direction));
         }
         return state;
     }
@@ -85,7 +93,7 @@ public class ManaPipeBlock extends net.minecraft.world.level.block.BaseEntityBlo
 
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighbor, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        return state.setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), connectsTo(level, neighborPos));
+        return state.setValue(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), connectsTo(level, neighborPos, direction));
     }
 
     @Override
