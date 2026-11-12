@@ -37,7 +37,10 @@ public final class CrystalBallHandler {
     public static void onProjectile(EntityJoinLevelEvent event) {
         if (!event.getLevel().isClientSide && event.getEntity() instanceof EntityProjectileSpell projectile
                 && projectile.spellResolver != null && CrystalBallItem.castFrom(projectile.spellResolver.spellContext)) {
+            // Heavy: it is thrown slightly upwards and falls in a long arc under gravity.
             projectile.setGravity(true);
+            var motion = projectile.getDeltaMovement();
+            projectile.setDeltaMovement(motion.x, motion.y + 0.18, motion.z);
         }
     }
 }

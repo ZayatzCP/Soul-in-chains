@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:amulet_of_opposites"
+    "arcane_artifacts:amulet_of_opposites",
+    "arcane_artifacts:counterfeit_pendant"
   ]
 }

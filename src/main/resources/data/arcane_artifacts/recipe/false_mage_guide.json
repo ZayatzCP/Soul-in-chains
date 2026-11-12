@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NPP",
+    "GPP",
+    "NPP"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:iron_nugget"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "P": {
+      "item": "arcane_artifacts:old_parchment"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:false_mage_guide"
+  }
+}

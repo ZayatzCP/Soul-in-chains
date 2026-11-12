@@ -25,12 +25,33 @@ public class BottleOfSourceItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
+        var tankLevel = context.getLevel();
+        var clicked = context.getClickedPos();
+        if (com.soulinchains.arcaneartifacts.pseudo.ManaTanks.isTank(tankLevel, clicked)) {
+            int room = com.soulinchains.arcaneartifacts.pseudo.ManaTanks.capacity(tankLevel, clicked)
+                    - com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(tankLevel, clicked);
+            if (room < SOURCE) {
+                return InteractionResult.PASS;
+            }
+            if (!tankLevel.isClientSide) {
+                com.soulinchains.arcaneartifacts.pseudo.ManaTanks.insert(tankLevel, clicked, SOURCE);
+                emptyBottle(context);
+            }
+            return InteractionResult.sidedSuccess(tankLevel.isClientSide);
+        }
         if (!(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof SourceJarTile jar)
                 || jar.getMaxSource() - jar.getSource() < SOURCE) {
             return InteractionResult.PASS;
         }
         if (!context.getLevel().isClientSide) {
             jar.addSource(SOURCE);
+            emptyBottle(context);
+        }
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+    }
+
+    private static void emptyBottle(UseOnContext context) {
+        {
             var player = context.getPlayer();
             ItemStack stack = context.getItemInHand();
             if (player != null && !player.getAbilities().instabuild) {
@@ -41,7 +62,6 @@ public class BottleOfSourceItem extends Item {
             }
             context.getLevel().playSound(null, context.getClickedPos(), SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1f, 1f);
         }
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
     }
 
     @Override

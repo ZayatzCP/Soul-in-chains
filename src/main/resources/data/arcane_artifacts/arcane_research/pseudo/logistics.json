@@ -1,0 +1,57 @@
+{
+  "category": "material",
+  "icon": "minecraft:copper_ingot",
+  "sort": 210,
+  "subjects": [
+    "minecraft:copper_ingot",
+    "minecraft:hopper",
+    "minecraft:bucket"
+  ],
+  "properties": [
+    "conductive",
+    "contained"
+  ],
+  "experiments": [
+    {
+      "id": "pour",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_conjure_water",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "gather",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pickup",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pickup",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "touch",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_touch"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:mana_tank",
+    "arcane_artifacts:mana_pipe",
+    "arcane_artifacts:mana_dispenser",
+    "arcane_artifacts:mana_goggles"
+  ]
+}

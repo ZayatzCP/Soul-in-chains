@@ -81,6 +81,9 @@ public final class Config {
     public static final ModConfigSpec.IntValue MUDZYA_SOURCE_PER_DELIVERY;
     public static final ModConfigSpec.IntValue DISTILLER_BREW_TICKS;
     public static final ModConfigSpec.IntValue DISTILLER_SOURCE_COST;
+    public static final ModConfigSpec.DoubleValue FALSE_MANA_REGEN;
+    public static final ModConfigSpec.IntValue MANA_TANK_CAPACITY;
+    public static final ModConfigSpec.IntValue MANA_DISPENSER_RATE;
 
     // Research
     public static final ModConfigSpec.BooleanValue RESEARCH_GATES_GLYPHS;
@@ -193,6 +196,12 @@ public final class Config {
         b.push("alchemical_distiller");
         DISTILLER_BREW_TICKS = b.defineInRange("brew_ticks", 400, 20, 72000);
         DISTILLER_SOURCE_COST = b.comment("Source taken from Source Jars within 6 blocks for every brew.").defineInRange("source_cost", 200, 0, 100000);
+        b.pop();
+
+        b.push("pseudomage");
+        FALSE_MANA_REGEN = b.comment("False mana refilled every second.").defineInRange("false_mana_regen", 2.0, 0.0, 1000.0);
+        MANA_TANK_CAPACITY = b.comment("Source held by one Mana Tank block.").defineInRange("mana_tank_capacity", 10000, 100, 1000000);
+        MANA_DISPENSER_RATE = b.comment("Source a Mana Dispenser moves per jar every half second.").defineInRange("mana_dispenser_rate", 200, 1, 100000);
         b.pop();
 
         b.push("research");

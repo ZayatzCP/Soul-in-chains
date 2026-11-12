@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "L L",
+    "CLC",
+    "L L"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "C": {
+      "item": "arcane_artifacts:magic_cartridge"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:bandolier"
+  }
+}

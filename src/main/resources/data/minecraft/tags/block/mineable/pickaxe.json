@@ -2,6 +2,9 @@
   "replace": false,
   "values": [
     "arcane_artifacts:rose_gold_block",
-    "arcane_artifacts:alchemical_distiller"
+    "arcane_artifacts:alchemical_distiller",
+    "arcane_artifacts:mana_tank",
+    "arcane_artifacts:mana_pipe",
+    "arcane_artifacts:mana_dispenser"
   ]
 }

@@ -110,6 +110,11 @@ public record ResearchDefinition(NoteCategory category, Item icon, int sort, Lis
         return -1;
     }
 
+    /** Researches of the Pseudomage live under {@code pseudo/} (e.g. {@code arcane_artifacts:pseudo/firearms}). */
+    public static boolean isPseudomage(ResourceLocation id) {
+        return id.getPath().startsWith("pseudo/");
+    }
+
     public static String langPrefix(ResourceLocation id) {
         return "arcane_artifacts.research." + id.getNamespace() + "." + id.getPath().replace('/', '.');
     }

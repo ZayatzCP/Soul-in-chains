@@ -1,0 +1,56 @@
+{
+  "category": "material",
+  "icon": "minecraft:gunpowder",
+  "sort": 200,
+  "subjects": [
+    "minecraft:gunpowder",
+    "minecraft:crossbow",
+    "minecraft:flint_and_steel"
+  ],
+  "properties": [
+    "explosive",
+    "ballistic"
+  ],
+  "experiments": [
+    {
+      "id": "blast",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:damage_taken",
+          "damage_type": "#minecraft:is_explosion"
+        }
+      ]
+    },
+    {
+      "id": "spark",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_ignite",
+          "entity": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_ignite",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "fire",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_projectile"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:revolver",
+    "arcane_artifacts:sawn_off",
+    "arcane_artifacts:magic_cartridge",
+    "arcane_artifacts:bandolier"
+  ]
+}

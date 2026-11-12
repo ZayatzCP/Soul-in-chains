@@ -99,6 +99,28 @@ final class NotebookContent {
         return entries;
     }
 
+    /** The False Mage's Guide: everything of the Pseudomage, gated by the Pseudomage researches. */
+    static List<NotebookEntry> buildPseudomage(Font font) {
+        List<NotebookEntry> entries = new ArrayList<>();
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.pseudomage"),
+                new ItemStack(ModItems.FALSE_MAGE_GUIDE.get()), "pseudomage", 3, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.false_mana"),
+                new ItemStack(ModItems.COUNTERFEIT_RING.get()), "false_mana", 2, null));
+        entries.add(itemEntry(font, ModItems.FALSE_MAGE_GUIDE.get(), 1));
+        Set<ResourceLocation> lockedItems = ArcaneDocumentation.lockedItems();
+        entries.add(gatedItemEntry(font, ModItems.REVOLVER.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.SAWN_OFF.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MAGIC_CARTRIDGE.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.BANDOLIER.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.COUNTERFEIT_RING.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.COUNTERFEIT_PENDANT.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MANA_GOGGLES.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MANA_TANK.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MANA_PIPE.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.MANA_DISPENSER.get(), 1, lockedItems));
+        return entries;
+    }
+
     private static NotebookEntry textEntry(Font font, Component title, ItemStack icon, String key, int pages, @Nullable ResourceLocation recipe) {
         List<Paragraph> paragraphs = new ArrayList<>();
         for (int i = 1; i <= pages; i++) {

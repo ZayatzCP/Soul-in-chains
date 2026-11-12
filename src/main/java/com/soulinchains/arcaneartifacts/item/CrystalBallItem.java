@@ -47,7 +47,7 @@ public class CrystalBallItem extends SpellBook implements ISpellModifierItem {
                                                  Level world, @Nullable LivingEntity shooter, SpellContext spellContext) {
         if (spellContext != null && spellContext.getCasterTool().getItem() == this) {
             builder.addAOE(BUILT_IN_AOE);
-            builder.addAccelerationModifier(-1.0f);
+            builder.addAccelerationModifier(-0.3f);
         }
         return builder;
     }

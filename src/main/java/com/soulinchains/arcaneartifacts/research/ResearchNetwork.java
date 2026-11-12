@@ -61,6 +61,9 @@ public final class ResearchNetwork {
         registrar.playToClient(com.soulinchains.arcaneartifacts.fx.FxNetwork.LinePayload.TYPE,
                 com.soulinchains.arcaneartifacts.fx.FxNetwork.LinePayload.STREAM_CODEC,
                 com.soulinchains.arcaneartifacts.fx.FxNetwork::handleLine);
+        registrar.playToClient(com.soulinchains.arcaneartifacts.pseudo.FalseMana.SyncPayload.TYPE,
+                com.soulinchains.arcaneartifacts.pseudo.FalseMana.SyncPayload.STREAM_CODEC,
+                com.soulinchains.arcaneartifacts.pseudo.FalseMana::handleSync);
         registrar.playToServer(com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBeltPayload.TYPE,
                 com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBeltPayload.STREAM_CODEC,
                 (payload, context) -> com.soulinchains.arcaneartifacts.belt.BeltRegistry.handleOpen(context));

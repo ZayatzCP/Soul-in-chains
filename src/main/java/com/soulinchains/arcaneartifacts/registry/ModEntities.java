@@ -28,6 +28,11 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Gribushka::new, MobCategory.CREATURE)
                     .sized(0.6F, 1.1F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":gribushka"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.pseudo.BulletEntity>> BULLET = REGISTER.register("bullet",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.pseudo.BulletEntity>of(com.soulinchains.arcaneartifacts.pseudo.BulletEntity::new, MobCategory.MISC)
+                    .sized(0.2F, 0.2F).noSave().clientTrackingRange(8).updateInterval(1)
+                    .build(ArcaneArtifacts.MODID + ":bullet"));
+
     private ModEntities() {
     }
 }

@@ -23,6 +23,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.ARCANE_MISSILE.get(), com.hollingsworth.arsnouveau.client.renderer.entity.StyledSpellRender::new);
         event.registerEntityRenderer(ModEntities.MUDZYA.get(), CreatureRenderers.MudzyaRenderer::new);
         event.registerEntityRenderer(ModEntities.GRIBUSHKA.get(), CreatureRenderers.GribushkaRenderer::new);
+        event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
     }
 
     @SubscribeEvent
@@ -45,6 +46,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_ENTITY.get(), ResearchTableRenderer::new);
+        event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.MANA_TANK_ENTITY.get(), ManaTankRenderer::new);
     }
 
     @SubscribeEvent

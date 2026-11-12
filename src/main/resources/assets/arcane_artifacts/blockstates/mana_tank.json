@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "down=false,up=false": {
+      "model": "arcane_artifacts:block/mana_tank"
+    },
+    "down=false,up=true": {
+      "model": "arcane_artifacts:block/mana_tank"
+    },
+    "down=true,up=false": {
+      "model": "arcane_artifacts:block/mana_tank"
+    },
+    "down=true,up=true": {
+      "model": "arcane_artifacts:block/mana_tank"
+    }
+  }
+}

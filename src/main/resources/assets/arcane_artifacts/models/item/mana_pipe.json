@@ -1,0 +1,17 @@
+{
+  "parent": "arcane_artifacts:block/mana_pipe_core",
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    }
+  }
+}

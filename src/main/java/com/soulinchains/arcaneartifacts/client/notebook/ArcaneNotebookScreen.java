@@ -40,15 +40,23 @@ public class ArcaneNotebookScreen extends Screen {
     private int left, top;
     private @Nullable ItemStack hovered;
 
+    private final boolean pseudomage;
+
     public ArcaneNotebookScreen() {
-        super(Component.translatable("item.arcane_artifacts.researcher_notebook"));
+        this(false);
+    }
+
+    /** {@code pseudomage}: the False Mage's Guide instead of the Researcher's Secret Notebook. */
+    public ArcaneNotebookScreen(boolean pseudomage) {
+        super(Component.translatable(pseudomage ? "item.arcane_artifacts.false_mage_guide" : "item.arcane_artifacts.researcher_notebook"));
+        this.pseudomage = pseudomage;
     }
 
     @Override
     protected void init() {
         left = (width - BOOK_W) / 2;
         top = (height - BOOK_H) / 2;
-        entries = NotebookContent.build(font);
+        entries = pseudomage ? NotebookContent.buildPseudomage(font) : NotebookContent.build(font);
         if (current != null) {
             // Rebuilt after a resize: reopen the same chapter by title.
             NotebookEntry previous = current;

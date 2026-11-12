@@ -1,0 +1,55 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:gold_nugget",
+  "sort": 220,
+  "subjects": [
+    "minecraft:gold_nugget",
+    "minecraft:emerald",
+    "minecraft:clock"
+  ],
+  "properties": [
+    "counterfeit",
+    "glittering"
+  ],
+  "requires": [
+    "arcane_artifacts:pseudo/firearms"
+  ],
+  "experiments": [
+    {
+      "id": "vanish",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:effect_applied",
+          "effect": "minecraft:invisibility"
+        }
+      ]
+    },
+    {
+      "id": "smelt",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_smelt",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "dispel",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "ars_nouveau:glyph_dispel"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "notes_required": {
+    "material": 1
+  },
+  "unlocks_items": [
+    "arcane_artifacts:counterfeit_ring",
+    "arcane_artifacts:counterfeit_pendant"
+  ]
+}

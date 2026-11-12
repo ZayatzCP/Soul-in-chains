@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "drain=false": {
+      "model": "arcane_artifacts:block/mana_dispenser_fill"
+    },
+    "drain=true": {
+      "model": "arcane_artifacts:block/mana_dispenser_drain"
+    }
+  }
+}

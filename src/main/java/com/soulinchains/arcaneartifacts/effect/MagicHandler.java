@@ -68,7 +68,9 @@ public final class MagicHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onSpellDamageDealt(SpellDamageEvent.Post event) {
-        if (!selfCast(event.context) && !isHarmless(event.context)) {
+        // The Pseudomage's firearms fire false magic: no recoil on the shooter.
+        boolean fromGun = event.context != null && event.context.getCasterTool().getItem() instanceof com.soulinchains.arcaneartifacts.pseudo.MagicGunItem;
+        if (!selfCast(event.context) && !isHarmless(event.context) && !fromGun) {
             recoil(event.caster, event.target, event.damage);
         }
     }

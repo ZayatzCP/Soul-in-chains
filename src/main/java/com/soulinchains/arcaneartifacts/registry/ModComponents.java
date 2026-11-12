@@ -28,6 +28,15 @@ public final class ModComponents {
             REGISTER.registerComponentType("team_bond", b -> b.persistent(com.soulinchains.arcaneartifacts.team.TeamBond.CODEC)
                     .networkSynchronized(com.soulinchains.arcaneartifacts.team.TeamBond.STREAM_CODEC));
 
+    /** Magic cartridges inside a Bandolier. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CARTRIDGES =
+            REGISTER.registerComponentType("cartridges", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+    /** Rounds left in a firearm's magazine. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> GUN_ROUNDS =
+            REGISTER.registerComponentType("gun_rounds", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+
     private ModComponents() {
     }
 }

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "L L",
+    "GRG"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "R": {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:mana_goggles"
+  }
+}

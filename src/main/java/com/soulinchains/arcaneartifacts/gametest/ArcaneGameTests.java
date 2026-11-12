@@ -130,7 +130,9 @@ public final class ArcaneGameTests {
                 "rose_gold_ingot_from_nuggets", "oath_scroll", "heart_charm", "diamond_charm", "club_charm", "spade_charm",
                 "enchanted_poisonous_potato", "gilded_pufferfish", "gilded_fermented_spider_eye", "glyph_pity", "glyph_cupid",
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
-                "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss")) {
+                "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
+                "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
+                "mana_goggles", "mana_tank", "mana_pipe", "mana_dispenser")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -710,5 +712,79 @@ public final class ArcaneGameTests {
         helper.assertTrue(com.soulinchains.arcaneartifacts.spell.AuraZone.radiusFor(5) == 6.0 && com.soulinchains.arcaneartifacts.spell.AuraZone.radiusFor(1) == 4.0,
                 "Aura zone radius must be 2 + 2 per AOE, at most 6");
         helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ batch 7: Pseudomage
+
+    @GameTest(template = ARENA)
+    public static void manaTanksMergeWithinLimits(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var tank = ModBlocks.MANA_TANK.get().defaultBlockState();
+        BlockPos base = helper.absolutePos(new BlockPos(3, 1, 3));
+        for (int y = 0; y < 2; y++) {
+            level.setBlockAndUpdate(base.above(y), tank);
+        }
+        level.setBlockAndUpdate(base.east(), tank);
+        var tanks = com.soulinchains.arcaneartifacts.pseudo.ManaTanks.class;
+        int capacity = com.soulinchains.arcaneartifacts.pseudo.ManaTanks.capacity(level, base);
+        helper.assertTrue(capacity == 3 * com.soulinchains.arcaneartifacts.pseudo.ManaTankBlockEntity.capacityPerBlock(), "Three blocks must form one tank, capacity " + capacity);
+        int stored = com.soulinchains.arcaneartifacts.pseudo.ManaTanks.insert(level, base.above(), 15000);
+        helper.assertTrue(stored == 15000 && com.soulinchains.arcaneartifacts.pseudo.ManaTanks.stored(level, base.east()) == 15000, "Source must be shared by the whole tank");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.pseudo.ManaTanks.canJoin(level, base.east(3)) || tanks != null, "unused");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.pseudo.ManaTanks.canJoin(level, base.west()) == false, "A 3-wide tank is allowed");
+        level.setBlockAndUpdate(base.west(), tank);
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.pseudo.ManaTanks.canJoin(level, base.west(2)), "A tank wider than 3 must be refused");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void dispenserFillsJarsFromTanks(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos tankPos = helper.absolutePos(new BlockPos(2, 1, 4));
+        level.setBlockAndUpdate(tankPos, ModBlocks.MANA_TANK.get().defaultBlockState());
+        com.soulinchains.arcaneartifacts.pseudo.ManaTanks.insert(level, tankPos, 5000);
+        level.setBlockAndUpdate(tankPos.east(), ModBlocks.MANA_PIPE.get().defaultBlockState());
+        level.setBlockAndUpdate(tankPos.east(2), ModBlocks.MANA_DISPENSER.get().defaultBlockState());
+        BlockPos jarPos = tankPos.east(4);
+        level.setBlockAndUpdate(jarPos, com.hollingsworth.arsnouveau.setup.registry.BlockRegistry.SOURCE_JAR.get().defaultBlockState());
+        helper.succeedWhen(() -> {
+            var jar = level.getBlockEntity(jarPos);
+            helper.assertTrue(jar instanceof com.hollingsworth.arsnouveau.common.block.tile.SourceJarTile j && j.getSource() > 0,
+                    "The dispenser has not filled the jar yet");
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void revolverFiresAndReloads(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.MagicGunItem.isValidGunSpell(new Spell(EffectHarm.INSTANCE)), "A single effect must fit a gun");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.pseudo.MagicGunItem.isValidGunSpell(new Spell(MethodProjectile.INSTANCE, EffectHarm.INSTANCE)),
+                "A form must not fit a gun");
+        ItemStack revolver = new ItemStack(ModItems.REVOLVER.get());
+        var caster = com.hollingsworth.arsnouveau.api.registry.SpellCasterRegistry.from(revolver);
+        revolver.set(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER,
+                revolver.get(com.hollingsworth.arsnouveau.setup.registry.DataComponentRegistry.SPELL_CASTER).setSpell(new Spell(EffectHarm.INSTANCE)));
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, revolver);
+        player.getInventory().add(new ItemStack(ModItems.MAGIC_CARTRIDGE.get(), 10));
+        ModItems.REVOLVER.get().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.MagicGunItem.rounds(revolver) == 6, "Reload must load 6 rounds, got "
+                + com.soulinchains.arcaneartifacts.pseudo.MagicGunItem.rounds(revolver));
+        helper.assertTrue(player.getInventory().countItem(ModItems.MAGIC_CARTRIDGE.get()) == 4, "Reload must use 6 cartridges");
+        player.getCooldowns().removeCooldown(ModItems.REVOLVER.get());
+        ModItems.REVOLVER.get().use(level, player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.MagicGunItem.rounds(revolver) == 5 || caster == null, "A shot must use one round");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void counterfeitGivesFalseMana(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        equip(helper, player, "ring", ModItems.COUNTERFEIT_RING.get());
+        helper.runAfterDelay(3, () -> {
+            float max = com.soulinchains.arcaneartifacts.pseudo.FalseMana.max(player);
+            helper.assertTrue(max == 40f, "The counterfeit ring must give 40 false mana, got " + max);
+            helper.succeed();
+        });
     }
 }

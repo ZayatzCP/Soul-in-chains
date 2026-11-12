@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_nugget"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_nugget"
+    },
+    {
+      "item": "arcane_artifacts:bottle_of_source"
+    }
+  ],
+  "result": {
+    "count": 8,
+    "id": "arcane_artifacts:magic_cartridge"
+  }
+}

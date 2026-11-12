@@ -46,6 +46,9 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     private static final int LEFT_WIDTH = 154, LEFT_BOTTOM = 144, RIGHT_BOTTOM = 196;
 
     private int selected;
+    /** Which school is shown: the Arcane Mage (false) or the Pseudomage (true). */
+    private boolean pseudoTab;
+    private PageButton arcaneTab, pseudoTabButton;
     private Item lastSample;
     private PageButton observe, formulate, previous, next;
 
@@ -63,7 +66,16 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                 () -> click(ResearchTableMenu.BUTTON_OBSERVE)));
         formulate = addRenderableWidget(new PageButton(leftPos + RIGHT_X + 25, topPos + 200, 100, 12,
                 Component.translatable("arcane_artifacts.research_table.formulate"),
-                () -> click(ResearchTableMenu.BUTTON_FORMULATE + selected)));
+                () -> {
+                    List<ResourceLocation> order = order();
+                    if (selected < order.size()) {
+                        click(ResearchTableMenu.BUTTON_FORMULATE + ResearchTableMenu.researchOrder().indexOf(order.get(selected)));
+                    }
+                }));
+        arcaneTab = addRenderableWidget(new PageButton(leftPos + 16, topPos - 14, 110, 13,
+                Component.translatable("arcane_artifacts.research_table.tab_arcane"), () -> switchTab(false)));
+        pseudoTabButton = addRenderableWidget(new PageButton(leftPos + 130, topPos - 14, 110, 13,
+                Component.translatable("arcane_artifacts.research_table.tab_pseudo"), () -> switchTab(true)));
         previous = addRenderableWidget(new PageButton(leftPos + RIGHT_X, topPos + 8, 12, 12, Component.literal("<"), () -> move(-1)));
         next = addRenderableWidget(new PageButton(leftPos + RIGHT_X + PAGE_WIDTH - 12, topPos + 8, 12, 12, Component.literal(">"), () -> move(1)));
     }
@@ -74,8 +86,26 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
         }
     }
 
+    /** The researches of the open tab, in display order. */
+    private List<ResourceLocation> order() {
+        List<ResourceLocation> all = ResearchTableMenu.researchOrder();
+        all.removeIf(id -> ResearchDefinition.isPseudomage(id) != pseudoTab);
+        return all;
+    }
+
+    private static Component tabLabel(String key, boolean open) {
+        return open ? Component.literal("» ").append(Component.translatable(key)).append(" «") : Component.translatable(key);
+    }
+
+    private void switchTab(boolean pseudo) {
+        if (pseudoTab != pseudo) {
+            pseudoTab = pseudo;
+            selected = 0;
+        }
+    }
+
     private void move(int delta) {
-        int size = ResearchTableMenu.researchOrder().size();
+        int size = order().size();
         if (size > 0) {
             selected = Math.floorMod(selected + delta, size);
         }
@@ -90,10 +120,14 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
             lastSample = current;
             List<ResourceLocation> relevant = ResearchService.researchesFor(ClientResearch.progress(), sample);
             if (!relevant.isEmpty()) {
-                selected = Math.max(0, ResearchTableMenu.researchOrder().indexOf(relevant.get(0)));
+                pseudoTab = ResearchDefinition.isPseudomage(relevant.get(0));
+                selected = Math.max(0, order().indexOf(relevant.get(0)));
             }
         }
-        List<ResourceLocation> order = ResearchTableMenu.researchOrder();
+        List<ResourceLocation> order = order();
+        // The open tab is marked with arrows.
+        arcaneTab.setMessage(tabLabel("arcane_artifacts.research_table.tab_arcane", !pseudoTab));
+        pseudoTabButton.setMessage(tabLabel("arcane_artifacts.research_table.tab_pseudo", pseudoTab));
         ResourceLocation id = selected < order.size() ? order.get(selected) : null;
         observe.active = !sample.isEmpty();
         formulate.visible = id != null && stateOf(ClientResearch.progress(), id) == ResearchState.PRINCIPLE;
@@ -164,7 +198,7 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     // ------------------------------------------------------------------ right page
 
     private void renderRightPage(GuiGraphics g, PlayerResearch data) {
-        List<ResourceLocation> order = ResearchTableMenu.researchOrder();
+        List<ResourceLocation> order = order();
         int x = RIGHT_X;
         if (order.isEmpty()) {
             paragraph(g, Component.translatable("arcane_artifacts.research_table.no_research"), x, 30, PAGE_WIDTH, FADED, 4);

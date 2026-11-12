@@ -46,6 +46,17 @@ public final class ModCreativeTab {
                 ModItems.MUSHROOMS.values().forEach(item -> output.accept(item.get()));
                 output.accept(ModItems.MUDZYA_SPAWN_EGG.get());
                 output.accept(ModItems.GRIBUSHKA_SPAWN_EGG.get());
+                output.accept(ModItems.FALSE_MAGE_GUIDE.get());
+                output.accept(ModItems.REVOLVER.get());
+                output.accept(ModItems.SAWN_OFF.get());
+                output.accept(ModItems.MAGIC_CARTRIDGE.get());
+                output.accept(ModItems.BANDOLIER.get());
+                output.accept(ModItems.COUNTERFEIT_RING.get());
+                output.accept(ModItems.COUNTERFEIT_PENDANT.get());
+                output.accept(ModItems.MANA_GOGGLES.get());
+                output.accept(ModItems.MANA_TANK.get());
+                output.accept(ModItems.MANA_PIPE.get());
+                output.accept(ModItems.MANA_DISPENSER.get());
                 output.accept(ModItems.OATH_SCROLL.get());
                 output.accept(ModItems.HEART_CHARM.get());
                 output.accept(ModItems.DIAMOND_CHARM.get());
