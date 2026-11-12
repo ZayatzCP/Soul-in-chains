@@ -47,7 +47,7 @@ public final class ManaTanks {
             }
         }
         List<BlockPos> list = new ArrayList<>(seen);
-        list.sort(Comparator.comparingInt(BlockPos::getY).thenComparingInt(BlockPos::getX).thenComparingInt(BlockPos::getZ));
+        list.sort(Comparator.<BlockPos>comparingInt(BlockPos::getY).thenComparingInt(BlockPos::getX).thenComparingInt(BlockPos::getZ));
         return list;
     }
 
