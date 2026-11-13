@@ -80,6 +80,15 @@ public final class ModItems {
     public static final java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>> MUSHROOMS = mushrooms();
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> MUDZYA_SPAWN_EGG = REGISTER.register("mudzya_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.MUDZYA, 0x6B3FA0, 0xE0A8FF, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> AMANITOID_SPAWN_EGG = REGISTER.register("amanitoid_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.AMANITOID, 0xC8302A, 0xF2EEE0, new Item.Properties()));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.spore.MushroomShieldItem> MUSHROOM_SHIELD = REGISTER.register("mushroom_shield",
+            () -> new com.soulinchains.arcaneartifacts.spore.MushroomShieldItem(new Item.Properties().durability(400)));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.spore.MushroomClubItem> MUSHROOM_CLUB = REGISTER.register("mushroom_club",
+            () -> new com.soulinchains.arcaneartifacts.spore.MushroomClubItem(new Item.Properties()));
+    public static final DeferredItem<BlockItem> MUSHROOM_TABLE = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_TABLE);
+    public static final DeferredItem<BlockItem> MUSHROOM_STOOL = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_STOOL);
+    public static final DeferredItem<BlockItem> MUSHROOM_LAMP = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_LAMP);
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> GRIBUSHKA_SPAWN_EGG = REGISTER.register("gribushka_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.GRIBUSHKA, 0x8FD3F0, 0x8A4FC8, new Item.Properties()));
 

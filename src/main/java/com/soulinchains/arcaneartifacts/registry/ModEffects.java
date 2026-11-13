@@ -57,6 +57,10 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> DUEL_FOCUS = REGISTER.register("duel_focus",
             () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0xD9A441, false));
 
+    /** Mycelinoid spores: sneezing every 2.5 seconds, passed on to other monsters nearby. */
+    public static final DeferredHolder<MobEffect, MobEffect> SPORE_INFECTION = REGISTER.register("spore_infection",
+            com.soulinchains.arcaneartifacts.spore.SporeInfectionEffect::new);
+
     private ModEffects() {
     }
 }

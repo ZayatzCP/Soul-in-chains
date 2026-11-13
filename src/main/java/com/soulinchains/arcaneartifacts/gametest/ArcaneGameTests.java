@@ -20,6 +20,7 @@ import com.soulinchains.arcaneartifacts.glyph.EffectWeatherShift;
 import com.soulinchains.arcaneartifacts.phenomena.Phenomena;
 import com.soulinchains.arcaneartifacts.phenomena.Vortex;
 import com.soulinchains.arcaneartifacts.registry.ModEffects;
+import com.soulinchains.arcaneartifacts.registry.ModEntities;
 import com.soulinchains.arcaneartifacts.damage.ParasitismManager;
 import com.soulinchains.arcaneartifacts.entity.ArcaneMissileEntity;
 import com.soulinchains.arcaneartifacts.glyph.ArcaneGlyphs;
@@ -132,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "mushroom_table", "mushroom_stool", "mushroom_lamp")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -863,6 +864,72 @@ public final class ArcaneGameTests {
             helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.SpurBootsItem.isWearing(player), "The boots must be worn");
             helper.succeed();
         });
+    }
+
+    // ------------------------------------------------------------------ batch 12: Amanitoid and spores
+
+    @GameTest(template = ARENA)
+    public static void sporesNeedANose(GameTestHelper helper) {
+        var zombie = helper.spawn(EntityType.ZOMBIE, new BlockPos(2, 1, 2));
+        var friend = helper.spawn(EntityType.ZOMBIE, new BlockPos(3, 1, 2));
+        var skeleton = helper.spawn(EntityType.SKELETON, new BlockPos(5, 1, 5));
+        var golem = helper.spawn(EntityType.IRON_GOLEM, new BlockPos(6, 1, 2));
+        var mycelinoid = helper.spawn(ModEntities.GRIBUSHKA.get(), new BlockPos(2, 1, 6));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.spore.Spores.canCatch(zombie), "A zombie has a nose");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.spore.Spores.canCatch(skeleton), "A skeleton has no nose");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.spore.Spores.canCatch(golem), "An iron golem has no lungs");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.spore.Spores.canCatch(mycelinoid), "Mycelinoids never catch their own spores");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.spore.Spores.infect(zombie, 200) && zombie.hasEffect(ModEffects.SPORE_INFECTION),
+                "The zombie must be infected");
+        com.soulinchains.arcaneartifacts.spore.Spores.sneeze(zombie);
+        helper.assertTrue(friend.hasEffect(ModEffects.SPORE_INFECTION), "A sneeze must pass the spores to the zombie next to it");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void mushroomClubAndShieldCloud(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        var zombie = helper.spawn(EntityType.ZOMBIE, new BlockPos(5, 1, 4));
+        var skeleton = helper.spawn(EntityType.SKELETON, new BlockPos(3, 1, 4));
+        ItemStack club = new ItemStack(ModItems.MUSHROOM_CLUB.get());
+        ModItems.MUSHROOM_CLUB.get().hurtEnemy(club, skeleton, player);
+        helper.assertTrue(!skeleton.hasEffect(ModEffects.SPORE_INFECTION), "The club cannot infect a skeleton");
+        float health = zombie.getHealth();
+        var cloud = com.soulinchains.arcaneartifacts.spore.SporeCloud.spawn(level, player);
+        cloud.pulse();
+        helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED), "The cloud must speed up its owner");
+        helper.assertTrue(zombie.getHealth() < health && zombie.hasEffect(ModEffects.SPORE_INFECTION),
+                "The cloud must hurt and infect the zombie: " + zombie.getHealth() + " of " + health);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void amanitoidGuardsWithClubAndShield(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var guard = ModEntities.AMANITOID.get().create(level);
+        helper.assertTrue(guard != null, "No Amanitoid");
+        guard.moveTo(helper.absoluteVec(new Vec3(4.5, 1, 4.5)));
+        guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), net.minecraft.world.entity.MobSpawnType.MOB_SUMMONED, null);
+        level.addFreshEntity(guard);
+        helper.assertTrue(guard.getMainHandItem().is(ModItems.MUSHROOM_CLUB.get()) && guard.getOffhandItem().is(ModItems.MUSHROOM_SHIELD.get()),
+                "The guardian carries a club and a shield");
+        helper.assertTrue(!guard.isAdmiring(), "A guardian does not trade");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void mushroomHouseHasADoorAndALamp(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos floor = helper.absolutePos(new BlockPos(4, 40, 4));
+        com.soulinchains.arcaneartifacts.world.MushroomHouse.build(level, floor, true, net.minecraft.core.Direction.NORTH, level.getRandom());
+        helper.assertTrue(level.getBlockState(floor.above(com.soulinchains.arcaneartifacts.world.MushroomHouse.HEIGHT - 1)).is(ModBlocks.MUSHROOM_LAMP.get()),
+                "A lamp hangs under the cap");
+        helper.assertTrue(level.getBlockState(floor.north(3)).isAir() && level.getBlockState(floor.north(3).above()).isAir(), "The doorway is cut");
+        helper.assertTrue(level.getBlockState(floor.south(3)).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM), "The stem is the wall");
+        helper.assertTrue(level.getBlockState(floor.above(com.soulinchains.arcaneartifacts.world.MushroomHouse.HEIGHT + 1)).getBlock()
+                instanceof net.minecraft.world.level.block.HugeMushroomBlock, "A cap on top");
+        helper.succeed();
     }
 
     @GameTest(template = ARENA)

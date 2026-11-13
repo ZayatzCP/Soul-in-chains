@@ -322,7 +322,7 @@ public class Gribushka extends PathfinderMob {
      * Meeting another Mycelinoid: both stop, turn to each other and wave. Now and then, instead, it starts a
      * dance and every free Mycelinoid around joins in.
      */
-    private static final class SocialGoal extends Goal {
+    static final class SocialGoal extends Goal {
         private final Gribushka mob;
 
         SocialGoal(Gribushka mob) {

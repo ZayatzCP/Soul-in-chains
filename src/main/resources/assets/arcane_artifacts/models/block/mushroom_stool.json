@@ -1,0 +1,75 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "cap": "minecraft:block/red_mushroom_block",
+    "stem": "minecraft:block/mushroom_stem",
+    "inside": "minecraft:block/mushroom_block_inside",
+    "particle": "minecraft:block/red_mushroom_block"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        6,
+        2
+      ],
+      "to": [
+        14,
+        9,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#cap"
+        },
+        "south": {
+          "texture": "#cap"
+        },
+        "east": {
+          "texture": "#cap"
+        },
+        "west": {
+          "texture": "#cap"
+        },
+        "up": {
+          "texture": "#cap"
+        },
+        "down": {
+          "texture": "#inside"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        0,
+        5
+      ],
+      "to": [
+        11,
+        6,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#stem"
+        },
+        "south": {
+          "texture": "#stem"
+        },
+        "east": {
+          "texture": "#stem"
+        },
+        "west": {
+          "texture": "#stem"
+        },
+        "up": {
+          "texture": "#stem"
+        },
+        "down": {
+          "texture": "#stem"
+        }
+      }
+    }
+  ]
+}

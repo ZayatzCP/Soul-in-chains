@@ -74,6 +74,15 @@ final class NotebookContent {
                 new ItemStack(ModItems.MUSHROOMS.get(com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.BLUE).get()), "mushrooms", 2, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.gribushka"),
                 new ItemStack(ModItems.GRIBUSHKA_SPAWN_EGG.get()), "gribushka", 2, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.amanitoid"),
+                new ItemStack(ModItems.AMANITOID_SPAWN_EGG.get()), "amanitoid", 2, null));
+        entries.add(itemEntry(font, ModItems.MUSHROOM_SHIELD.get(), 1));
+        entries.add(itemEntry(font, ModItems.MUSHROOM_CLUB.get(), 1));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mycelinoid_houses"),
+                new ItemStack(ModItems.MUSHROOM_LAMP.get()), "mycelinoid_houses", 1, null));
+        entries.add(itemEntry(font, ModItems.MUSHROOM_TABLE.get(), 1));
+        entries.add(itemEntry(font, ModItems.MUSHROOM_STOOL.get(), 1));
+        entries.add(itemEntry(font, ModItems.MUSHROOM_LAMP.get(), 1));
         entries.add(gatedItemEntry(font, ModItems.OATH_SCROLL.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.HEART_CHARM.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.DIAMOND_CHARM.get(), 1, lockedItems));
@@ -82,7 +91,7 @@ final class NotebookContent {
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
-        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus"}) {
+        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus", "spore_infection"}) {
             effects.add(new Paragraph(Component.translatable("effect.arcane_artifacts." + effect).withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
             effects.add(new Paragraph(Component.translatable("arcane_artifacts.effect_doc." + effect), ArcaneNotebookScreen.INK_COLOR));
         }

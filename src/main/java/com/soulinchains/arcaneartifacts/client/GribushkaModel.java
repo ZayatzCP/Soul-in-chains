@@ -29,7 +29,7 @@ import java.util.List;
  * greeting a friend and dancing. Every element keeps its own per-face UVs, which vanilla
  * entity cubes cannot do, so the quads are built here and the groups are animated like limbs.
  */
-public class GribushkaModel extends EntityModel<Gribushka> implements ArmedModel {
+public class GribushkaModel<T extends Gribushka> extends EntityModel<T> implements ArmedModel {
     public static final ResourceLocation MODEL = ArcaneArtifacts.id("entity_models/gribushka.json");
 
     private final Part body = new Part();
@@ -159,7 +159,7 @@ public class GribushkaModel extends EntityModel<Gribushka> implements ArmedModel
     // ------------------------------------------------------------------ animation and rendering
 
     @Override
-    public void setupAnim(Gribushka entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float partialTick = ageInTicks - entity.tickCount;
         float walk = limbSwing * 0.8F;
         rightLeg.xRot = Mth.cos(walk) * 1.0F * limbSwingAmount;
@@ -179,6 +179,19 @@ public class GribushkaModel extends EntityModel<Gribushka> implements ArmedModel
             greet(entity.moodAge(partialTick));
         } else if (entity.getMood() == Gribushka.Mood.DANCE) {
             dance(entity.moodAge(partialTick));
+        }
+        if (entity.isBlocking()) {
+            // The shield (off hand) raised in front of the body.
+            leftArm.xRot = -1.25F;
+            leftArm.yRot = 0.55F;
+            leftArm.zRot = -0.1F;
+        }
+        if (attackTime > 0F) {
+            // A heavy overhead swing with the club.
+            float swing = Mth.sin(attackTime * Mth.PI);
+            rightArm.xRot = -2.6F + swing * 2.4F;
+            rightArm.zRot = 0.08F;
+            body.xRot = swing * 0.25F;
         }
     }
 

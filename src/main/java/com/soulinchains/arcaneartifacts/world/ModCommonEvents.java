@@ -23,6 +23,7 @@ public final class ModCommonEvents {
     public static void attributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.MUDZYA.get(), Mudzya.createAttributes().build());
         event.put(ModEntities.GRIBUSHKA.get(), Gribushka.createAttributes().build());
+        event.put(ModEntities.AMANITOID.get(), com.soulinchains.arcaneartifacts.entity.Amanitoid.createAttributes().build());
     }
 
     @SubscribeEvent

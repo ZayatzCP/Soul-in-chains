@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 
-/** Renderers of the Mudzya (glows when full of Source) and the Gribushka (three cap colours). */
+/** Renderers of the Bli-Blik (glows when full of Source) and the Mycelinoid folk (Mycelinoid, Amanitoid). */
 public final class CreatureRenderers {
     private CreatureRenderers() {
     }
@@ -41,25 +41,29 @@ public final class CreatureRenderers {
         }
     }
 
-    public static final class GribushkaRenderer extends MobRenderer<Gribushka, GribushkaModel> {
-        /** One texture; the variants are tinted by the model. */
-        private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/entity/gribushka.png");
-        /** The designer's model is 30 pixels tall: scaled to the Gribushka's size. */
-        private static final float SCALE = 0.6F;
+    /** The Mycelinoid folk, all drawn from the designer's model with their own texture and size. */
+    public static final class MycelinoidRenderer<T extends Gribushka> extends MobRenderer<T, GribushkaModel<T>> {
+        public static final ResourceLocation MYCELINOID = ArcaneArtifacts.id("textures/entity/gribushka.png");
+        public static final ResourceLocation AMANITOID = ArcaneArtifacts.id("textures/entity/amanitoid.png");
+        private final ResourceLocation texture;
+        /** The designer's model is 30 pixels tall: scaled to each one's size. */
+        private final float scale;
 
-        public GribushkaRenderer(EntityRendererProvider.Context context) {
-            super(context, new GribushkaModel(context.getResourceManager()), 0.4F);
+        public MycelinoidRenderer(EntityRendererProvider.Context context, ResourceLocation texture, float scale, float shadow) {
+            super(context, new GribushkaModel<>(context.getResourceManager()), shadow);
+            this.texture = texture;
+            this.scale = scale;
             addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         }
 
         @Override
-        protected void scale(Gribushka entity, com.mojang.blaze3d.vertex.PoseStack pose, float partialTick) {
-            pose.scale(SCALE, SCALE, SCALE);
+        protected void scale(T entity, com.mojang.blaze3d.vertex.PoseStack pose, float partialTick) {
+            pose.scale(scale, scale, scale);
         }
 
         @Override
-        public ResourceLocation getTextureLocation(Gribushka entity) {
-            return TEXTURE;
+        public ResourceLocation getTextureLocation(T entity) {
+            return texture;
         }
     }
 }

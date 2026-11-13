@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arcane_artifacts:item/mushroom_club"
+  }
+}

@@ -28,6 +28,14 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Gribushka::new, MobCategory.CREATURE)
                     .sized(0.6F, 1.1F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":gribushka"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Amanitoid>> AMANITOID = REGISTER.register("amanitoid",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Amanitoid::new, MobCategory.CREATURE)
+                    .sized(0.8F, 1.5F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":amanitoid"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.spore.SporeCloud>> SPORE_CLOUD = REGISTER.register("spore_cloud",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.spore.SporeCloud>of(com.soulinchains.arcaneartifacts.spore.SporeCloud::new, MobCategory.MISC)
+                    .sized(6.0F, 0.5F).fireImmune().noSave().clientTrackingRange(10).updateInterval(Integer.MAX_VALUE)
+                    .build(ArcaneArtifacts.MODID + ":spore_cloud"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.pseudo.BulletEntity>> BULLET = REGISTER.register("bullet",
             () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.pseudo.BulletEntity>of(com.soulinchains.arcaneartifacts.pseudo.BulletEntity::new, MobCategory.MISC)
                     .sized(0.2F, 0.2F).noSave().clientTrackingRange(8).updateInterval(1)

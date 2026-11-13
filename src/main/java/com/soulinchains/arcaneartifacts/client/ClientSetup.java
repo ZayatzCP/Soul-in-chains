@@ -22,7 +22,11 @@ public final class ClientSetup {
         // Rendered exactly like an Ars Nouveau spell projectile (spell style + particle timeline).
         event.registerEntityRenderer(ModEntities.ARCANE_MISSILE.get(), com.hollingsworth.arsnouveau.client.renderer.entity.StyledSpellRender::new);
         event.registerEntityRenderer(ModEntities.MUDZYA.get(), CreatureRenderers.MudzyaRenderer::new);
-        event.registerEntityRenderer(ModEntities.GRIBUSHKA.get(), CreatureRenderers.GribushkaRenderer::new);
+        event.registerEntityRenderer(ModEntities.GRIBUSHKA.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
+                CreatureRenderers.MycelinoidRenderer.MYCELINOID, 0.6F, 0.4F));
+        event.registerEntityRenderer(ModEntities.AMANITOID.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
+                CreatureRenderers.MycelinoidRenderer.AMANITOID, 0.8F, 0.55F));
+        event.registerEntityRenderer(ModEntities.SPORE_CLOUD.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
     }
 
@@ -74,6 +78,8 @@ public final class ClientSetup {
                     CuriosRendererRegistry.register(item.get(), () -> new AccessoryCurioRenderer(attachments)));
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.AMULET_OF_OPPOSITES.get(), ArcaneArtifacts.id("repelling"),
                     (stack, level, entity, seed) -> com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.isRepelling(stack) ? 1.0F : 0.0F);
+            net.minecraft.client.renderer.item.ItemProperties.register(ModItems.MUSHROOM_SHIELD.get(), net.minecraft.resources.ResourceLocation.withDefaultNamespace("blocking"),
+                    (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.BANDOLIER.get(), ArcaneArtifacts.id("filled"),
                     (stack, level, entity, seed) -> (float) com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack)
                             / com.soulinchains.arcaneartifacts.pseudo.BandolierItem.CAPACITY);
