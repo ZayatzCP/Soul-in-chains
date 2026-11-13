@@ -832,12 +832,12 @@ public final class ArcaneGameTests {
 
     @GameTest(template = ARENA)
     public static void starterGlyphsAreNotListedTwice(GameTestHelper helper) {
-        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
         var cap = com.hollingsworth.arsnouveau.setup.registry.CapabilityRegistry.getPlayerDataCap(player);
         helper.assertTrue(cap != null, "The player has no Ars data");
         cap.unlockGlyph(MethodProjectile.INSTANCE);
         cap.unlockGlyph(EffectHarm.INSTANCE);
-        com.soulinchains.arcaneartifacts.command.ArcaneCommands.forgetStarterGlyphs(player);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.command.ArcaneCommands.stripStarterGlyphs(cap), "Known starting glyphs must be found");
         boolean starterKnown = cap.getKnownGlyphs().stream()
                 .anyMatch(com.hollingsworth.arsnouveau.api.registry.GlyphRegistry.getDefaultStartingSpells()::contains);
         helper.assertTrue(!starterKnown, "Starting glyphs must not be stored as known: the spell book would list them twice");

@@ -37,15 +37,19 @@ public final class ArcaneCommands {
      */
     public static void forgetStarterGlyphs(ServerPlayer player) {
         ANPlayerDataCap cap = CapabilityRegistry.getPlayerDataCap(player);
-        if (cap == null) {
-            return;
-        }
-        List<AbstractSpellPart> starters = GlyphRegistry.getDefaultStartingSpells();
-        if (cap.getKnownGlyphs().stream().anyMatch(starters::contains)) {
-            List<AbstractSpellPart> kept = cap.getKnownGlyphs().stream().filter(part -> !starters.contains(part)).toList();
-            cap.setKnownGlyphs(kept);
+        if (cap != null && stripStarterGlyphs(cap)) {
             CapabilityRegistry.EventHandler.syncPlayerCap(player);
         }
+    }
+
+    /** Removes the starting glyphs from {@code cap}; true if there were any. */
+    public static boolean stripStarterGlyphs(ANPlayerDataCap cap) {
+        List<AbstractSpellPart> starters = GlyphRegistry.getDefaultStartingSpells();
+        if (cap.getKnownGlyphs().stream().noneMatch(starters::contains)) {
+            return false;
+        }
+        cap.setKnownGlyphs(cap.getKnownGlyphs().stream().filter(part -> !starters.contains(part)).toList());
+        return true;
     }
 
     private ArcaneCommands() {
