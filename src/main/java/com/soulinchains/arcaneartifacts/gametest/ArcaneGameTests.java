@@ -895,10 +895,12 @@ public final class ArcaneGameTests {
         ItemStack club = new ItemStack(ModItems.MUSHROOM_CLUB.get());
         ModItems.MUSHROOM_CLUB.get().hurtEnemy(club, skeleton, player);
         helper.assertTrue(!skeleton.hasEffect(ModEffects.SPORE_INFECTION), "The club cannot infect a skeleton");
+        // The mock player is not in the level, so a Mycelinoid stands in the cloud as the friend.
+        var friend = helper.spawn(ModEntities.GRIBUSHKA.get(), new BlockPos(4, 1, 5));
         float health = zombie.getHealth();
         var cloud = com.soulinchains.arcaneartifacts.spore.SporeCloud.spawn(level, player);
         cloud.pulse();
-        helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED), "The cloud must speed up its owner");
+        helper.assertTrue(friend.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED), "The cloud must speed up friends");
         helper.assertTrue(zombie.getHealth() < health && zombie.hasEffect(ModEffects.SPORE_INFECTION),
                 "The cloud must hurt and infect the zombie: " + zombie.getHealth() + " of " + health);
         helper.succeed();
