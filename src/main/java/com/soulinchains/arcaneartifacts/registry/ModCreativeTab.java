@@ -59,7 +59,12 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SOMBRERO.get());
                 output.accept(ModItems.AMBER.get());
                 output.accept(ModItems.AMBER_CLUSTER.get());
+                output.accept(ModItems.PSEUDOMAGE_BOOTS.get());
                 output.accept(ModItems.DRUID_HERBARIUM.get());
+                output.accept(ModItems.DRUID_MANTLE.get());
+                output.accept(ModItems.DRUID_HAT.get());
+                output.accept(ModItems.DRUID_GLOVES.get());
+                output.accept(ModItems.DRUID_BOOTS.get());
                 output.accept(ModItems.MANA_TANK.get());
                 output.accept(ModItems.MANA_PIPE.get());
                 output.accept(ModItems.MANA_PUMP.get());

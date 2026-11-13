@@ -71,6 +71,9 @@ public final class WornModels {
         ATTACHMENTS.put(ModItems.HOP_SLIPPERS, List.of(
                 worn(BodyPart.RIGHT_LEG, "hop_slippers_right"),
                 worn(BodyPart.LEFT_LEG, "hop_slippers_left")));
+        ATTACHMENTS.put(ModItems.PSEUDOMAGE_BOOTS, List.of(
+                worn(BodyPart.RIGHT_LEG, "pseudomage_boots_right"),
+                worn(BodyPart.LEFT_LEG, "pseudomage_boots_left")));
         ATTACHMENTS.put(ModItems.RING_OF_CALM, List.of(worn(BodyPart.RIGHT_ARM, "ring_of_calm")));
         ATTACHMENTS.put(ModItems.BOTTOMLESS_BELT, List.of(worn(BodyPart.BODY, "bottomless_belt")));
         // Pseudomage: the bandolier shows its cartridges once there are any.

@@ -132,7 +132,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -842,6 +842,27 @@ public final class ArcaneGameTests {
                 .anyMatch(com.hollingsworth.arsnouveau.api.registry.GlyphRegistry.getDefaultStartingSpells()::contains);
         helper.assertTrue(!starterKnown, "Starting glyphs must not be stored as known: the spell book would list them twice");
         helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void spurredBootsSpeedUpTheMount(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        equip(helper, player, "feet", ModItems.PSEUDOMAGE_BOOTS.get());
+        var horse = EntityType.HORSE.create(level);
+        helper.assertTrue(horse != null, "No horse");
+        horse.moveTo(helper.absoluteVec(new Vec3(3.5, 1, 3.5)));
+        level.addFreshEntity(horse);
+        var speed = horse.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+        double base = speed.getValue();
+        com.soulinchains.arcaneartifacts.pseudo.SpurBootsItem.spur(horse);
+        helper.assertTrue(Math.abs(speed.getValue() - base * 1.3) < 1.0E-6, "Spurs must make the mount 30% faster: " + base + " -> " + speed.getValue());
+        com.soulinchains.arcaneartifacts.pseudo.SpurBootsItem.unspur(horse);
+        helper.assertTrue(Math.abs(speed.getValue() - base) < 1.0E-6, "Getting off must take the spurs' speed away");
+        afterEquip(helper, player, ModItems.PSEUDOMAGE_BOOTS.get(), () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.SpurBootsItem.isWearing(player), "The boots must be worn");
+            helper.succeed();
+        });
     }
 
     @GameTest(template = ARENA)

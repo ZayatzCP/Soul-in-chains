@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "NBN",
+    " M "
+  ],
+  "key": {
+    "A": {
+      "item": "arcane_artifacts:amber"
+    },
+    "N": {
+      "item": "minecraft:gold_nugget"
+    },
+    "B": {
+      "item": "minecraft:leather_boots"
+    },
+    "M": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:pseudomage_boots"
+  }
+}

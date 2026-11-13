@@ -105,6 +105,8 @@ final class NotebookContent {
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.druid"),
                 new ItemStack(ModItems.DRUID_HERBARIUM.get()), "druid", 2, null));
         entries.add(itemEntry(font, ModItems.DRUID_HERBARIUM.get(), 1));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.druid_gear"),
+                new ItemStack(ModItems.DRUID_MANTLE.get()), "druid_gear", 1, null));
         return entries;
     }
 
@@ -126,6 +128,7 @@ final class NotebookContent {
         entries.add(gatedItemEntry(font, ModItems.MANA_GOGGLES.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.PONCHO.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.SOMBRERO.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.PSEUDOMAGE_BOOTS.get(), 1, lockedItems));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.amber"),
                 new ItemStack(ModItems.AMBER.get()), "amber", 1, null));
         entries.add(gatedItemEntry(font, ModItems.MANA_TANK.get(), 2, lockedItems));

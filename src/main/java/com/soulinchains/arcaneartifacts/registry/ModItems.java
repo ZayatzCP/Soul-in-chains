@@ -110,6 +110,16 @@ public final class ModItems {
             com.soulinchains.arcaneartifacts.pseudo.SombreroItem::new);
     public static final DeferredItem<ResearcherNotebookItem> DRUID_HERBARIUM = REGISTER.register("druid_herbarium",
             () -> new ResearcherNotebookItem(ResearcherNotebookItem.Book.DRUID));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.SpurBootsItem> PSEUDOMAGE_BOOTS = REGISTER.register("pseudomage_boots",
+            com.soulinchains.arcaneartifacts.pseudo.SpurBootsItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_MANTLE = REGISTER.register("druid_mantle",
+            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_HAT = REGISTER.register("druid_hat",
+            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_GLOVES = REGISTER.register("druid_gloves",
+            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_BOOTS = REGISTER.register("druid_boots",
+            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
     public static final DeferredItem<BlockItem> MANA_PIPE = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_PIPE);
     public static final DeferredItem<BlockItem> MANA_PUMP = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_PUMP);
 

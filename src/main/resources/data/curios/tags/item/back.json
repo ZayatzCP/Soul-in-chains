@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "arcane_artifacts:mantle_of_reflection",
-    "arcane_artifacts:poncho"
+    "arcane_artifacts:poncho",
+    "arcane_artifacts:druid_mantle"
   ]
 }
