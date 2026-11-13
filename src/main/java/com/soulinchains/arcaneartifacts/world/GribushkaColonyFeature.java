@@ -25,7 +25,7 @@ public class GribushkaColonyFeature extends Feature<NoneFeatureConfiguration> {
         if (!level.getBiome(origin).is(ModBiomes.MUSHROOM_CAVES)) {
             return false;
         }
-        int count = 5 + random.nextInt(6);
+        int count = 7 + random.nextInt(6);
         int placed = 0;
         for (int attempt = 0; attempt < count * 4 && placed < count; attempt++) {
             BlockPos pos = floor(level, origin.offset(random.nextInt(9) - 4, 0, random.nextInt(9) - 4));

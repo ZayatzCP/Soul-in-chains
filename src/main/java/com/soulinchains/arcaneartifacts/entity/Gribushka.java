@@ -14,15 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -38,7 +35,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -51,17 +47,29 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Gribushka: one of the mushroom folk of the Mushroom Caves. Gribushkas live in colonies and collect
- * mushrooms: throw one a mushroom and, after a good look at it, it throws back the item that goes with
- * that mushroom. What each mushroom is worth is a loot table:
+ * Mycelinoid (registry id {@code gribushka}): one of the mushroom folk of the Mushroom Caves. They live in
+ * colonies and collect mushrooms: throw one a mushroom and, after holding it up and turning it over, it
+ * throws back the item that goes with that mushroom. When two of them meet they wave to each other, and
+ * now and then a few of them dance together. What each mushroom is worth is a loot table:
  * {@code arcane_artifacts:gribushka_trades/<namespace>/<item>} (anything with such a table is accepted).
  */
 public class Gribushka extends PathfinderMob {
-    public static final int VARIANTS = 3;
-    private static final int ADMIRE_TICKS = 50;
-    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Gribushka.class, EntityDataSerializers.INT);
+    private static final int ADMIRE_TICKS = 70;
+    /** What the body is doing, for the model: see {@link Mood}. */
+    private static final EntityDataAccessor<Integer> MOOD = SynchedEntityData.defineId(Gribushka.class, EntityDataSerializers.INT);
+    public static final int GREET_TICKS = 40;
+    public static final int DANCE_TICKS = 120;
+
+    /** Animations other Mycelinoids can see. */
+    public enum Mood { NONE, GREET, DANCE }
 
     private int admireTicks;
+    private int moodTicks;
+    private int greetCooldown = 100;
+    private int danceCooldown = 600;
+    private @Nullable Gribushka partner;
+    /** Client side: the tick the current mood started, for the animation. */
+    private int moodStart;
     private @Nullable UUID customer;
     private @Nullable BlockPos home;
 
@@ -94,7 +102,7 @@ public class Gribushka extends PathfinderMob {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(VARIANT, 0);
+        builder.define(MOOD, 0);
     }
 
     @Override
@@ -102,6 +110,7 @@ public class Gribushka extends PathfinderMob {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4));
         this.goalSelector.addGoal(2, new SeekMushroomGoal(this));
+        this.goalSelector.addGoal(2, new SocialGoal(this));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.0, stack -> !isAdmiring() && isTradeItem(level(), stack), false));
         this.goalSelector.addGoal(4, new MoveTowardsRestrictionGoal(this, 0.9));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
@@ -109,12 +118,40 @@ public class Gribushka extends PathfinderMob {
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
     }
 
-    public int getVariant() {
-        return Math.floorMod(this.entityData.get(VARIANT), VARIANTS);
+    public Mood getMood() {
+        Mood[] moods = Mood.values();
+        return moods[Math.floorMod(this.entityData.get(MOOD), moods.length)];
     }
 
-    public void setVariant(int variant) {
-        this.entityData.set(VARIANT, Math.floorMod(variant, VARIANTS));
+    public void setMood(Mood mood, int ticks) {
+        this.entityData.set(MOOD, mood.ordinal());
+        this.moodTicks = ticks;
+    }
+
+    /** Ticks (with partial tick) since the current mood started, on the client. */
+    public float moodAge(float partialTick) {
+        return this.tickCount - this.moodStart + partialTick;
+    }
+
+    /** Ticks it has been looking at the mushroom in its hand, on the client. */
+    public float admireAge(float partialTick) {
+        return this.admireTicks + partialTick;
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (MOOD.equals(key)) {
+            this.moodStart = this.tickCount;
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level().isClientSide) {
+            this.admireTicks = isAdmiring() ? this.admireTicks + 1 : 0;
+        }
     }
 
     /** True while it is looking at a mushroom it has just been given. */
@@ -129,14 +166,13 @@ public class Gribushka extends PathfinderMob {
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        setVariant(this.random.nextInt(VARIANTS));
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
-    }
-
-    @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        this.greetCooldown = Math.max(0, this.greetCooldown - 1);
+        this.danceCooldown = Math.max(0, this.danceCooldown - 1);
+        if (this.moodTicks > 0 && --this.moodTicks == 0) {
+            setMood(Mood.NONE, 0);
+        }
         if (!isAdmiring()) {
             this.admireTicks = 0;
             return;
@@ -177,6 +213,7 @@ public class Gribushka extends PathfinderMob {
         Entity thrower = item.getOwner();
         this.customer = thrower == null ? null : thrower.getUUID();
         setItemSlot(EquipmentSlot.MAINHAND, one);
+        setMood(Mood.NONE, 0);
         this.admireTicks = 0;
         playSound(SoundEvents.ITEM_PICKUP, 0.6F, 1.4F);
         playSound(SoundEvents.VILLAGER_TRADE, 0.8F, getVoicePitch());
@@ -261,7 +298,6 @@ public class Gribushka extends PathfinderMob {
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putInt("Variant", getVariant());
         if (this.home != null) {
             tag.putInt("HomeX", this.home.getX());
             tag.putInt("HomeY", this.home.getY());
@@ -272,9 +308,97 @@ public class Gribushka extends PathfinderMob {
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        setVariant(tag.getInt("Variant"));
         if (tag.contains("HomeX")) {
             setHome(new BlockPos(tag.getInt("HomeX"), tag.getInt("HomeY"), tag.getInt("HomeZ")));
+        }
+    }
+
+    /** Whether it is free to greet or dance: not trading, not busy with another animation. */
+    boolean isFree() {
+        return !isAdmiring() && getMood() == Mood.NONE && getTarget() == null && getLastHurtByMob() == null;
+    }
+
+    /**
+     * Meeting another Mycelinoid: both stop, turn to each other and wave. Now and then, instead, it starts a
+     * dance and every free Mycelinoid around joins in.
+     */
+    private static final class SocialGoal extends Goal {
+        private final Gribushka mob;
+
+        SocialGoal(Gribushka mob) {
+            this.mob = mob;
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (mob.getMood() != Mood.NONE) {
+                return true;   // a friend started it for us
+            }
+            if (!mob.isFree() || mob.tickCount % 20 != 0) {
+                return false;
+            }
+            List<Gribushka> friends = mob.level().getEntitiesOfClass(Gribushka.class, mob.getBoundingBox().inflate(7.0, 2.0, 7.0),
+                    other -> other != mob && other.isFree() && mob.hasLineOfSight(other));
+            if (friends.isEmpty()) {
+                return false;
+            }
+            if (mob.danceCooldown == 0 && friends.size() >= 1 && mob.getRandom().nextInt(25) == 0) {
+                mob.partner = friends.get(0);
+                for (Gribushka friend : friends.subList(0, Math.min(5, friends.size()))) {
+                    friend.partner = mob;
+                    friend.setMood(Mood.DANCE, DANCE_TICKS);
+                    friend.danceCooldown = 2400 + friend.getRandom().nextInt(1200);
+                }
+                mob.setMood(Mood.DANCE, DANCE_TICKS);
+                mob.danceCooldown = 2400 + mob.getRandom().nextInt(1200);
+                mob.playSound(SoundEvents.NOTE_BLOCK_BELL.value(), 0.6F, 1.6F);
+                return true;
+            }
+            if (mob.greetCooldown == 0) {
+                Gribushka friend = friends.stream().filter(other -> other.greetCooldown == 0).findFirst().orElse(null);
+                if (friend == null) {
+                    return false;
+                }
+                mob.partner = friend;
+                friend.partner = mob;
+                mob.setMood(Mood.GREET, GREET_TICKS);
+                friend.setMood(Mood.GREET, GREET_TICKS);
+                mob.greetCooldown = 900 + mob.getRandom().nextInt(900);
+                friend.greetCooldown = 900 + friend.getRandom().nextInt(900);
+                mob.playSound(SoundEvents.VILLAGER_CELEBRATE, 0.6F, mob.getVoicePitch());
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return mob.getMood() != Mood.NONE && !mob.isAdmiring();
+        }
+
+        @Override
+        public void start() {
+            mob.getNavigation().stop();
+        }
+
+        @Override
+        public void stop() {
+            mob.partner = null;
+            if (mob.getMood() != Mood.NONE) {
+                mob.setMood(Mood.NONE, 0);
+            }
+        }
+
+        @Override
+        public void tick() {
+            mob.getNavigation().stop();
+            if (mob.partner != null && mob.partner.isAlive()) {
+                mob.getLookControl().setLookAt(mob.partner, 30.0F, 30.0F);
+            }
+            if (mob.getMood() == Mood.DANCE && mob.level() instanceof ServerLevel server && mob.tickCount % 10 == 0) {
+                server.sendParticles(ParticleTypes.NOTE, mob.getX(), mob.getY() + 1.4, mob.getZ(), 1, 0.2, 0.1, 0.2, mob.getRandom().nextDouble());
+            }
         }
     }
 
