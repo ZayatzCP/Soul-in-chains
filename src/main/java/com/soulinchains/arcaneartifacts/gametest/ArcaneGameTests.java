@@ -831,6 +831,20 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void starterGlyphsAreNotListedTwice(GameTestHelper helper) {
+        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        var cap = com.hollingsworth.arsnouveau.setup.registry.CapabilityRegistry.getPlayerDataCap(player);
+        helper.assertTrue(cap != null, "The player has no Ars data");
+        cap.unlockGlyph(MethodProjectile.INSTANCE);
+        cap.unlockGlyph(EffectHarm.INSTANCE);
+        com.soulinchains.arcaneartifacts.command.ArcaneCommands.forgetStarterGlyphs(player);
+        boolean starterKnown = cap.getKnownGlyphs().stream()
+                .anyMatch(com.hollingsworth.arsnouveau.api.registry.GlyphRegistry.getDefaultStartingSpells()::contains);
+        helper.assertTrue(!starterKnown, "Starting glyphs must not be stored as known: the spell book would list them twice");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void pipesActAsSourceJars(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos tank = helper.absolutePos(new BlockPos(3, 1, 3));

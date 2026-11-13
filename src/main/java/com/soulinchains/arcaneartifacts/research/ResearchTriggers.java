@@ -63,6 +63,7 @@ public final class ResearchTriggers {
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
         event.getRelevantPlayers().forEach(player -> {
+            com.soulinchains.arcaneartifacts.command.ArcaneCommands.forgetStarterGlyphs(player);
             ResearchNetwork.sendDefinitions(player);
             ResearchNetwork.sendProgress(player);
         });

@@ -30,6 +30,24 @@ import java.util.List;
  */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
 public final class ArcaneCommands {
+    /**
+     * Removes Ars Nouveau's starting glyphs (Projectile, Touch, Harm, Break) from the glyphs a player
+     * "knows": Ars always lists them in the spell book, so a player who also knows them sees each twice.
+     * Older versions of the unlock command taught them; this repairs such players when they join.
+     */
+    public static void forgetStarterGlyphs(ServerPlayer player) {
+        ANPlayerDataCap cap = CapabilityRegistry.getPlayerDataCap(player);
+        if (cap == null) {
+            return;
+        }
+        List<AbstractSpellPart> starters = GlyphRegistry.getDefaultStartingSpells();
+        if (cap.getKnownGlyphs().stream().anyMatch(starters::contains)) {
+            List<AbstractSpellPart> kept = cap.getKnownGlyphs().stream().filter(part -> !starters.contains(part)).toList();
+            cap.setKnownGlyphs(kept);
+            CapabilityRegistry.EventHandler.syncPlayerCap(player);
+        }
+    }
+
     private ArcaneCommands() {
     }
 
@@ -66,8 +84,12 @@ public final class ArcaneCommands {
         }
         ANPlayerDataCap cap = CapabilityRegistry.getPlayerDataCap(player);
         if (cap != null) {
+            List<AbstractSpellPart> starters = GlyphRegistry.getDefaultStartingSpells();
             for (AbstractSpellPart part : GlyphRegistry.getSpellpartMap().values()) {
-                cap.unlockGlyph(part);
+                // Ars adds the starting glyphs to the spell book itself: knowing them too shows them twice.
+                if (!starters.contains(part)) {
+                    cap.unlockGlyph(part);
+                }
             }
             CapabilityRegistry.EventHandler.syncPlayerCap(player);
         }
