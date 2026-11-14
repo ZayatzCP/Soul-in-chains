@@ -140,6 +140,7 @@ final class NotebookContent {
         Set<ResourceLocation> lockedItems = ArcaneDocumentation.lockedItems();
         entries.add(gatedItemEntry(font, ModItems.REVOLVER.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.SAWN_OFF.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.PSEUDOMAGE_GLOVES.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.IRON_HORSE.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MAGIC_CARTRIDGE.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.BANDOLIER.get(), 1, lockedItems));

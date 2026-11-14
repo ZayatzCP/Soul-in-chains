@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * The class mounts, drawn from baked models in {@code entity_models/<name>.json} (made by
- * tools/generate_mounts.py): the broom is one piece that tilts with the rider's gaze and bobs; the elk and
+ * tools/generate_mounts.py): the broom is one piece that stays level and bobs; the elk and
  * the iron horse walk on four legs (leg_front_left, leg_front_right, leg_back_left, leg_back_right).
  */
 public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRenderer.Model<T>> {
@@ -38,16 +38,14 @@ public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRen
     public void render(T entity, float entityYaw, float partialTick, com.mojang.blaze3d.vertex.PoseStack pose,
                        net.minecraft.client.renderer.MultiBufferSource buffers, int light) {
         if (entity instanceof FlyingBroom broom && broom.getControllingPassenger() instanceof net.minecraft.world.entity.player.Player rider) {
-            // The broom is drawn under the rider's hips, where the rider's pose (BroomRiding) turns about.
+            // The broom is drawn under the seated rider, just below the hips (BroomRiding).
             net.minecraft.world.phys.Vec3 at = rider.getPosition(partialTick).subtract(entity.getPosition(partialTick));
             pose.pushPose();
             pose.translate(at.x, at.y + BroomRiding.HIPS - BroomRiding.HANDLE_DROP - HANDLE_HEIGHT, at.z);
-            getModel().broomPitch = BroomRiding.broomPitch(broom, rider, partialTick);
             super.render(entity, entityYaw, partialTick, pose, buffers, light);
             pose.popPose();
             return;
         }
-        getModel().broomPitch = 0F;
         super.render(entity, entityYaw, partialTick, pose, buffers, light);
     }
 
@@ -63,8 +61,6 @@ public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRen
         private final BakedPart body;
         private final BakedPart[] legs;
         private float lift;
-        /** Degrees, nose down, set by the renderer for a ridden broom. */
-        float broomPitch;
 
         Model(ResourceManager resources, ResourceLocation id) {
             Map<String, BakedPart> parts = BakedModels.load(resources, id);
@@ -78,7 +74,6 @@ public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRen
             body.reset();
             lift = 0F;
             if (entity instanceof FlyingBroom broom) {
-                body.xRot = broomPitch * Mth.DEG_TO_RAD;
                 body.zRot = Mth.sin(ageInTicks * 0.08F) * 0.03F;
                 lift = broom.isVehicle() ? 0F : 3F + Mth.sin(ageInTicks * 0.1F) * 0.6F;    // an empty broom floats a little
                 return;

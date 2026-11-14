@@ -835,5 +835,12 @@
   "arcane_artifacts.lore.iron_horse": "«Мне сказали: нужен ездовой фамильяр. Я сказал: у меня есть печка и молоток. Мне сказали: это не фамильяр. Я сказал: подержите мою шляпу». — Пип, псевдомаг",
   "arcane_artifacts.iron_horse.gauge": "%s с",
   "key.arcane_artifacts.open_bandolier": "Открыть патронташ",
-  "arcane_artifacts.bandolier.not_worn": "Патронташ не надет. Пули по карманам не рассуёшь — Пип пробовал."
+  "arcane_artifacts.bandolier.not_worn": "Патронташ не надет. Пули по карманам не рассуёшь — Пип пробовал.",
+  "item.arcane_artifacts.pseudomage_gloves": "Перчатки Псевдомага",
+  "item.arcane_artifacts.pseudomage_gloves.lore": "Пальцы без отпечатков. Совесть — тоже.",
+  "item.arcane_artifacts.pseudomage_gloves.desc.1": "Револьвер и обрез стреляют на 40% чаще.",
+  "item.arcane_artifacts.pseudomage_gloves.desc.2": "Перезарядка вдвое быстрее, разброс дроби на 40% меньше.",
+  "item.arcane_artifacts.pseudomage_gloves.desc.3": "Слот рук.",
+  "arcane_artifacts.page1.pseudomage_gloves": "Слот рук. Кожаные перчатки стрелка с медными заклёпками. Пока они надеты, револьвер и обрез стреляют на 40% чаще, перезаряжаются вдвое быстрее, а дробь обреза разлетается на 40% кучнее. Крафт: янтарь, золотой самородок и четыре кожи. Открываются исследованием «Огнестрел».",
+  "arcane_artifacts.lore.pseudomage_gloves": "«Настоящий маг творит заклинания голыми руками. Псевдомаг надевает перчатки, потому что револьвер нагревается, а маникюр — нет». — Хеллмерус Морра"
 }

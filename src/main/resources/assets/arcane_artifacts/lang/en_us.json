@@ -835,5 +835,12 @@
   "arcane_artifacts.lore.iron_horse": "\"They said I needed a riding familiar. I said I had a stove and a hammer. They said that is not a familiar. I said hold my hat.\" - Pip, Pseudomage",
   "arcane_artifacts.iron_horse.gauge": "%s s",
   "key.arcane_artifacts.open_bandolier": "Open the bandolier",
-  "arcane_artifacts.bandolier.not_worn": "No bandolier on. You can't just stuff bullets in your pockets. Pip tried."
+  "arcane_artifacts.bandolier.not_worn": "No bandolier on. You can't just stuff bullets in your pockets. Pip tried.",
+  "item.arcane_artifacts.pseudomage_gloves": "Pseudomage's Gloves",
+  "item.arcane_artifacts.pseudomage_gloves.lore": "Fingers without prints. Conscience, likewise.",
+  "item.arcane_artifacts.pseudomage_gloves.desc.1": "The revolver and the sawn-off fire 40% more often.",
+  "item.arcane_artifacts.pseudomage_gloves.desc.2": "Reloading is twice as fast, buckshot spreads 40% less.",
+  "item.arcane_artifacts.pseudomage_gloves.desc.3": "Hands slot.",
+  "arcane_artifacts.page1.pseudomage_gloves": "Hands slot. A gunslinger's leather gloves with copper rivets. While worn, the revolver and the sawn-off fire 40% more often, reload twice as fast, and the sawn-off's buckshot flies 40% tighter. Crafted from amber, a gold nugget and four leather. Unlocked by the Firearms research.",
+  "arcane_artifacts.lore.pseudomage_gloves": "\"A real mage casts with bare hands. The Pseudomage wears gloves, because the revolver gets hot and the manicure does not.\" - Hellmerus Morra"
 }

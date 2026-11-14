@@ -137,6 +137,8 @@ public final class ModItems {
             () -> new com.soulinchains.arcaneartifacts.mount.MountItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON), ModEntities.MOSS_ELK, 3));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.mount.MountItem> IRON_HORSE = REGISTER.register("iron_horse",
             () -> new com.soulinchains.arcaneartifacts.mount.MountItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE), ModEntities.IRON_HORSE, 3));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem> PSEUDOMAGE_GLOVES = REGISTER.register("pseudomage_gloves",
+            com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_MANTLE = REGISTER.register("druid_mantle",
             com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_HAT = REGISTER.register("druid_hat",

@@ -114,7 +114,7 @@ public class MagicGunItem extends Item implements ICasterTool {
         }
         fire(player, gun, bulletSpell(spell));
         gun.set(ModComponents.GUN_ROUNDS, rounds - 1);
-        player.getCooldowns().addCooldown(this, fireCooldown);
+        player.getCooldowns().addCooldown(this, PseudomageGlovesItem.scale(player, fireCooldown, PseudomageGlovesItem.COOLDOWN));
         return InteractionResultHolder.consume(gun);
     }
 
@@ -125,7 +125,8 @@ public class MagicGunItem extends Item implements ICasterTool {
             BulletEntity bullet = new BulletEntity(level, player, new SpellResolver(context));
             Vec3 eye = player.getEyePosition();
             bullet.setPos(eye.x, eye.y - 0.1, eye.z);
-            bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.2F, spread);
+            bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.2F,
+                    PseudomageGlovesItem.isWearing(player) ? spread * PseudomageGlovesItem.SPREAD : spread);
             level.addFreshEntity(bullet);
         }
         level.playSound(null, player.blockPosition(), pellets > 1 ? SoundEvents.GENERIC_EXPLODE.value() : SoundEvents.FIREWORK_ROCKET_BLAST,
@@ -160,7 +161,7 @@ public class MagicGunItem extends Item implements ICasterTool {
             return;
         }
         gun.set(ModComponents.GUN_ROUNDS, rounds + loaded);
-        player.getCooldowns().addCooldown(this, reloadTicks);
+        player.getCooldowns().addCooldown(this, PseudomageGlovesItem.scale(player, reloadTicks, PseudomageGlovesItem.RELOAD));
         player.level().playSound(null, player.blockPosition(), SoundEvents.CROSSBOW_LOADING_END.value(), SoundSource.PLAYERS, 1.0f, 1.3f);
     }
 

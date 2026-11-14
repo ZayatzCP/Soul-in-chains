@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " A ",
+    "LNL",
+    "L L"
+  ],
+  "key": {
+    "A": {
+      "item": "arcane_artifacts:amber"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "N": {
+      "item": "minecraft:gold_nugget"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:pseudomage_gloves"
+  }
+}

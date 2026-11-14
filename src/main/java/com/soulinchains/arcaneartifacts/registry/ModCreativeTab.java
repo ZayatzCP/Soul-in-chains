@@ -65,6 +65,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.MUSHROOM_CLUB.get());
                 output.accept(ModItems.FALSE_MAGE_GUIDE.get());
                 output.accept(ModItems.IRON_HORSE.get());
+                output.accept(ModItems.PSEUDOMAGE_GLOVES.get());
                 output.accept(ModItems.REVOLVER.get());
                 output.accept(ModItems.SAWN_OFF.get());
                 output.accept(ModItems.MAGIC_CARTRIDGE.get());

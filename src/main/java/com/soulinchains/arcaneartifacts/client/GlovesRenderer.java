@@ -39,16 +39,6 @@ public final class GlovesRenderer {
         return player.getMainHandItem().is(ModItems.FOCUSING_GLOVES.get()) || player.getOffhandItem().is(ModItems.FOCUSING_GLOVES.get());
     }
 
-    /** A Pseudomage firearm held in either hand, or empty. */
-    static ItemStack gunStack(Player player) {
-        for (ItemStack stack : new ItemStack[]{player.getMainHandItem(), player.getOffhandItem()}) {
-            if (stack.is(ModItems.REVOLVER.get()) || stack.is(ModItems.SAWN_OFF.get())) {
-                return stack;
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     private static ItemStack gloveStack(Player player) {
         return player.getMainHandItem().is(ModItems.FOCUSING_GLOVES.get()) ? player.getMainHandItem() : player.getOffhandItem();
     }
@@ -77,19 +67,11 @@ public final class GlovesRenderer {
         @Override
         public void render(PoseStack pose, MultiBufferSource buffers, int light, AbstractClientPlayer player, float limbSwing, float limbSwingAmount,
                            float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (player.isInvisible()) {
-                return;
-            }
-            PlayerModel<AbstractClientPlayer> model = getParentModel();
-            ItemStack gun = gunStack(player);
-            if (!gun.isEmpty()) {
-                renderGlove(pose, buffers, light, model.rightArm, gun, WornModels.PSEUDOMAGE_GLOVES.get(0));
-                renderGlove(pose, buffers, light, model.leftArm, gun, WornModels.PSEUDOMAGE_GLOVES.get(1));
-            }
-            if (!holdsGloves(player)) {
+            if (!holdsGloves(player) || player.isInvisible()) {
                 return;
             }
             ItemStack stack = gloveStack(player);
+            PlayerModel<AbstractClientPlayer> model = getParentModel();
             renderGlove(pose, buffers, light, model.rightArm, stack, WornModels.GLOVES.get(0));
             renderGlove(pose, buffers, light, model.leftArm, stack, WornModels.GLOVES.get(1));
         }

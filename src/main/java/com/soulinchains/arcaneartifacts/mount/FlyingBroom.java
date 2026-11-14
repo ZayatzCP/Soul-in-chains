@@ -33,9 +33,6 @@ public class FlyingBroom extends ClassMount {
     public static final double SPEED = 0.6;
     /** Momentum (0..1) the rider has built up holding forward; diving builds it faster, climbing drains it. */
     private float momentum;
-    /** Client only, for the look: 0 hovering .. 1 flying flat out (the rider lies down like on elytra). */
-    public float flightLean;
-    public float flightLeanO;
     private static final EntityDataAccessor<Boolean> CHARGED = SynchedEntityData.defineId(FlyingBroom.class, EntityDataSerializers.BOOLEAN);
 
     public FlyingBroom(EntityType<? extends FlyingBroom> type, Level level) {
@@ -74,11 +71,6 @@ public class FlyingBroom extends ClassMount {
         }
         if (!level().isClientSide && tickCount % 20 == 0 && getControllingPassenger() instanceof Player rider) {
             entityData.set(CHARGED, drink(rider));
-        }
-        if (level().isClientSide) {
-            double moved = position().subtract(xo, yo, zo).length();
-            flightLeanO = flightLean;
-            flightLean += ((float) Math.min(1.0, moved / 0.45) * (isVehicle() ? 1F : 0F) - flightLean) * 0.15F;
         }
         if (level().isClientSide && isVehicle() && isCharged() && random.nextInt(3) == 0) {
             Vec3 tail = position().add(Vec3.directionFromRotation(0, getYRot()).scale(-0.9)).add(0, 0.35, 0);
@@ -146,12 +138,6 @@ public class FlyingBroom extends ClassMount {
             setDeltaMovement(getDeltaMovement().multiply(0.8, 0.8, 0.8).add(0, -0.01, 0));   // settles slowly when let go
         }
         super.travel(input);
-    }
-
-    /** The rider straddles the broom with straight legs instead of sitting. */
-    @Override
-    public boolean shouldRiderSit() {
-        return false;
     }
 
     @Override

@@ -133,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse", "pseudomage_gloves")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -983,6 +983,18 @@ public final class ArcaneGameTests {
         builder.build(garden, com.soulinchains.arcaneartifacts.world.village.HouseType.GARDEN, red, net.minecraft.core.Direction.NORTH);
         helper.assertTrue(level.getBlockState(garden.north(4)).getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock, "The garden has a gate");
         helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void pseudomageGlovesSpeedUpGuns(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem.scale(player, 20, 0.6F) == 20, "Without gloves a gun keeps its pace");
+        equip(helper, player, "hands", ModItems.PSEUDOMAGE_GLOVES.get());
+        afterEquip(helper, player, ModItems.PSEUDOMAGE_GLOVES.get(), () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem.scale(player, 20, 0.6F) == 12, "Gloves must speed the gun up");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem.scale(player, 1, 0.5F) == 1, "A cooldown never drops below a tick");
+            helper.succeed();
+        });
     }
 
     @GameTest(template = ARENA)

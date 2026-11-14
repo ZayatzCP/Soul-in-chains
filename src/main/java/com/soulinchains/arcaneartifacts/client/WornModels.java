@@ -82,6 +82,9 @@ public final class WornModels {
                 turned(BodyPart.BODY, "bandolier", 10f, -4f, 8f, 0f, 0f, -55.00933f),
                 turned(BodyPart.BODY, "bandolier_2", 9.8504f, -16.5255f, 8f, 0f, 0f, -90f),
                 turned(BodyPart.BODY, "bandolier_3", 1.8222f, -5.056f, 8f, 0f, 0f, -90f)));
+        ATTACHMENTS.put(ModItems.PSEUDOMAGE_GLOVES, List.of(
+                worn(BodyPart.RIGHT_ARM, "pseudomage_glove_right"),
+                worn(BodyPart.LEFT_ARM, "pseudomage_glove_left")));
         ATTACHMENTS.put(ModItems.COUNTERFEIT_RING, List.of(worn(BodyPart.RIGHT_ARM, "counterfeit_ring")));
         ATTACHMENTS.put(ModItems.COUNTERFEIT_PENDANT, List.of(worn(BodyPart.BODY, "counterfeit_pendant")));
         ATTACHMENTS.put(ModItems.MANA_GOGGLES, List.of(worn(BodyPart.HEAD, "mana_goggles")));
@@ -111,11 +114,6 @@ public final class WornModels {
     public static final List<Attachment> GLOVES = List.of(
             worn(BodyPart.RIGHT_ARM, "focusing_gloves_right"),
             worn(BodyPart.LEFT_ARM, "focusing_gloves_left"));
-
-    /** The Pseudomage's gloves: drawn on both hands while a revolver or a sawn-off is held (see GlovesRenderer). */
-    public static final List<Attachment> PSEUDOMAGE_GLOVES = List.of(
-            worn(BodyPart.RIGHT_ARM, "pseudomage_glove_right"),
-            worn(BodyPart.LEFT_ARM, "pseudomage_glove_left"));
 
     private WornModels() {
     }

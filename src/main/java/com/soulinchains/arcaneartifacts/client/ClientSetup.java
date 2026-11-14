@@ -80,7 +80,6 @@ public final class ClientSetup {
     public static void registerWornModels(ModelEvent.RegisterAdditional event) {
         WornModels.all().values().forEach(list -> list.forEach(attachment -> event.register(attachment.location())));
         WornModels.GLOVES.forEach(attachment -> event.register(attachment.location()));
-        WornModels.PSEUDOMAGE_GLOVES.forEach(attachment -> event.register(attachment.location()));
     }
 
     @SubscribeEvent
@@ -109,6 +108,19 @@ public final class ClientSetup {
                 renderer.addLayer(new GlovesRenderer.Layer(renderer));
             }
         }
+    }
+
+    /** The revolver and the sawn-off are held up and aimed like a loaded crossbow. */
+    @SubscribeEvent
+    public static void registerItemExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+        event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+            @Override
+            public net.minecraft.client.model.HumanoidModel.ArmPose getArmPose(net.minecraft.world.entity.LivingEntity entity,
+                                                                                 net.minecraft.world.InteractionHand hand,
+                                                                                 net.minecraft.world.item.ItemStack stack) {
+                return net.minecraft.client.model.HumanoidModel.ArmPose.CROSSBOW_HOLD;
+            }
+        }, ModItems.REVOLVER.get(), ModItems.SAWN_OFF.get());
     }
 
     @SubscribeEvent
