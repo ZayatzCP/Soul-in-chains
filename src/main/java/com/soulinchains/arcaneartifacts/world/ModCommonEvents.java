@@ -24,10 +24,19 @@ public final class ModCommonEvents {
         event.put(ModEntities.MUDZYA.get(), Mudzya.createAttributes().build());
         event.put(ModEntities.GRIBUSHKA.get(), Gribushka.createAttributes().build());
         event.put(ModEntities.AMANITOID.get(), com.soulinchains.arcaneartifacts.entity.Amanitoid.createAttributes().build());
+        event.put(ModEntities.ELDER_MYCELINOID.get(), com.soulinchains.arcaneartifacts.entity.ElderMycelinoid.createAttributes().build());
+        event.put(ModEntities.GRIBULKA.get(), com.soulinchains.arcaneartifacts.entity.Gribulka.createAttributes().build());
+        event.put(ModEntities.GRIBULKA_HIVE.get(), com.soulinchains.arcaneartifacts.entity.GribulkaHive.createAttributes().build());
     }
 
     @SubscribeEvent
     public static void spawnPlacements(RegisterSpawnPlacementsEvent event) {
+        event.register(ModEntities.GRIBULKA.get(), net.minecraft.world.entity.SpawnPlacementTypes.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                com.soulinchains.arcaneartifacts.entity.Gribulka::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.GRIBULKA_HIVE.get(), net.minecraft.world.entity.SpawnPlacementTypes.ON_GROUND,
+                net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                com.soulinchains.arcaneartifacts.entity.GribulkaHive::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.MUDZYA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Mudzya::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }

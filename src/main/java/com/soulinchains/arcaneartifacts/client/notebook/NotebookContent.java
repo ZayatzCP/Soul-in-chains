@@ -74,6 +74,12 @@ final class NotebookContent {
                 new ItemStack(ModItems.MUSHROOMS.get(com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.BLUE).get()), "mushrooms", 2, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.gribushka"),
                 new ItemStack(ModItems.GRIBUSHKA_SPAWN_EGG.get()), "gribushka", 2, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.elder_mycelinoid"),
+                new ItemStack(ModItems.ELDER_MYCELINOID_SPAWN_EGG.get()), "elder_mycelinoid", 2, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.gribulka"),
+                new ItemStack(ModItems.GRIBULKA_SPAWN_EGG.get()), "gribulka", 1, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.gribulka_hive"),
+                new ItemStack(ModItems.GRIBULKA_HIVE_SPAWN_EGG.get()), "gribulka_hive", 2, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.amanitoid"),
                 new ItemStack(ModItems.AMANITOID_SPAWN_EGG.get()), "amanitoid", 2, null));
         entries.add(itemEntry(font, ModItems.MUSHROOM_SHIELD.get(), 1));

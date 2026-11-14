@@ -23,9 +23,13 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.ARCANE_MISSILE.get(), com.hollingsworth.arsnouveau.client.renderer.entity.StyledSpellRender::new);
         event.registerEntityRenderer(ModEntities.MUDZYA.get(), CreatureRenderers.MudzyaRenderer::new);
         event.registerEntityRenderer(ModEntities.GRIBUSHKA.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
-                CreatureRenderers.MycelinoidRenderer.MYCELINOID, 0.6F, 0.4F));
+                "mycelinoid", 0.6F, 0.4F, "mycelinoid_a", "mycelinoid_b"));
         event.registerEntityRenderer(ModEntities.AMANITOID.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
-                CreatureRenderers.MycelinoidRenderer.AMANITOID, 0.8F, 0.55F));
+                "amanitoid", 0.75F, 0.55F, "amanitoid_a", "amanitoid_b"));
+        event.registerEntityRenderer(ModEntities.ELDER_MYCELINOID.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
+                "elder_mycelinoid", 0.6F, 0.4F, "elder_mycelinoid"));
+        event.registerEntityRenderer(ModEntities.GRIBULKA.get(), CreatureRenderers.GribulkaRenderer::new);
+        event.registerEntityRenderer(ModEntities.GRIBULKA_HIVE.get(), CreatureRenderers.GribulkaHiveRenderer::new);
         event.registerEntityRenderer(ModEntities.SPORE_CLOUD.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.CRYSTAL_ORB.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.8F, true));
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));

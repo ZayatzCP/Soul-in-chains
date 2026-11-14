@@ -41,17 +41,15 @@ public final class CreatureRenderers {
         }
     }
 
-    /** The Mycelinoid folk, all drawn from the designer's model with their own texture and size. */
+    /** The Mycelinoid folk, drawn from the designer's baked models, each with its textures (variants) and size. */
     public static final class MycelinoidRenderer<T extends Gribushka> extends MobRenderer<T, GribushkaModel<T>> {
-        public static final ResourceLocation MYCELINOID = ArcaneArtifacts.id("textures/entity/gribushka.png");
-        public static final ResourceLocation AMANITOID = ArcaneArtifacts.id("textures/entity/amanitoid.png");
-        private final ResourceLocation texture;
-        /** The designer's model is 30 pixels tall: scaled to each one's size. */
+        private final ResourceLocation[] textures;
         private final float scale;
 
-        public MycelinoidRenderer(EntityRendererProvider.Context context, ResourceLocation texture, float scale, float shadow) {
-            super(context, new GribushkaModel<>(context.getResourceManager()), shadow);
-            this.texture = texture;
+        public MycelinoidRenderer(EntityRendererProvider.Context context, String model, float scale, float shadow, String... textures) {
+            super(context, new GribushkaModel<>(context.getResourceManager(), ArcaneArtifacts.id("entity_models/" + model + ".json")), shadow);
+            this.textures = java.util.Arrays.stream(textures).map(t -> ArcaneArtifacts.id("textures/entity/" + t + ".png"))
+                    .toArray(ResourceLocation[]::new);
             this.scale = scale;
             addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         }
@@ -63,7 +61,39 @@ public final class CreatureRenderers {
 
         @Override
         public ResourceLocation getTextureLocation(T entity) {
-            return texture;
+            return textures[Math.floorMod(entity.getVariant(), textures.length)];
+        }
+    }
+
+    public static final class GribulkaRenderer extends MobRenderer<com.soulinchains.arcaneartifacts.entity.Gribulka, GribulkaModels.Little> {
+        private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/entity/gribulka.png");
+
+        public GribulkaRenderer(EntityRendererProvider.Context context) {
+            super(context, new GribulkaModels.Little(context.getResourceManager(), ArcaneArtifacts.id("entity_models/gribulka.json")), 0.3F);
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(com.soulinchains.arcaneartifacts.entity.Gribulka entity) {
+            return TEXTURE;
+        }
+    }
+
+    public static final class GribulkaHiveRenderer extends MobRenderer<com.soulinchains.arcaneartifacts.entity.GribulkaHive, GribulkaModels.Hive> {
+        private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/entity/gribulka_hive.png");
+        private static final float SCALE = 0.9F;
+
+        public GribulkaHiveRenderer(EntityRendererProvider.Context context) {
+            super(context, new GribulkaModels.Hive(context.getResourceManager(), ArcaneArtifacts.id("entity_models/gribulka_hive.json")), 0.8F);
+        }
+
+        @Override
+        protected void scale(com.soulinchains.arcaneartifacts.entity.GribulkaHive entity, com.mojang.blaze3d.vertex.PoseStack pose, float partialTick) {
+            pose.scale(SCALE, SCALE, SCALE);
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(com.soulinchains.arcaneartifacts.entity.GribulkaHive entity) {
+            return TEXTURE;
         }
     }
 }

@@ -986,6 +986,21 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void gribulkaHiveAndElder(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var hive = helper.spawn(ModEntities.GRIBULKA_HIVE.get(), new BlockPos(4, 1, 4));
+        var gribulka = hive.release(level);
+        helper.assertTrue(gribulka != null && gribulka.isAlive(), "A Gribulka must climb out of the hive");
+        var elder = helper.spawn(ModEntities.ELDER_MYCELINOID.get(), new BlockPos(2, 1, 2));
+        var friend = helper.spawn(ModEntities.GRIBUSHKA.get(), new BlockPos(3, 1, 2));
+        elder.bless(level);
+        helper.assertTrue(friend.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "The Elder's spores must heal the Mycelinoids");
+        friend.setVariant(1);
+        helper.assertTrue(friend.getVariant() == 1, "Mycelinoids come in two looks");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void amanitoidHuntsTheRightMonsters(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         for (var type : List.of(EntityType.CREEPER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITCH, EntityType.PILLAGER,

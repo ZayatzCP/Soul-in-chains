@@ -57,6 +57,8 @@ public class Gribushka extends PathfinderMob {
     private static final int ADMIRE_TICKS = 70;
     /** What the body is doing, for the model: see {@link Mood}. */
     private static final EntityDataAccessor<Integer> MOOD = SynchedEntityData.defineId(Gribushka.class, EntityDataSerializers.INT);
+    /** Which of the designer's two textures it wears. */
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Gribushka.class, EntityDataSerializers.INT);
     public static final int GREET_TICKS = 40;
     public static final int DANCE_TICKS = 120;
 
@@ -107,6 +109,7 @@ public class Gribushka extends PathfinderMob {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(MOOD, 0);
+        builder.define(VARIANT, 0);
     }
 
     @Override
@@ -121,6 +124,27 @@ public class Gribushka extends PathfinderMob {
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+    }
+
+    public int getVariant() {
+        return this.entityData.get(VARIANT);
+    }
+
+    public void setVariant(int variant) {
+        this.entityData.set(VARIANT, Math.floorMod(variant, 2));
+    }
+
+    @Override
+    public @Nullable net.minecraft.world.entity.SpawnGroupData finalizeSpawn(net.minecraft.world.level.ServerLevelAccessor level,
+            net.minecraft.world.DifficultyInstance difficulty, net.minecraft.world.entity.MobSpawnType spawnType,
+            @Nullable net.minecraft.world.entity.SpawnGroupData spawnGroupData) {
+        setVariant(getRandom().nextInt(2));
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    /** How many times a trade is rolled: the Elder knows the better mushroom prices. */
+    protected int tradeRolls() {
+        return 1;
     }
 
     public Mood getMood() {
@@ -249,9 +273,11 @@ public class Gribushka extends PathfinderMob {
             }
         }
         boolean gave = false;
-        for (ItemStack stack : table.getRandomItems(params)) {
-            throwItem(stack, towards);
-            gave = true;
+        for (int roll = 0; roll < tradeRolls(); roll++) {
+            for (ItemStack stack : table.getRandomItems(params)) {
+                throwItem(stack, towards);
+                gave = true;
+            }
         }
         if (!gave) {
             // A trade table that rolled nothing: the mushroom is given back rather than eaten.
@@ -315,11 +341,13 @@ public class Gribushka extends PathfinderMob {
             tag.putInt("HomeZ", this.home.getZ());
             tag.putInt("HomeRadius", this.homeRadius);
         }
+        tag.putInt("Variant", getVariant());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
+        setVariant(tag.getInt("Variant"));
         if (tag.contains("HomeX")) {
             setHome(new BlockPos(tag.getInt("HomeX"), tag.getInt("HomeY"), tag.getInt("HomeZ")),
                     tag.contains("HomeRadius") ? tag.getInt("HomeRadius") : 14);

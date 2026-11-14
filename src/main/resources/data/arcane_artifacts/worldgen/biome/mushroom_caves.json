@@ -116,7 +116,20 @@
       }
     ],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "arcane_artifacts:gribulka",
+        "weight": 12,
+        "minCount": 2,
+        "maxCount": 4
+      },
+      {
+        "type": "arcane_artifacts:gribulka_hive",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 1
+      }
+    ],
     "misc": [],
     "underground_water_creature": [],
     "water_ambient": [],

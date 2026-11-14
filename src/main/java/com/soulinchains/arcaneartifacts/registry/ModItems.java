@@ -87,6 +87,12 @@ public final class ModItems {
     public static final java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>> MUSHROOMS = mushrooms();
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> MUDZYA_SPAWN_EGG = REGISTER.register("mudzya_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.MUDZYA, 0x6B3FA0, 0xE0A8FF, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ELDER_MYCELINOID_SPAWN_EGG = REGISTER.register("elder_mycelinoid_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ELDER_MYCELINOID, 0x7FCB3A, 0x3E6A1E, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> GRIBULKA_SPAWN_EGG = REGISTER.register("gribulka_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.GRIBULKA, 0xEFE4CC, 0xD08A40, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> GRIBULKA_HIVE_SPAWN_EGG = REGISTER.register("gribulka_hive_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.GRIBULKA_HIVE, 0xD8D8C8, 0x2E2E2A, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> AMANITOID_SPAWN_EGG = REGISTER.register("amanitoid_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.AMANITOID, 0xC8302A, 0xF2EEE0, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.spore.MushroomShieldItem> MUSHROOM_SHIELD = REGISTER.register("mushroom_shield",

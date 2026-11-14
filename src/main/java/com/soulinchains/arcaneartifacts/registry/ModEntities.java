@@ -31,6 +31,15 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Amanitoid>> AMANITOID = REGISTER.register("amanitoid",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Amanitoid::new, MobCategory.CREATURE)
                     .sized(0.8F, 1.5F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":amanitoid"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.ElderMycelinoid>> ELDER_MYCELINOID = REGISTER.register("elder_mycelinoid",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.ElderMycelinoid::new, MobCategory.CREATURE)
+                    .sized(0.6F, 1.2F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":elder_mycelinoid"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Gribulka>> GRIBULKA = REGISTER.register("gribulka",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Gribulka::new, MobCategory.CREATURE)
+                    .sized(0.45F, 0.6F).clientTrackingRange(8).build(ArcaneArtifacts.MODID + ":gribulka"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.GribulkaHive>> GRIBULKA_HIVE = REGISTER.register("gribulka_hive",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.GribulkaHive::new, MobCategory.CREATURE)
+                    .sized(1.1F, 2.3F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":gribulka_hive"));
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.spore.SporeCloud>> SPORE_CLOUD = REGISTER.register("spore_cloud",
             () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.spore.SporeCloud>of(com.soulinchains.arcaneartifacts.spore.SporeCloud::new, MobCategory.MISC)
                     .sized(6.0F, 0.5F).fireImmune().noSave().clientTrackingRange(10).updateInterval(Integer.MAX_VALUE)

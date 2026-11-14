@@ -102,7 +102,7 @@ public class Amanitoid extends Gribushka {
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType,
                                                   @Nullable SpawnGroupData spawnGroupData) {
-        SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+        SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);   // also picks the variant
         populateDefaultEquipmentSlots(getRandom(), difficulty);
         return data;
     }

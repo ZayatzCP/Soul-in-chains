@@ -790,5 +790,19 @@
   "arcane_artifacts.page3.mycelinoid_houses": "Between the houses run moss paths with lamp posts, a well stands by the hall, and on the outskirts there is a watchtower with a ladder inside and an Amanitoid on its lookout, a market of three stalls, and a fenced garden of every cave mushroom. Villages lie deep, at the level of the deepslate caves.",
   "block.arcane_artifacts.spore_tuft": "Spore Tuft",
   "block.arcane_artifacts.glowsprout": "Glowsprout",
-  "block.arcane_artifacts.hanging_hyphae": "Hanging Hyphae"
+  "block.arcane_artifacts.hanging_hyphae": "Hanging Hyphae",
+  "entity.arcane_artifacts.elder_mycelinoid": "Elder Mycelinoid",
+  "entity.arcane_artifacts.gribulka": "Gribulka",
+  "entity.arcane_artifacts.gribulka_hive": "Gribulka Hive",
+  "item.arcane_artifacts.elder_mycelinoid_spawn_egg": "Elder Mycelinoid Spawn Egg",
+  "item.arcane_artifacts.gribulka_spawn_egg": "Gribulka Spawn Egg",
+  "item.arcane_artifacts.gribulka_hive_spawn_egg": "Gribulka Hive Spawn Egg",
+  "arcane_artifacts.page.elder_mycelinoid": "Elder Mycelinoid",
+  "arcane_artifacts.page1.elder_mycelinoid": "The oldest in a village: green with age, a pipe in the corner of its mouth and a hat whose brim could shelter the whole colony. It lives by the hall. It knows what mushrooms are really worth: every trade with it is rolled twice. Every 10 seconds it breathes out healing spores, and every Mycelinoid around gets Regeneration.",
+  "arcane_artifacts.page2.elder_mycelinoid": "Pip asked the Elder what the meaning of life is. The Elder smoked its pipe for a long time, then handed Pip a mushroom. Pip cried with joy for two days. The mushroom was a Toxcap. Pip says the meaning was still there.",
+  "arcane_artifacts.page.gribulka": "Gribulka",
+  "arcane_artifacts.page1.gribulka": "A little mushroom on stubby legs. It wanders the Mushroom Caves in small groups, waddling, waving its arms and bouncing its cap. Shy of players unless they sneak. It lives in the walking Gribulka Hives, and also on Mycelinoid farms, where nobody seems to have invited it, and nobody throws it out either.",
+  "arcane_artifacts.page.gribulka_hive": "Gribulka Hive",
+  "arcane_artifacts.page1.gribulka_hive": "An old hollow stump overgrown with shelf fungi that walks the Mushroom Caves on four legs. Gribulkas live inside: every 30 seconds one climbs out (if fewer than four are around), and when the hive is hit, two run out at once. It never fights back. It cannot be pushed, and it knows it.",
+  "arcane_artifacts.page2.gribulka_hive": "Mr. Splotch once tried to register a Gribulka Hive as an Academy dormitory. The hive walked out in the middle of the meeting. Mr. Splotch considers it the best negotiation of his career."
 }

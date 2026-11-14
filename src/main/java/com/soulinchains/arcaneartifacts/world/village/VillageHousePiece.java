@@ -78,6 +78,20 @@ public class VillageHousePiece extends StructurePiece {
             for (int i = 0; i < type.guards; i++) {
                 spawn(level, ModEntities.AMANITOID.get(), random);
             }
+            if (type == HouseType.HALL) {
+                spawn(level, ModEntities.ELDER_MYCELINOID.get(), random);
+            }
+            if (type == HouseType.FARM) {
+                for (int i = 0; i < 2; i++) {
+                    net.minecraft.world.entity.Mob little = ModEntities.GRIBULKA.get().create(level.getLevel());
+                    if (little != null) {
+                        little.moveTo(floor.getX() + 0.5, floor.getY(), floor.getZ() + 0.5 + i, random.nextFloat() * 360F, 0);
+                        little.finalizeSpawn(level, level.getCurrentDifficultyAt(floor), MobSpawnType.STRUCTURE, null);
+                        little.setPersistenceRequired();
+                        level.addFreshEntityWithPassengers(little);
+                    }
+                }
+            }
         }
     }
 
