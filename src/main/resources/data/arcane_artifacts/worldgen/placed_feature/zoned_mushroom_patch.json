@@ -1,9 +1,9 @@
 {
-  "feature": "arcane_artifacts:patch_tidecap",
+  "feature": "arcane_artifacts:zoned_mushroom_patch",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 2
+      "count": 8
     },
     {
       "type": "minecraft:in_square"

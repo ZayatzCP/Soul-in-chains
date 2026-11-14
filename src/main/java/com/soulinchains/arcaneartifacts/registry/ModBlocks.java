@@ -45,6 +45,19 @@ public final class ModBlocks {
     public static final DeferredBlock<net.minecraft.world.level.block.Block> BLUE_MUSHROOM_GILLS = BLOCKS.register("blue_mushroom_gills",
             () -> new com.soulinchains.arcaneartifacts.block.Bouncy.BouncyBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.BROWN_MUSHROOM_BLOCK)
                     .mapColor(MapColor.COLOR_BLUE).lightLevel(state -> 4)));
+    /** Small plants of the Mushroom Caves. */
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cave.CavePlantBlock> SPORE_TUFT = BLOCKS.register("spore_tuft",
+            () -> new com.soulinchains.arcaneartifacts.cave.CavePlantBlock(false, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
+                    .noCollission().instabreak().replaceable().sound(SoundType.NETHER_SPROUTS).lightLevel(state -> 0)
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cave.CavePlantBlock> GLOWSPROUT = BLOCKS.register("glowsprout",
+            () -> new com.soulinchains.arcaneartifacts.cave.CavePlantBlock(false, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)
+                    .noCollission().instabreak().replaceable().sound(SoundType.NETHER_SPROUTS).lightLevel(state -> 9)
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cave.CavePlantBlock> HANGING_HYPHAE = BLOCKS.register("hanging_hyphae",
+            () -> new com.soulinchains.arcaneartifacts.cave.CavePlantBlock(true, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .noCollission().instabreak().replaceable().sound(SoundType.HANGING_ROOTS).lightLevel(state -> 3)
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     /** The ground of the Mushroom Caves. */
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MYCELIUM_SOIL = BLOCKS.register("mycelium_soil",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.ROOTED_DIRT)

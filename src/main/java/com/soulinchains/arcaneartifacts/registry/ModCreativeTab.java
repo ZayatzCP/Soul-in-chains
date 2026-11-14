@@ -48,6 +48,9 @@ public final class ModCreativeTab {
                 output.accept(ModItems.GLOWING_BLUE_MUSHROOM_BLOCK.get());
                 output.accept(ModItems.BLUE_MUSHROOM_GILLS.get());
                 output.accept(ModItems.CAVE_MYCELIUM.get());
+                output.accept(ModItems.SPORE_TUFT.get());
+                output.accept(ModItems.GLOWSPROUT.get());
+                output.accept(ModItems.HANGING_HYPHAE.get());
                 output.accept(ModItems.MYCELIUM_SOIL.get());
                 output.accept(ModItems.MYCELIAL_MUD.get());
                 output.accept(ModItems.SPORE_CLAY.get());

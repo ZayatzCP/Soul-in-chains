@@ -639,11 +639,23 @@ public final class ArcaneGameTests {
         helper.assertTrue(access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME)
                 .containsKey(com.soulinchains.arcaneartifacts.world.ModBiomes.MUSHROOM_CAVES), "Mushroom Caves biome missing");
         var placed = access.registryOrThrow(net.minecraft.core.registries.Registries.PLACED_FEATURE);
-        for (String id : List.of("mushroom_moss_coat", "huge_blue_mushroom", "patch_blue_mushroom", "patch_sourcecap")) {
+        for (String id : List.of("mushroom_moss_coat", "huge_blue_mushroom", "zoned_mushroom_patch", "patch_spore_tuft", "patch_hanging_hyphae")) {
             helper.assertTrue(placed.containsKey(ArcaneArtifacts.id(id)), "Placed feature missing: " + id);
         }
         var parameters = net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD.usedBiomes().toList();
         helper.assertTrue(parameters.contains(com.soulinchains.arcaneartifacts.world.ModBiomes.MUSHROOM_CAVES), "Mushroom Caves are not in the overworld layout");
+        // The moss colour zones: many kinds along a walk, and green moss where the green Toxcaps grow.
+        java.util.Set<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom> seen = new java.util.HashSet<>();
+        boolean greenToxcaps = false;
+        for (int x = 0; x < 2000; x += 3) {
+            BlockPos pos = new BlockPos(x, -30, x / 2);
+            var zone = com.soulinchains.arcaneartifacts.world.MossZones.zone(pos);
+            seen.add(zone);
+            greenToxcaps |= zone == com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom.TOXCAP
+                    && com.soulinchains.arcaneartifacts.world.MossZones.color(pos) == 0x7AD07A;
+        }
+        helper.assertTrue(seen.size() >= 6, "The moss must change colour through the caves, zones seen: " + seen);
+        helper.assertTrue(greenToxcaps, "Toxcap zones must have green moss");
         helper.succeed();
     }
 

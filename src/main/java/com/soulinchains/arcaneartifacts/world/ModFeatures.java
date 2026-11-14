@@ -19,6 +19,8 @@ public final class ModFeatures {
 
     public static final DeferredHolder<Feature<?>, AmberFeature> AMBER =
             REGISTER.register("amber", () -> new AmberFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, ZonedMushroomPatchFeature> ZONED_MUSHROOM_PATCH =
+            REGISTER.register("zoned_mushroom_patch", () -> new ZonedMushroomPatchFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, MudzyaNestFeature> MUDZYA_NEST =
             REGISTER.register("mudzya_nest", () -> new MudzyaNestFeature(NoneFeatureConfiguration.CODEC));
 

@@ -92,17 +92,10 @@
       "arcane_artifacts:cave_mycelium_patch",
       "minecraft:glow_lichen",
       "arcane_artifacts:huge_blue_mushroom",
-      "arcane_artifacts:patch_blue_mushroom",
-      "arcane_artifacts:patch_sourcecap",
-      "arcane_artifacts:patch_brawncap",
-      "arcane_artifacts:patch_embercap",
-      "arcane_artifacts:patch_swiftcap",
-      "arcane_artifacts:patch_leapcap",
-      "arcane_artifacts:patch_mendcap",
-      "arcane_artifacts:patch_ghostcap",
-      "arcane_artifacts:patch_toxcap",
-      "arcane_artifacts:patch_stonecap",
-      "arcane_artifacts:patch_tidecap"
+      "arcane_artifacts:zoned_mushroom_patch",
+      "arcane_artifacts:patch_spore_tuft",
+      "arcane_artifacts:patch_glowsprout",
+      "arcane_artifacts:patch_hanging_hyphae"
     ],
     [
       "minecraft:freeze_top_layer"

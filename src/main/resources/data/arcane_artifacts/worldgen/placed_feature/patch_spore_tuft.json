@@ -1,9 +1,9 @@
 {
-  "feature": "arcane_artifacts:patch_mendcap",
+  "feature": "arcane_artifacts:patch_spore_tuft",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 2
+      "count": 6
     },
     {
       "type": "minecraft:in_square"
