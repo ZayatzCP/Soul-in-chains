@@ -11,7 +11,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
-/** Crystal Ball: one cast every 3 seconds, and its projectiles are heavy. */
+/** Crystal Ball: one cast every 3 seconds, and its projectile is a heavy ball thrown in an arc. */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
 public final class CrystalBallHandler {
     private CrystalBallHandler() {
@@ -37,10 +37,15 @@ public final class CrystalBallHandler {
     public static void onProjectile(EntityJoinLevelEvent event) {
         if (!event.getLevel().isClientSide && event.getEntity() instanceof EntityProjectileSpell projectile
                 && projectile.spellResolver != null && CrystalBallItem.castFrom(projectile.spellResolver.spellContext)) {
-            // Heavy: it is thrown slightly upwards and falls in a long arc under gravity.
-            projectile.setGravity(true);
-            var motion = projectile.getDeltaMovement();
-            projectile.setDeltaMovement(motion.x, motion.y + 0.18, motion.z);
+            // The Ars projectile flies straight; the Crystal Ball throws a real ball instead, which arcs under
+            // gravity and resolves the same spell where it lands.
+            if (projectile.getOwner() instanceof net.minecraft.world.entity.LivingEntity shooter) {
+                event.setCanceled(true);
+                CrystalOrbEntity orb = new CrystalOrbEntity(event.getLevel(), shooter, projectile.spellResolver);
+                orb.setPos(shooter.getX(), shooter.getEyeY() - 0.1, shooter.getZ());
+                orb.throwFrom(shooter);
+                event.getLevel().addFreshEntity(orb);
+            }
         }
     }
 }

@@ -26,7 +26,6 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -38,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Amanitoid: the fly-agaric guardian of a Mycelinoid colony. It does not trade; like an iron golem it walks
- * the colony and fights monsters, and anyone who hurts a Mycelinoid. It carries a Mushroom Club and a
+ * the colony and fights creepers, the undead, witches, raiders and spiders, and anyone who hurts a Mycelinoid. It carries a Mushroom Club and a
  * Mushroom Shield, raises the shield in a fight and bursts spore clouds when blows land on it.
  */
 public class Amanitoid extends Gribushka {
@@ -66,6 +65,7 @@ public class Amanitoid extends Gribushka {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(4, new net.minecraft.world.entity.ai.goal.OpenDoorGoal(this, true));
         this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.1, true));
         this.goalSelector.addGoal(2, new SocialGoal(this));
         this.goalSelector.addGoal(3, new MoveTowardsRestrictionGoal(this, 0.8));
@@ -73,8 +73,14 @@ public class Amanitoid extends Gribushka {
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, Gribushka.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Mob.class, 5, true, false,
-                entity -> entity instanceof Enemy && !(entity instanceof Creeper)));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Mob.class, 5, true, false, Amanitoid::isPest));
+    }
+
+    /** What a guardian hunts: creepers, the undead, witches, raiders and spiders of every kind. */
+    public static boolean isPest(LivingEntity entity) {
+        return entity instanceof Creeper || entity.getType().is(net.minecraft.tags.EntityTypeTags.UNDEAD)
+                || entity instanceof net.minecraft.world.entity.monster.Witch || entity instanceof net.minecraft.world.entity.raid.Raider
+                || entity instanceof net.minecraft.world.entity.monster.Spider;
     }
 
     /** A guardian holds its club, not a mushroom to trade: it never "admires". */

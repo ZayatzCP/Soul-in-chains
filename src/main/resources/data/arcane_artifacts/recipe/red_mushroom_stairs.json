@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P  ",
+    "PP ",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "arcane_artifacts:red_mushroom_planks"
+    }
+  },
+  "result": {
+    "count": 4,
+    "id": "arcane_artifacts:red_mushroom_stairs"
+  }
+}

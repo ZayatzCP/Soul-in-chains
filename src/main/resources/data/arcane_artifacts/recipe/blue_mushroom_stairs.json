@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P  ",
+    "PP ",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "arcane_artifacts:blue_mushroom_planks"
+    }
+  },
+  "result": {
+    "count": 4,
+    "id": "arcane_artifacts:blue_mushroom_stairs"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "arcane_artifacts:brown_mushroom_planks"
+    }
+  },
+  "result": {
+    "count": 2,
+    "id": "arcane_artifacts:brown_mushroom_trapdoor"
+  }
+}

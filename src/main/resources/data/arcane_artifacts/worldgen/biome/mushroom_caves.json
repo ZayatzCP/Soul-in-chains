@@ -98,8 +98,7 @@
       "arcane_artifacts:patch_ghostcap",
       "arcane_artifacts:patch_toxcap",
       "arcane_artifacts:patch_stonecap",
-      "arcane_artifacts:patch_tidecap",
-      "arcane_artifacts:gribushka_colony"
+      "arcane_artifacts:patch_tidecap"
     ],
     [
       "minecraft:freeze_top_layer"

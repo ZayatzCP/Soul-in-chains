@@ -133,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "mushroom_table", "mushroom_stool", "mushroom_lamp")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -639,7 +639,7 @@ public final class ArcaneGameTests {
         helper.assertTrue(access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME)
                 .containsKey(com.soulinchains.arcaneartifacts.world.ModBiomes.MUSHROOM_CAVES), "Mushroom Caves biome missing");
         var placed = access.registryOrThrow(net.minecraft.core.registries.Registries.PLACED_FEATURE);
-        for (String id : List.of("mushroom_moss_coat", "huge_blue_mushroom", "gribushka_colony", "patch_blue_mushroom", "patch_sourcecap")) {
+        for (String id : List.of("mushroom_moss_coat", "huge_blue_mushroom", "patch_blue_mushroom", "patch_sourcecap")) {
             helper.assertTrue(placed.containsKey(ArcaneArtifacts.id(id)), "Placed feature missing: " + id);
         }
         var parameters = net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD.usedBiomes().toList();
@@ -924,13 +924,43 @@ public final class ArcaneGameTests {
     public static void mushroomHouseHasADoorAndALamp(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos floor = helper.absolutePos(new BlockPos(4, 40, 4));
-        com.soulinchains.arcaneartifacts.world.MushroomHouse.build(level, floor, true, net.minecraft.core.Direction.NORTH, level.getRandom());
-        helper.assertTrue(level.getBlockState(floor.above(com.soulinchains.arcaneartifacts.world.MushroomHouse.HEIGHT - 1)).is(ModBlocks.MUSHROOM_LAMP.get()),
-                "A lamp hangs under the cap");
-        helper.assertTrue(level.getBlockState(floor.north(3)).isAir() && level.getBlockState(floor.north(3).above()).isAir(), "The doorway is cut");
-        helper.assertTrue(level.getBlockState(floor.south(3)).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM), "The stem is the wall");
-        helper.assertTrue(level.getBlockState(floor.above(com.soulinchains.arcaneartifacts.world.MushroomHouse.HEIGHT + 1)).getBlock()
-                instanceof net.minecraft.world.level.block.HugeMushroomBlock, "A cap on top");
+        var type = com.soulinchains.arcaneartifacts.world.village.HouseType.DWELLING;
+        new com.soulinchains.arcaneartifacts.world.village.HouseBuilder(level, net.minecraft.world.level.levelgen.structure.BoundingBox.infinite(),
+                level.getRandom()).build(floor, type, com.soulinchains.arcaneartifacts.registry.MushroomWood.Kind.RED, net.minecraft.core.Direction.NORTH);
+        helper.assertTrue(level.getBlockState(floor.above(type.height - 1)).is(net.minecraft.world.level.block.Blocks.SHROOMLIGHT), "A lamp hangs under the cap");
+        helper.assertTrue(level.getBlockState(floor.north(type.radius)).getBlock() instanceof net.minecraft.world.level.block.DoorBlock, "The house has a door");
+        helper.assertTrue(level.getBlockState(floor.south(type.radius)).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM), "The stem is the wall");
+        helper.assertTrue(level.getBlockState(floor.below()).is(com.soulinchains.arcaneartifacts.registry.MushroomWood.SETS
+                .get(com.soulinchains.arcaneartifacts.registry.MushroomWood.Kind.RED).planks.get()), "A floor of mushroom planks");
+        helper.assertTrue(level.getBlockState(floor.above(type.height + 1)).getBlock() instanceof net.minecraft.world.level.block.HugeMushroomBlock, "A cap on top");
+        var structures = level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
+        helper.assertTrue(structures.containsKey(ArcaneArtifacts.id("mycelinoid_village")), "The village structure must be registered");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void amanitoidHuntsTheRightMonsters(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        for (var type : List.of(EntityType.CREEPER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITCH, EntityType.PILLAGER,
+                EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.DROWNED)) {
+            var mob = type.create(level);
+            helper.assertTrue(mob instanceof net.minecraft.world.entity.LivingEntity living
+                    && com.soulinchains.arcaneartifacts.entity.Amanitoid.isPest(living), "An Amanitoid must hunt " + type);
+        }
+        var cow = EntityType.COW.create(level);
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.entity.Amanitoid.isPest(cow), "Cows are left alone");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void crystalBallThrowsAHeavyBall(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = player(helper, 4.5, 1, 4.5);
+        player.setXRot(0);
+        var orb = new com.soulinchains.arcaneartifacts.item.CrystalOrbEntity(level, player, null);
+        orb.throwFrom(player);
+        helper.assertTrue(orb.getDeltaMovement().y > 0.1, "The ball must leave the hand a little upwards, vy=" + orb.getDeltaMovement().y);
+        helper.assertTrue(Math.abs(orb.getGravity() - com.soulinchains.arcaneartifacts.item.CrystalOrbEntity.GRAVITY) < 1.0E-9, "The ball must fall under gravity");
         helper.succeed();
     }
 

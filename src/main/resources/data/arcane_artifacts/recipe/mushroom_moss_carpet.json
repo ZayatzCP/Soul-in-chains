@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MM"
+  ],
+  "key": {
+    "M": {
+      "item": "arcane_artifacts:mushroom_moss"
+    }
+  },
+  "result": {
+    "count": 3,
+    "id": "arcane_artifacts:mushroom_moss_carpet"
+  }
+}

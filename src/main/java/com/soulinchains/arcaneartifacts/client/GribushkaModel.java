@@ -183,7 +183,7 @@ public class GribushkaModel<T extends Gribushka> extends EntityModel<T> implemen
         if (entity.isBlocking()) {
             // The shield (off hand) raised in front of the body.
             leftArm.xRot = -1.25F;
-            leftArm.yRot = 0.55F;
+            leftArm.yRot = 0.25F;
             leftArm.zRot = -0.1F;
         }
         if (attackTime > 0F) {
@@ -193,6 +193,20 @@ public class GribushkaModel<T extends Gribushka> extends EntityModel<T> implemen
             rightArm.zRot = 0.08F;
             body.xRot = swing * 0.25F;
         }
+        keepArmsClear(rightArm, 1F);
+        keepArmsClear(leftArm, -1F);
+    }
+
+    /**
+     * The cap and the shelf fungi stick out around the shoulders: an arm swung far back is held in, and a
+     * raised arm is turned outwards, so neither goes through the mushroom.
+     */
+    private static void keepArmsClear(Part arm, float outwards) {
+        if (arm.xRot > 0.3F) {
+            arm.xRot = 0.3F + (arm.xRot - 0.3F) * 0.3F;
+        }
+        float raised = Mth.clamp(-arm.xRot / 1.5F, 0F, 1F);
+        arm.zRot += outwards * 0.55F * raised;
     }
 
     /**
@@ -203,9 +217,9 @@ public class GribushkaModel<T extends Gribushka> extends EntityModel<T> implemen
         float lift = Mth.clamp(t / 10F, 0F, 1F);
         rightArm.xRot = Mth.lerp(lift, 0F, -1.45F) + Mth.sin(age * 0.25F) * 0.08F * lift;
         rightArm.zRot = 0.08F + Mth.sin(age * 0.35F) * 0.35F * lift;     // turning the mushroom over
-        rightArm.yRot = -0.35F * lift;                                   // towards the middle of its face
+        rightArm.yRot = 0F;
         leftArm.xRot = Mth.lerp(lift, 0F, -0.9F) + Mth.sin(age * 0.7F) * 0.12F * lift;
-        leftArm.yRot = 0.45F * lift;
+        leftArm.yRot = 0.2F * lift;
         body.zRot = Mth.sin(age * 0.12F) * 0.12F * lift;                // a curious tilt of the cap
         body.xRot = 0.12F * lift;
         if (t > 52F) {

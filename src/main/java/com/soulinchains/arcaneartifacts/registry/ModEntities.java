@@ -36,6 +36,10 @@ public final class ModEntities {
                     .sized(6.0F, 0.5F).fireImmune().noSave().clientTrackingRange(10).updateInterval(Integer.MAX_VALUE)
                     .build(ArcaneArtifacts.MODID + ":spore_cloud"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.item.CrystalOrbEntity>> CRYSTAL_ORB = REGISTER.register("crystal_orb",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.item.CrystalOrbEntity>of(com.soulinchains.arcaneartifacts.item.CrystalOrbEntity::new, MobCategory.MISC)
+                    .sized(0.35F, 0.35F).clientTrackingRange(8).updateInterval(10).build(ArcaneArtifacts.MODID + ":crystal_orb"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.pseudo.BulletEntity>> BULLET = REGISTER.register("bullet",
             () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.pseudo.BulletEntity>of(com.soulinchains.arcaneartifacts.pseudo.BulletEntity::new, MobCategory.MISC)
                     .sized(0.2F, 0.2F).noSave().clientTrackingRange(8).updateInterval(1)

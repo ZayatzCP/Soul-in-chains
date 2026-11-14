@@ -16,8 +16,6 @@ public final class ModFeatures {
             REGISTER.register("mushroom_moss_coat", () -> new MushroomMossCoatFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, HugeBlueMushroomFeature> HUGE_BLUE_MUSHROOM =
             REGISTER.register("huge_blue_mushroom", () -> new HugeBlueMushroomFeature(NoneFeatureConfiguration.CODEC));
-    public static final DeferredHolder<Feature<?>, GribushkaColonyFeature> GRIBUSHKA_COLONY =
-            REGISTER.register("gribushka_colony", () -> new GribushkaColonyFeature(NoneFeatureConfiguration.CODEC));
 
     public static final DeferredHolder<Feature<?>, AmberFeature> AMBER =
             REGISTER.register("amber", () -> new AmberFeature(NoneFeatureConfiguration.CODEC));

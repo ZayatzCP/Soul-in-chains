@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_fence_gate_wall",
+  "textures": {
+    "texture": "arcane_artifacts:block/red_mushroom_planks"
+  }
+}

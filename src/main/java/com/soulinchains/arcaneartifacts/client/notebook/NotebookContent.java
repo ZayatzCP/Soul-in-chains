@@ -79,10 +79,10 @@ final class NotebookContent {
         entries.add(itemEntry(font, ModItems.MUSHROOM_SHIELD.get(), 1));
         entries.add(itemEntry(font, ModItems.MUSHROOM_CLUB.get(), 1));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mycelinoid_houses"),
-                new ItemStack(ModItems.MUSHROOM_LAMP.get()), "mycelinoid_houses", 1, null));
-        entries.add(itemEntry(font, ModItems.MUSHROOM_TABLE.get(), 1));
-        entries.add(itemEntry(font, ModItems.MUSHROOM_STOOL.get(), 1));
-        entries.add(itemEntry(font, ModItems.MUSHROOM_LAMP.get(), 1));
+                new ItemStack(net.minecraft.world.item.Items.SHROOMLIGHT), "mycelinoid_houses", 2, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mushroom_wood"),
+                new ItemStack(com.soulinchains.arcaneartifacts.registry.MushroomWood.SETS.get(com.soulinchains.arcaneartifacts.registry.MushroomWood.Kind.RED).planks.get()),
+                "mushroom_wood", 1, null));
         entries.add(gatedItemEntry(font, ModItems.OATH_SCROLL.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.HEART_CHARM.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.DIAMOND_CHARM.get(), 1, lockedItems));

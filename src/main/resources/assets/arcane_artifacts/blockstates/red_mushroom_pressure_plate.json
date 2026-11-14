@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "arcane_artifacts:block/red_mushroom_pressure_plate"
+    },
+    "powered=true": {
+      "model": "arcane_artifacts:block/red_mushroom_pressure_plate_down"
+    }
+  }
+}

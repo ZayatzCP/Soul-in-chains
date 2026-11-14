@@ -1,0 +1,7 @@
+{
+  "type": "arcane_artifacts:mycelinoid_village",
+  "biomes": "#arcane_artifacts:has_structure/mycelinoid_village",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

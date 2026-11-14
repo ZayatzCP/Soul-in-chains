@@ -72,10 +72,14 @@ public class Gribushka extends PathfinderMob {
     private int moodStart;
     private @Nullable UUID customer;
     private @Nullable BlockPos home;
+    private int homeRadius = 14;
 
     public Gribushka(EntityType<? extends Gribushka> type, Level level) {
         super(type, level);
         setDropChance(EquipmentSlot.MAINHAND, 2.0F);
+        if (getNavigation() instanceof net.minecraft.world.entity.ai.navigation.GroundPathNavigation ground) {
+            ground.setCanOpenDoors(true);   // their houses have doors
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -109,6 +113,7 @@ public class Gribushka extends PathfinderMob {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4));
+        this.goalSelector.addGoal(4, new net.minecraft.world.entity.ai.goal.OpenDoorGoal(this, true));
         this.goalSelector.addGoal(2, new SeekMushroomGoal(this));
         this.goalSelector.addGoal(2, new SocialGoal(this));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.0, stack -> !isAdmiring() && isTradeItem(level(), stack), false));
@@ -161,8 +166,14 @@ public class Gribushka extends PathfinderMob {
 
     /** The colony it belongs to: it does not wander far from it. */
     public void setHome(BlockPos pos) {
+        setHome(pos, 14);
+    }
+
+    /** The colony it belongs to and how far from it it may wander. */
+    public void setHome(BlockPos pos, int radius) {
         this.home = pos.immutable();
-        restrictTo(this.home, 14);
+        this.homeRadius = radius;
+        restrictTo(this.home, radius);
     }
 
     @Override
@@ -302,6 +313,7 @@ public class Gribushka extends PathfinderMob {
             tag.putInt("HomeX", this.home.getX());
             tag.putInt("HomeY", this.home.getY());
             tag.putInt("HomeZ", this.home.getZ());
+            tag.putInt("HomeRadius", this.homeRadius);
         }
     }
 
@@ -309,7 +321,8 @@ public class Gribushka extends PathfinderMob {
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("HomeX")) {
-            setHome(new BlockPos(tag.getInt("HomeX"), tag.getInt("HomeY"), tag.getInt("HomeZ")));
+            setHome(new BlockPos(tag.getInt("HomeX"), tag.getInt("HomeY"), tag.getInt("HomeZ")),
+                    tag.contains("HomeRadius") ? tag.getInt("HomeRadius") : 14);
         }
     }
 

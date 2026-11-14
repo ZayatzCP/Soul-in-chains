@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence_side",
+  "textures": {
+    "texture": "arcane_artifacts:block/brown_mushroom_planks"
+  }
+}

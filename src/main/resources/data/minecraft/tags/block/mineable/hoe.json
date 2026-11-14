@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:mushroom_moss"
+    "arcane_artifacts:mushroom_moss",
+    "arcane_artifacts:mushroom_moss_carpet"
   ]
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence_inventory",
+  "textures": {
+    "texture": "arcane_artifacts:block/red_mushroom_planks"
+  }
+}

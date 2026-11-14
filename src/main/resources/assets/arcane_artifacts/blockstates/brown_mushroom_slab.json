@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "arcane_artifacts:block/brown_mushroom_slab"
+    },
+    "type=double": {
+      "model": "arcane_artifacts:block/brown_mushroom_planks"
+    },
+    "type=top": {
+      "model": "arcane_artifacts:block/brown_mushroom_slab_top"
+    }
+  }
+}

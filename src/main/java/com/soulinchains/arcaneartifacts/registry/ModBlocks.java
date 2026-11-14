@@ -76,16 +76,6 @@ public final class ModBlocks {
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlockEntity>> MANA_PIPE_ENTITY =
             BLOCK_ENTITIES.register("mana_pipe", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.pseudo.ManaPipeBlockEntity::new, MANA_PIPE.get()).build(null));
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock> MUSHROOM_TABLE = BLOCKS.register("mushroom_table",
-            () -> new com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock(com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock.Kind.TABLE,
-                    BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.8f).sound(SoundType.WOOD).noOcclusion()));
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock> MUSHROOM_STOOL = BLOCKS.register("mushroom_stool",
-            () -> new com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock(com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock.Kind.STOOL,
-                    BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.6f).sound(SoundType.WOOD).noOcclusion()));
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock> MUSHROOM_LAMP = BLOCKS.register("mushroom_lamp",
-            () -> new com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock(com.soulinchains.arcaneartifacts.block.MushroomFurnitureBlock.Kind.LAMP,
-                    BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).strength(0.5f).sound(SoundType.SHROOMLIGHT).noOcclusion()
-                            .lightLevel(state -> 14)));
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlock> MANA_PUMP = BLOCKS.register("mana_pump",
             () -> new com.soulinchains.arcaneartifacts.pseudo.ManaPumpBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
                     .strength(2.0f).sound(SoundType.COPPER).noOcclusion().requiresCorrectToolForDrops()));

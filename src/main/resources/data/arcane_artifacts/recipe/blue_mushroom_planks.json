@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "planks",
+  "ingredients": [
+    {
+      "item": "arcane_artifacts:blue_mushroom_block"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "arcane_artifacts:blue_mushroom_planks"
+  }
+}

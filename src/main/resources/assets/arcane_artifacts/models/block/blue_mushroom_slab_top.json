@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "arcane_artifacts:block/blue_mushroom_planks",
+    "side": "arcane_artifacts:block/blue_mushroom_planks",
+    "top": "arcane_artifacts:block/blue_mushroom_planks"
+  }
+}

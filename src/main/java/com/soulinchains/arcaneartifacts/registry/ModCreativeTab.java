@@ -48,11 +48,10 @@ public final class ModCreativeTab {
                 output.accept(ModItems.MUDZYA_SPAWN_EGG.get());
                 output.accept(ModItems.GRIBUSHKA_SPAWN_EGG.get());
                 output.accept(ModItems.AMANITOID_SPAWN_EGG.get());
+                output.accept(MushroomWood.MUSHROOM_MOSS_CARPET_ITEM.get());
+                MushroomWood.SETS.values().forEach(set -> set.items.forEach(item -> output.accept(item.get())));
                 output.accept(ModItems.MUSHROOM_SHIELD.get());
                 output.accept(ModItems.MUSHROOM_CLUB.get());
-                output.accept(ModItems.MUSHROOM_TABLE.get());
-                output.accept(ModItems.MUSHROOM_STOOL.get());
-                output.accept(ModItems.MUSHROOM_LAMP.get());
                 output.accept(ModItems.FALSE_MAGE_GUIDE.get());
                 output.accept(ModItems.REVOLVER.get());
                 output.accept(ModItems.SAWN_OFF.get());

@@ -86,9 +86,6 @@ public final class ModItems {
             () -> new com.soulinchains.arcaneartifacts.spore.MushroomShieldItem(new Item.Properties().durability(400)));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.spore.MushroomClubItem> MUSHROOM_CLUB = REGISTER.register("mushroom_club",
             () -> new com.soulinchains.arcaneartifacts.spore.MushroomClubItem(new Item.Properties()));
-    public static final DeferredItem<BlockItem> MUSHROOM_TABLE = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_TABLE);
-    public static final DeferredItem<BlockItem> MUSHROOM_STOOL = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_STOOL);
-    public static final DeferredItem<BlockItem> MUSHROOM_LAMP = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_LAMP);
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> GRIBUSHKA_SPAWN_EGG = REGISTER.register("gribushka_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.GRIBUSHKA, 0x8FD3F0, 0x8A4FC8, new Item.Properties()));
 

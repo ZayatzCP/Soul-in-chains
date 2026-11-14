@@ -27,6 +27,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.AMANITOID.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
                 CreatureRenderers.MycelinoidRenderer.AMANITOID, 0.8F, 0.55F));
         event.registerEntityRenderer(ModEntities.SPORE_CLOUD.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(ModEntities.CRYSTAL_ORB.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.8F, true));
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
     }
 
@@ -38,12 +39,14 @@ public final class ClientSetup {
     /** Mushroom moss shifts from light blue to purple across the cave (by position, like grass by biome). */
     @SubscribeEvent
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tint) -> pos == null ? 0x8FD3F0 : MossColors.at(pos), com.soulinchains.arcaneartifacts.registry.ModBlocks.MUSHROOM_MOSS.get());
+        event.register((state, level, pos, tint) -> pos == null ? 0x8FD3F0 : MossColors.at(pos), com.soulinchains.arcaneartifacts.registry.ModBlocks.MUSHROOM_MOSS.get(),
+                com.soulinchains.arcaneartifacts.registry.MushroomWood.MUSHROOM_MOSS_CARPET.get());
     }
 
     @SubscribeEvent
     public static void registerMossItemColor(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, tint) -> 0x8FD3F0, com.soulinchains.arcaneartifacts.registry.ModItems.MUSHROOM_MOSS.get());
+        event.register((stack, tint) -> 0x8FD3F0, com.soulinchains.arcaneartifacts.registry.ModItems.MUSHROOM_MOSS.get(),
+                com.soulinchains.arcaneartifacts.registry.MushroomWood.MUSHROOM_MOSS_CARPET_ITEM.get());
     }
 
     @SubscribeEvent

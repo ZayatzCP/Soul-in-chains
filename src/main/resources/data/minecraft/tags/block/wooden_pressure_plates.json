@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "arcane_artifacts:red_mushroom_pressure_plate",
+    "arcane_artifacts:brown_mushroom_pressure_plate",
+    "arcane_artifacts:blue_mushroom_pressure_plate"
+  ]
+}
