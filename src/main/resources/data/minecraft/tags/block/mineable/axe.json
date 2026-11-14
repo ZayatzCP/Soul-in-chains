@@ -31,6 +31,9 @@
     "arcane_artifacts:blue_mushroom_door",
     "arcane_artifacts:blue_mushroom_trapdoor",
     "arcane_artifacts:blue_mushroom_button",
-    "arcane_artifacts:blue_mushroom_pressure_plate"
+    "arcane_artifacts:blue_mushroom_pressure_plate",
+    "arcane_artifacts:spotted_blue_mushroom_block",
+    "arcane_artifacts:glowing_blue_mushroom_block",
+    "arcane_artifacts:blue_mushroom_gills"
   ]
 }

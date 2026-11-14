@@ -60,11 +60,22 @@ public class HugeBlueMushroomFeature extends Feature<NoneFeatureConfiguration> {
                 if (!isFree(level.getBlockState(pos))) {
                     continue;
                 }
-                level.setBlock(pos, cap
-                        .setValue(HugeMushroomBlock.WEST, !inCap(dx - 1, dz, radius))
+                float roll = level.getRandom().nextFloat();
+                BlockState top = roll < 0.06F ? ModBlocks.GLOWING_BLUE_MUSHROOM_BLOCK.get().defaultBlockState()
+                        : roll < 0.22F ? ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK.get().defaultBlockState()
+                        : cap.setValue(HugeMushroomBlock.WEST, !inCap(dx - 1, dz, radius))
                         .setValue(HugeMushroomBlock.EAST, !inCap(dx + 1, dz, radius))
                         .setValue(HugeMushroomBlock.NORTH, !inCap(dx, dz - 1, radius))
-                        .setValue(HugeMushroomBlock.SOUTH, !inCap(dx, dz + 1, radius)), 2);
+                        .setValue(HugeMushroomBlock.SOUTH, !inCap(dx, dz + 1, radius));
+                level.setBlock(pos, top, 2);
+                // Gills under the inner part of the cap.
+                int distance = dx * dx + dz * dz;
+                if (radius >= 4 && distance > 1 && inCap(dx, dz, radius - 1)) {
+                    BlockPos below = pos.below();
+                    if (isFree(level.getBlockState(below))) {
+                        level.setBlock(below, ModBlocks.BLUE_MUSHROOM_GILLS.get().defaultBlockState(), 2);
+                    }
+                }
             }
         }
         return true;

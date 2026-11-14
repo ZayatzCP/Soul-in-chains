@@ -15,14 +15,17 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A Mycelinoid village: a hall in the middle and 2 to 7 houses around it (3 to 8 in all), each with its
- * own purpose. It only appears in a large Mushroom Cave: there must be a wide, high open floor around
- * the centre, otherwise there is no village here.
+ * A Mycelinoid village, deep in the Mushroom Caves at the level of the deepslate: a hall in the middle and 2 to
+ * 7 houses around it (3 to 8 in all), each with its own purpose, moss paths with lamp posts, a well, and on
+ * the outskirts a watchtower, a market and a garden. It only appears in a large cave: there must be a wide,
+ * high open floor around the centre, otherwise there is no village here.
  */
 public class MycelinoidVillage extends Structure {
     public static final MapCodec<MycelinoidVillage> CODEC = simpleCodec(MycelinoidVillage::new);
     /** Distance of the houses from the hall. */
     public static final int RADIUS = 14;
+    /** Distance of the watchtower, the market and the garden from the hall. */
+    public static final int OUTER_RADIUS = 26;
     private static final int CLEARANCE = 10;
 
     public MycelinoidVillage(StructureSettings settings) {
@@ -42,7 +45,8 @@ public class MycelinoidVillage extends Structure {
         int minY = context.heightAccessor().getMinBuildHeight() + 8;
         NoiseColumn center = column(context, x, z);
         int floorY = Integer.MIN_VALUE;
-        for (int y = 40; y > minY; y--) {
+        // Deep down, at the level of the deepslate caves.
+        for (int y = 0; y > minY; y--) {
             if (isFloor(center, y, CLEARANCE + 2)) {
                 floorY = y;
                 break;
@@ -85,9 +89,48 @@ public class MycelinoidVillage extends Structure {
             return Optional.empty();
         }
         MushroomWood.Kind[] kinds = MushroomWood.Kind.values();
-        List<VillageHousePiece> pieces = new ArrayList<>();
+        List<net.minecraft.world.level.levelgen.structure.StructurePiece> pieces = new ArrayList<>();
         for (House house : houses) {
             pieces.add(new VillageHousePiece(house.floor(), hallFloor, house.type(), kinds[random.nextInt(kinds.length)], house.door(), random.nextLong()));
+        }
+        // Paths of moss from the hall to every house, a lamp post on each.
+        for (House house : houses.subList(1, houses.size())) {
+            double angle = Math.atan2(house.floor().getZ() - z, house.floor().getX() - x);
+            BlockPos from = new BlockPos(x + (int) Math.round(Math.cos(angle) * 5), floorY, z + (int) Math.round(Math.sin(angle) * 5));
+            BlockPos to = new BlockPos(x + (int) Math.round(Math.cos(angle) * (RADIUS - 4)), house.floor().getY(),
+                    z + (int) Math.round(Math.sin(angle) * (RADIUS - 4)));
+            pieces.add(new VillagePathPiece(from, to));
+            int lx = x + (int) Math.round(Math.cos(angle + 0.2) * 9);
+            int lz = z + (int) Math.round(Math.sin(angle + 0.2) * 9);
+            int ly = floorNear(context, lx, lz, floorY, 5);
+            if (ly != Integer.MIN_VALUE) {
+                pieces.add(new VillageHousePiece(new BlockPos(lx, ly, lz), hallFloor, HouseType.LAMP, kinds[random.nextInt(kinds.length)], Direction.NORTH, random.nextLong()));
+            }
+        }
+        // The well, between the hall and the first two houses.
+        if (houses.size() >= 3) {
+            double a1 = Math.atan2(houses.get(1).floor().getZ() - z, houses.get(1).floor().getX() - x);
+            double a2 = Math.atan2(houses.get(2).floor().getZ() - z, houses.get(2).floor().getX() - x);
+            double mid = Math.atan2(Math.sin(a1) + Math.sin(a2), Math.cos(a1) + Math.cos(a2));
+            int wx = x + (int) Math.round(Math.cos(mid) * 8);
+            int wz = z + (int) Math.round(Math.sin(mid) * 8);
+            int wy = floorNear(context, wx, wz, floorY, 6);
+            if (wy != Integer.MIN_VALUE) {
+                pieces.add(new VillageHousePiece(new BlockPos(wx, wy, wz), hallFloor, HouseType.WELL, kinds[random.nextInt(kinds.length)], Direction.NORTH, random.nextLong()));
+            }
+        }
+        // The outskirts: a watchtower, a market and a garden on the outer ring, where there is floor for them.
+        for (int i = 0; i < HouseType.OUTSKIRTS.length; i++) {
+            HouseType type = HouseType.OUTSKIRTS[i];
+            double angle = start + Math.PI / wanted + i * Math.PI * 2 / HouseType.OUTSKIRTS.length;
+            int ox = x + (int) Math.round(Math.cos(angle) * OUTER_RADIUS);
+            int oz = z + (int) Math.round(Math.sin(angle) * OUTER_RADIUS);
+            int oy = floorNear(context, ox, oz, floorY, type == HouseType.WATCHTOWER ? CLEARANCE : 6);
+            if (oy == Integer.MIN_VALUE) {
+                continue;
+            }
+            Direction door = Math.abs(x - ox) > Math.abs(z - oz) ? (x > ox ? Direction.EAST : Direction.WEST) : (z > oz ? Direction.SOUTH : Direction.NORTH);
+            pieces.add(new VillageHousePiece(new BlockPos(ox, oy, oz), hallFloor, type, kinds[random.nextInt(kinds.length)], door, random.nextLong()));
         }
         return Optional.of(new GenerationStub(hallFloor, builder -> pieces.forEach(builder::addPiece)));
     }
@@ -115,10 +158,14 @@ public class MycelinoidVillage extends Structure {
 
     /** The floor of the cave at (x, z) within 5 blocks of {@code y}, or MIN_VALUE if there is no room for a house. */
     private static int floorNear(GenerationContext context, int x, int z, int y) {
+        return floorNear(context, x, z, y, CLEARANCE);
+    }
+
+    private static int floorNear(GenerationContext context, int x, int z, int y, int clearance) {
         NoiseColumn column = column(context, x, z);
         for (int dy = 0; dy <= 5; dy++) {
             for (int sign : new int[]{1, -1}) {
-                if (isFloor(column, y + dy * sign, CLEARANCE)) {
+                if (isFloor(column, y + dy * sign, clearance)) {
                     return y + dy * sign;
                 }
             }

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:vegetation_patch",
+  "config": {
+    "replaceable": "#arcane_artifacts:mushroom_cave_ground_replaceable",
+    "ground_state": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "arcane_artifacts:mycelial_mud"
+      }
+    },
+    "vegetation_feature": {
+      "feature": {
+        "type": "minecraft:no_op",
+        "config": {}
+      },
+      "placement": []
+    },
+    "surface": "floor",
+    "depth": 2,
+    "extra_bottom_block_chance": 0.0,
+    "vertical_range": 5,
+    "vegetation_chance": 0.0,
+    "xz_radius": {
+      "type": "minecraft:uniform",
+      "min_inclusive": 2,
+      "max_inclusive": 4
+    },
+    "extra_edge_column_chance": 0.3
+  }
+}

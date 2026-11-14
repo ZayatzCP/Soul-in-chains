@@ -4,7 +4,7 @@
   "group": "planks",
   "ingredients": [
     {
-      "item": "arcane_artifacts:blue_mushroom_block"
+      "tag": "arcane_artifacts:blue_mushroom_blocks"
     }
   ],
   "result": {

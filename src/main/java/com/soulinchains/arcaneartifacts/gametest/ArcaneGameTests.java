@@ -133,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "cave_mycelium", "mycelial_mud")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -658,7 +658,9 @@ public final class ArcaneGameTests {
         // Under a low ceiling the mushroom grows as tall as it can (3 blocks of stem at least): find its cap.
         boolean capped = false;
         for (int dy = 3; dy <= 4; dy++) {
-            capped |= level.getBlockState(stem.above(dy)).is(ModBlocks.BLUE_MUSHROOM_BLOCK.get())
+            var capState = level.getBlockState(stem.above(dy));
+            capped |= (capState.is(ModBlocks.BLUE_MUSHROOM_BLOCK.get()) || capState.is(ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK.get())
+                    || capState.is(ModBlocks.GLOWING_BLUE_MUSHROOM_BLOCK.get()))
                     && level.getBlockState(stem.above(dy - 1)).is(net.minecraft.world.level.block.Blocks.MUSHROOM_STEM);
         }
         helper.assertTrue(capped, "No cap on top of the stem");
@@ -935,6 +937,39 @@ public final class ArcaneGameTests {
         helper.assertTrue(level.getBlockState(floor.above(type.height + 1)).getBlock() instanceof net.minecraft.world.level.block.HugeMushroomBlock, "A cap on top");
         var structures = level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
         helper.assertTrue(structures.containsKey(ArcaneArtifacts.id("mycelinoid_village")), "The village structure must be registered");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void blueMushroomIsSpringy(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos pos = helper.absolutePos(new BlockPos(4, 1, 4));
+        level.setBlockAndUpdate(pos, ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK.get().defaultBlockState());
+        var zombie = helper.spawn(EntityType.ZOMBIE, new BlockPos(4, 2, 4));
+        float health = zombie.getHealth();
+        zombie.setDeltaMovement(0, -1.2, 0);
+        ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK.get().fallOn(level, level.getBlockState(pos), pos, zombie, 20F);
+        ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK.get().updateEntityAfterFallOn(level, zombie);
+        helper.assertTrue(zombie.getHealth() == health, "A fall onto a blue mushroom must not hurt");
+        helper.assertTrue(zombie.getDeltaMovement().y > 0.5, "Landing on a blue mushroom must bounce, vy=" + zombie.getDeltaMovement().y);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void villageOutskirtsBuild(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var builder = new com.soulinchains.arcaneartifacts.world.village.HouseBuilder(level,
+                net.minecraft.world.level.levelgen.structure.BoundingBox.infinite(), level.getRandom());
+        var red = com.soulinchains.arcaneartifacts.registry.MushroomWood.Kind.RED;
+        BlockPos tower = helper.absolutePos(new BlockPos(4, 60, 4));
+        builder.build(tower, com.soulinchains.arcaneartifacts.world.village.HouseType.WATCHTOWER, red, net.minecraft.core.Direction.NORTH);
+        helper.assertTrue(level.getBlockState(tower.above(5)).is(net.minecraft.world.level.block.Blocks.LADDER), "The watchtower has a ladder");
+        BlockPos well = helper.absolutePos(new BlockPos(4, 90, 4));
+        builder.build(well, com.soulinchains.arcaneartifacts.world.village.HouseType.WELL, red, net.minecraft.core.Direction.NORTH);
+        helper.assertTrue(level.getBlockState(well.below()).is(net.minecraft.world.level.block.Blocks.WATER), "The well has water");
+        BlockPos garden = helper.absolutePos(new BlockPos(4, 110, 4));
+        builder.build(garden, com.soulinchains.arcaneartifacts.world.village.HouseType.GARDEN, red, net.minecraft.core.Direction.NORTH);
+        helper.assertTrue(level.getBlockState(garden.north(4)).getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock, "The garden has a gate");
         helper.succeed();
     }
 

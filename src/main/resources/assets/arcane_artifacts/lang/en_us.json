@@ -779,5 +779,16 @@
   "block.arcane_artifacts.mushroom_moss_carpet": "Mushroom Moss Carpet",
   "arcane_artifacts.page2.mycelinoid_houses": "Each house has its use. The hall holds a long table for the whole colony. In dwellings they sleep on moss mats; storehouses are full of barrels; on farms mushrooms grow on mushroom moss; the brewery has a brewing stand and a cauldron; in the guardhouse the Amanitoids keep spare clubs and shields.",
   "arcane_artifacts.page.mushroom_wood": "Mushroom Wood",
-  "arcane_artifacts.page1.mushroom_wood": "A red, brown or blue mushroom block gives 4 mushroom planks. From them, like from any wood: stairs, slabs, fences, fence gates, doors, trapdoors, buttons and pressure plates. Two blocks of mushroom moss make 3 moss carpets."
+  "arcane_artifacts.page1.mushroom_wood": "A red, brown or blue mushroom block gives 4 mushroom planks. From them, like from any wood: stairs, slabs, fences, fence gates, doors, trapdoors, buttons and pressure plates. Two blocks of mushroom moss make 3 moss carpets.",
+  "block.arcane_artifacts.mycelium_soil": "Mycelium Soil",
+  "block.arcane_artifacts.cave_mycelium": "Cave Mycelium",
+  "block.arcane_artifacts.spore_clay": "Spore Clay",
+  "block.arcane_artifacts.mycelial_mud": "Mycelial Mud",
+  "block.arcane_artifacts.spotted_blue_mushroom_block": "Spotted Blue Mushroom Block",
+  "block.arcane_artifacts.glowing_blue_mushroom_block": "Glowing Blue Mushroom Block",
+  "block.arcane_artifacts.blue_mushroom_gills": "Blue Mushroom Gills",
+  "arcane_artifacts.page.cave_ground": "Ground of the Mushroom Caves",
+  "arcane_artifacts.page1.cave_ground": "Under the moss the Mushroom Caves have their own ground: Mycelium Soil threaded with pale fungus, Cave Mycelium spread over it like grass (mushrooms love it; it turns into soil without Silk Touch), soft Mycelial Mud that you sink into a little, and lilac Spore Clay hanging from the ceilings.",
+  "arcane_artifacts.page2.cave_ground": "Blue mushroom flesh is springy: whoever falls on a blue mushroom block, spotted, glowing or gills, takes no damage and bounces back up (sneak to land softly). Huge blue mushrooms grow spotted and glowing caps and gills underneath; a blue cap block with bone meal, glowstone dust or string makes them by hand.",
+  "arcane_artifacts.page3.mycelinoid_houses": "Between the houses run moss paths with lamp posts, a well stands by the hall, and on the outskirts there is a watchtower with a ladder inside and an Amanitoid on its lookout, a market of three stalls, and a fenced garden of every cave mushroom. Villages lie deep, at the level of the deepslate caves."
 }

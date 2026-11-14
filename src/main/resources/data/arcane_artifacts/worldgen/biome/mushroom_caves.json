@@ -86,6 +86,10 @@
       "minecraft:spring_lava"
     ],
     [
+      "arcane_artifacts:spore_clay_ceiling",
+      "arcane_artifacts:mycelial_mud_patch",
+      "arcane_artifacts:mycelium_soil_patch",
+      "arcane_artifacts:cave_mycelium_patch",
       "minecraft:glow_lichen",
       "arcane_artifacts:huge_blue_mushroom",
       "arcane_artifacts:patch_blue_mushroom",

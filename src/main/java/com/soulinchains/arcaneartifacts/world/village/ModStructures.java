@@ -16,6 +16,8 @@ public final class ModStructures {
             TYPES.register("mycelinoid_village", () -> () -> MycelinoidVillage.CODEC);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> HOUSE_PIECE =
             PIECES.register("mycelinoid_house", () -> VillageHousePiece::new);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> PATH_PIECE =
+            PIECES.register("mycelinoid_path", () -> VillagePathPiece::new);
 
     private ModStructures() {
     }

@@ -74,6 +74,13 @@ public final class ModItems {
             REGISTER.register("bottle_of_source", com.soulinchains.arcaneartifacts.item.BottleOfSourceItem::new);
     public static final DeferredItem<BlockItem> MUSHROOM_MOSS = REGISTER.registerSimpleBlockItem(ModBlocks.MUSHROOM_MOSS);
     public static final DeferredItem<BlockItem> BLUE_MUSHROOM_BLOCK = REGISTER.registerSimpleBlockItem(ModBlocks.BLUE_MUSHROOM_BLOCK);
+    public static final DeferredItem<BlockItem> SPOTTED_BLUE_MUSHROOM_BLOCK = REGISTER.registerSimpleBlockItem(ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK);
+    public static final DeferredItem<BlockItem> GLOWING_BLUE_MUSHROOM_BLOCK = REGISTER.registerSimpleBlockItem(ModBlocks.GLOWING_BLUE_MUSHROOM_BLOCK);
+    public static final DeferredItem<BlockItem> BLUE_MUSHROOM_GILLS = REGISTER.registerSimpleBlockItem(ModBlocks.BLUE_MUSHROOM_GILLS);
+    public static final DeferredItem<BlockItem> MYCELIUM_SOIL = REGISTER.registerSimpleBlockItem(ModBlocks.MYCELIUM_SOIL);
+    public static final DeferredItem<BlockItem> CAVE_MYCELIUM = REGISTER.registerSimpleBlockItem(ModBlocks.CAVE_MYCELIUM);
+    public static final DeferredItem<BlockItem> SPORE_CLAY = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_CLAY);
+    public static final DeferredItem<BlockItem> MYCELIAL_MUD = REGISTER.registerSimpleBlockItem(ModBlocks.MYCELIAL_MUD);
     public static final DeferredItem<BlockItem> MUDZYA_HIVE = REGISTER.registerSimpleBlockItem(ModBlocks.MUDZYA_HIVE);
     public static final DeferredItem<BlockItem> WILD_MUDZYA_HIVE = REGISTER.registerSimpleBlockItem(ModBlocks.WILD_MUDZYA_HIVE);
     public static final DeferredItem<BlockItem> ALCHEMICAL_DISTILLER = REGISTER.registerSimpleBlockItem(ModBlocks.ALCHEMICAL_DISTILLER);

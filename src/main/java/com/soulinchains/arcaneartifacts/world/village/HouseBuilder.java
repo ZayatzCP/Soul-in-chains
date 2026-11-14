@@ -61,6 +61,30 @@ public final class HouseBuilder {
 
     public void build(BlockPos floor, HouseType type, MushroomWood.Kind kind, Direction door) {
         MushroomWood.Set wood = MushroomWood.SETS.get(kind);
+        switch (type) {
+            case WELL -> {
+                well(floor, wood);
+                return;
+            }
+            case WATCHTOWER -> {
+                watchtower(floor, kind, wood, door);
+                return;
+            }
+            case MARKET -> {
+                market(floor, wood, door);
+                return;
+            }
+            case GARDEN -> {
+                garden(floor, wood, door);
+                return;
+            }
+            case LAMP -> {
+                lamp(floor, wood);
+                return;
+            }
+            default -> {
+            }
+        }
         int r = type.radius;
         int height = type.height;
         int capR = type.capRadius();
@@ -117,6 +141,203 @@ public final class HouseBuilder {
         // A lamp under the cap.
         set(floor.above(height - 1), Blocks.SHROOMLIGHT.defaultBlockState());
         furnish(floor, type, wood, door);
+    }
+
+    // ------------------------------------------------------------------ the buildings between the houses
+
+    /** Solid ground under {@code pos}: what was carved or hangs in the air gets a floor of planks. */
+    private void ground(BlockPos pos, BlockState state) {
+        if (box.isInside(pos) && !level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP)) {
+            set(pos, state);
+        }
+    }
+
+    private void clear(BlockPos from, BlockPos to) {
+        for (BlockPos pos : BlockPos.betweenClosed(from, to)) {
+            set(pos.immutable(), Blocks.AIR.defaultBlockState());
+        }
+    }
+
+    /** The village well: a ring of stem around water, four posts and a little roof with a glowing cap. */
+    private void well(BlockPos floor, MushroomWood.Set wood) {
+        clear(floor.offset(-2, 0, -2), floor.offset(2, 4, 2));
+        BlockState stem = Blocks.MUSHROOM_STEM.defaultBlockState();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx == 0 && dz == 0) {
+                    set(floor.below(), Blocks.WATER.defaultBlockState());
+                    set(floor.below(2), Blocks.WATER.defaultBlockState());
+                    set(floor.below(3), Blocks.MUSHROOM_STEM.defaultBlockState());
+                } else {
+                    set(floor.offset(dx, 0, dz), stem);
+                    set(floor.offset(dx, -1, dz), stem);
+                }
+            }
+        }
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (Math.abs(dx) == 2 || Math.abs(dz) == 2) {
+                    ground(floor.offset(dx, -1, dz), wood.planks.get().defaultBlockState());
+                    set(floor.offset(dx, 0, dz), MushroomWood.MUSHROOM_MOSS_CARPET.get().defaultBlockState());
+                }
+            }
+        }
+        for (int[] corner : new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}}) {
+            set(floor.offset(corner[0], 1, corner[1]), wood.fence.get().defaultBlockState());
+            set(floor.offset(corner[0], 2, corner[1]), wood.fence.get().defaultBlockState());
+        }
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                set(floor.offset(dx, 3, dz), wood.slab.get().defaultBlockState());
+            }
+        }
+        set(floor.offset(0, 4, 0), ModBlocks.GLOWING_BLUE_MUSHROOM_BLOCK.get().defaultBlockState());
+    }
+
+    /** A tall hollow mushroom with a ladder inside and a lookout on its cap. */
+    private void watchtower(BlockPos floor, MushroomWood.Kind kind, MushroomWood.Set wood, Direction door) {
+        int top = HouseType.WATCHTOWER.height;
+        BlockState stem = Blocks.MUSHROOM_STEM.defaultBlockState();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                set(floor.offset(dx, -1, dz), wood.planks.get().defaultBlockState());
+                for (int y = 0; y < top; y++) {
+                    set(floor.offset(dx, y, dz), dx == 0 && dz == 0 ? Blocks.AIR.defaultBlockState() : stem);
+                }
+            }
+        }
+        // The ladder climbs the back wall from the floor to the lookout.
+        Direction back = door.getOpposite();
+        for (int y = 0; y <= top; y++) {
+            set(floor.above(y), Blocks.LADDER.defaultBlockState().setValue(net.minecraft.world.level.block.LadderBlock.FACING, door));
+        }
+        BlockPos doorway = floor.relative(door);
+        set(doorway, Blocks.AIR.defaultBlockState());
+        set(doorway.above(), Blocks.AIR.defaultBlockState());
+        set(floor.relative(back).above(top - 2), Blocks.SHROOMLIGHT.defaultBlockState());
+        // The lookout: a disc of cap with a railing, a hole for the ladder.
+        BlockState capBlock = cap(kind);
+        int r = HouseType.WATCHTOWER.capRadius();
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dz = -r; dz <= r; dz++) {
+                if (!inside(dx, dz, r)) {
+                    continue;
+                }
+                BlockPos pos = floor.offset(dx, top, dz);
+                set(pos, dx == 0 && dz == 0 ? Blocks.LADDER.defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.LadderBlock.FACING, door) : capBlock);
+                set(pos.above(), !inside(dx, dz, r - 1) ? wood.fence.get().defaultBlockState() : Blocks.AIR.defaultBlockState());
+                set(pos.above(2), Blocks.AIR.defaultBlockState());
+            }
+        }
+        set(floor.offset(r - 1, top + 1, 0), Blocks.SHROOMLIGHT.defaultBlockState());
+    }
+
+    /** Market stalls: three counters under plank awnings, goods in barrels behind them. */
+    private void market(BlockPos floor, MushroomWood.Set wood, Direction door) {
+        Direction along = door.getClockWise();
+        clear(floor.offset(-4, 0, -4), floor.offset(4, 4, 4));
+        for (int dx = -4; dx <= 4; dx++) {
+            for (int dz = -4; dz <= 4; dz++) {
+                ground(floor.offset(dx, -1, dz), wood.planks.get().defaultBlockState());
+            }
+        }
+        for (int i = -1; i <= 1; i++) {
+            BlockPos stall = floor.relative(along, i * 3);
+            set(stall.relative(door), wood.slab.get().defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.SlabBlock.TYPE, net.minecraft.world.level.block.state.properties.SlabType.TOP));
+            barrel(stall.relative(door.getOpposite()), HOUSE_LOOT);
+            for (Direction side : new Direction[]{along, along.getOpposite()}) {
+                BlockPos post = stall.relative(door).relative(side);
+                set(post, wood.fence.get().defaultBlockState());
+                set(post.above(), wood.fence.get().defaultBlockState());
+                BlockPos backPost = stall.relative(door.getOpposite()).relative(side);
+                set(backPost, wood.fence.get().defaultBlockState());
+                set(backPost.above(), wood.fence.get().defaultBlockState());
+            }
+            for (int a = -1; a <= 1; a++) {
+                for (int b = -1; b <= 1; b++) {
+                    BlockPos roof = stall.relative(along, a).relative(door, b).above(2);
+                    set(roof, wood.slab.get().defaultBlockState());
+                }
+                set(stall.relative(along, a).relative(door, 2).above(2), wood.trapdoor.get().defaultBlockState()
+                        .setValue(net.minecraft.world.level.block.TrapDoorBlock.FACING, door)
+                        .setValue(net.minecraft.world.level.block.TrapDoorBlock.OPEN, true));
+            }
+        }
+        set(floor.above(3), Blocks.SHROOMLIGHT.defaultBlockState());
+    }
+
+    /** A fenced garden of cave mushrooms around a little huge mushroom. */
+    private void garden(BlockPos floor, MushroomWood.Set wood, Direction door) {
+        int r = HouseType.GARDEN.radius;
+        clear(floor.offset(-r, 0, -r), floor.offset(r, 4, r));
+        java.util.List<Block> plants = new java.util.ArrayList<>();
+        ModBlocks.MUSHROOMS.values().forEach(holder -> plants.add(holder.get()));
+        plants.add(Blocks.RED_MUSHROOM);
+        plants.add(Blocks.BROWN_MUSHROOM);
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dz = -r; dz <= r; dz++) {
+                BlockPos pos = floor.offset(dx, 0, dz);
+                boolean edge = Math.abs(dx) == r || Math.abs(dz) == r;
+                set(pos.below(), edge ? wood.planks.get().defaultBlockState() : ModBlocks.CAVE_MYCELIUM.get().defaultBlockState());
+                if (edge) {
+                    set(pos, wood.fence.get().defaultBlockState());
+                } else if ((dx + dz) % 2 == 0 && (Math.abs(dx) > 1 || Math.abs(dz) > 1)) {
+                    set(pos, plants.get(random.nextInt(plants.size())).defaultBlockState());
+                }
+            }
+        }
+        BlockPos gate = floor.relative(door, r);
+        set(gate, wood.fenceGate.get().defaultBlockState().setValue(net.minecraft.world.level.block.FenceGateBlock.FACING, door));
+        // A little huge mushroom in the middle.
+        for (int y = 0; y < 3; y++) {
+            set(floor.above(y), Blocks.MUSHROOM_STEM.defaultBlockState());
+        }
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                set(floor.offset(dx, 3, dz), (dx + dz) % 2 == 0 ? ModBlocks.SPOTTED_BLUE_MUSHROOM_BLOCK.get().defaultBlockState()
+                        : ModBlocks.BLUE_MUSHROOM_BLOCK.get().defaultBlockState());
+            }
+        }
+        set(floor.offset(0, 4, 0), ModBlocks.GLOWING_BLUE_MUSHROOM_BLOCK.get().defaultBlockState());
+        set(floor.relative(door.getOpposite(), r - 1).relative(door.getClockWise(), r - 1), Blocks.COMPOSTER.defaultBlockState());
+    }
+
+    /** A lamp post: a fence pole with a glowing cap, on a little rug of moss. */
+    private void lamp(BlockPos floor, MushroomWood.Set wood) {
+        ground(floor.below(), wood.planks.get().defaultBlockState());
+        for (int y = 0; y < 3; y++) {
+            set(floor.above(y), wood.fence.get().defaultBlockState());
+        }
+        set(floor.above(3), Blocks.SHROOMLIGHT.defaultBlockState());
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockPos rug = floor.relative(side);
+            if (level.getBlockState(rug).isAir() && level.getBlockState(rug.below()).isFaceSturdy(level, rug.below(), Direction.UP)) {
+                set(rug, MushroomWood.MUSHROOM_MOSS_CARPET.get().defaultBlockState());
+            }
+        }
+    }
+
+    /** A path of moss carpet from {@code from} to {@code to}, laid on whatever floor there is. */
+    public void path(BlockPos from, BlockPos to) {
+        int steps = Math.max(Math.abs(to.getX() - from.getX()), Math.abs(to.getZ() - from.getZ()));
+        for (int i = 0; i <= steps; i++) {
+            double t = steps == 0 ? 0 : (double) i / steps;
+            int x = (int) Math.round(from.getX() + (to.getX() - from.getX()) * t);
+            int z = (int) Math.round(from.getZ() + (to.getZ() - from.getZ()) * t);
+            int y = (int) Math.round(from.getY() + (to.getY() - from.getY()) * t);
+            for (int dy = 3; dy >= -3; dy--) {
+                BlockPos pos = new BlockPos(x, y + dy, z);
+                if (!box.isInside(pos)) {
+                    break;
+                }
+                if (level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)) {
+                    set(pos, MushroomWood.MUSHROOM_MOSS_CARPET.get().defaultBlockState());
+                    break;
+                }
+            }
+        }
     }
 
     private static net.minecraft.world.level.block.state.properties.BooleanProperty paneSide(Direction direction) {

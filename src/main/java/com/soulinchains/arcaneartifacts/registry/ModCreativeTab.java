@@ -44,6 +44,13 @@ public final class ModCreativeTab {
                 output.accept(ModItems.BOTTLE_OF_SOURCE.get());
                 output.accept(ModItems.MUSHROOM_MOSS.get());
                 output.accept(ModItems.BLUE_MUSHROOM_BLOCK.get());
+                output.accept(ModItems.SPOTTED_BLUE_MUSHROOM_BLOCK.get());
+                output.accept(ModItems.GLOWING_BLUE_MUSHROOM_BLOCK.get());
+                output.accept(ModItems.BLUE_MUSHROOM_GILLS.get());
+                output.accept(ModItems.CAVE_MYCELIUM.get());
+                output.accept(ModItems.MYCELIUM_SOIL.get());
+                output.accept(ModItems.MYCELIAL_MUD.get());
+                output.accept(ModItems.SPORE_CLAY.get());
                 ModItems.MUSHROOMS.values().forEach(item -> output.accept(item.get()));
                 output.accept(ModItems.MUDZYA_SPAWN_EGG.get());
                 output.accept(ModItems.GRIBUSHKA_SPAWN_EGG.get());

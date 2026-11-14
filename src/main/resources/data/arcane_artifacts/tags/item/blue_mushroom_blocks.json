@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "arcane_artifacts:blue_mushroom_block",
+    "arcane_artifacts:spotted_blue_mushroom_block",
+    "arcane_artifacts:glowing_blue_mushroom_block",
+    "arcane_artifacts:blue_mushroom_gills"
+  ]
+}

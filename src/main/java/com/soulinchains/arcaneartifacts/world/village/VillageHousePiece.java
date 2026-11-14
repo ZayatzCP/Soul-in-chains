@@ -86,14 +86,21 @@ public class VillageHousePiece extends StructurePiece {
         if (mob == null) {
             return;
         }
-        double x = floor.getX() + 0.5 + random.nextInt(3) - 1;
-        double z = floor.getZ() + 0.5 + random.nextInt(3) - 1;
-        BlockPos at = BlockPos.containing(x, floor.getY(), z);
-        if (!level.getBlockState(at).isAir() || !level.getBlockState(at.above()).isAir()) {
-            x = floor.getX() + 0.5;
-            z = floor.getZ() + 0.5;
+        BlockPos at = null;
+        if (type == HouseType.WATCHTOWER) {
+            at = floor.offset(1, type.height + 1, 0);    // on the lookout
+        } else {
+            for (int attempt = 0; attempt < 12 && at == null; attempt++) {
+                BlockPos spot = floor.offset(random.nextInt(5) - 2, 0, random.nextInt(5) - 2);
+                if (level.getBlockState(spot).isAir() && level.getBlockState(spot.above()).isAir()) {
+                    at = spot;
+                }
+            }
         }
-        mob.moveTo(x, floor.getY(), z, random.nextFloat() * 360F, 0);
+        if (at == null) {
+            return;
+        }
+        mob.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, random.nextFloat() * 360F, 0);
         mob.finalizeSpawn(level, level.getCurrentDifficultyAt(floor), MobSpawnType.STRUCTURE, null);
         mob.setHome(villageCenter, MycelinoidVillage.RADIUS + 6);
         mob.setPersistenceRequired();

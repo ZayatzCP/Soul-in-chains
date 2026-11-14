@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "arcane_artifacts:mycelium_soil"
+    },
+    {
+      "item": "arcane_artifacts:mushroom_moss"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:cave_mycelium"
+  }
+}

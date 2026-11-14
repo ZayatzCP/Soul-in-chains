@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:base_stone_overworld",
+    "arcane_artifacts:mushroom_moss",
+    "minecraft:dirt",
+    "minecraft:gravel",
+    "minecraft:clay"
+  ]
+}
