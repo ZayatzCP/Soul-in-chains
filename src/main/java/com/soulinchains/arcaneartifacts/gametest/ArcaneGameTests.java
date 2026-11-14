@@ -992,9 +992,18 @@ public final class ArcaneGameTests {
         helper.assertTrue(horse.feed(new ItemStack(net.minecraft.world.item.Items.COAL)), "Coal must go into the firebox");
         helper.assertTrue(horse.getFuel() == 1600 * com.soulinchains.arcaneartifacts.mount.IronHorse.FUEL_PER_BURN_TICK, "Coal must give its burn time as fuel");
         helper.assertTrue(!horse.feed(new ItemStack(net.minecraft.world.item.Items.DIRT)), "Dirt does not burn");
+        horse.setFuel(0);
+        horse.bunker().setItem(0, new ItemStack(net.minecraft.world.item.Items.COAL, 5));
+        horse.stoke();
+        helper.assertTrue(horse.getFuel() > 0 && horse.bunker().getItem(0).getCount() == 4, "An empty boiler must take coal from the bunker");
+        horse.stoke();
+        helper.assertTrue(horse.bunker().getItem(0).getCount() == 4, "A boiler that still burns must not take more coal");
         ItemStack folded = horse.toItem();
         helper.assertTrue(folded.is(ModItems.IRON_HORSE.get()), "The horse must fold into its item");
         helper.assertTrue(com.soulinchains.arcaneartifacts.mount.IronHorse.storedFuel(folded) == horse.getFuel(), "The fuel must stay with the folded horse");
+        var unfolded = helper.spawn(ModEntities.IRON_HORSE.get(), new BlockPos(2, 1, 6));
+        unfolded.fromItem(folded);
+        helper.assertTrue(unfolded.bunker().getItem(0).getCount() == 4, "The bunker's coal must stay with the folded horse");
         var elk = helper.spawn(ModEntities.MOSS_ELK.get(), new BlockPos(5, 1, 2));
         helper.assertTrue(elk.toItem().is(ModItems.MOSS_ELK_CALL.get()), "The elk must go back into its call");
         helper.assertTrue(elk.canJump() == false, "An elk without a rider does not take jump orders");

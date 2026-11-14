@@ -31,6 +31,11 @@ public class FlyingBroom extends ClassMount {
     public static final int MANA_PER_SECOND = 3;
     /** Blocks per tick at full speed (before the Pseudomage's spurs, if anyone dares). */
     public static final double SPEED = 0.6;
+    /** Momentum (0..1) the rider has built up holding forward; diving builds it faster, climbing drains it. */
+    private float momentum;
+    /** Client only, for the look: 0 hovering .. 1 flying flat out (the rider lies down like on elytra). */
+    public float flightLean;
+    public float flightLeanO;
     private static final EntityDataAccessor<Boolean> CHARGED = SynchedEntityData.defineId(FlyingBroom.class, EntityDataSerializers.BOOLEAN);
 
     public FlyingBroom(EntityType<? extends FlyingBroom> type, Level level) {
@@ -70,6 +75,11 @@ public class FlyingBroom extends ClassMount {
         if (!level().isClientSide && tickCount % 20 == 0 && getControllingPassenger() instanceof Player rider) {
             entityData.set(CHARGED, drink(rider));
         }
+        if (level().isClientSide) {
+            double moved = position().subtract(xo, yo, zo).length();
+            flightLeanO = flightLean;
+            flightLean += ((float) Math.min(1.0, moved / 0.45) * (isVehicle() ? 1F : 0F) - flightLean) * 0.15F;
+        }
         if (level().isClientSide && isVehicle() && isCharged() && random.nextInt(3) == 0) {
             Vec3 tail = position().add(Vec3.directionFromRotation(0, getYRot()).scale(-0.9)).add(0, 0.35, 0);
             level().addParticle(ParticleTypes.WITCH, tail.x, tail.y, tail.z, 0, 0, 0);
@@ -92,27 +102,56 @@ public class FlyingBroom extends ClassMount {
         return true;
     }
 
+    public float getMomentum() {
+        return momentum;
+    }
+
     @Override
     public void travel(Vec3 input) {
         if (getControllingPassenger() instanceof Player rider) {
-            double speed = getAttributeValue(Attributes.MOVEMENT_SPEED);
-            Vec3 look = Vec3.directionFromRotation(rider.getXRot(), rider.getYRot());
-            Vec3 left = Vec3.directionFromRotation(0F, rider.getYRot() - 90F);
-            Vec3 want = look.scale(input.z).add(left.scale(input.x)).scale(speed);
-            if (!isCharged()) {
-                want = new Vec3(want.x * 0.4, Math.min(want.y, 0) - 0.12, want.z * 0.4);   // no mana: a slow glide down
-            } else if (input.lengthSqr() < 1.0E-4) {
-                want = new Vec3(0, Math.sin(tickCount * 0.1) * 0.02, 0);                // hovering, bobbing a little
+            double max = getAttributeValue(Attributes.MOVEMENT_SPEED);
+            float pitch = rider.getXRot();
+            if (input.z > 0.01) {
+                momentum += 0.008F + Math.max(0F, pitch) / 90F * 0.02F;     // pushing on; diving speeds up more
+                if (pitch < -20F) {
+                    momentum -= 0.006F;                                     // climbing costs speed
+                }
+            } else {
+                momentum -= 0.006F;
             }
-            setDeltaMovement(getDeltaMovement().lerp(want, 0.18));
+            momentum = Math.max(0F, Math.min(1F, momentum));
+            double speed = max * (0.4 + 1.0 * momentum);
+            Vec3 look = Vec3.directionFromRotation(pitch, rider.getYRot());
+            Vec3 left = Vec3.directionFromRotation(0F, rider.getYRot() - 90F);
+            Vec3 v = getDeltaMovement();
+            if (!isCharged()) {
+                v = new Vec3(v.x * 0.97, Math.max(v.y - 0.02, -0.15), v.z * 0.97);    // no mana: a slow glide down
+                momentum = 0F;
+            } else if (input.lengthSqr() < 1.0E-4) {
+                v = v.scale(0.965).add(0, Math.sin(tickCount * 0.1) * 0.002, 0);      // let go: it glides on and slows
+            } else {
+                Vec3 want = look.scale(input.z * speed).add(left.scale(input.x * max * 0.6));
+                v = v.lerp(want, 0.07);
+            }
+            setDeltaMovement(v);
             move(MoverType.SELF, getDeltaMovement());
+            if (horizontalCollision) {
+                momentum *= 0.5F;
+            }
             calculateEntityAnimation(false);
             return;
         }
+        momentum = 0F;
         if (!onGround()) {
             setDeltaMovement(getDeltaMovement().multiply(0.8, 0.8, 0.8).add(0, -0.01, 0));   // settles slowly when let go
         }
         super.travel(input);
+    }
+
+    /** The rider straddles the broom with straight legs instead of sitting. */
+    @Override
+    public boolean shouldRiderSit() {
+        return false;
     }
 
     @Override

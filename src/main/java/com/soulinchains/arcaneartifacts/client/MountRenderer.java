@@ -35,6 +35,26 @@ public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRen
     }
 
     @Override
+    public void render(T entity, float entityYaw, float partialTick, com.mojang.blaze3d.vertex.PoseStack pose,
+                       net.minecraft.client.renderer.MultiBufferSource buffers, int light) {
+        if (entity instanceof FlyingBroom broom && broom.getControllingPassenger() instanceof net.minecraft.world.entity.player.Player rider) {
+            // The broom is drawn under the rider's hips, where the rider's pose (BroomRiding) turns about.
+            net.minecraft.world.phys.Vec3 at = rider.getPosition(partialTick).subtract(entity.getPosition(partialTick));
+            pose.pushPose();
+            pose.translate(at.x, at.y + BroomRiding.HIPS - BroomRiding.HANDLE_DROP - HANDLE_HEIGHT, at.z);
+            getModel().broomPitch = BroomRiding.broomPitch(broom, rider, partialTick);
+            super.render(entity, entityYaw, partialTick, pose, buffers, light);
+            pose.popPose();
+            return;
+        }
+        getModel().broomPitch = 0F;
+        super.render(entity, entityYaw, partialTick, pose, buffers, light);
+    }
+
+    /** Height of the broom handle (the broom model's pivot) above the broom's feet, in blocks. */
+    private static final float HANDLE_HEIGHT = 11F / 16F;
+
+    @Override
     protected boolean shouldShowName(T entity) {
         return entity.hasCustomName() && super.shouldShowName(entity);
     }
@@ -43,6 +63,8 @@ public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRen
         private final BakedPart body;
         private final BakedPart[] legs;
         private float lift;
+        /** Degrees, nose down, set by the renderer for a ridden broom. */
+        float broomPitch;
 
         Model(ResourceManager resources, ResourceLocation id) {
             Map<String, BakedPart> parts = BakedModels.load(resources, id);
@@ -56,8 +78,8 @@ public class MountRenderer<T extends ClassMount> extends MobRenderer<T, MountRen
             body.reset();
             lift = 0F;
             if (entity instanceof FlyingBroom broom) {
-                body.xRot = headPitch * Mth.DEG_TO_RAD * 0.8F;
-                body.zRot = Mth.sin(ageInTicks * 0.08F) * 0.04F;
+                body.xRot = broomPitch * Mth.DEG_TO_RAD;
+                body.zRot = Mth.sin(ageInTicks * 0.08F) * 0.03F;
                 lift = broom.isVehicle() ? 0F : 3F + Mth.sin(ageInTicks * 0.1F) * 0.6F;    // an empty broom floats a little
                 return;
             }

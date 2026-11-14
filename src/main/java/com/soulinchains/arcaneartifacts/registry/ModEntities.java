@@ -64,6 +64,10 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.mount.IronHorse::new, MobCategory.MISC)
                     .sized(1.3F, 1.7F).passengerAttachments(1.5F).fireImmune().clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":iron_horse"));
 
+    public static final DeferredHolder<net.minecraft.world.inventory.MenuType<?>, net.minecraft.world.inventory.MenuType<com.soulinchains.arcaneartifacts.mount.IronHorseMenu>> IRON_HORSE_MENU =
+            ModBlocks.MENUS.register("iron_horse", () -> new net.minecraft.world.inventory.MenuType<>(com.soulinchains.arcaneartifacts.mount.IronHorseMenu::new,
+                    net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS));
+
     private ModEntities() {
     }
 }
