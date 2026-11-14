@@ -93,6 +93,10 @@ public class MagicGunItem extends Item implements ICasterTool {
         PortUtil.sendMessageNoSpam(player, Component.translatable("arcane_artifacts.gun.invalid"));
     }
 
+    /**
+     * Pulls the trigger. A gun in the main hand also fires the gun in the off hand (two revolvers, or a revolver
+     * and a sawn-off): both shoot with one click, each from its own side, with its own glyph and rounds.
+     */
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack gun = player.getItemInHand(hand);
@@ -102,28 +106,42 @@ public class MagicGunItem extends Item implements ICasterTool {
         if (level.isClientSide) {
             return InteractionResultHolder.success(gun);
         }
+        boolean acted = trigger(player, gun, hand);
+        ItemStack offhand = player.getOffhandItem();
+        if (hand == InteractionHand.MAIN_HAND && offhand.getItem() instanceof MagicGunItem other
+                && (other == this || !player.getCooldowns().isOnCooldown(other))) {
+            acted |= other.trigger(player, offhand, InteractionHand.OFF_HAND);
+        }
+        return acted ? InteractionResultHolder.consume(gun) : InteractionResultHolder.fail(gun);
+    }
+
+    /** Fires one round, or reloads an empty gun (or a partly empty one while sneaking); false if it has no glyph. */
+    public boolean trigger(Player player, ItemStack gun, InteractionHand hand) {
         int rounds = rounds(gun);
         if (rounds <= 0 || (player.isShiftKeyDown() && rounds < magazine)) {
             reload(player, gun);
-            return InteractionResultHolder.consume(gun);
+            return true;
         }
         Spell spell = storedSpell(gun);
         if (!isValidGunSpell(spell)) {
             player.displayClientMessage(Component.translatable("arcane_artifacts.gun.empty_glyph").withStyle(ChatFormatting.GRAY), true);
-            return InteractionResultHolder.fail(gun);
+            return false;
         }
-        fire(player, gun, bulletSpell(spell));
+        fire(player, gun, bulletSpell(spell), hand);
         gun.set(ModComponents.GUN_ROUNDS, rounds - 1);
         player.getCooldowns().addCooldown(this, PseudomageGlovesItem.scale(player, fireCooldown, PseudomageGlovesItem.COOLDOWN));
-        return InteractionResultHolder.consume(gun);
+        return true;
     }
 
-    private void fire(Player player, ItemStack gun, Spell spell) {
+    private void fire(Player player, ItemStack gun, Spell spell, InteractionHand hand) {
         Level level = player.level();
+        // Each barrel shoots from its own side of the body.
+        net.minecraft.world.entity.HumanoidArm arm = hand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite();
+        Vec3 side = Vec3.directionFromRotation(0F, player.getYRot() + (arm == net.minecraft.world.entity.HumanoidArm.RIGHT ? 90F : -90F)).scale(0.25);
         for (int i = 0; i < pellets; i++) {
             SpellContext context = new SpellContext(level, spell, player, LivingCaster.from(player), gun.copy());
             BulletEntity bullet = new BulletEntity(level, player, new SpellResolver(context));
-            Vec3 eye = player.getEyePosition();
+            Vec3 eye = player.getEyePosition().add(side);
             bullet.setPos(eye.x, eye.y - 0.1, eye.z);
             bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.2F,
                     PseudomageGlovesItem.isWearing(player) ? spread * PseudomageGlovesItem.SPREAD : spread);

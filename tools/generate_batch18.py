@@ -26,14 +26,15 @@ PIECES = [
         ('poncho', [1], (-12, -16, 0), 'BODY'),
         ('poncho_right', [0], (-17, -14, 0), 'RIGHT_ARM'),
         ('poncho_left', [3], (-7, -14, 0), 'LEFT_ARM'),
-        ('poncho_hood', [2], (-12, -16, 0), 'HEAD')]),
+        # The hood is grown 13% so it covers the hat layer of the skin (half a pixel out from the head).
+        ('poncho_hood', [2], (-12, -16, 0), 'HEAD', (1.13, (8, 11, 8)))]),
     ('pseudo_BOOTS.json', 'pseudomage_boots', 'pseudomage_boots', [
         ('pseudomage_boots_right', [0, 1, 2, 3], (-21.8, -4, 0), 'RIGHT_LEG'),
         ('pseudomage_boots_left', [4, 5, 6, 7], (-18, -4, 0), 'LEFT_LEG')]),
     ('pseudomage_gloves.json', 'pseudomage_gloves', 'pseudomage_gloves', [
         ('pseudomage_glove_right', [0, 1], (-20.77, -14.1, 0.14), 'RIGHT_ARM'),
         ('pseudomage_glove_left', [2, 3], (-16.11, -14.1, 0.14), 'LEFT_ARM')]),
-    ('pseudomage_hat.json', 'pseudomage_hat', 'sombrero', [('sombrero', [0, 1, 2], (-15.67, -5, 0), 'HEAD')]),
+    ('pseudomage_hat.json', 'pseudomage_hat', 'sombrero', [('sombrero', [0, 1, 2], (-15.67, -5, 0), 'HEAD', (1.12, (8, 16, 8)))]),
 ]
 
 
@@ -53,15 +54,19 @@ def r4(v):
     return round(v, 4)
 
 
-def convert(src, tex_name, texture, name, indices, offset, part):
+def convert(src, tex_name, texture, name, indices, offset, part, grow=None):
     model = json.load(open(src))
     groups = {}   # placement key -> elements
     for i in indices:
         e = json.loads(json.dumps(model['elements'][i]))
         rx, ry, rz, origin = rotation(e)
-        moved = [r4(origin[k] + offset[k]) for k in range(3)]
+        k_, c_ = grow if grow else (1.0, (0, 0, 0))
+
+        def place(p):
+            return [r4(c_[k] + (p[k] + offset[k] - c_[k]) * k_) for k in range(3)]
+        moved = place(origin)
         for key in ('from', 'to'):
-            e[key] = [r4(e[key][k] + offset[k]) for k in range(3)]
+            e[key] = place(e[key])
         e.pop('name', None)
         nonzero = [(a, v) for a, v in zip('xyz', (rx, ry, rz)) if abs(v) > 1e-6]
         placement = None
@@ -130,8 +135,8 @@ def main():
     manifest = []
     for model, tex_name, texture, pieces in PIECES:
         shutil.copyfile(os.path.join(src, tex_name + '.png'), os.path.join(A, 'textures', 'item', 'worn', texture + '.png'))
-        for name, indices, offset, part in pieces:
-            manifest += convert(os.path.join(src, model), tex_name, texture, name, indices, offset, part)
+        for name, indices, offset, part, *grow in pieces:
+            manifest += convert(os.path.join(src, model), tex_name, texture, name, indices, offset, part, *grow)
     # The second Amanitoid's new skin.
     for s, d in (('micilinoid_Muhamor_a', 'amanitoid_a'), ('micilinoid_Muhamor_b', 'amanitoid_b')):
         shutil.copyfile(os.path.join(src, s + '.png'), os.path.join(A, 'textures', 'entity', d + '.png'))

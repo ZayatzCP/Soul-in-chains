@@ -134,6 +134,8 @@ final class NotebookContent {
         List<NotebookEntry> entries = new ArrayList<>();
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.pseudomage"),
                 new ItemStack(ModItems.FALSE_MAGE_GUIDE.get()), "pseudomage", 3, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.false_mage_author"),
+                new ItemStack(ModItems.FALSE_MAGE_GUIDE.get()), "false_mage_author", 2, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.false_mana"),
                 new ItemStack(ModItems.COUNTERFEIT_RING.get()), "false_mana", 2, null));
         entries.add(itemEntry(font, ModItems.FALSE_MAGE_GUIDE.get(), 1));

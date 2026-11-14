@@ -91,8 +91,8 @@ public final class WornModels {
         // The hat sits at a jaunty angle: its brim and crown are turned separately.
         ATTACHMENTS.put(ModItems.SOMBRERO, List.of(
                 worn(BodyPart.HEAD, "sombrero"),
-                turned(BodyPart.HEAD, "sombrero_2", 36.5527f, 13.7446f, 6.97f, 9.97613f, 0.69405f, -3.93942f),
-                turned(BodyPart.HEAD, "sombrero_3", 40.7175f, 10.2905f, 8f, 0f, 0f, -10f)));
+                turned(BodyPart.HEAD, "sombrero_2", 39.979f, 13.474f, 6.8464f, 9.97613f, 0.69405f, -3.93942f),
+                turned(BodyPart.HEAD, "sombrero_3", 44.6436f, 9.6054f, 8f, 0f, 0f, -10f)));
         ATTACHMENTS.put(ModItems.PONCHO, List.of(
                 worn(BodyPart.BODY, "poncho"),
                 worn(BodyPart.HEAD, "poncho_hood"),
