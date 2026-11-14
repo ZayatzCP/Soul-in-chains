@@ -41,6 +41,30 @@ public final class BeltRegistry {
         });
     }
 
+    /** Client to server: open the worn bandolier (its own key, G by default). */
+    public record OpenBandolierPayload() implements CustomPacketPayload {
+        public static final Type<OpenBandolierPayload> TYPE = new Type<>(ArcaneArtifacts.id("open_bandolier"));
+        public static final StreamCodec<ByteBuf, OpenBandolierPayload> STREAM_CODEC = StreamCodec.unit(new OpenBandolierPayload());
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public static void handleOpenBandolier(net.neoforged.neoforge.network.handling.IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer player) {
+                var bandolier = com.soulinchains.arcaneartifacts.pseudo.FalseMana.bandolier(player);
+                if (bandolier.isEmpty()) {
+                    player.displayClientMessage(net.minecraft.network.chat.Component.translatable("arcane_artifacts.bandolier.not_worn"), true);
+                } else {
+                    com.soulinchains.arcaneartifacts.pseudo.BandolierItem.open(player, bandolier);
+                }
+            }
+        });
+    }
+
     /** Forces class loading so the menu type is registered with the other menus. */
     public static void init() {
     }

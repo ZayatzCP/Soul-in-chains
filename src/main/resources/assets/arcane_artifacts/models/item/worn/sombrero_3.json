@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/sombrero",
+    "particle": "arcane_artifacts:item/worn/sombrero"
+  },
+  "elements": [
+    {
+      "from": [
+        -0.974,
+        8.1275,
+        1.511
+      ],
+      "to": [
+        16.33,
+        10.2905,
+        14.489
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            3,
+            7,
+            3.5
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            7,
+            3,
+            10,
+            3.5
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            3,
+            3,
+            7,
+            3.5
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            7,
+            3,
+            10,
+            3.5
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            7,
+            3,
+            3,
+            0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            7,
+            0,
+            3,
+            3
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

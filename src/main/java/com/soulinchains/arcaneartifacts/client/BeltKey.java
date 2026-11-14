@@ -13,7 +13,7 @@ import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-/** The key that opens the worn Belt of Bottomless Pouches (B by default, rebindable). */
+/** The keys of worn accessories: the Belt of Bottomless Pouches (B), the bandolier (G), the amulet (N); all rebindable. */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID, value = Dist.CLIENT)
 public final class BeltKey {
     public static final KeyMapping KEY = new KeyMapping("key.arcane_artifacts.open_belt", KeyConflictContext.IN_GAME,
@@ -22,6 +22,10 @@ public final class BeltKey {
     /** Flips the polarity of the worn Amulet of Opposites (N by default, rebindable). */
     public static final KeyMapping AMULET_KEY = new KeyMapping("key.arcane_artifacts.toggle_amulet", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, "key.categories.arcane_artifacts");
+
+    /** Opens the worn bandolier (G by default, rebindable). */
+    public static final KeyMapping BANDOLIER_KEY = new KeyMapping("key.arcane_artifacts.open_bandolier", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.categories.arcane_artifacts");
 
     private BeltKey() {
     }
@@ -32,6 +36,11 @@ public final class BeltKey {
         while (KEY.consumeClick()) {
             if (minecraft.player != null && minecraft.screen == null) {
                 PacketDistributor.sendToServer(new BeltRegistry.OpenBeltPayload());
+            }
+        }
+        while (BANDOLIER_KEY.consumeClick()) {
+            if (minecraft.player != null && minecraft.screen == null) {
+                PacketDistributor.sendToServer(new BeltRegistry.OpenBandolierPayload());
             }
         }
         while (AMULET_KEY.consumeClick()) {

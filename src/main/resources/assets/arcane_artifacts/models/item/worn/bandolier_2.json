@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/bandolier",
+    "particle": "arcane_artifacts:item/worn/bandolier"
+  },
+  "elements": [
+    {
+      "from": [
+        -4.1496,
+        -14.9755,
+        5.025
+      ],
+      "to": [
+        -2.4496,
+        -12.5255,
+        10.975
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            10,
+            9,
+            8,
+            11
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            4,
+            9,
+            6,
+            15
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

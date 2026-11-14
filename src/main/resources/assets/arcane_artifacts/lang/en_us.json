@@ -597,7 +597,7 @@
   "item.arcane_artifacts.bullet": "Magic Bullet",
   "item.arcane_artifacts.bandolier": "Bandolier",
   "item.arcane_artifacts.bandolier.lore": "Worn across the chest. Like responsibility.",
-  "item.arcane_artifacts.bandolier.desc.1": "8 pouches of 16 Magic Cartridges (128). Use or press B to open.",
+  "item.arcane_artifacts.bandolier.desc.1": "8 pouches of 16 Magic Cartridges (128). Use or press G to open.",
   "item.arcane_artifacts.bandolier.desc.2": "Worn: the cartridges are your false mana; firearms reload from it first.",
   "item.arcane_artifacts.bandolier.desc.3": "Shows on the chest, loaded with cartridges.",
   "item.arcane_artifacts.counterfeit_ring": "Counterfeit Mana Ring",
@@ -637,7 +637,7 @@
   "arcane_artifacts.lore.sawn_off": "\"It solves problems. Mostly one: the problem of standing too close. But that one, flawlessly.\" - Hellmerus Morra",
   "arcane_artifacts.page1.magic_cartridge": "Gunpowder, Amber, a copper ingot and a Bottle of Source make 8 cartridges. They stack to 16, like snowballs. One cartridge is one shot.",
   "arcane_artifacts.lore.magic_cartridge": "\"Source in a shell. Do not shake. Do not open. Do not name it. Pip already named it. It is called Boris.\" - Hellmerus Morra",
-  "arcane_artifacts.page1.bandolier": "Body slot. Eight pouches of 16 cartridges each; open it with use or the B key. While worn, its cartridges are your false mana and firearms reload from it first. It is visible on the chest, and the cartridges in its loops too.",
+  "arcane_artifacts.page1.bandolier": "Body slot. Eight pouches of 16 cartridges each; open it with use or its own key, G (rebindable in Controls). While worn, its cartridges are your false mana and firearms reload from it first. It is worn across the chest, over one shoulder.",
   "arcane_artifacts.lore.bandolier": "\"Belts are for trousers. This is for ambitions. Pip wore it on his trousers. We were silent for a long time.\" - Hellmerus Morra",
   "arcane_artifacts.page1.counterfeit_ring": "Ring slot. +15% movement speed and you walk up full blocks without jumping. It gives no mana: a Pseudomage travels light.",
   "arcane_artifacts.lore.counterfeit_ring": "\"The jeweller swore it was enchanted. It is: enchanted to look enchanted. That is work too, and honestly, hard work.\" - Hellmerus Morra",
@@ -833,5 +833,7 @@
   "arcane_artifacts.page1.iron_horse": "The Pseudomage's ride. Real mages fly brooms; the Pseudomage arrives on a riveted steam horse and pretends it was the plan all along. Use it and the horse is under you. It is fast, has 12 armour, does not burn, is not knocked back and walks up one-and-a-half-block steps without jumping.",
   "arcane_artifacts.page2.iron_horse": "The horse eats anything a furnace burns. Feed it by hand (use coal, planks, a lava bucket right on the horse), or press the inventory key (E) while riding: the coal bunker opens. Put a stack of coal in and the horse stokes its firebox by itself whenever it runs dry. A lump of coal is two minutes forty seconds of travel; fuel burns only while moving and stays in the horse, bunker and all, when you fold it (sneak + use). On an empty firebox it crawls at a quarter speed. The Pseudomage's Boots spur it on too.",
   "arcane_artifacts.lore.iron_horse": "\"They said I needed a riding familiar. I said I had a stove and a hammer. They said that is not a familiar. I said hold my hat.\" - Pip, Pseudomage",
-  "arcane_artifacts.iron_horse.gauge": "%s s"
+  "arcane_artifacts.iron_horse.gauge": "%s s",
+  "key.arcane_artifacts.open_bandolier": "Open the bandolier",
+  "arcane_artifacts.bandolier.not_worn": "No bandolier on. You can't just stuff bullets in your pockets. Pip tried."
 }

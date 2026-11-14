@@ -1,0 +1,135 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/pseudomage_gloves",
+    "particle": "arcane_artifacts:item/worn/pseudomage_gloves"
+  },
+  "elements": [
+    {
+      "from": [
+        6.2215,
+        0.013,
+        5.4987
+      ],
+      "to": [
+        11.23,
+        2.239,
+        10.5073
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            4,
+            4,
+            6
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            12,
+            4,
+            8,
+            6
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            16,
+            4,
+            12,
+            6
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            4,
+            4,
+            0,
+            6
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            8,
+            0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            4,
+            0,
+            8,
+            4
+          ],
+          "texture": "#t"
+        }
+      }
+    },
+    {
+      "from": [
+        6.778,
+        -2.213,
+        5.777
+      ],
+      "to": [
+        11.23,
+        0.013,
+        10.229
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            6,
+            4,
+            8
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            12,
+            6,
+            8,
+            8
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            16,
+            6,
+            12,
+            8
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            4,
+            6,
+            0,
+            8
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            8,
+            0,
+            12,
+            4
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

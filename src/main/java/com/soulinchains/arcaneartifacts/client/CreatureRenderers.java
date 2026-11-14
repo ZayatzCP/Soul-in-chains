@@ -41,17 +41,37 @@ public final class CreatureRenderers {
         }
     }
 
-    /** The Mycelinoid folk, drawn from the designer's baked models, each with its textures (variants) and size. */
+    /**
+     * The Mycelinoid folk, drawn from the designer's baked models, each with its textures (variants) and size.
+     * A variant may have a model of its own ({@code models[variant]}; the last one serves the rest).
+     */
     public static final class MycelinoidRenderer<T extends Gribushka> extends MobRenderer<T, GribushkaModel<T>> {
         private final ResourceLocation[] textures;
+        private final java.util.List<GribushkaModel<T>> models;
         private final float scale;
 
         public MycelinoidRenderer(EntityRendererProvider.Context context, String model, float scale, float shadow, String... textures) {
-            super(context, new GribushkaModel<>(context.getResourceManager(), ArcaneArtifacts.id("entity_models/" + model + ".json")), shadow);
+            this(context, new String[]{model}, scale, shadow, textures);
+        }
+
+        public MycelinoidRenderer(EntityRendererProvider.Context context, String[] models, float scale, float shadow, String... textures) {
+            super(context, new GribushkaModel<>(context.getResourceManager(), ArcaneArtifacts.id("entity_models/" + models[0] + ".json")), shadow);
+            this.models = new java.util.ArrayList<>();
+            this.models.add(getModel());
+            for (int i = 1; i < models.length; i++) {
+                this.models.add(new GribushkaModel<>(context.getResourceManager(), ArcaneArtifacts.id("entity_models/" + models[i] + ".json")));
+            }
             this.textures = java.util.Arrays.stream(textures).map(t -> ArcaneArtifacts.id("textures/entity/" + t + ".png"))
                     .toArray(ResourceLocation[]::new);
             this.scale = scale;
             addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
+        }
+
+        @Override
+        public void render(T entity, float yaw, float partialTick, com.mojang.blaze3d.vertex.PoseStack pose,
+                           net.minecraft.client.renderer.MultiBufferSource buffers, int light) {
+            model = models.get(Math.min(Math.max(entity.getVariant(), 0), models.size() - 1));
+            super.render(entity, yaw, partialTick, pose, buffers, light);
         }
 
         @Override

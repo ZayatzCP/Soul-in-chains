@@ -76,18 +76,23 @@ public final class WornModels {
                 worn(BodyPart.LEFT_LEG, "pseudomage_boots_left")));
         ATTACHMENTS.put(ModItems.RING_OF_CALM, List.of(worn(BodyPart.RIGHT_ARM, "ring_of_calm")));
         ATTACHMENTS.put(ModItems.BOTTOMLESS_BELT, List.of(worn(BodyPart.BODY, "bottomless_belt")));
-        // Pseudomage: the bandolier shows its cartridges once there are any.
+        // Pseudomage (the designer's outfit, tools/generate_batch18.py). Parts the Java model format cannot turn
+        // are separate models, turned here: the bandolier's strap runs across the chest at 55 degrees.
         ATTACHMENTS.put(ModItems.BANDOLIER, List.of(
-                new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/bandolier"), Placement.NONE,
-                        stack -> com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack) == 0),
-                new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/bandolier_loaded"), Placement.NONE,
-                        stack -> com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack) > 0)));
+                turned(BodyPart.BODY, "bandolier", 10f, -4f, 8f, 0f, 0f, -55.00933f),
+                turned(BodyPart.BODY, "bandolier_2", 9.8504f, -16.5255f, 8f, 0f, 0f, -90f),
+                turned(BodyPart.BODY, "bandolier_3", 1.8222f, -5.056f, 8f, 0f, 0f, -90f)));
         ATTACHMENTS.put(ModItems.COUNTERFEIT_RING, List.of(worn(BodyPart.RIGHT_ARM, "counterfeit_ring")));
         ATTACHMENTS.put(ModItems.COUNTERFEIT_PENDANT, List.of(worn(BodyPart.BODY, "counterfeit_pendant")));
         ATTACHMENTS.put(ModItems.MANA_GOGGLES, List.of(worn(BodyPart.HEAD, "mana_goggles")));
-        ATTACHMENTS.put(ModItems.SOMBRERO, List.of(worn(BodyPart.HEAD, "sombrero")));
+        // The hat sits at a jaunty angle: its brim and crown are turned separately.
+        ATTACHMENTS.put(ModItems.SOMBRERO, List.of(
+                worn(BodyPart.HEAD, "sombrero"),
+                turned(BodyPart.HEAD, "sombrero_2", 36.5527f, 13.7446f, 6.97f, 9.97613f, 0.69405f, -3.93942f),
+                turned(BodyPart.HEAD, "sombrero_3", 40.7175f, 10.2905f, 8f, 0f, 0f, -10f)));
         ATTACHMENTS.put(ModItems.PONCHO, List.of(
                 worn(BodyPart.BODY, "poncho"),
+                worn(BodyPart.HEAD, "poncho_hood"),
                 worn(BodyPart.RIGHT_ARM, "poncho_right"),
                 worn(BodyPart.LEFT_ARM, "poncho_left")));
         // The worn amulet follows its polarity, like the icon.
@@ -107,11 +112,21 @@ public final class WornModels {
             worn(BodyPart.RIGHT_ARM, "focusing_gloves_right"),
             worn(BodyPart.LEFT_ARM, "focusing_gloves_left"));
 
+    /** The Pseudomage's gloves: drawn on both hands while a revolver or a sawn-off is held (see GlovesRenderer). */
+    public static final List<Attachment> PSEUDOMAGE_GLOVES = List.of(
+            worn(BodyPart.RIGHT_ARM, "pseudomage_glove_right"),
+            worn(BodyPart.LEFT_ARM, "pseudomage_glove_left"));
+
     private WornModels() {
     }
 
     private static Attachment worn(BodyPart part, String name) {
         return new Attachment(part, ArcaneArtifacts.id("item/worn/" + name), Placement.NONE);
+    }
+
+    private static Attachment turned(BodyPart part, String name, float pivotX, float pivotY, float pivotZ, float rotX, float rotY, float rotZ) {
+        return new Attachment(part, ArcaneArtifacts.id("item/worn/" + name),
+                new Placement(pivotX, pivotY, pivotZ, rotX, rotY, rotZ, 0f, 0f, 0f, false, 0f));
     }
 
     public static Map<Supplier<? extends Item>, List<Attachment>> all() {

@@ -25,7 +25,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.GRIBUSHKA.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
                 "mycelinoid", 1.09F, 0.5F, "mycelinoid_a", "mycelinoid_b"));
         event.registerEntityRenderer(ModEntities.AMANITOID.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
-                "amanitoid", 0.98F, 0.6F, "amanitoid_a", "amanitoid_b"));
+                new String[]{"amanitoid", "amanitoid_b"}, 0.98F, 0.6F, "amanitoid_a", "amanitoid_b"));
         event.registerEntityRenderer(ModEntities.ELDER_MYCELINOID.get(), context -> new CreatureRenderers.MycelinoidRenderer<>(context,
                 "elder_mycelinoid", 0.96F, 0.5F, "elder_mycelinoid"));
         event.registerEntityRenderer(ModEntities.GRIBULKA.get(), CreatureRenderers.GribulkaRenderer::new);
@@ -80,6 +80,7 @@ public final class ClientSetup {
     public static void registerWornModels(ModelEvent.RegisterAdditional event) {
         WornModels.all().values().forEach(list -> list.forEach(attachment -> event.register(attachment.location())));
         WornModels.GLOVES.forEach(attachment -> event.register(attachment.location()));
+        WornModels.PSEUDOMAGE_GLOVES.forEach(attachment -> event.register(attachment.location()));
     }
 
     @SubscribeEvent
@@ -114,5 +115,6 @@ public final class ClientSetup {
     public static void registerKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
         event.register(BeltKey.KEY);
         event.register(BeltKey.AMULET_KEY);
+        event.register(BeltKey.BANDOLIER_KEY);
     }
 }
