@@ -59,7 +59,7 @@ public class MushroomMossCoatFeature extends Feature<NoneFeatureConfiguration> {
                     }
                     for (Direction direction : DIRECTIONS) {
                         side.setWithOffset(pos, direction);
-                        if (level.getBlockState(side).is(ModTags.MUSHROOM_MOSS_REPLACEABLE)) {
+                        if (MossZones.mossy(side) && level.getBlockState(side).is(ModTags.MUSHROOM_MOSS_REPLACEABLE)) {
                             level.setBlock(side, moss, 2);
                             placed = true;
                         }

@@ -280,7 +280,7 @@ public final class HouseBuilder {
             for (int dz = -r; dz <= r; dz++) {
                 BlockPos pos = floor.offset(dx, 0, dz);
                 boolean edge = Math.abs(dx) == r || Math.abs(dz) == r;
-                set(pos.below(), edge ? wood.planks.get().defaultBlockState() : ModBlocks.CAVE_MYCELIUM.get().defaultBlockState());
+                set(pos.below(), edge ? wood.planks.get().defaultBlockState() : Blocks.MYCELIUM.defaultBlockState());
                 if (edge) {
                     set(pos, wood.fence.get().defaultBlockState());
                 } else if ((dx + dz) % 2 == 0 && (Math.abs(dx) > 1 || Math.abs(dz) > 1)) {

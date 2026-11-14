@@ -29,6 +29,16 @@ public final class MossZones {
         return ((cycles % ZONES.length) + ZONES.length) % ZONES.length;
     }
 
+    /**
+     * Whether the mushroom moss grows at {@code pos}: it covers the caves in broad patches, not all of them;
+     * between the patches the stone shows, with dirt, mud and mycelium.
+     */
+    public static boolean mossy(BlockPos pos) {
+        double noise = Math.sin(pos.getX() * 0.13 + 0.4) + Math.sin(pos.getZ() * 0.11 + 2.1) + Math.sin(pos.getY() * 0.19 + 1.1)
+                + 0.5 * Math.sin((pos.getX() - pos.getZ()) * 0.07);
+        return noise > 0.35;
+    }
+
     /** The mushroom of the zone {@code pos} is in. */
     public static ArcaneMushroom zone(BlockPos pos) {
         return ZONES[(int) Math.floor(position(pos)) % ZONES.length];

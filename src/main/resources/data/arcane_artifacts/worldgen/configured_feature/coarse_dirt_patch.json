@@ -5,7 +5,7 @@
     "ground_state": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "arcane_artifacts:mycelium_soil"
+        "Name": "minecraft:coarse_dirt"
       }
     },
     "vegetation_feature": {
@@ -16,18 +16,14 @@
       "placement": []
     },
     "surface": "floor",
-    "depth": {
-      "type": "minecraft:uniform",
-      "min_inclusive": 1,
-      "max_inclusive": 3
-    },
+    "depth": 2,
     "extra_bottom_block_chance": 0.0,
     "vertical_range": 5,
     "vegetation_chance": 0.0,
     "xz_radius": {
       "type": "minecraft:uniform",
       "min_inclusive": 2,
-      "max_inclusive": 5
+      "max_inclusive": 4
     },
     "extra_edge_column_chance": 0.3
   }

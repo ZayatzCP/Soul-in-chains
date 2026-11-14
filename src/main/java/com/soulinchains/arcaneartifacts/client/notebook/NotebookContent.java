@@ -81,7 +81,7 @@ final class NotebookContent {
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mycelinoid_houses"),
                 new ItemStack(net.minecraft.world.item.Items.SHROOMLIGHT), "mycelinoid_houses", 3, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.cave_ground"),
-                new ItemStack(ModItems.CAVE_MYCELIUM.get()), "cave_ground", 2, null));
+                new ItemStack(net.minecraft.world.item.Items.MYCELIUM), "cave_ground", 2, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.mushroom_wood"),
                 new ItemStack(com.soulinchains.arcaneartifacts.registry.MushroomWood.SETS.get(com.soulinchains.arcaneartifacts.registry.MushroomWood.Kind.RED).planks.get()),
                 "mushroom_wood", 1, null));

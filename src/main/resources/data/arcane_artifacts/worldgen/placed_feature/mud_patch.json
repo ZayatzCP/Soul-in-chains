@@ -1,9 +1,9 @@
 {
-  "feature": "arcane_artifacts:mycelium_soil_patch",
+  "feature": "arcane_artifacts:mud_patch",
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 18
+      "count": 4
     },
     {
       "type": "minecraft:in_square"
@@ -13,10 +13,10 @@
       "height": {
         "type": "minecraft:uniform",
         "min_inclusive": {
-          "above_bottom": 0
+          "above_bottom": 8
         },
         "max_inclusive": {
-          "absolute": 64
+          "absolute": 56
         }
       }
     },

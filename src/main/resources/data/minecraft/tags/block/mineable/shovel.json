@@ -1,9 +1,6 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:mycelium_soil",
-    "arcane_artifacts:cave_mycelium",
-    "arcane_artifacts:spore_clay",
-    "arcane_artifacts:mycelial_mud"
+    "arcane_artifacts:spore_clay"
   ]
 }

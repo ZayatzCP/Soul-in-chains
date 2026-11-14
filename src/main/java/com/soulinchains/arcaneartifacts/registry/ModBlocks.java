@@ -59,18 +59,9 @@ public final class ModBlocks {
                     .noCollission().instabreak().replaceable().sound(SoundType.HANGING_ROOTS).lightLevel(state -> 3)
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     /** The ground of the Mushroom Caves. */
-    public static final DeferredBlock<net.minecraft.world.level.block.Block> MYCELIUM_SOIL = BLOCKS.register("mycelium_soil",
-            () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.ROOTED_DIRT)
-                    .mapColor(MapColor.DIRT)));
-    public static final DeferredBlock<net.minecraft.world.level.block.Block> CAVE_MYCELIUM = BLOCKS.register("cave_mycelium",
-            () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.MYCELIUM)
-                    .mapColor(MapColor.COLOR_PURPLE).lightLevel(state -> 3)));
     public static final DeferredBlock<net.minecraft.world.level.block.Block> SPORE_CLAY = BLOCKS.register("spore_clay",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.CLAY)
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)));
-    public static final DeferredBlock<net.minecraft.world.level.block.MudBlock> MYCELIAL_MUD = BLOCKS.register("mycelial_mud",
-            () -> new net.minecraft.world.level.block.MudBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.MUD)
-                    .mapColor(MapColor.TERRACOTTA_PURPLE)));
     public static final java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredBlock<com.soulinchains.arcaneartifacts.block.ArcaneMushroomBlock>> MUSHROOMS =
             mushrooms();
 

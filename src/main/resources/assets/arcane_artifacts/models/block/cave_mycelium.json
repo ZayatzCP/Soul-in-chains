@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "top": "arcane_artifacts:block/cave_mycelium_top",
-    "side": "arcane_artifacts:block/cave_mycelium_side",
-    "bottom": "arcane_artifacts:block/mycelium_soil",
-    "particle": "arcane_artifacts:block/mycelium_soil"
-  }
-}

@@ -5,7 +5,7 @@
     "ground_state": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "arcane_artifacts:mycelial_mud"
+        "Name": "minecraft:mud"
       }
     },
     "vegetation_feature": {
