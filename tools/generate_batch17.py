@@ -90,8 +90,8 @@ def snap(angle):
 
 def gun(model, texture_index, shift_x, texture_name):
     out = []
-    tex = model['textures'][texture_index]
-    uw = tex.get('uv_width', tex['width'])
+    # In a "java_block" project the face UVs are in the project resolution, whatever the texture's size.
+    uw = model['resolution']['width']
     for e in model['elements']:
         faces = {k: v for k, v in e['faces'].items() if v.get('texture') == texture_index}
         if not faces or any(v.get('texture') not in (texture_index, None) for v in e['faces'].values()):
@@ -123,7 +123,22 @@ def gun(model, texture_index, shift_x, texture_name):
     for el in out:
         for i in range(3):
             assert -16 <= el['from'][i] <= 32 and -16 <= el['to'][i] <= 32, el
-    display = {k: v for k, v in model['display'].items() if k != 'on_shelf'}
+    # Centre the gun where the old revolver was, and hold it like the old revolver was held.
+    xs = [c for el in out for c in (el['from'][0], el['to'][0])]
+    dx = 9.2 - (min(xs) + max(xs)) / 2
+    for el in out:
+        el['from'][0] += dx
+        el['to'][0] += dx
+        if 'rotation' in el:
+            el['rotation']['origin'][0] += dx
+    display = {
+        'thirdperson_righthand': {'rotation': [90, 180, 0], 'translation': [-1.2, 1, 6.5], 'scale': [0.7, 0.7, 0.7]},
+        'thirdperson_lefthand': {'rotation': [90, 180, 0], 'translation': [-1.2, 1, 6.5], 'scale': [0.7, 0.7, 0.7]},
+        'firstperson_righthand': {'rotation': [0, 180, 0], 'translation': [1.5, 4, 0], 'scale': [0.5, 0.5, 0.5]},
+        'firstperson_lefthand': {'rotation': [0, 180, 0], 'translation': [1.5, 4, 0], 'scale': [0.5, 0.5, 0.5]},
+        'ground': {'rotation': [0, 0, 0], 'translation': [0, 2, -3], 'scale': [0.4, 0.4, 0.4]},
+        'fixed': {'rotation': [0, 90, 0], 'translation': [0, 3, 0], 'scale': [0.5, 0.5, 0.5]},
+        'head': {'rotation': [0, 180, 0], 'translation': [0, 10, -6], 'scale': [0.7, 0.7, 0.7]}}
     return {'textures': {'gun': NS + ':item/' + texture_name, 'particle': NS + ':item/' + texture_name}, 'elements': out, 'display': display}
 
 
@@ -135,10 +150,11 @@ def texture_png(index, target):
     Image.open(io.BytesIO(base64.b64decode(data))).save(TEX + 'item/' + target + '.png')
 
 
-texture_png(7, 'revolver_3d')
-texture_png(0, 'sawn_off_3d')
-w(A + 'models/item/revolver_3d.json', gun(rev, 7, 0.0, 'revolver_3d'))
-w(A + 'models/item/sawn_off_3d.json', gun(rev, 0, 26.35, 'sawn_off_3d'))
+# The gun painted with texture 0 is the revolver, the one with texture 7 the sawn-off.
+texture_png(0, 'revolver_3d')
+texture_png(7, 'sawn_off_3d')
+w(A + 'models/item/revolver_3d.json', gun(rev, 0, 0.0, 'revolver_3d'))
+w(A + 'models/item/sawn_off_3d.json', gun(rev, 7, 0.0, 'sawn_off_3d'))
 w(A + 'models/item/sawn_off_icon.json', {'parent': 'minecraft:item/handheld', 'textures': {'layer0': NS + ':item/sawn_off'}})
 w(A + 'models/item/sawn_off.json', {'loader': 'neoforge:separate_transforms', 'gui_light': 'front',
                                     'base': {'parent': NS + ':item/sawn_off_3d'}, 'perspectives': {'gui': {'parent': NS + ':item/sawn_off_icon'}}})

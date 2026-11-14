@@ -82,7 +82,7 @@ public final class GribulkaModels {
         public void setupAnim(GribulkaHive entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
             float walk = limbSwing * 0.6F;
             for (int i = 0; i < legs.length; i++) {
-                legs[i].xRot = Mth.cos(walk + (i < 2 ? 0 : Mth.PI)) * 0.7F * limbSwingAmount;
+                legs[i].xRot = Mth.cos(walk + (i < 2 ? 0 : Mth.PI)) * 0.45F * limbSwingAmount;
             }
             body.zRot = Mth.cos(walk) * 0.05F * limbSwingAmount + Mth.sin(ageInTicks * 0.05F) * 0.015F;
             body.xRot = Mth.sin(ageInTicks * 0.04F) * 0.02F;

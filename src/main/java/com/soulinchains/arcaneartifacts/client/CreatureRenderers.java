@@ -80,7 +80,7 @@ public final class CreatureRenderers {
 
     public static final class GribulkaHiveRenderer extends MobRenderer<com.soulinchains.arcaneartifacts.entity.GribulkaHive, GribulkaModels.Hive> {
         private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/entity/gribulka_hive.png");
-        private static final float SCALE = 0.9F;
+        private static final float SCALE = 1.0F;
 
         public GribulkaHiveRenderer(EntityRendererProvider.Context context) {
             super(context, new GribulkaModels.Hive(context.getResourceManager(), ArcaneArtifacts.id("entity_models/gribulka_hive.json")), 0.8F);

@@ -93,7 +93,8 @@ def bake(model, spec):
             uv = [[u1 / uw, v1 / uh], [u1 / uw, v2 / uh], [u2 / uw, v2 / uh], [u2 / uw, v1 / uh]]
             shift = int(data.get('rotation', 0)) // 90
             uv = [uv[(i + shift) % 4] for i in range(4)]
-            quads.setdefault(part, []).append({'v': pts, 'uv': uv})
+            size = [abs(e['to'][i] - e['from'][i]) for i in range(3)]
+            quads.setdefault(part, []).append({'v': pts, 'uv': uv, 'el': e['uuid'], 'solid': min(size) > 0.5, 'h': size[1]})
     # Rules that are easier by position than by group.
     if 'left_arm_x' in spec:
         lo, hi = spec['left_arm_x']
@@ -140,15 +141,36 @@ def to_model_space(quads, turn):
                 x, z = x - cx, z - cz
                 x, z = x * math.cos(a) + z * math.sin(a), -x * math.sin(a) + z * math.cos(a)
                 vs.append([round(-x, 4), round(24 - (y - y0), 4), round(z, 4)])
-            nq.append({'v': vs, 'uv': [[round(u, 5), round(v, 5)] for u, v in q['uv']]})
+            nq.append({'v': vs, 'uv': [[round(u, 5), round(v, 5)] for u, v in q['uv']], 'el': q.get('el'), 'solid': q.get('solid', True),
+                       'h': q.get('h', 0)})
         out[part] = nq
     return out
 
 
+def main_element(qs):
+    solid = [q for q in qs if q.get('solid')]
+    return max(solid or qs, key=lambda q: q.get('h', 0)).get('el')
+
+
+def regroup(parts):
+    """Decorations filed under a leg but sitting wholly above it (mushrooms on the body) stay with the body."""
+    for part in [k for k in parts if 'leg' in k]:
+        qs = parts[part]
+        main = main_element(qs)
+        top = min(p[1] for q in qs if q.get('el') == main for p in q['v'])
+        stray = [q for q in qs if q.get('el') != main and max(p[1] for p in q['v']) <= top + 0.01]
+        if stray:
+            parts[part] = [q for q in qs if q not in stray]
+            parts.setdefault('body', []).extend(stray)
+    return parts
+
+
 def pivots(parts):
+    """A limb turns about the top of its main block (the tallest solid element), not of its decorations."""
     result = {}
     for part, qs in parts.items():
-        pts = [p for q in qs for p in q['v']]
+        main = main_element(qs)
+        pts = [p for q in qs if q.get('el') == main for p in q['v']] or [p for q in qs for p in q['v']]
         x = (min(p[0] for p in pts) + max(p[0] for p in pts)) / 2
         z = (min(p[2] for p in pts) + max(p[2] for p in pts)) / 2
         top = min(p[1] for p in pts)              # model space: y grows downwards
@@ -157,8 +179,11 @@ def pivots(parts):
         elif 'leg' in part:
             result[part] = [x, top, z]
         else:
-            legs = [min(p[1] for q in parts[k] for p in q['v']) for k in parts if 'leg' in k]
-            result[part] = [0.0, min(legs) if legs else 24.0, 0.0]
+            continue
+    legs = [result[k][1] for k in result if 'leg' in k]
+    if 'body' in parts:
+        # The body leans and turns about the hips: the top of the legs.
+        result['body'] = [0.0, max(legs) if legs else 24.0, 0.0]
     return result
 
 
@@ -168,8 +193,9 @@ if __name__ == '__main__':
     turns = json.loads(sys.argv[3]) if len(sys.argv) > 3 else {}
     for name, spec in MOBS.items():
         quads, size = bake(model, spec)
-        parts = to_model_space(quads, turns.get(name, 0))
+        parts = regroup(to_model_space(quads, turns.get(name, 0)))
         piv = pivots(parts)
-        json.dump({'texture_size': list(size), 'parts': {k: {'pivot': piv[k], 'quads': v} for k, v in parts.items()}},
+        clean = {k: [{'v': q['v'], 'uv': q['uv']} for q in v] for k, v in parts.items()}
+        json.dump({'texture_size': list(size), 'parts': {k: {'pivot': piv[k], 'quads': v} for k, v in clean.items()}},
                   open(f'{out}/{name}.json', 'w'), separators=(',', ':'))
         print(name, {k: len(v) for k, v in parts.items()})
