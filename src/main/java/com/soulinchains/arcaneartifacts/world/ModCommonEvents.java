@@ -27,6 +27,9 @@ public final class ModCommonEvents {
         event.put(ModEntities.ELDER_MYCELINOID.get(), com.soulinchains.arcaneartifacts.entity.ElderMycelinoid.createAttributes().build());
         event.put(ModEntities.GRIBULKA.get(), com.soulinchains.arcaneartifacts.entity.Gribulka.createAttributes().build());
         event.put(ModEntities.GRIBULKA_HIVE.get(), com.soulinchains.arcaneartifacts.entity.GribulkaHive.createAttributes().build());
+        event.put(ModEntities.FLYING_BROOM.get(), com.soulinchains.arcaneartifacts.mount.FlyingBroom.createAttributes().build());
+        event.put(ModEntities.MOSS_ELK.get(), com.soulinchains.arcaneartifacts.mount.MossElk.createAttributes().build());
+        event.put(ModEntities.IRON_HORSE.get(), com.soulinchains.arcaneartifacts.mount.IronHorse.createAttributes().build());
     }
 
     @SubscribeEvent

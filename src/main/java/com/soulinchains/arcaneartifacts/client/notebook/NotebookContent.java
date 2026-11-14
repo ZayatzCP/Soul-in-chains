@@ -52,6 +52,7 @@ final class NotebookContent {
         entries.add(gatedItemEntry(font, ModItems.RING_OF_REVERSAL.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MANTLE_OF_REFLECTION.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.SPELL_STAFF.get(), 2, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.FLYING_BROOM.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.CRYSTAL_BALL.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.BOTTOMLESS_BELT.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.AMULET_OF_OPPOSITES.get(), 2, lockedItems));
@@ -124,6 +125,7 @@ final class NotebookContent {
         entries.add(itemEntry(font, ModItems.DRUID_HERBARIUM.get(), 1));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.druid_gear"),
                 new ItemStack(ModItems.DRUID_MANTLE.get()), "druid_gear", 1, null));
+        entries.add(gatedItemEntry(font, ModItems.MOSS_ELK_CALL.get(), 2, ArcaneDocumentation.lockedItems()));
         return entries;
     }
 
@@ -138,6 +140,7 @@ final class NotebookContent {
         Set<ResourceLocation> lockedItems = ArcaneDocumentation.lockedItems();
         entries.add(gatedItemEntry(font, ModItems.REVOLVER.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.SAWN_OFF.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.IRON_HORSE.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MAGIC_CARTRIDGE.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.BANDOLIER.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.COUNTERFEIT_RING.get(), 1, lockedItems));

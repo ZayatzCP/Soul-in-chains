@@ -28,6 +28,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.RING_OF_REVERSAL.get());
                 output.accept(ModItems.MANTLE_OF_REFLECTION.get());
                 output.accept(ModItems.SPELL_STAFF.get());
+                output.accept(ModItems.FLYING_BROOM.get());
                 output.accept(ModItems.CRYSTAL_BALL.get());
                 output.accept(ModItems.BOTTOMLESS_BELT.get());
                 output.accept(ModItems.AMULET_OF_OPPOSITES.get());
@@ -63,6 +64,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.MUSHROOM_SHIELD.get());
                 output.accept(ModItems.MUSHROOM_CLUB.get());
                 output.accept(ModItems.FALSE_MAGE_GUIDE.get());
+                output.accept(ModItems.IRON_HORSE.get());
                 output.accept(ModItems.REVOLVER.get());
                 output.accept(ModItems.SAWN_OFF.get());
                 output.accept(ModItems.MAGIC_CARTRIDGE.get());
@@ -76,6 +78,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.AMBER_CLUSTER.get());
                 output.accept(ModItems.PSEUDOMAGE_BOOTS.get());
                 output.accept(ModItems.DRUID_HERBARIUM.get());
+                output.accept(ModItems.MOSS_ELK_CALL.get());
                 output.accept(ModItems.DRUID_MANTLE.get());
                 output.accept(ModItems.DRUID_HAT.get());
                 output.accept(ModItems.DRUID_GLOVES.get());

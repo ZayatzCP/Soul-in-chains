@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  G",
+    " S ",
+    "HF "
+  ],
+  "key": {
+    "G": {
+      "item": "ars_nouveau:source_gem"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "H": {
+      "item": "minecraft:hay_block"
+    },
+    "F": {
+      "item": "ars_nouveau:magebloom_fiber"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:flying_broom"
+  }
+}

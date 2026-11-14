@@ -54,6 +54,16 @@ public final class ModEntities {
                     .sized(0.2F, 0.2F).noSave().clientTrackingRange(8).updateInterval(1)
                     .build(ArcaneArtifacts.MODID + ":bullet"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.mount.FlyingBroom>> FLYING_BROOM = REGISTER.register("flying_broom",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.mount.FlyingBroom::new, MobCategory.MISC)
+                    .sized(0.9F, 0.5F).passengerAttachments(0.3F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":flying_broom"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.mount.MossElk>> MOSS_ELK = REGISTER.register("moss_elk",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.mount.MossElk::new, MobCategory.MISC)
+                    .sized(1.3F, 1.8F).passengerAttachments(1.55F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":moss_elk"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.mount.IronHorse>> IRON_HORSE = REGISTER.register("iron_horse",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.mount.IronHorse::new, MobCategory.MISC)
+                    .sized(1.3F, 1.7F).passengerAttachments(1.5F).fireImmune().clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":iron_horse"));
+
     private ModEntities() {
     }
 }

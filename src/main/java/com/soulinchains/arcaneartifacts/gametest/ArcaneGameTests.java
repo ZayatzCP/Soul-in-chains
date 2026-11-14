@@ -133,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -982,6 +982,35 @@ public final class ArcaneGameTests {
         BlockPos garden = helper.absolutePos(new BlockPos(4, 110, 4));
         builder.build(garden, com.soulinchains.arcaneartifacts.world.village.HouseType.GARDEN, red, net.minecraft.core.Direction.NORTH);
         helper.assertTrue(level.getBlockState(garden.north(4)).getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock, "The garden has a gate");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void classMounts(GameTestHelper helper) {
+        var horse = helper.spawn(ModEntities.IRON_HORSE.get(), new BlockPos(2, 1, 2));
+        helper.assertTrue(horse.getFuel() == 0, "A new Iron Horse has an empty firebox");
+        helper.assertTrue(horse.feed(new ItemStack(net.minecraft.world.item.Items.COAL)), "Coal must go into the firebox");
+        helper.assertTrue(horse.getFuel() == 1600 * com.soulinchains.arcaneartifacts.mount.IronHorse.FUEL_PER_BURN_TICK, "Coal must give its burn time as fuel");
+        helper.assertTrue(!horse.feed(new ItemStack(net.minecraft.world.item.Items.DIRT)), "Dirt does not burn");
+        ItemStack folded = horse.toItem();
+        helper.assertTrue(folded.is(ModItems.IRON_HORSE.get()), "The horse must fold into its item");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.mount.IronHorse.storedFuel(folded) == horse.getFuel(), "The fuel must stay with the folded horse");
+        var elk = helper.spawn(ModEntities.MOSS_ELK.get(), new BlockPos(5, 1, 2));
+        helper.assertTrue(elk.toItem().is(ModItems.MOSS_ELK_CALL.get()), "The elk must go back into its call");
+        helper.assertTrue(elk.canJump() == false, "An elk without a rider does not take jump orders");
+        var broom = helper.spawn(ModEntities.FLYING_BROOM.get(), new BlockPos(2, 2, 5));
+        helper.assertTrue(broom.isNoGravity(), "A broom does not fall like a stick");
+        helper.assertTrue(broom.toItem().is(ModItems.FLYING_BROOM.get()), "The broom must fold into its item");
+        Player rider = helper.makeMockPlayer(GameType.SURVIVAL);
+        var mana = com.hollingsworth.arsnouveau.setup.registry.CapabilityRegistry.getMana(rider);
+        if (mana != null) {
+            mana.setMaxMana(100);
+            mana.setMana(10);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.mount.FlyingBroom.drink(rider), "With mana the broom flies");
+            helper.assertTrue(Math.abs(mana.getCurrentMana() - (10 - com.soulinchains.arcaneartifacts.mount.FlyingBroom.MANA_PER_SECOND)) < 1.0E-6, "The broom must drink its mana");
+            mana.setMana(1);
+            helper.assertTrue(!com.soulinchains.arcaneartifacts.mount.FlyingBroom.drink(rider), "Without mana the broom only glides");
+        }
         helper.succeed();
     }
 

@@ -30,6 +30,9 @@ public final class ClientSetup {
                 "elder_mycelinoid", 0.96F, 0.5F, "elder_mycelinoid"));
         event.registerEntityRenderer(ModEntities.GRIBULKA.get(), CreatureRenderers.GribulkaRenderer::new);
         event.registerEntityRenderer(ModEntities.GRIBULKA_HIVE.get(), CreatureRenderers.GribulkaHiveRenderer::new);
+        event.registerEntityRenderer(ModEntities.FLYING_BROOM.get(), context -> new MountRenderer<>(context, "flying_broom", 0.4F));
+        event.registerEntityRenderer(ModEntities.MOSS_ELK.get(), context -> new MountRenderer<>(context, "moss_elk", 0.8F));
+        event.registerEntityRenderer(ModEntities.IRON_HORSE.get(), context -> new MountRenderer<>(context, "iron_horse", 0.8F));
         event.registerEntityRenderer(ModEntities.SPORE_CLOUD.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.CRYSTAL_ORB.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.8F, true));
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
