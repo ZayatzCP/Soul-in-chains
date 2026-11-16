@@ -1192,7 +1192,7 @@
   "display": {
     "thirdperson_righthand": {
       "rotation": [
-        4,
+        -2,
         180,
         0
       ],
@@ -1209,7 +1209,7 @@
     },
     "thirdperson_lefthand": {
       "rotation": [
-        4,
+        -2,
         180,
         0
       ],

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " A ",
+    "SAS",
     "NBN",
     " M "
   ],
@@ -18,6 +18,9 @@
     },
     "M": {
       "item": "minecraft:magma_cream"
+    },
+    "S": {
+      "item": "minecraft:armadillo_scute"
     }
   },
   "result": {

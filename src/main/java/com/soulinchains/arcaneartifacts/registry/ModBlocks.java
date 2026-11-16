@@ -31,7 +31,7 @@ public final class ModBlocks {
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)
-                    .strength(0.6f).sound(SoundType.MOSS).lightLevel(state -> 2)));
+                    .strength(0.6f).sound(SoundType.MOSS).lightLevel(state -> 3)));
     public static final DeferredBlock<net.minecraft.world.level.block.HugeMushroomBlock> BLUE_MUSHROOM_BLOCK = BLOCKS.register("blue_mushroom_block",
             () -> new com.soulinchains.arcaneartifacts.block.Bouncy.BouncyHugeMushroomBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.BROWN_MUSHROOM_BLOCK)
                     .mapColor(MapColor.COLOR_LIGHT_BLUE).lightLevel(state -> 7)));
@@ -52,11 +52,11 @@ public final class ModBlocks {
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.cave.CavePlantBlock> GLOWSPROUT = BLOCKS.register("glowsprout",
             () -> new com.soulinchains.arcaneartifacts.cave.CavePlantBlock(false, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)
-                    .noCollission().instabreak().replaceable().sound(SoundType.NETHER_SPROUTS).lightLevel(state -> 9)
+                    .noCollission().instabreak().replaceable().sound(SoundType.NETHER_SPROUTS).lightLevel(state -> 12)
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.cave.CavePlantBlock> HANGING_HYPHAE = BLOCKS.register("hanging_hyphae",
             () -> new com.soulinchains.arcaneartifacts.cave.CavePlantBlock(true, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY)
-                    .noCollission().instabreak().replaceable().sound(SoundType.HANGING_ROOTS).lightLevel(state -> 3)
+                    .noCollission().instabreak().replaceable().sound(SoundType.HANGING_ROOTS).lightLevel(state -> 7)
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     /** The ground of the Mushroom Caves. */
     public static final DeferredBlock<net.minecraft.world.level.block.Block> SPORE_CLAY = BLOCKS.register("spore_clay",

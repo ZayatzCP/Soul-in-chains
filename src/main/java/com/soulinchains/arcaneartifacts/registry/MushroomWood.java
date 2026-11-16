@@ -93,7 +93,7 @@ public final class MushroomWood {
 
     public static final DeferredBlock<CarpetBlock> MUSHROOM_MOSS_CARPET = ModBlocks.BLOCKS.register("mushroom_moss_carpet",
             () -> new CarpetBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).strength(0.1f)
-                    .sound(SoundType.MOSS_CARPET).lightLevel(state -> 2).pushReaction(PushReaction.DESTROY)));
+                    .sound(SoundType.MOSS_CARPET).lightLevel(state -> 3).pushReaction(PushReaction.DESTROY)));
     public static final DeferredItem<BlockItem> MUSHROOM_MOSS_CARPET_ITEM = ModItems.REGISTER.registerSimpleBlockItem(MUSHROOM_MOSS_CARPET);
 
     static {

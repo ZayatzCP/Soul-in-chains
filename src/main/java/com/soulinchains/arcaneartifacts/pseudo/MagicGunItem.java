@@ -145,9 +145,49 @@ public class MagicGunItem extends Item implements ICasterTool {
         ItemStack offhand = player.getOffhandItem();
         if (hand == InteractionHand.MAIN_HAND && offhand.getItem() instanceof MagicGunItem other
                 && (other == this || !player.getCooldowns().isOnCooldown(other))) {
-            acted |= other.trigger(player, offhand, InteractionHand.OFF_HAND);
+            // The second gun answers a moment later: bang, bang.
+            PENDING.add(new PendingShot(player.getUUID(), level.getGameTime() + ALTERNATE_DELAY));
+            acted = true;
         }
         return acted ? InteractionResultHolder.consume(gun) : InteractionResultHolder.fail(gun);
+    }
+
+    /** Ticks between the main-hand shot and the off-hand one when firing two guns. */
+    public static final int ALTERNATE_DELAY = 4;
+    private static final java.util.List<PendingShot> PENDING = new java.util.ArrayList<>();
+
+    private record PendingShot(java.util.UUID player, long due) {
+    }
+
+    /** Fires the off-hand guns whose turn has come. */
+    public static void firePending(net.minecraft.server.MinecraftServer server) {
+        if (PENDING.isEmpty()) {
+            return;
+        }
+        long now = server.overworld().getGameTime();
+        var it = PENDING.iterator();
+        while (it.hasNext()) {
+            PendingShot shot = it.next();
+            if (shot.due() > now) {
+                continue;
+            }
+            it.remove();
+            Player player = server.getPlayerList().getPlayer(shot.player());
+            if (player != null && player.isAlive() && player.getOffhandItem().getItem() instanceof MagicGunItem other) {
+                other.trigger(player, player.getOffhandItem(), InteractionHand.OFF_HAND);
+            }
+        }
+    }
+
+    @net.neoforged.fml.common.EventBusSubscriber(modid = com.soulinchains.arcaneartifacts.ArcaneArtifacts.MODID)
+    public static final class AlternateFire {
+        private AlternateFire() {
+        }
+
+        @net.neoforged.bus.api.SubscribeEvent
+        public static void onServerTick(net.neoforged.neoforge.event.tick.ServerTickEvent.Post event) {
+            firePending(event.getServer());
+        }
     }
 
     /** Fires one round, or reloads an empty gun (or a partly empty one while sneaking); false if it has no glyph. */

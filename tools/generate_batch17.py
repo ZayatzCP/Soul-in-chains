@@ -132,8 +132,8 @@ def gun(model, texture_index, shift_x, texture_name):
         if 'rotation' in el:
             el['rotation']['origin'][0] += dx
     display = {
-        'thirdperson_righthand': {'rotation': [4, 180, 0], 'translation': [0, 0, 0], 'scale': [0.45, 0.45, 0.45]},
-        'thirdperson_lefthand': {'rotation': [4, 180, 0], 'translation': [0, 0, 0], 'scale': [0.45, 0.45, 0.45]},
+        'thirdperson_righthand': {'rotation': [-2, 180, 0], 'translation': [0, 0, 0], 'scale': [0.45, 0.45, 0.45]},
+        'thirdperson_lefthand': {'rotation': [-2, 180, 0], 'translation': [0, 0, 0], 'scale': [0.45, 0.45, 0.45]},
         'firstperson_righthand': {'rotation': [0, 180, 0], 'translation': [1.5, 4, 0], 'scale': [0.4, 0.4, 0.4]},
         'firstperson_lefthand': {'rotation': [0, 180, 0], 'translation': [1.5, 4, 0], 'scale': [0.4, 0.4, 0.4]},
         'ground': {'rotation': [0, 0, 0], 'translation': [0, 2, -3], 'scale': [0.3, 0.3, 0.3]},
