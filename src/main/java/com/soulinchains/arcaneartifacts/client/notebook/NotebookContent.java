@@ -100,7 +100,7 @@ final class NotebookContent {
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
-        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus", "spore_infection"}) {
+        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus", "spore_infection", "entangled"}) {
             effects.add(new Paragraph(Component.translatable("effect.arcane_artifacts." + effect).withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
             effects.add(new Paragraph(Component.translatable("arcane_artifacts.effect_doc." + effect), ArcaneNotebookScreen.INK_COLOR));
         }
@@ -125,7 +125,14 @@ final class NotebookContent {
         entries.add(itemEntry(font, ModItems.DRUID_HERBARIUM.get(), 1));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.druid_gear"),
                 new ItemStack(ModItems.DRUID_MANTLE.get()), "druid_gear", 1, null));
-        entries.add(gatedItemEntry(font, ModItems.MOSS_ELK_CALL.get(), 2, ArcaneDocumentation.lockedItems()));
+        Set<ResourceLocation> lockedItems = ArcaneDocumentation.lockedItems();
+        entries.add(gatedItemEntry(font, ModItems.DRUID_MANTLE.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.DRUID_HAT.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.DRUID_GLOVES.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.DRUID_BOOTS.get(), 1, lockedItems));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.root_magic"),
+                new ItemStack(com.soulinchains.arcaneartifacts.glyph.EffectEntangle.INSTANCE.getGlyph()), "root_magic", 2, null));
+        entries.add(gatedItemEntry(font, ModItems.MOSS_ELK_CALL.get(), 2, lockedItems));
         return entries;
     }
 
@@ -143,6 +150,11 @@ final class NotebookContent {
         entries.add(gatedItemEntry(font, ModItems.REVOLVER.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.SAWN_OFF.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.PSEUDOMAGE_GLOVES.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, ModItems.GUNSMITH_BENCH.get(), 2, lockedItems));
+        if (!lockedItems.contains(ArcaneArtifacts.id("gunsmith_bench"))) {
+            entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.gun_parts"),
+                    new ItemStack(ModItems.GUN_PARTS.get(com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part.LONG_BARREL).get()), "gun_parts", 2, null));
+        }
         entries.add(gatedItemEntry(font, ModItems.IRON_HORSE.get(), 2, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.MAGIC_CARTRIDGE.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.BANDOLIER.get(), 1, lockedItems));

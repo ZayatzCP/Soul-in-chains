@@ -140,15 +140,27 @@ public final class ModItems {
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem> PSEUDOMAGE_GLOVES = REGISTER.register("pseudomage_gloves",
             com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_MANTLE = REGISTER.register("druid_mantle",
-            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidGearItem(com.soulinchains.arcaneartifacts.druid.DruidGearItem.Piece.MANTLE));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_HAT = REGISTER.register("druid_hat",
-            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidGearItem(com.soulinchains.arcaneartifacts.druid.DruidGearItem.Piece.HAT));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_GLOVES = REGISTER.register("druid_gloves",
-            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidGearItem(com.soulinchains.arcaneartifacts.druid.DruidGearItem.Piece.GLOVES));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_BOOTS = REGISTER.register("druid_boots",
-            com.soulinchains.arcaneartifacts.druid.DruidGearItem::new);
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidGearItem(com.soulinchains.arcaneartifacts.druid.DruidGearItem.Piece.BOOTS));
     public static final DeferredItem<BlockItem> MANA_PIPE = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_PIPE);
     public static final DeferredItem<BlockItem> MANA_PUMP = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_PUMP);
+    public static final DeferredItem<BlockItem> GUNSMITH_BENCH = REGISTER.registerSimpleBlockItem(ModBlocks.GUNSMITH_BENCH);
+    public static final java.util.Map<com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part, DeferredItem<com.soulinchains.arcaneartifacts.pseudo.GunPartItem>> GUN_PARTS = gunParts();
+
+    private static java.util.Map<com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part, DeferredItem<com.soulinchains.arcaneartifacts.pseudo.GunPartItem>> gunParts() {
+        var map = new java.util.EnumMap<com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part, DeferredItem<com.soulinchains.arcaneartifacts.pseudo.GunPartItem>>(
+                com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part.class);
+        for (var part : com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part.values()) {
+            map.put(part, REGISTER.register(part.name().toLowerCase(java.util.Locale.ROOT),
+                    () -> new com.soulinchains.arcaneartifacts.pseudo.GunPartItem(part)));
+        }
+        return map;
+    }
 
     private static java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>> mushrooms() {
         var map = new java.util.EnumMap<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredItem<BlockItem>>(

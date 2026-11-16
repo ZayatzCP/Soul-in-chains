@@ -37,6 +37,11 @@ public final class ModComponents {
             REGISTER.registerComponentType("gun_rounds", b -> b.persistent(com.mojang.serialization.Codec.INT)
                     .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
 
+    /** Parts fitted into a firearm at Farraday's Workshop (barrel, cylinder, stock). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<net.minecraft.world.item.component.ItemContainerContents>> GUN_PARTS =
+            REGISTER.registerComponentType("gun_parts", b -> b.persistent(net.minecraft.world.item.component.ItemContainerContents.CODEC)
+                    .networkSynchronized(net.minecraft.world.item.component.ItemContainerContents.STREAM_CODEC));
+
     private ModComponents() {
     }
 }

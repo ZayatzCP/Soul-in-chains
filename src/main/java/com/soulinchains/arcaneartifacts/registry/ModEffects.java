@@ -58,6 +58,9 @@ public final class ModEffects {
             () -> new ArcaneStatusEffect(MobEffectCategory.BENEFICIAL, 0xD9A441, false));
 
     /** Mycelinoid spores: sneezing every 2.5 seconds, passed on to other monsters nearby. */
+    /** Entangled (the Druid's glyph): cannot walk or jump. */
+    public static final DeferredHolder<MobEffect, MobEffect> ENTANGLED = REGISTER.register("entangled",
+            com.soulinchains.arcaneartifacts.effect.RootedEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> SPORE_INFECTION = REGISTER.register("spore_infection",
             com.soulinchains.arcaneartifacts.spore.SporeInfectionEffect::new);
 

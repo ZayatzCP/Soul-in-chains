@@ -69,10 +69,7 @@ public class MossElk extends ClassMount implements PlayerRideableJumping {
 
     /** Grass, moss, leaves, dirt, mycelium: ground a druid's elk draws strength from. */
     public boolean onLivingGround() {
-        BlockPos below = getBlockPosBelowThatAffectsMyMovement();
-        BlockState state = level().getBlockState(below);
-        return state.is(BlockTags.DIRT) || state.is(BlockTags.LEAVES) || state.is(Blocks.MOSS_CARPET)
-                || level().getBlockState(blockPosition()).is(BlockTags.REPLACEABLE_BY_TREES);
+        return com.soulinchains.arcaneartifacts.druid.RootMagic.onLivingGround(this);
     }
 
     // ------------------------------------------------------------------ the charged jump

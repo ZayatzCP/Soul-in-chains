@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "MMM"
+  ],
+  "key": {
+    "S": {
+      "tag": "minecraft:saplings"
+    },
+    "M": {
+      "item": "minecraft:moss_carpet"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:druid_hat"
+  }
+}

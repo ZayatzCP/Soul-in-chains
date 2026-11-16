@@ -66,6 +66,8 @@ public final class ModCreativeTab {
                 output.accept(ModItems.FALSE_MAGE_GUIDE.get());
                 output.accept(ModItems.IRON_HORSE.get());
                 output.accept(ModItems.PSEUDOMAGE_GLOVES.get());
+                output.accept(ModItems.GUNSMITH_BENCH.get());
+                ModItems.GUN_PARTS.values().forEach(part -> output.accept(part.get()));
                 output.accept(ModItems.REVOLVER.get());
                 output.accept(ModItems.SAWN_OFF.get());
                 output.accept(ModItems.MAGIC_CARTRIDGE.get());

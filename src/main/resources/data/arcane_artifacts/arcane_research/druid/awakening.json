@@ -45,6 +45,15 @@
   ],
   "notes": 1,
   "unlocks_items": [
-    "arcane_artifacts:moss_elk_call"
+    "arcane_artifacts:moss_elk_call",
+    "arcane_artifacts:druid_mantle",
+    "arcane_artifacts:druid_hat",
+    "arcane_artifacts:druid_gloves",
+    "arcane_artifacts:druid_boots"
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_entangle",
+    "arcane_artifacts:glyph_grove",
+    "arcane_artifacts:glyph_gribulka_swarm"
   ]
 }

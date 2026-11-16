@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "L L",
+    "LML",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "M": {
+      "item": "minecraft:moss_block"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:druid_mantle"
+  }
+}

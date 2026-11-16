@@ -59,6 +59,38 @@ public class MagicGunItem extends Item implements ICasterTool {
         return magazine;
     }
 
+    /** The magazine of this gun with its parts: a drum cylinder holds half as many again. */
+    public int magazine(ItemStack gun) {
+        return GunParts.has(gun, GunPartItem.Part.DRUM_CYLINDER) ? (magazine * 3 + 1) / 2 : magazine;
+    }
+
+    /** Spread with the parts (and the Pseudomage's gloves). */
+    public float spread(ItemStack gun, Player player) {
+        float result = spread;
+        if (GunParts.has(gun, GunPartItem.Part.LONG_BARREL)) {
+            result *= 0.5F;
+        } else if (GunParts.has(gun, GunPartItem.Part.SHORT_BARREL)) {
+            result *= 1.5F;
+        }
+        return PseudomageGlovesItem.isWearing(player) ? result * PseudomageGlovesItem.SPREAD : result;
+    }
+
+    /** Ticks between shots with the parts (and the gloves). */
+    public int fireCooldown(ItemStack gun, Player player) {
+        int ticks = GunParts.has(gun, GunPartItem.Part.SHORT_BARREL) ? Math.max(1, Math.round(fireCooldown * 0.75F)) : fireCooldown;
+        return PseudomageGlovesItem.scale(player, ticks, PseudomageGlovesItem.COOLDOWN);
+    }
+
+    /** Reload time with the parts (and the gloves). */
+    public int reloadTicks(ItemStack gun, Player player) {
+        int ticks = GunParts.has(gun, GunPartItem.Part.SPEED_LOADER) ? Math.max(1, reloadTicks / 2) : reloadTicks;
+        return PseudomageGlovesItem.scale(player, ticks, PseudomageGlovesItem.RELOAD);
+    }
+
+    public static float bulletSpeed(ItemStack gun) {
+        return GunParts.has(gun, GunPartItem.Part.LONG_BARREL) ? 3.2F * 1.4F : 3.2F;
+    }
+
     public static int rounds(ItemStack stack) {
         return stack.getOrDefault(ModComponents.GUN_ROUNDS, 0);
     }
@@ -118,7 +150,7 @@ public class MagicGunItem extends Item implements ICasterTool {
     /** Fires one round, or reloads an empty gun (or a partly empty one while sneaking); false if it has no glyph. */
     public boolean trigger(Player player, ItemStack gun, InteractionHand hand) {
         int rounds = rounds(gun);
-        if (rounds <= 0 || (player.isShiftKeyDown() && rounds < magazine)) {
+        if (rounds <= 0 || (player.isShiftKeyDown() && rounds < magazine(gun))) {
             reload(player, gun);
             return true;
         }
@@ -127,9 +159,15 @@ public class MagicGunItem extends Item implements ICasterTool {
             player.displayClientMessage(Component.translatable("arcane_artifacts.gun.empty_glyph").withStyle(ChatFormatting.GRAY), true);
             return false;
         }
-        fire(player, gun, bulletSpell(spell), hand);
-        gun.set(ModComponents.GUN_ROUNDS, rounds - 1);
-        player.getCooldowns().addCooldown(this, PseudomageGlovesItem.scale(player, fireCooldown, PseudomageGlovesItem.COOLDOWN));
+        Spell bullet = bulletSpell(spell);
+        fire(player, gun, bullet, hand);
+        if (GunParts.has(gun, GunPartItem.Part.HORSESHOE_STOCK) && player.getRandom().nextFloat() < 0.15F) {
+            fire(player, gun, bullet, hand);   // the horseshoe: a lucky second volley
+        }
+        if (!(GunParts.has(gun, GunPartItem.Part.AMBER_STOCK) && player.getRandom().nextFloat() < 0.2F)) {
+            gun.set(ModComponents.GUN_ROUNDS, rounds - 1);
+        }
+        player.getCooldowns().addCooldown(this, fireCooldown(gun, player));
         return true;
     }
 
@@ -143,8 +181,7 @@ public class MagicGunItem extends Item implements ICasterTool {
             BulletEntity bullet = new BulletEntity(level, player, new SpellResolver(context));
             Vec3 eye = player.getEyePosition().add(side);
             bullet.setPos(eye.x, eye.y - 0.1, eye.z);
-            bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3.2F,
-                    PseudomageGlovesItem.isWearing(player) ? spread * PseudomageGlovesItem.SPREAD : spread);
+            bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, bulletSpeed(gun), spread(gun, player));
             level.addFreshEntity(bullet);
         }
         level.playSound(null, player.blockPosition(), pellets > 1 ? SoundEvents.GENERIC_EXPLODE.value() : SoundEvents.FIREWORK_ROCKET_BLAST,
@@ -154,7 +191,7 @@ public class MagicGunItem extends Item implements ICasterTool {
     /** Loads rounds: cartridges from the worn bandolier first, then from the inventory. */
     private void reload(Player player, ItemStack gun) {
         int rounds = rounds(gun);
-        int needed = magazine - rounds;
+        int needed = magazine(gun) - rounds;
         int loaded = 0;
         ItemStack bandolier = FalseMana.bandolier(player);
         if (!bandolier.isEmpty()) {
@@ -179,7 +216,7 @@ public class MagicGunItem extends Item implements ICasterTool {
             return;
         }
         gun.set(ModComponents.GUN_ROUNDS, rounds + loaded);
-        player.getCooldowns().addCooldown(this, PseudomageGlovesItem.scale(player, reloadTicks, PseudomageGlovesItem.RELOAD));
+        player.getCooldowns().addCooldown(this, reloadTicks(gun, player));
         player.level().playSound(null, player.blockPosition(), SoundEvents.CROSSBOW_LOADING_END.value(), SoundSource.PLAYERS, 1.0f, 1.3f);
     }
 
@@ -187,7 +224,12 @@ public class MagicGunItem extends Item implements ICasterTool {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
         tooltip.add(Component.translatable(getDescriptionId() + ".desc.1").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("arcane_artifacts.gun.rounds", rounds(stack), magazine).withStyle(ChatFormatting.GOLD));
+        tooltip.add(Component.translatable("arcane_artifacts.gun.rounds", rounds(stack), magazine(stack)).withStyle(ChatFormatting.GOLD));
+        for (ItemStack part : GunParts.all(stack)) {
+            if (!part.isEmpty()) {
+                tooltip.add(Component.literal(" + ").append(part.getHoverName()).withStyle(ChatFormatting.YELLOW));
+            }
+        }
         Spell spell = storedSpell(stack);
         tooltip.add(spell.isEmpty()
                 ? Component.translatable("arcane_artifacts.gun.empty_glyph").withStyle(ChatFormatting.DARK_GRAY)
@@ -196,12 +238,12 @@ public class MagicGunItem extends Item implements ICasterTool {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return rounds(stack) < magazine;
+        return rounds(stack) < magazine(stack);
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return Math.round(13.0f * rounds(stack) / magazine);
+        return Math.round(13.0f * rounds(stack) / magazine(stack));
     }
 
     @Override

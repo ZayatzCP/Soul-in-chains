@@ -133,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse", "pseudomage_gloves")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse", "pseudomage_gloves", "druid_mantle", "druid_hat", "druid_gloves", "druid_boots", "gunsmith_bench", "long_barrel", "short_barrel", "drum_cylinder", "speed_loader", "amber_stock", "horseshoe_stock", "glyph_entangle", "glyph_grove", "glyph_gribulka_swarm")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -982,6 +982,53 @@ public final class ArcaneGameTests {
         BlockPos garden = helper.absolutePos(new BlockPos(4, 110, 4));
         builder.build(garden, com.soulinchains.arcaneartifacts.world.village.HouseType.GARDEN, red, net.minecraft.core.Direction.NORTH);
         helper.assertTrue(level.getBlockState(garden.north(4)).getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock, "The garden has a gate");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void rootMagicGlyphs(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(6, 1, 6));
+        com.soulinchains.arcaneartifacts.glyph.EffectEntangle.entangle(level, zombie, 60, null);
+        helper.assertTrue(zombie.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.ENTANGLED), "Entangle must hold the zombie");
+        var speed = zombie.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+        helper.assertTrue(speed.getValue() < 1.0E-6, "An entangled zombie cannot walk: speed " + speed.getValue());
+        BlockPos crop = new BlockPos(2, 1, 2);
+        helper.setBlock(crop.below(), net.minecraft.world.level.block.Blocks.FARMLAND);
+        helper.setBlock(crop, net.minecraft.world.level.block.Blocks.WHEAT);
+        int grown = com.soulinchains.arcaneartifacts.glyph.EffectGrove.grow(level, helper.absolutePos(crop), 0, 2);
+        helper.assertTrue(grown > 0 && helper.getBlockState(crop).getValue(net.minecraft.world.level.block.CropBlock.AGE) > 0, "Grove must make the wheat grow");
+        var swarm = com.soulinchains.arcaneartifacts.glyph.EffectSwarm.summon(level, helper.absoluteVec(new Vec3(4.5, 1, 4.5)), 2, 100);
+        helper.assertTrue(swarm.size() == 2 && swarm.stream().allMatch(com.soulinchains.arcaneartifacts.entity.Gribulka::isDecoy), "The swarm must bring two decoy Gribulkas");
+        swarm.get(0).taunt(level);
+        helper.assertTrue(zombie.getTarget() instanceof com.soulinchains.arcaneartifacts.entity.Gribulka, "Monsters must turn on the decoys");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void farradayWorkshopFitsParts(GameTestHelper helper) {
+        var revolver = new ItemStack(ModItems.REVOLVER.get());
+        var gun = (com.soulinchains.arcaneartifacts.pseudo.MagicGunItem) revolver.getItem();
+        helper.assertTrue(gun.magazine(revolver) == 6, "A bare revolver holds 6");
+        Player player = player(helper, 4.5, 1, 4.5);
+        var menu = new com.soulinchains.arcaneartifacts.pseudo.GunsmithMenu(0, player.getInventory(),
+                net.minecraft.world.inventory.ContainerLevelAccess.create(helper.getLevel(), helper.absolutePos(new BlockPos(1, 1, 1))));
+        var drum = new ItemStack(ModItems.GUN_PARTS.get(com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part.DRUM_CYLINDER).get());
+        helper.assertTrue(!menu.slots.get(2).mayPlace(drum), "No part goes in without a gun");
+        menu.slots.get(0).set(revolver);
+        helper.assertTrue(menu.slots.get(2).mayPlace(drum), "The drum fits the cylinder socket");
+        helper.assertTrue(!menu.slots.get(1).mayPlace(drum), "The drum does not fit the barrel socket");
+        menu.slots.get(2).set(drum);
+        ItemStack fitted = menu.slots.get(0).getItem();
+        helper.assertTrue(gun.magazine(fitted) == 9, "A drum makes it 9, got " + gun.magazine(fitted));
+        ItemStack taken = menu.slots.get(0).remove(1);
+        helper.assertTrue(menu.slots.get(2).getItem().isEmpty(), "The parts leave with the gun");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.pseudo.GunParts.has(taken, com.soulinchains.arcaneartifacts.pseudo.GunPartItem.Part.DRUM_CYLINDER),
+                "The gun taken out keeps its drum");
+        menu.slots.get(0).set(taken);
+        helper.assertTrue(menu.slots.get(2).getItem().is(drum.getItem()), "Putting the gun back shows its drum");
+        menu.slots.get(2).remove(1);
+        helper.assertTrue(gun.magazine(menu.slots.get(0).getItem()) == 6, "Taking the drum out removes it");
         helper.succeed();
     }
 

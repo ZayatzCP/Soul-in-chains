@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arcane_artifacts:block/gunsmith_bench"
+    },
+    "facing=east": {
+      "model": "arcane_artifacts:block/gunsmith_bench",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arcane_artifacts:block/gunsmith_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arcane_artifacts:block/gunsmith_bench",
+      "y": 270
+    }
+  }
+}

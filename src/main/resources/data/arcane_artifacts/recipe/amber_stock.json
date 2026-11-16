@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  A",
+    " AP",
+    "PP "
+  ],
+  "key": {
+    "A": {
+      "item": "arcane_artifacts:amber"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:amber_stock"
+  }
+}

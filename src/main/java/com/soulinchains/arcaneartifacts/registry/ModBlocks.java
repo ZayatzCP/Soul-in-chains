@@ -127,6 +127,13 @@ public final class ModBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResearchTableBlockEntity>> RESEARCH_TABLE_ENTITY =
             BLOCK_ENTITIES.register("research_table", () -> BlockEntityType.Builder.of(ResearchTableBlockEntity::new, RESEARCH_TABLE.get()).build(null));
 
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.GunsmithBenchBlock> GUNSMITH_BENCH = BLOCKS.register("gunsmith_bench",
+            () -> new com.soulinchains.arcaneartifacts.pseudo.GunsmithBenchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
+                    .strength(2.5f).sound(SoundType.WOOD)));
+    public static final DeferredHolder<MenuType<?>, MenuType<com.soulinchains.arcaneartifacts.pseudo.GunsmithMenu>> GUNSMITH_MENU =
+            MENUS.register("gunsmith_bench", () -> new MenuType<>(com.soulinchains.arcaneartifacts.pseudo.GunsmithMenu::new,
+                    net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS));
+
     public static final DeferredHolder<MenuType<?>, MenuType<ResearchTableMenu>> RESEARCH_TABLE_MENU =
             MENUS.register("research_table", () -> IMenuTypeExtension.create(ResearchTableMenu::new));
 

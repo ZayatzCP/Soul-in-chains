@@ -69,6 +69,7 @@ public final class ClientSetup {
         event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.ALCHEMICAL_DISTILLER_MENU.get(), AlchemicalDistillerScreen::new);
         event.register(com.soulinchains.arcaneartifacts.pseudo.PseudomageRegistry.BANDOLIER_MENU.get(), BandolierScreen::new);
         event.register(ModEntities.IRON_HORSE_MENU.get(), IronHorseScreen::new);
+        event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.GUNSMITH_MENU.get(), GunsmithScreen::new);
     }
 
     @SubscribeEvent

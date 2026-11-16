@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "top": "arcane_artifacts:block/gunsmith_bench_top",
+    "bottom": "arcane_artifacts:block/gunsmith_bench_bottom",
+    "side": "arcane_artifacts:block/gunsmith_bench_side",
+    "front": "arcane_artifacts:block/gunsmith_bench_front"
+  }
+}

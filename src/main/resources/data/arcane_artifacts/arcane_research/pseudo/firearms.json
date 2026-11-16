@@ -52,6 +52,13 @@
     "arcane_artifacts:sawn_off",
     "arcane_artifacts:magic_cartridge",
     "arcane_artifacts:bandolier",
-    "arcane_artifacts:pseudomage_gloves"
+    "arcane_artifacts:pseudomage_gloves",
+    "arcane_artifacts:gunsmith_bench",
+    "arcane_artifacts:long_barrel",
+    "arcane_artifacts:short_barrel",
+    "arcane_artifacts:drum_cylinder",
+    "arcane_artifacts:speed_loader",
+    "arcane_artifacts:amber_stock",
+    "arcane_artifacts:horseshoe_stock"
   ]
 }
