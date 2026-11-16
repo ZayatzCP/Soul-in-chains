@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CC",
+    "CC"
+  ],
+  "key": {
+    "C": {
+      "item": "arcane_artifacts:spore_clay"
+    }
+  },
+  "result": {
+    "count": 4,
+    "id": "arcane_artifacts:raw_spore_bricks"
+  }
+}

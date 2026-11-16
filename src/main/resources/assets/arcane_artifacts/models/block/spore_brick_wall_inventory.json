@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "arcane_artifacts:block/spore_bricks"
+  }
+}

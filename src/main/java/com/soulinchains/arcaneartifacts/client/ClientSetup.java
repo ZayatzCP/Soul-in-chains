@@ -43,16 +43,18 @@ public final class ClientSetup {
         event.registerLayerDefinition(MudzyaModel.LAYER, MudzyaModel::createLayer);
     }
 
-    /** Mushroom moss shifts from light blue to purple across the cave (by position, like grass by biome). */
+    /** Mushroom moss is one colour everywhere (the colour zones still decide which mushrooms grow where). */
+    public static final int MOSS_COLOR = 0x8FD3F0;
+
     @SubscribeEvent
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tint) -> pos == null ? 0x8FD3F0 : MossColors.at(pos), com.soulinchains.arcaneartifacts.registry.ModBlocks.MUSHROOM_MOSS.get(),
+        event.register((state, level, pos, tint) -> MOSS_COLOR, com.soulinchains.arcaneartifacts.registry.ModBlocks.MUSHROOM_MOSS.get(),
                 com.soulinchains.arcaneartifacts.registry.MushroomWood.MUSHROOM_MOSS_CARPET.get());
     }
 
     @SubscribeEvent
     public static void registerMossItemColor(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, tint) -> 0x8FD3F0, com.soulinchains.arcaneartifacts.registry.ModItems.MUSHROOM_MOSS.get(),
+        event.register((stack, tint) -> MOSS_COLOR, com.soulinchains.arcaneartifacts.registry.ModItems.MUSHROOM_MOSS.get(),
                 com.soulinchains.arcaneartifacts.registry.MushroomWood.MUSHROOM_MOSS_CARPET_ITEM.get());
     }
 

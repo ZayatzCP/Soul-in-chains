@@ -9,6 +9,14 @@
     "arcane_artifacts:amber_cluster",
     "arcane_artifacts:mana_pump",
     "arcane_artifacts:large_amber_cluster",
-    "arcane_artifacts:amber_block"
+    "arcane_artifacts:amber_block",
+    "arcane_artifacts:raw_spore_bricks",
+    "arcane_artifacts:spore_bricks",
+    "arcane_artifacts:spore_brick_tiles",
+    "arcane_artifacts:chiseled_spore_bricks",
+    "arcane_artifacts:polished_spore_clay",
+    "arcane_artifacts:spore_brick_stairs",
+    "arcane_artifacts:spore_brick_slab",
+    "arcane_artifacts:spore_brick_wall"
   ]
 }

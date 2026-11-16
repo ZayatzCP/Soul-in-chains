@@ -62,6 +62,28 @@ public final class ModBlocks {
     public static final DeferredBlock<net.minecraft.world.level.block.Block> SPORE_CLAY = BLOCKS.register("spore_clay",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.CLAY)
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)));
+    /** Spore clay bricks: raw (crafted), fired, tiles, chiseled, polished; stairs, slab and wall. */
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> RAW_SPORE_BRICKS = BLOCKS.register("raw_spore_bricks",
+            () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.PACKED_MUD)
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)));
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> SPORE_BRICKS = brick("spore_bricks");
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> SPORE_BRICK_TILES = brick("spore_brick_tiles");
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> CHISELED_SPORE_BRICKS = brick("chiseled_spore_bricks");
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> POLISHED_SPORE_CLAY = brick("polished_spore_clay");
+    public static final DeferredBlock<net.minecraft.world.level.block.StairBlock> SPORE_BRICK_STAIRS = BLOCKS.register("spore_brick_stairs",
+            () -> new net.minecraft.world.level.block.StairBlock(SPORE_BRICKS.get().defaultBlockState(), brickProperties()));
+    public static final DeferredBlock<net.minecraft.world.level.block.SlabBlock> SPORE_BRICK_SLAB = BLOCKS.register("spore_brick_slab",
+            () -> new net.minecraft.world.level.block.SlabBlock(brickProperties()));
+    public static final DeferredBlock<net.minecraft.world.level.block.WallBlock> SPORE_BRICK_WALL = BLOCKS.register("spore_brick_wall",
+            () -> new net.minecraft.world.level.block.WallBlock(brickProperties().forceSolidOn()));
+
+    private static BlockBehaviour.Properties brickProperties() {
+        return BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.MUD_BRICKS).mapColor(MapColor.TERRACOTTA_WHITE);
+    }
+
+    private static DeferredBlock<net.minecraft.world.level.block.Block> brick(String name) {
+        return BLOCKS.register(name, () -> new net.minecraft.world.level.block.Block(brickProperties()));
+    }
     public static final java.util.Map<com.soulinchains.arcaneartifacts.mushroom.ArcaneMushroom, DeferredBlock<com.soulinchains.arcaneartifacts.block.ArcaneMushroomBlock>> MUSHROOMS =
             mushrooms();
 

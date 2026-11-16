@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S",
+    "S"
+  ],
+  "key": {
+    "S": {
+      "item": "arcane_artifacts:spore_brick_slab"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:chiseled_spore_bricks"
+  }
+}

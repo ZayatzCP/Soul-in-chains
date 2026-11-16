@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "arcane_artifacts:spore_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:spore_brick_tiles"
+  }
+}

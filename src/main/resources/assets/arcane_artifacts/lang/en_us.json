@@ -554,7 +554,7 @@
   "arcane_artifacts.distiller.source_ok": "Source Jars nearby have enough Source (%s per brew)",
   "arcane_artifacts.distiller.source_missing": "Needs %s Source per brew in Source Jars within 6 blocks",
   "arcane_artifacts.page.mushroom_caves": "Mushroom Caves",
-  "arcane_artifacts.page1.mushroom_caves": "Deep under dry lands lie the Mushroom Caves. The moss grows in patches and changes colour in bands - blue, teal, green, yellow, orange, red, pink, purple, white, grey - and in each band grow mushrooms of the same colour, as if they had agreed. Between the moss: dirt, mud and mycelium; huge blue, red and brown mushrooms, spore tufts, glowsprouts and hanging hyphae. The light is only what the caves give: the moss smoulders faintly, glowsprouts burn near the floor, strings of hanging hyphae glow from the ceiling. Between them it is dark, honest darkness.",
+  "arcane_artifacts.page1.mushroom_caves": "Deep under dry lands lie the Mushroom Caves. The moss grows in patches, all of one pale blue, while the mushrooms grow in bands - blue, teal, green, yellow, orange, red, pink, purple, white, grey - each band its own colour, as if they had agreed. Between the moss: dirt, mud and mycelium; huge blue, red and brown mushrooms, spore tufts, glowsprouts and hanging hyphae. The light is only what the caves give: the moss smoulders faintly, glowsprouts burn near the floor, strings of hanging hyphae glow from the ceiling. Between them it is dark, honest darkness.",
   "arcane_artifacts.page2.mushroom_caves": "Every small mushroom is a snack with a short effect of its colour; distilled, it gives the full effect. The Mycelinoids live there, in houses of huge mushrooms, guarded by Amanitoids. Monsters live there too, in the dark corners the glowsprouts do not reach. Bone meal turns a blue mushroom into a huge one. Nobody knows whether it wants that.",
   "arcane_artifacts.page.mushrooms": "Cave mushrooms",
   "arcane_artifacts.page1.mushrooms": "Eaten raw, each gives a short effect; distilled, the full one. Blue Mushroom: Night Vision; Sourcecap: Mana Regeneration; Brawncap: Strength; Embercap: Fire Resistance; Swiftcap: Speed; Leapcap: Jump Boost.",
@@ -927,5 +927,16 @@
   "arcane_artifacts.set.druid.bonus": "Full set: a drunk potion is not used up 30% of the time.",
   "arcane_artifacts.page.sets": "Sets",
   "arcane_artifacts.page1.sets": "Some things like company. Wear or hold every piece of a set and you get a bonus (the tooltip shows how much of the set you have on). Focusing: Focusing Boots, Gloves and Shield, spells cost 25% less. Reflection: Mantle of Reflection, Ring of Reversal and Mirror Shield, projectiles do not hurt you and fly back at the shooter.",
-  "arcane_artifacts.page2.sets": "Poor Magic: the Pseudomage's poncho, sombrero, boots, gloves and the bandolier, instant reloads and 15% of shots use no round. Amanitoid: the Mushroom Shield and Mushroom Hammer in hand, spores do not take you and the hammer hits 25% harder. Herbalist: the four Druid pieces, a drunk potion stays in your hand 30% of the time. The Wreath of Manipulation is in no set: it is company enough for itself."
+  "arcane_artifacts.page2.sets": "Poor Magic: the Pseudomage's poncho, sombrero, boots, gloves and the bandolier, instant reloads and 15% of shots use no round. Amanitoid: the Mushroom Shield and Mushroom Hammer in hand, spores do not take you and the hammer hits 25% harder. Herbalist: the four Druid pieces, a drunk potion stays in your hand 30% of the time. The Wreath of Manipulation is in no set: it is company enough for itself.",
+  "block.arcane_artifacts.raw_spore_bricks": "Raw Spore Bricks",
+  "block.arcane_artifacts.spore_bricks": "Spore Clay Bricks",
+  "block.arcane_artifacts.spore_brick_stairs": "Spore Brick Stairs",
+  "block.arcane_artifacts.spore_brick_slab": "Spore Brick Slab",
+  "block.arcane_artifacts.spore_brick_wall": "Spore Brick Wall",
+  "block.arcane_artifacts.spore_brick_tiles": "Spore Clay Tiles",
+  "block.arcane_artifacts.chiseled_spore_bricks": "Chiseled Spore Bricks",
+  "block.arcane_artifacts.polished_spore_clay": "Polished Spore Clay",
+  "arcane_artifacts.page.spore_bricks": "Spore Bricks",
+  "arcane_artifacts.page1.spore_bricks": "Four blocks of Spore Clay (a 2x2 square) make four Raw Spore Bricks. Fire them in a furnace and you get Spore Clay Bricks, warm and sand-coloured. From the bricks: stairs, slabs, a wall, tiles (2x2 bricks), Chiseled Spore Bricks with mushrooms (two slabs stacked) and Polished Spore Clay (bricks back into the furnace). All of it can be cut on a stonecutter too.",
+  "arcane_artifacts.page2.spore_bricks": "The Mycelinoids build from huge mushrooms and do not see why anyone would bake clay that grows anyway. Pip explained that this is called architecture. The Mycelinoids nodded politely and made a mushroom stand out of a brick."
 }

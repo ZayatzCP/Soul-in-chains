@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BB",
+    "BB"
+  ],
+  "key": {
+    "B": {
+      "item": "arcane_artifacts:spore_bricks"
+    }
+  },
+  "result": {
+    "count": 4,
+    "id": "arcane_artifacts:spore_brick_tiles"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "arcane_artifacts:block/spore_bricks",
+    "side": "arcane_artifacts:block/spore_bricks",
+    "top": "arcane_artifacts:block/spore_bricks"
+  }
+}

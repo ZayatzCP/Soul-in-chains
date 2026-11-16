@@ -81,6 +81,14 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> GLOWSPROUT = REGISTER.registerSimpleBlockItem(ModBlocks.GLOWSPROUT);
     public static final DeferredItem<BlockItem> HANGING_HYPHAE = REGISTER.registerSimpleBlockItem(ModBlocks.HANGING_HYPHAE);
     public static final DeferredItem<BlockItem> SPORE_CLAY = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_CLAY);
+    public static final DeferredItem<BlockItem> RAW_SPORE_BRICKS = REGISTER.registerSimpleBlockItem(ModBlocks.RAW_SPORE_BRICKS);
+    public static final DeferredItem<BlockItem> SPORE_BRICKS = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_BRICKS);
+    public static final DeferredItem<BlockItem> SPORE_BRICK_STAIRS = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_BRICK_STAIRS);
+    public static final DeferredItem<BlockItem> SPORE_BRICK_SLAB = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_BRICK_SLAB);
+    public static final DeferredItem<BlockItem> SPORE_BRICK_WALL = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_BRICK_WALL);
+    public static final DeferredItem<BlockItem> SPORE_BRICK_TILES = REGISTER.registerSimpleBlockItem(ModBlocks.SPORE_BRICK_TILES);
+    public static final DeferredItem<BlockItem> CHISELED_SPORE_BRICKS = REGISTER.registerSimpleBlockItem(ModBlocks.CHISELED_SPORE_BRICKS);
+    public static final DeferredItem<BlockItem> POLISHED_SPORE_CLAY = REGISTER.registerSimpleBlockItem(ModBlocks.POLISHED_SPORE_CLAY);
     public static final DeferredItem<BlockItem> MUDZYA_HIVE = REGISTER.registerSimpleBlockItem(ModBlocks.MUDZYA_HIVE);
     public static final DeferredItem<BlockItem> WILD_MUDZYA_HIVE = REGISTER.registerSimpleBlockItem(ModBlocks.WILD_MUDZYA_HIVE);
     public static final DeferredItem<BlockItem> ALCHEMICAL_DISTILLER = REGISTER.registerSimpleBlockItem(ModBlocks.ALCHEMICAL_DISTILLER);

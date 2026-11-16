@@ -52,6 +52,10 @@ public final class ModCreativeTab {
                 output.accept(ModItems.GLOWSPROUT.get());
                 output.accept(ModItems.HANGING_HYPHAE.get());
                 output.accept(ModItems.SPORE_CLAY.get());
+                for (var brick : java.util.List.of(ModItems.RAW_SPORE_BRICKS, ModItems.SPORE_BRICKS, ModItems.SPORE_BRICK_STAIRS, ModItems.SPORE_BRICK_SLAB,
+                        ModItems.SPORE_BRICK_WALL, ModItems.SPORE_BRICK_TILES, ModItems.CHISELED_SPORE_BRICKS, ModItems.POLISHED_SPORE_CLAY)) {
+                    output.accept(brick.get());
+                }
                 ModItems.MUSHROOMS.values().forEach(item -> output.accept(item.get()));
                 output.accept(ModItems.MUDZYA_SPAWN_EGG.get());
                 output.accept(ModItems.GRIBUSHKA_SPAWN_EGG.get());
