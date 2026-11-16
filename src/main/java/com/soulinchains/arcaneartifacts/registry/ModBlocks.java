@@ -92,6 +92,13 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.AmberClusterBlock> AMBER_CLUSTER = BLOCKS.register("amber_cluster",
             () -> new com.soulinchains.arcaneartifacts.block.AmberClusterBlock(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.SMALL_AMETHYST_BUD)
                     .mapColor(MapColor.COLOR_ORANGE).lightLevel(state -> 3)));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.block.AmberClusterBlock> LARGE_AMBER_CLUSTER = BLOCKS.register("large_amber_cluster",
+            () -> new com.soulinchains.arcaneartifacts.block.AmberClusterBlock(15.0F, 2.0F, BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.AMETHYST_CLUSTER)
+                    .mapColor(MapColor.COLOR_ORANGE).lightLevel(state -> 6)));
+    public static final DeferredBlock<net.minecraft.world.level.block.TransparentBlock> AMBER_BLOCK = BLOCKS.register("amber_block",
+            () -> new net.minecraft.world.level.block.TransparentBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE)
+                    .strength(1.5f).sound(SoundType.AMETHYST).requiresCorrectToolForDrops().noOcclusion().lightLevel(state -> 2)
+                    .isViewBlocking((state, level, pos) -> false).isSuffocating((state, level, pos) -> false)));
 
     // ------------------------------------------------------------------ Pseudomage logistics
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.pseudo.ManaTankBlock> MANA_TANK = BLOCKS.register("mana_tank",

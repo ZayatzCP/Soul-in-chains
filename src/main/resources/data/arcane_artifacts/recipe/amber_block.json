@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "AA",
+    "AA"
+  ],
+  "key": {
+    "A": {
+      "item": "arcane_artifacts:amber"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:amber_block"
+  }
+}

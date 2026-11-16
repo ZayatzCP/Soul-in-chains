@@ -30,7 +30,7 @@ public final class ArcaneGlyphs {
             EffectFear.INSTANCE,
             EffectEntangle.INSTANCE,
             EffectGrove.INSTANCE,
-            EffectSwarm.INSTANCE
+            EffectBeeSwarm.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */

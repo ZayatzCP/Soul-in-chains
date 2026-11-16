@@ -133,7 +133,7 @@ public final class ArcaneGameTests {
                 "glyph_harmless", "ring_of_calm", "hop_slippers", "mirror_shield", "focusing_shield",
                 "crystal_ball", "glyph_aura", "glyph_fear", "mudzya_hive", "alchemical_distiller", "mushroom_moss",
                 "false_mage_guide", "revolver", "sawn_off", "magic_cartridge", "bandolier", "counterfeit_ring", "counterfeit_pendant",
-                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse", "pseudomage_gloves", "druid_mantle", "druid_hat", "druid_gloves", "druid_boots", "gunsmith_bench", "long_barrel", "short_barrel", "drum_cylinder", "speed_loader", "amber_stock", "horseshoe_stock", "glyph_entangle", "glyph_grove", "glyph_gribulka_swarm")) {
+                "mana_goggles", "mana_tank", "mana_pipe", "poncho", "sombrero", "druid_herbarium", "mana_pump", "pseudomage_boots", "mushroom_shield", "mushroom_club", "red_mushroom_planks", "blue_mushroom_door", "brown_mushroom_stairs", "mushroom_moss_carpet", "spotted_blue_mushroom_block", "glowing_blue_mushroom_block", "blue_mushroom_gills", "flying_broom", "moss_elk_call", "iron_horse", "pseudomage_gloves", "druid_mantle", "druid_hat", "druid_gloves", "druid_boots", "gunsmith_bench", "long_barrel", "short_barrel", "drum_cylinder", "speed_loader", "amber_stock", "horseshoe_stock", "glyph_entangle", "glyph_grove", "glyph_bee_swarm", "amber_block", "amber_from_block")) {
             helper.assertTrue(recipes.byKey(ArcaneArtifacts.id(id)).isPresent(), "Recipe failed to load: " + id);
         }
         helper.succeed();
@@ -998,10 +998,11 @@ public final class ArcaneGameTests {
         helper.setBlock(crop, net.minecraft.world.level.block.Blocks.WHEAT);
         int grown = com.soulinchains.arcaneartifacts.glyph.EffectGrove.grow(level, helper.absolutePos(crop), 0, 2);
         helper.assertTrue(grown > 0 && helper.getBlockState(crop).getValue(net.minecraft.world.level.block.CropBlock.AGE) > 0, "Grove must make the wheat grow");
-        var swarm = com.soulinchains.arcaneartifacts.glyph.EffectSwarm.summon(level, helper.absoluteVec(new Vec3(4.5, 1, 4.5)), 2, 100);
-        helper.assertTrue(swarm.size() == 2 && swarm.stream().allMatch(com.soulinchains.arcaneartifacts.entity.Gribulka::isDecoy), "The swarm must bring two decoy Gribulkas");
-        swarm.get(0).taunt(level);
-        helper.assertTrue(zombie.getTarget() instanceof com.soulinchains.arcaneartifacts.entity.Gribulka, "Monsters must turn on the decoys");
+        var swarm = com.soulinchains.arcaneartifacts.glyph.EffectBeeSwarm.summon(level, helper.absoluteVec(new Vec3(4.5, 2, 4.5)), zombie, 3, 100);
+        helper.assertTrue(swarm.size() == 3, "The swarm must bring three bees");
+        helper.assertTrue(swarm.stream().allMatch(bee -> bee.getTarget() == zombie && bee.isAngry()), "The bees must be angry at the creature the spell hit");
+        helper.assertTrue(swarm.stream().allMatch(bee -> bee.getPersistentData().getInt(com.soulinchains.arcaneartifacts.glyph.EffectBeeSwarm.LIFE) == 100),
+                "The bees must know when to leave");
         helper.succeed();
     }
 
@@ -1148,6 +1149,8 @@ public final class ArcaneGameTests {
         BlockPos pos = helper.absolutePos(new BlockPos(3, 2, 3));
         level.setBlockAndUpdate(pos, ModBlocks.AMBER_CLUSTER.get().defaultBlockState());
         helper.assertTrue(level.getBlockState(pos).is(ModBlocks.AMBER_CLUSTER.get()), "An amber cluster must stand on the floor");
+        level.setBlockAndUpdate(pos.east(), ModBlocks.LARGE_AMBER_CLUSTER.get().defaultBlockState());
+        helper.assertTrue(level.getBlockState(pos.east()).is(ModBlocks.LARGE_AMBER_CLUSTER.get()), "A large amber cluster must stand on the floor too");
         var drops = net.minecraft.world.level.block.Block.getDrops(level.getBlockState(pos), level, pos, null);
         helper.assertTrue(!drops.isEmpty() && drops.get(0).is(ModItems.AMBER.get()), "An amber cluster must drop amber, got " + drops);
         Player player = player(helper, 4.5, 1, 4.5);

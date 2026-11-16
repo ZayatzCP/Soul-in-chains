@@ -79,6 +79,8 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SOMBRERO.get());
                 output.accept(ModItems.AMBER.get());
                 output.accept(ModItems.AMBER_CLUSTER.get());
+                output.accept(ModItems.LARGE_AMBER_CLUSTER.get());
+                output.accept(ModItems.AMBER_BLOCK.get());
                 output.accept(ModItems.PSEUDOMAGE_BOOTS.get());
                 output.accept(ModItems.DRUID_HERBARIUM.get());
                 output.accept(ModItems.MOSS_ELK_CALL.get());

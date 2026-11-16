@@ -27,75 +27,8 @@ import org.jetbrains.annotations.Nullable;
  * usually not far from the walking hive it came out of.
  */
 public class Gribulka extends PathfinderMob {
-    /** Ticks left for a Gribulka summoned by the Druid's Swarm (a decoy); 0 for a wild one. */
-    private int decoyTicks;
-
     public Gribulka(EntityType<? extends Gribulka> type, Level level) {
         super(type, level);
-    }
-
-    /** Turns this Gribulka into a decoy that draws monsters for the given time, then leaves. */
-    public void makeDecoy(int ticks) {
-        decoyTicks = ticks;
-    }
-
-    public boolean isDecoy() {
-        return decoyTicks > 0;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (decoyTicks > 0 && level() instanceof net.minecraft.server.level.ServerLevel server) {
-            if (--decoyTicks <= 0) {
-                server.sendParticles(net.minecraft.core.particles.ParticleTypes.SPORE_BLOSSOM_AIR, getX(), getY() + 0.3, getZ(), 10, 0.3, 0.3, 0.3, 0);
-                discard();
-                return;
-            }
-            if (tickCount % 10 == 0) {
-                taunt(server);
-            }
-        }
-    }
-
-    /** Every monster within 10 blocks turns on the decoy. */
-    public int taunt(net.minecraft.server.level.ServerLevel level) {
-        int taunted = 0;
-        for (net.minecraft.world.entity.monster.Monster monster : level.getEntitiesOfClass(net.minecraft.world.entity.monster.Monster.class,
-                getBoundingBox().inflate(10))) {
-            if (monster.getTarget() == null || !(monster.getTarget() instanceof Gribulka g && g.isDecoy())) {
-                monster.setTarget(this);
-                taunted++;
-            }
-        }
-        return taunted;
-    }
-
-    @Override
-    public boolean removeWhenFarAway(double distance) {
-        return !isDecoy() && super.removeWhenFarAway(distance);
-    }
-
-    @Override
-    public boolean shouldDropExperience() {
-        return !isDecoy() && super.shouldDropExperience();
-    }
-
-    @Override
-    protected boolean shouldDropLoot() {
-        return !isDecoy() && super.shouldDropLoot();
-    }
-
-    @Override
-    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("DecoyTicks", decoyTicks);
-    }
-
-    @Override
-    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        decoyTicks = tag.getInt("DecoyTicks");
     }
 
     public static AttributeSupplier.Builder createAttributes() {

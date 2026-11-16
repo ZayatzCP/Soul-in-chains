@@ -12,7 +12,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-/** Scatters a few amber crystals around a point, on whatever solid face is next to air: floor, wall or ceiling. */
+/** Scatters a few amber crystals (one in eight a large one) around a point, on whatever solid face is next to air: floor, wall or ceiling. */
 public class AmberFeature extends Feature<NoneFeatureConfiguration> {
     private static final Direction[] DIRECTIONS = Direction.values();
 
@@ -37,7 +37,9 @@ public class AmberFeature extends Feature<NoneFeatureConfiguration> {
             if (!level.getBlockState(support).isFaceSturdy(level, support, direction)) {
                 continue;
             }
-            BlockState amber = ModBlocks.AMBER_CLUSTER.get().defaultBlockState().setValue(AmethystClusterBlock.FACING, direction);
+            // One crystal in eight grows large.
+            BlockState amber = (random.nextInt(8) == 0 ? ModBlocks.LARGE_AMBER_CLUSTER.get() : ModBlocks.AMBER_CLUSTER.get())
+                    .defaultBlockState().setValue(AmethystClusterBlock.FACING, direction);
             level.setBlock(pos, amber, 2);
             placed++;
         }

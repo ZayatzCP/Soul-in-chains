@@ -123,6 +123,8 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> MANA_TANK = REGISTER.registerSimpleBlockItem(ModBlocks.MANA_TANK);
     public static final DeferredItem<Item> AMBER = REGISTER.register("amber", () -> new Item(new Item.Properties()));
     public static final DeferredItem<BlockItem> AMBER_CLUSTER = REGISTER.registerSimpleBlockItem(ModBlocks.AMBER_CLUSTER);
+    public static final DeferredItem<BlockItem> LARGE_AMBER_CLUSTER = REGISTER.registerSimpleBlockItem(ModBlocks.LARGE_AMBER_CLUSTER);
+    public static final DeferredItem<BlockItem> AMBER_BLOCK = REGISTER.registerSimpleBlockItem(ModBlocks.AMBER_BLOCK);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.PonchoItem> PONCHO = REGISTER.register("poncho",
             com.soulinchains.arcaneartifacts.pseudo.PonchoItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.SombreroItem> SOMBRERO = REGISTER.register("sombrero",
