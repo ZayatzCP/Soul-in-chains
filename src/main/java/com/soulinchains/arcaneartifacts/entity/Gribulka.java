@@ -27,8 +27,60 @@ import org.jetbrains.annotations.Nullable;
  * usually not far from the walking hive it came out of.
  */
 public class Gribulka extends PathfinderMob {
+    /** A young Gribulka (the designer's Gribulka Jr): it grows up after {@link #GROW_TICKS}. */
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> JUNIOR =
+            net.minecraft.network.syncher.SynchedEntityData.defineId(Gribulka.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
+    public static final int GROW_TICKS = 12000;
+    private int growTicks;
+
     public Gribulka(EntityType<? extends Gribulka> type, Level level) {
         super(type, level);
+    }
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(JUNIOR, false);
+    }
+
+    public boolean isJunior() {
+        return entityData.get(JUNIOR);
+    }
+
+    public void setJunior(boolean junior) {
+        entityData.set(JUNIOR, junior);
+        growTicks = junior ? GROW_TICKS : 0;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide && isJunior() && --growTicks <= 0) {
+            setJunior(false);   // grown up
+        }
+    }
+
+    @Override
+    public net.minecraft.world.entity.SpawnGroupData finalizeSpawn(ServerLevelAccessor level, net.minecraft.world.DifficultyInstance difficulty,
+                                                                  MobSpawnType spawnType, @Nullable net.minecraft.world.entity.SpawnGroupData data) {
+        if (spawnType != MobSpawnType.SPAWN_EGG && level.getRandom().nextInt(4) == 0) {
+            setJunior(true);
+        }
+        return super.finalizeSpawn(level, difficulty, spawnType, data);
+    }
+
+    @Override
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putBoolean("Junior", isJunior());
+        tag.putInt("GrowTicks", growTicks);
+    }
+
+    @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        entityData.set(JUNIOR, tag.getBoolean("Junior"));
+        growTicks = tag.getInt("GrowTicks");
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/druid_gloves",
+    "particle": "arcane_artifacts:item/worn/druid_gloves"
+  },
+  "elements": [
+    {
+      "from": [
+        6.975,
+        -2.545,
+        5.615
+      ],
+      "to": [
+        11.745,
+        3.285,
+        10.385
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            4,
+            4,
+            9
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            12,
+            4,
+            8,
+            9
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            16,
+            4,
+            12,
+            9
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            4,
+            4,
+            0,
+            9
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            8,
+            0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            8,
+            0,
+            12,
+            4
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

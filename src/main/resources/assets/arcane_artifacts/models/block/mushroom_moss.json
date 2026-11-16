@@ -1,7 +1,90 @@
 {
-  "parent": "minecraft:block/leaves",
+  "parent": "minecraft:block/block",
   "render_type": "minecraft:solid",
   "textures": {
-    "all": "arcane_artifacts:block/mushroom_moss"
-  }
+    "moss": "arcane_artifacts:block/mushroom_moss",
+    "bottom": "arcane_artifacts:block/mushroom_moss_bottom",
+    "particle": "arcane_artifacts:block/mushroom_moss"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#moss",
+          "tintindex": 0,
+          "cullface": "north",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#moss",
+          "tintindex": 0,
+          "cullface": "south",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#moss",
+          "tintindex": 0,
+          "cullface": "east",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#moss",
+          "tintindex": 0,
+          "cullface": "west",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#moss",
+          "tintindex": 0,
+          "cullface": "up",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bottom",
+          "cullface": "down",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
 }

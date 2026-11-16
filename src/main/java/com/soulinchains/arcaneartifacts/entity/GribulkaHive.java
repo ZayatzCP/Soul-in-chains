@@ -88,6 +88,7 @@ public class GribulkaHive extends PathfinderMob {
         double angle = getRandom().nextDouble() * Math.PI * 2;
         gribulka.moveTo(getX() + Math.cos(angle) * 1.2, getY() + 0.5, getZ() + Math.sin(angle) * 1.2, getRandom().nextFloat() * 360F, 0F);
         gribulka.finalizeSpawn(server, server.getCurrentDifficultyAt(blockPosition()), MobSpawnType.BREEDING, null);
+        gribulka.setJunior(getRandom().nextInt(3) != 0);   // the hive is a nursery: most that climb out are young
         server.addFreshEntity(gribulka);
         server.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, getX(), getY() + 1.5, getZ(), 12, 0.5, 0.5, 0.5, 0.02);
         playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 0.6F);

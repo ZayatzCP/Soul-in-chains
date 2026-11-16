@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/druid_hat",
+    "particle": "arcane_artifacts:item/worn/druid_hat"
+  },
+  "elements": [
+    {
+      "from": [
+        0.2,
+        17.3425,
+        1.5436
+      ],
+      "to": [
+        4.7016,
+        18.5978,
+        6.0452
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8,
+            1,
+            7,
+            1.25
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            9,
+            1,
+            8,
+            1.25
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            10,
+            1,
+            9,
+            1.25
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            7,
+            1,
+            6,
+            1.25
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            7,
+            1,
+            8,
+            0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            8,
+            0,
+            9,
+            1
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

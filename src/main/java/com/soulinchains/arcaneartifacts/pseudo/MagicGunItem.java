@@ -83,6 +83,9 @@ public class MagicGunItem extends Item implements ICasterTool {
 
     /** Reload time with the parts (and the gloves). */
     public int reloadTicks(ItemStack gun, Player player) {
+        if (com.soulinchains.arcaneartifacts.accessory.ArcaneSets.instantReload(player)) {
+            return 1;   // the full Poor Magic outfit
+        }
         int ticks = GunParts.has(gun, GunPartItem.Part.SPEED_LOADER) ? Math.max(1, reloadTicks / 2) : reloadTicks;
         return PseudomageGlovesItem.scale(player, ticks, PseudomageGlovesItem.RELOAD);
     }
@@ -164,7 +167,8 @@ public class MagicGunItem extends Item implements ICasterTool {
         if (GunParts.has(gun, GunPartItem.Part.HORSESHOE_STOCK) && player.getRandom().nextFloat() < 0.15F) {
             fire(player, gun, bullet, hand);   // the horseshoe: a lucky second volley
         }
-        if (!(GunParts.has(gun, GunPartItem.Part.AMBER_STOCK) && player.getRandom().nextFloat() < 0.2F)) {
+        if (!(GunParts.has(gun, GunPartItem.Part.AMBER_STOCK) && player.getRandom().nextFloat() < 0.2F)
+                && !com.soulinchains.arcaneartifacts.accessory.ArcaneSets.freeRound(player)) {
             gun.set(ModComponents.GUN_ROUNDS, rounds - 1);
         }
         player.getCooldowns().addCooldown(this, fireCooldown(gun, player));

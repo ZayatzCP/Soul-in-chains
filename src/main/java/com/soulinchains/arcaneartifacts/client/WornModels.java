@@ -82,6 +82,25 @@ public final class WornModels {
                 turned(BodyPart.BODY, "bandolier", 10f, -4f, 8f, 0f, 0f, -55.00933f),
                 turned(BodyPart.BODY, "bandolier_2", 9.8504f, -16.5255f, 8f, 0f, 0f, -90f),
                 turned(BodyPart.BODY, "bandolier_3", 1.8222f, -5.056f, 8f, 0f, 0f, -90f)));
+        // The Druid (the designer's outfit, tools/generate_batch19.py).
+        ATTACHMENTS.put(ModItems.DRUID_MANTLE, List.of(
+                worn(BodyPart.BODY, "druid_mantle"),
+                turned(BodyPart.BODY, "druid_mantle_2", 8.5671f, -2.3896f, 6.8374f, 0.0f, 0.0f, -90.0f),
+                worn(BodyPart.HEAD, "druid_mantle_hood"),
+                worn(BodyPart.RIGHT_ARM, "druid_mantle_right"),
+                worn(BodyPart.LEFT_ARM, "druid_mantle_left")));
+        ATTACHMENTS.put(ModItems.DRUID_HAT, List.of(
+                worn(BodyPart.HEAD, "druid_hat"),
+                turned(BodyPart.HEAD, "druid_hat_2", -15.1147f, 11.7166f, 6.9243f, 7.4366f, 0.9762f, 7.4366f),
+                turned(BodyPart.HEAD, "druid_hat_3", -9.4175f, 13.6948f, 6.892f, 7.5f, 0.0f, 0.0f),
+                turned(BodyPart.HEAD, "druid_hat_4", -13.2724f, 9.4479f, 0.6845f, 4.6066f, -14.2906f, 18.0778f),
+                turned(BodyPart.HEAD, "druid_hat_5", -12.2724f, 9.3658f, 11.013f, -3.0351f, 9.5327f, 17.7531f),
+                turned(BodyPart.HEAD, "druid_hat_6", 5.2203f, 17.6701f, 15.013f, -53.7071f, 30.88f, 72.9079f),
+                turned(BodyPart.HEAD, "druid_hat_7", 15.8772f, 15.53f, 9.013f, -3.0351f, 9.5327f, -7.2469f),
+                turned(BodyPart.HEAD, "druid_hat_8", 2.4508f, 17.9702f, 3.7944f, 7.5f, 90.0f, 0.0f)));
+        ATTACHMENTS.put(ModItems.DRUID_GLOVES, List.of(
+                worn(BodyPart.RIGHT_ARM, "druid_glove_right"),
+                worn(BodyPart.LEFT_ARM, "druid_glove_left")));
         ATTACHMENTS.put(ModItems.PSEUDOMAGE_GLOVES, List.of(
                 worn(BodyPart.RIGHT_ARM, "pseudomage_glove_right"),
                 worn(BodyPart.LEFT_ARM, "pseudomage_glove_left")));
@@ -91,7 +110,7 @@ public final class WornModels {
         // The hat sits at a jaunty angle: its brim and crown are turned separately.
         ATTACHMENTS.put(ModItems.SOMBRERO, List.of(
                 worn(BodyPart.HEAD, "sombrero"),
-                turned(BodyPart.HEAD, "sombrero_2", 39.979f, 13.474f, 6.8464f, 9.97613f, 0.69405f, -3.93942f),
+                turned(BodyPart.HEAD, "sombrero_2", 39.979f, 13.474f, 6.8464f, 10.0f, 0.0f, -4.0f),
                 turned(BodyPart.HEAD, "sombrero_3", 44.6436f, 9.6054f, 8f, 0f, 0f, -10f)));
         ATTACHMENTS.put(ModItems.PONCHO, List.of(
                 worn(BodyPart.BODY, "poncho"),

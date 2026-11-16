@@ -986,6 +986,48 @@ public final class ArcaneGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void setBonusesAndHerbalist(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.MUSHROOM_CLUB.get()));
+        player.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new ItemStack(ModItems.MUSHROOM_SHIELD.get()));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.ArcaneSets.Set.AMANITOID.complete(player), "Shield and hammer in hand make the Amanitoid set");
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.FOCUSING_GLOVES.get()));
+        player.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new ItemStack(ModItems.FOCUSING_SHIELD.get()));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.ArcaneSets.discounted(player, 100) == 100, "Two of three Focusing pieces give no discount");
+        var arrow = new net.minecraft.world.entity.projectile.Arrow(EntityType.ARROW, helper.getLevel());
+        com.soulinchains.arcaneartifacts.accessory.ArcaneSets.bounce(arrow, player);
+        helper.assertTrue(arrow.getOwner() == player, "A reflected arrow belongs to the one it hit");
+        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 200));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.druid.DruidGearItem.cleanse(player) && !player.hasEffect(net.minecraft.world.effect.MobEffects.POISON),
+                "The Druid's boots must wash poison off");
+        int lengthened = com.soulinchains.arcaneartifacts.druid.RootMagic.lengthen(player,
+                new net.minecraft.world.item.alchemy.PotionContents(net.minecraft.world.item.alchemy.Potions.SWIFTNESS));
+        var swift = player.getEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED);
+        helper.assertTrue(lengthened == 1 && swift != null && swift.getDuration() >= 4600, "The Druid's mantle must make a potion last 30% longer");
+        equip(helper, player, "feet", ModItems.FOCUSING_BOOTS.get());
+        afterEquip(helper, player, ModItems.FOCUSING_BOOTS.get(), () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.ArcaneSets.discounted(player, 100) == 75, "The full Focusing set must make spells 25% cheaper");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void youngGribulkasGrowUp(GameTestHelper helper) {
+        var gribulka = helper.spawn(ModEntities.GRIBULKA.get(), new BlockPos(3, 1, 3));
+        gribulka.setJunior(true);
+        helper.assertTrue(gribulka.isJunior(), "A Gribulka can be young");
+        var tag = new net.minecraft.nbt.CompoundTag();
+        gribulka.addAdditionalSaveData(tag);
+        helper.assertTrue(tag.getBoolean("Junior") && tag.getInt("GrowTicks") == com.soulinchains.arcaneartifacts.entity.Gribulka.GROW_TICKS, "Youth must be saved");
+        tag.putInt("GrowTicks", 1);
+        gribulka.readAdditionalSaveData(tag);
+        helper.runAfterDelay(3, () -> {
+            helper.assertTrue(!gribulka.isJunior(), "A young Gribulka must grow up when its time comes");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
     public static void rootMagicGlyphs(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         var zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(6, 1, 6));

@@ -50,6 +50,27 @@ def rotation(e):
     return float(r.get('x', 0)), float(r.get('y', 0)), float(r.get('z', 0)), r['origin']
 
 
+def to_game_order(rx, ry, rz):
+    """Blockbench turns an element X, then Y, then Z (matrix Rz.Ry.Rx); the game's Placement turns the pose by
+    X, Y, Z in turn (matrix Rx.Ry.Rz). Returns the angles that give the same rotation in the game's order."""
+    import math
+    x, y, z = map(math.radians, (rx, ry, rz))
+    cx, sx, cy, sy, cz, sz = math.cos(x), math.sin(x), math.cos(y), math.sin(y), math.cos(z), math.sin(z)
+    Rx = [[1, 0, 0], [0, cx, -sx], [0, sx, cx]]
+    Ry = [[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]]
+    Rz = [[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]]
+    mul = lambda a, b: [[sum(a[i][k] * b[k][j] for k in range(3)) for j in range(3)] for i in range(3)]  # noqa: E731
+    R = mul(Rz, mul(Ry, Rx))
+    b = math.asin(max(-1.0, min(1.0, R[0][2])))
+    if abs(math.cos(b)) > 1e-6:
+        a = math.atan2(-R[1][2], R[2][2])
+        c = math.atan2(-R[0][1], R[0][0])
+    else:   # gimbal lock: put everything on X
+        a = math.atan2(R[2][1], R[1][1])
+        c = 0.0
+    return tuple(round(math.degrees(v), 4) + 0.0 for v in (a, b, c))
+
+
 def r4(v):
     return round(v, 4)
 
@@ -76,7 +97,7 @@ def convert(src, tex_name, texture, name, indices, offset, part, grow=None):
             e['rotation'] = {'angle': nonzero[0][1], 'axis': nonzero[0][0], 'origin': moved}
         else:
             e.pop('rotation', None)
-            placement = (tuple(moved), (rx, ry, rz))
+            placement = (tuple(moved), to_game_order(rx, ry, rz))
         for face in e['faces'].values():
             face['texture'] = '#t'
         groups.setdefault(placement, []).append(e)

@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/druid_mantle",
+    "particle": "arcane_artifacts:item/worn/druid_mantle"
+  },
+  "elements": [
+    {
+      "from": [
+        4.42,
+        -1.78,
+        5.66
+      ],
+      "to": [
+        9.1,
+        11.22,
+        10.34
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            5,
+            6,
+            8
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            4,
+            5,
+            5,
+            8
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            7,
+            5,
+            8,
+            8
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            6,
+            5,
+            7,
+            8
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            6,
+            5,
+            5,
+            4
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            7,
+            4,
+            6,
+            5
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}

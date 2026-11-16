@@ -87,14 +87,26 @@ public final class CreatureRenderers {
 
     public static final class GribulkaRenderer extends MobRenderer<com.soulinchains.arcaneartifacts.entity.Gribulka, GribulkaModels.Little> {
         private static final ResourceLocation TEXTURE = ArcaneArtifacts.id("textures/entity/gribulka.png");
+        private static final ResourceLocation JUNIOR_TEXTURE = ArcaneArtifacts.id("textures/entity/gribulka_jr.png");
+        private final GribulkaModels.Little adult;
+        private final GribulkaModels.Little junior;
 
         public GribulkaRenderer(EntityRendererProvider.Context context) {
             super(context, new GribulkaModels.Little(context.getResourceManager(), ArcaneArtifacts.id("entity_models/gribulka.json")), 0.3F);
+            adult = getModel();
+            junior = new GribulkaModels.Little(context.getResourceManager(), ArcaneArtifacts.id("entity_models/gribulka_jr.json"));
+        }
+
+        @Override
+        public void render(com.soulinchains.arcaneartifacts.entity.Gribulka entity, float yaw, float partialTick, com.mojang.blaze3d.vertex.PoseStack pose,
+                           net.minecraft.client.renderer.MultiBufferSource buffers, int light) {
+            model = entity.isJunior() ? junior : adult;
+            super.render(entity, yaw, partialTick, pose, buffers, light);
         }
 
         @Override
         public ResourceLocation getTextureLocation(com.soulinchains.arcaneartifacts.entity.Gribulka entity) {
-            return TEXTURE;
+            return entity.isJunior() ? JUNIOR_TEXTURE : TEXTURE;
         }
     }
 
