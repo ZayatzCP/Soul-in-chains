@@ -45,6 +45,12 @@ public final class CattoGameTests {
         return at;
     }
 
+    private static String why(Catto cat) {
+        StringBuilder out = new StringBuilder(" [state=" + cat.brain().state() + ", status=" + cat.status().getString() + ", pos=" + cat.blockPosition());
+        cat.reports.forEach(r -> out.append(" | ").append(r.key()).append(r.args()));
+        return out.append("]").toString();
+    }
+
     private static int inChest(GameTestHelper helper, BlockPos at, Item item) {
         if (!(helper.getBlockEntity(at) instanceof ChestBlockEntity chest)) {
             return 0;
@@ -96,9 +102,9 @@ public final class CattoGameTests {
         helper.setBlock(new BlockPos(5, 2, 6), Blocks.COPPER_ORE);
         cat.queue.add(CattoTask.mine(Blocks.COPPER_ORE, helper.absolutePos(new BlockPos(5, 2, 5)), 3));
         helper.succeedWhen(() -> {
-            helper.assertBlockNotPresent(Blocks.COPPER_ORE, new BlockPos(5, 2, 5));
-            helper.assertBlockNotPresent(Blocks.COPPER_ORE, new BlockPos(6, 2, 5));
-            helper.assertBlockNotPresent(Blocks.COPPER_ORE, new BlockPos(5, 2, 6));
+            for (BlockPos ore : new BlockPos[]{new BlockPos(5, 2, 5), new BlockPos(6, 2, 5), new BlockPos(5, 2, 6)}) {
+                helper.assertTrue(!helper.getBlockState(ore).is(Blocks.COPPER_ORE), "Copper ore still at " + ore + why(cat));
+            }
             helper.assertTrue(inChest(helper, chest, Items.RAW_COPPER) >= 3, "Raw copper is not in the chest yet");
             helper.assertTrue(cat.queue.isEmpty(), "The errand is not finished");
         });
@@ -114,7 +120,7 @@ public final class CattoGameTests {
         cat.queue.add(CattoTask.mine(Blocks.COPPER_ORE, helper.absolutePos(new BlockPos(5, 2, 5)), 1));
         helper.runAtTickTime(300, () -> {
             helper.assertBlockPresent(Blocks.COPPER_ORE, new BlockPos(5, 2, 5));
-            helper.assertTrue(cat.queue.isEmpty(), "Catto should give up on the only ore, which is next to lava");
+            helper.assertTrue(cat.queue.isEmpty(), "Catto should give up on the only ore, which is next to lava" + why(cat));
             helper.succeed();
         });
     }

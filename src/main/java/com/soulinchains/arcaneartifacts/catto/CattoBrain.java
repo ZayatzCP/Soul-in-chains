@@ -147,6 +147,10 @@ public final class CattoBrain {
         this.cat = cat;
     }
 
+    public State state() {
+        return state;
+    }
+
     public boolean working() {
         return state != State.IDLE && state != State.OFFLINE && state != State.WAIT;
     }
