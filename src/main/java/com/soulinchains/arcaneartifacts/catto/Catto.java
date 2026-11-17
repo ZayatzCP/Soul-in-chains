@@ -746,6 +746,11 @@ public class Catto extends Cat {
         if (entityData.get(DATA_SOURCE) != source) {
             entityData.set(DATA_SOURCE, source);
         }
+        // The tool is shown in Catto's paw: a copy in the main hand, which the game syncs to everyone and never drops.
+        if (!ItemStack.matches(getMainHandItem(), tool())) {
+            setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, tool().copy());
+            setDropChance(net.minecraft.world.entity.EquipmentSlot.MAINHAND, 0.0F);
+        }
         if (entityData.get(DATA_MAX_SOURCE) != maxSource()) {
             entityData.set(DATA_MAX_SOURCE, maxSource());
         }

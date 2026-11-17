@@ -26,7 +26,7 @@ public final class CattoContent {
 
     public static final DeferredHolder<EntityType<?>, EntityType<Catto>> CATTO = ModEntities.REGISTER.register("catto",
             () -> EntityType.Builder.of(Catto::new, MobCategory.CREATURE)
-                    .sized(0.6F, 0.7F).eyeHeight(0.35F).passengerAttachments(0.5125F).clientTrackingRange(10)
+                    .sized(0.6F, 0.9F).eyeHeight(0.75F).passengerAttachments(0.5125F).clientTrackingRange(10)
                     .build(ArcaneArtifacts.MODID + ":catto"));
 
     public static final DeferredHolder<MenuType<?>, MenuType<CattoMenu>> MENU = ModBlocks.MENUS.register("catto",

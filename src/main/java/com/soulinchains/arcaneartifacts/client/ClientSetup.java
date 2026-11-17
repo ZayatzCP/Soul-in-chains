@@ -42,6 +42,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(MudzyaModel.LAYER, MudzyaModel::createLayer);
+        event.registerLayerDefinition(com.soulinchains.arcaneartifacts.client.catto.CattoModel.LAYER, com.soulinchains.arcaneartifacts.client.catto.CattoModel::createLayer);
     }
 
     /** Mushroom moss is one colour everywhere (the colour zones still decide which mushrooms grow where). */

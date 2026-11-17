@@ -6,24 +6,39 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.CatRenderer;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-/** A cat as the player's cat looked before the ritual, plus a bubble over its head: what it is busy with, "!" when stuck. */
-public class CattoRenderer extends CatRenderer {
+/** Catto on its hind legs with its tool in the paw, plus a bubble over its head: what it is busy with, "!" when stuck. */
+public class CattoRenderer extends MobRenderer<Catto, CattoModel> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("arcane_artifacts", "textures/entity/catto.png");
+
     public CattoRenderer(EntityRendererProvider.Context context) {
-        super(context);
+        super(context, new CattoModel(context.bakeLayer(CattoModel.LAYER)), 0.35F);
+        addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     }
 
     @Override
-    public void render(Cat entity, float yaw, float partialTicks, PoseStack pose, MultiBufferSource buffers, int light) {
+    public ResourceLocation getTextureLocation(Catto entity) {
+        return TEXTURE;
+    }
+
+    @Override
+    protected void scale(Catto entity, PoseStack pose, float partialTicks) {
+        pose.scale(0.8F, 0.8F, 0.8F);
+    }
+
+    @Override
+    public void render(Catto entity, float yaw, float partialTicks, PoseStack pose, MultiBufferSource buffers, int light) {
         super.render(entity, yaw, partialTicks, pose, buffers, light);
-        if (!(entity instanceof Catto cat) || cat.isInvisible()) {
+        Catto cat = entity;
+        if (cat.isInvisible()) {
             return;
         }
         ItemStack icon = cat.bubble();
