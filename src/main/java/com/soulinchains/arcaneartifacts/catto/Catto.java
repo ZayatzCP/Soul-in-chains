@@ -737,7 +737,7 @@ public class Catto extends Cat {
     // ------------------------------------------------------------------ ticking
 
     @Override
-    protected void customServerAiStep() {
+    public void customServerAiStep() {
         super.customServerAiStep();
         if (!(level() instanceof ServerLevel level)) {
             return;
