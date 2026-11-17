@@ -1,0 +1,57 @@
+{
+  "category": "biological",
+  "icon": "arcane_artifacts:arcane_collar",
+  "sort": 400,
+  "subjects": [
+    "minecraft:cod",
+    "minecraft:string",
+    "ars_nouveau:source_gem"
+  ],
+  "properties": [
+    "living",
+    "loyal"
+  ],
+  "experiments": [
+    {
+      "id": "fish",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:cod"
+        },
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:salmon"
+        }
+      ]
+    },
+    {
+      "id": "heal_cat",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_heal",
+          "entity": "minecraft:cat"
+        }
+      ]
+    },
+    {
+      "id": "gem",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "ars_nouveau:source_gem"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:arcane_collar",
+    "arcane_artifacts:catto_bell",
+    "arcane_artifacts:errand_wand",
+    "arcane_artifacts:errand_scroll",
+    "arcane_artifacts:traveler_pack",
+    "arcane_artifacts:expedition_pack"
+  ]
+}

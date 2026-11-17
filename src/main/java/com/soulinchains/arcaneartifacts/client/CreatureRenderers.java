@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 
-/** Renderers of the Bli-Blik (glows when full of Source) and the Mycelinoid folk (Mycelinoid, Amanitoid). */
+/** Renderers of the Mudzya (glows when full of Source) and the Mycelinoid folk (Mycelinoid, Amanitoid). */
 public final class CreatureRenderers {
     private CreatureRenderers() {
     }

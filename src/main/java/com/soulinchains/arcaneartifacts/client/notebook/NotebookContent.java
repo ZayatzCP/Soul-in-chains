@@ -100,6 +100,22 @@ final class NotebookContent {
         entries.add(gatedItemEntry(font, ModItems.CLUB_CHARM.get(), 1, lockedItems));
         entries.add(gatedItemEntry(font, ModItems.SPADE_CHARM.get(), 1, lockedItems));
 
+        // Catto, the arcane cat familiar.
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto"),
+                new ItemStack(com.soulinchains.arcaneartifacts.catto.CattoContent.ARCANE_COLLAR.get()), "catto", 3, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto_errands"),
+                new ItemStack(com.soulinchains.arcaneartifacts.catto.CattoContent.WAND.get()), "catto_errands", 4, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto_skills"),
+                new ItemStack(net.minecraft.world.item.Items.EXPERIENCE_BOTTLE), "catto_skills", 3, null));
+        entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto_gear"),
+                new ItemStack(com.soulinchains.arcaneartifacts.catto.CattoContent.TRAVELER_PACK.get()), "catto_gear", 2, null));
+        entries.add(gatedItemEntry(font, com.soulinchains.arcaneartifacts.catto.CattoContent.ARCANE_COLLAR.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, com.soulinchains.arcaneartifacts.catto.CattoContent.BELL.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, com.soulinchains.arcaneartifacts.catto.CattoContent.WAND.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, com.soulinchains.arcaneartifacts.catto.CattoContent.SCROLL.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, com.soulinchains.arcaneartifacts.catto.CattoContent.BLUEPRINT.get(), 1, lockedItems));
+        entries.add(gatedItemEntry(font, com.soulinchains.arcaneartifacts.catto.CattoContent.BOTTOMLESS_PACK.get(), 1, lockedItems));
+
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
         for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus", "spore_infection", "entangled"}) {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LGL",
+    "LPL",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "arcane_artifacts:traveler_pack"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:expedition_pack"
+  }
+}

@@ -30,6 +30,7 @@ public final class ModCommonEvents {
         event.put(ModEntities.FLYING_BROOM.get(), com.soulinchains.arcaneartifacts.mount.FlyingBroom.createAttributes().build());
         event.put(ModEntities.MOSS_ELK.get(), com.soulinchains.arcaneartifacts.mount.MossElk.createAttributes().build());
         event.put(ModEntities.IRON_HORSE.get(), com.soulinchains.arcaneartifacts.mount.IronHorse.createAttributes().build());
+        event.put(com.soulinchains.arcaneartifacts.catto.CattoContent.CATTO.get(), com.soulinchains.arcaneartifacts.catto.Catto.createAttributes().build());
     }
 
     @SubscribeEvent

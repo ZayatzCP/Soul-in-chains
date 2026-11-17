@@ -35,6 +35,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.IRON_HORSE.get(), context -> new MountRenderer<>(context, "iron_horse", 0.8F));
         event.registerEntityRenderer(ModEntities.SPORE_CLOUD.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.CRYSTAL_ORB.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.8F, true));
+        event.registerEntityRenderer(com.soulinchains.arcaneartifacts.catto.CattoContent.CATTO.get(), com.soulinchains.arcaneartifacts.client.catto.CattoRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
     }
 
@@ -71,6 +72,7 @@ public final class ClientSetup {
         event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.ALCHEMICAL_DISTILLER_MENU.get(), AlchemicalDistillerScreen::new);
         event.register(com.soulinchains.arcaneartifacts.pseudo.PseudomageRegistry.BANDOLIER_MENU.get(), BandolierScreen::new);
         event.register(ModEntities.IRON_HORSE_MENU.get(), IronHorseScreen::new);
+        event.register(com.soulinchains.arcaneartifacts.catto.CattoContent.MENU.get(), com.soulinchains.arcaneartifacts.client.catto.CattoScreen::new);
         event.register(com.soulinchains.arcaneartifacts.registry.ModBlocks.GUNSMITH_MENU.get(), GunsmithScreen::new);
     }
 

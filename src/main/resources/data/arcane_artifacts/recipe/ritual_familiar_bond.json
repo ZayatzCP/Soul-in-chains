@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "minecraft:cod"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "tag": "minecraft:planks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:ritual_familiar_bond"
+  }
+}

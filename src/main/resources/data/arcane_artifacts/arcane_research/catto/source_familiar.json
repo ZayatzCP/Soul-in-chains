@@ -1,0 +1,56 @@
+{
+  "category": "arcane",
+  "icon": "arcane_artifacts:bottomless_pack",
+  "sort": 410,
+  "subjects": [
+    "arcane_artifacts:arcane_collar",
+    "minecraft:compass",
+    "ars_nouveau:source_gem_block"
+  ],
+  "properties": [
+    "loyal",
+    "magnetic"
+  ],
+  "requires": [
+    "arcane_artifacts:catto/familiar_spirit"
+  ],
+  "experiments": [
+    {
+      "id": "mine",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:catto_mine"
+        }
+      ]
+    },
+    {
+      "id": "craft",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:catto_craft"
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:catto_build"
+        },
+        {
+          "trigger": "arcane_artifacts:catto_explore"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:blueprint_parchment",
+    "arcane_artifacts:bottomless_pack",
+    "arcane_artifacts:magnet_whisker",
+    "arcane_artifacts:keen_nose",
+    "arcane_artifacts:firefly",
+    "arcane_artifacts:source_fur",
+    "arcane_artifacts:cat_boots"
+  ]
+}

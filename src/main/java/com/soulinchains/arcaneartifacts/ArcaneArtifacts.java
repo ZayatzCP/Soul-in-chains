@@ -45,6 +45,7 @@ public final class ArcaneArtifacts {
         com.soulinchains.arcaneartifacts.registry.MushroomWood.init();
         com.soulinchains.arcaneartifacts.belt.BeltRegistry.init();
         com.soulinchains.arcaneartifacts.pseudo.PseudomageRegistry.init();
+        com.soulinchains.arcaneartifacts.catto.CattoContent.init();
         ModBlocks.MENUS.register(modBus);
         ModItems.REGISTER.register(modBus);
         ModCreativeTab.REGISTER.register(modBus);

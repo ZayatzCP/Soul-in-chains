@@ -100,6 +100,12 @@ public final class ModCreativeTab {
                 output.accept(ModItems.DIAMOND_CHARM.get());
                 output.accept(ModItems.CLUB_CHARM.get());
                 output.accept(ModItems.SPADE_CHARM.get());
+                com.soulinchains.arcaneartifacts.catto.CattoContent.ITEMS.forEach(item -> output.accept(item.get()));
+                var tablet = com.hollingsworth.arsnouveau.api.registry.RitualRegistry.getRitualItemMap()
+                        .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.catto.FamiliarBondRitual.ID));
+                if (tablet != null) {
+                    output.accept(tablet);
+                }
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
                     if (part.glyphItem != null) {
                         output.accept(part.glyphItem);

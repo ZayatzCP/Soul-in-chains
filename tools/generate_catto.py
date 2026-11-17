@@ -1,0 +1,308 @@
+#!/usr/bin/env python3
+"""1.20.0: Catto's item sprites (16x16 pixel art from the maps below) and their item models.
+
+Usage: python3 tools/generate_catto.py
+"""
+import json
+import os
+
+from PIL import Image
+
+NS = 'arcane_artifacts'
+A = os.path.join(os.path.dirname(__file__), '..', 'src', 'main', 'resources', 'assets', NS)
+
+PALETTE = {
+    '.': None,
+    'k': (40, 24, 48), 'p': (78, 40, 110), 'P': (142, 88, 190), 'L': (200, 160, 235),
+    'g': (130, 86, 20), 'y': (222, 170, 48), 'Y': (255, 226, 120),
+    'b': (86, 56, 34), 'B': (140, 96, 58), 'n': (186, 140, 90),
+    'w': (236, 226, 200), 'W': (255, 250, 236), 'r': (160, 50, 40), 'R': (230, 90, 80),
+    'c': (40, 70, 140), 'C': (80, 130, 210), 'i': (170, 205, 245),
+    's': (90, 90, 100), 'S': (150, 150, 160), 'T': (200, 200, 210),
+    'm': (200, 90, 140), 'M': (250, 160, 200),
+    'f': (120, 200, 60), 'F': (230, 255, 120), 'o': (255, 170, 40),
+    'q': (60, 160, 160), 'Q': (130, 230, 220),
+}
+
+SPRITES = {
+    'arcane_collar': [
+        '................',
+        '................',
+        '.....pppppp.....',
+        '...ppPPLLPPpp...',
+        '..pPLp....pPPp..',
+        '.pPp........pPp.',
+        '.pP..........Pp.',
+        '.pP..........Pp.',
+        '.pPp........pPp.',
+        '..pPPp....pPPp..',
+        '...ppPPggPPpp...',
+        '......gYyg......',
+        '.....gyYyyg.....',
+        '.....gyyyyg.....',
+        '......gkkg......',
+        '................',
+    ],
+    'catto_bell': [
+        '.......pp.......',
+        '......pPPp......',
+        '.......gg.......',
+        '......gYyg......',
+        '.....gYYyyg.....',
+        '.....gYyyyg.....',
+        '....gYYyyyyg....',
+        '....gYyyyyyg....',
+        '...gYYyyyyyyg...',
+        '...gYyyyyyyyg...',
+        '..gyyyyyyyyyyg..',
+        '.gggggggggggggg.',
+        '.gyyyyyyyyyyyyg.',
+        '..ggggg..ggggg..',
+        '.......gg.......',
+        '.......kk.......',
+    ],
+    'errand_wand': [
+        '............P.L.',
+        '...........PLYL.',
+        '............LYLP',
+        '...........b.L..',
+        '..........bB....',
+        '.........bB.....',
+        '........bB......',
+        '.......bB.......',
+        '......pP........',
+        '.....bB.........',
+        '....bB..........',
+        '...bB...........',
+        '..bB............',
+        '.bB.............',
+        '.b..............',
+        '................',
+    ],
+    'errand_scroll': [
+        '................',
+        '..nnnnnnnnnnnn..',
+        '.nBwwwwwwwwwwBn.',
+        '..nwwwwwwwwwwn..',
+        '...wssssswww....',
+        '...wwwwwwwww....',
+        '...wsssswwwwpp..',
+        '...wwwwwwwwpPPp.',
+        '...wssssssswpp..',
+        '...wwwwwwwwwPp..',
+        '...wsssswwwwpP..',
+        '...wwwwwwwwww...',
+        '..nwwwwwwwwwwn..',
+        '.nBwwwwwwwwwwBn.',
+        '..nnnnnnnnnnnn..',
+        '................',
+    ],
+    'blueprint_parchment': [
+        '................',
+        '.cccccccccccccc.',
+        '.cCCCCCCCCCCCCc.',
+        '.cCiiiiiiiCCCCc.',
+        '.cCiCCCCCiCCCCc.',
+        '.cCiCCCCCiiiiCc.',
+        '.cCiCCCCCCCCiCc.',
+        '.cCiCCiiiiCCiCc.',
+        '.cCiCCiCCiCCiCc.',
+        '.cCiiiiCCiiiiCc.',
+        '.cCCCCCCCCCCCCc.',
+        '.cCCiCiCiCiCCCc.',
+        '.cCCCCCCCCCCWCc.',
+        '.cCCCCCCCCCWWCc.',
+        '.cccccccccccccc.',
+        '................',
+    ],
+    'traveler_pack': [
+        '................',
+        '.....bbbbbb.....',
+        '....b......b....',
+        '....b......b....',
+        '..bbbbbbbbbbbb..',
+        '.bBBBBBBBBBBBBb.',
+        '.bBnnnnnnnnnnBb.',
+        '.bBnnnnyynnnnBb.',
+        '.bBBBBBgyBBBBBb.',
+        '.bBBBBBBBBBBBBb.',
+        '.bBBnnBBBBnnBBb.',
+        '.bBBnnBBBBnnBBb.',
+        '.bBBBBBBBBBBBBb.',
+        '..bbbbbbbbbbbb..',
+        '................',
+        '................',
+    ],
+    'expedition_pack': [
+        '.....pppppp.....',
+        '....p......p....',
+        '....p......p....',
+        '..pppppppppppp..',
+        '.pBBBBBBBBBBBBp.',
+        '.pBnnnnnnnnnnBp.',
+        '.pBnnnnyynnnnBp.',
+        '.pPPPPPgyPPPPPp.',
+        '.pBBBBBBBBBBBBp.',
+        '.pBBnnBBBBnnBBp.',
+        '.pBBnnBBBBnnBBp.',
+        '.pBBBBBBBBBBBBp.',
+        '.pPPPPPPPPPPPPp.',
+        '..pppppppppppp..',
+        '...bb......bb...',
+        '................',
+    ],
+    'bottomless_pack': [
+        '.....pppppp.....',
+        '....p......p....',
+        '....p......p....',
+        '..kkkkkkkkkkkk..',
+        '.kppppppppppppk.',
+        '.kpPPPPPPPPPPpk.',
+        '.kpPkkkkkkkkPpk.',
+        '.kpPkkLkkkkkPpk.',
+        '.kpPkkkkkYkkPpk.',
+        '.kpPkLkkkkkkPpk.',
+        '.kpPkkkkkkLkPpk.',
+        '.kpPPPPPPPPPPpk.',
+        '.kppppyyyyppppk.',
+        '..kkkkkkkkkkkk..',
+        '................',
+        '................',
+    ],
+    'magnet_whisker': [
+        '................',
+        '................',
+        '..rr.......SS...',
+        '.rRRr.....STTS..',
+        '.rRr.......STS..',
+        '.rRr........S...',
+        '.rRr............',
+        '.rRr...TT.TT....',
+        '.rRr..T..T..T...',
+        '.rRRrrrrSSSSS...',
+        '..rRRRRRSTTTS...',
+        '...rrrrrSSSSS...',
+        '........T..T..T.',
+        '.......T...T...T',
+        '................',
+        '................',
+    ],
+    'keen_nose': [
+        '................',
+        '................',
+        '................',
+        '....mmmmmmmm....',
+        '...mMMMMMMMMm...',
+        '...mMWWMMMMMm...',
+        '....mMMMMMMm....',
+        '.....mMMMMm.....',
+        '......mMMm......',
+        '.......mm.......',
+        '.......mm.......',
+        '.....mm..mm.....',
+        '....m......m....',
+        '................',
+        '..L..........L..',
+        '.L.L........L.L.',
+    ],
+    'firefly': [
+        '................',
+        '....L......L....',
+        '.....L....L.....',
+        '......kkkk......',
+        '..LL.kPPPPk.LL..',
+        '.LiiLkPkkPkLiiL.',
+        '.LiiiLkPPkLiiiL.',
+        '..LLLkPPPPkLLL..',
+        '.....kFFFFk.....',
+        '....kFFYYFFk....',
+        '....kFYYYYFk....',
+        '....kFFYYFFk....',
+        '.....kFFFFk.....',
+        '......kkkk......',
+        '................',
+        '................',
+    ],
+    'source_fur': [
+        '................',
+        '.........m......',
+        '......m.mM.m....',
+        '.....mMmMMmM....',
+        '....mMMMMMMMm...',
+        '...mMPMMMPMMm...',
+        '...mMMMPMMMMMm..',
+        '..mMPMMMMMPMMm..',
+        '..mMMMMLMMMMMm..',
+        '..mMMPMMMMPMMm..',
+        '...mMMMMMMMMm...',
+        '...mmMMPMMMmm...',
+        '.....mmmmmmm....',
+        '......L...L.....',
+        '.....L.L.L.L....',
+        '................',
+    ],
+    'cat_boots': [
+        '................',
+        '................',
+        '..pp.......pp...',
+        '..pP.......pP...',
+        '..pP.......pP...',
+        '..pP.......pP...',
+        '..pP.......pP...',
+        '..pPP......pPP..',
+        '..pPPP.....pPPP.',
+        '..pPPPP....pPPPP',
+        '..pLLLLp...pLLLL',
+        '..kkkkkk...kkkkk',
+        '................',
+        '..M.M.M....M.M.M',
+        '................',
+        '................',
+    ],
+    'ritual_familiar_bond': [
+        '................',
+        '...ssssssssss...',
+        '..sSSSSSSSSSSs..',
+        '..sSTTSSSSTTSs..',
+        '..sSSSSSSSSSSs..',
+        '..sSSPSSSSPSSs..',
+        '..sSPPSSSSPPSs..',
+        '..sSSSSPPSSSSs..',
+        '..sSSSPPPPSSSs..',
+        '..sSSPPLLPPSSs..',
+        '..sSSSPPPPSSSs..',
+        '..sSSSSSSSSSSs..',
+        '..sSTTSSSSTTSs..',
+        '..sSSSSSSSSSSs..',
+        '...ssssssssss...',
+        '................',
+    ],
+}
+
+
+def draw(rows):
+    assert len(rows) == 16, rows
+    image = Image.new('RGBA', (16, 16), (0, 0, 0, 0))
+    for y, row in enumerate(rows):
+        assert len(row) == 16, (row, len(row))
+        for x, ch in enumerate(row):
+            colour = PALETTE[ch]
+            if colour is not None:
+                image.putpixel((x, y), colour + (255,))
+    return image
+
+
+def main():
+    tex = os.path.join(A, 'textures', 'item')
+    models = os.path.join(A, 'models', 'item')
+    for name, rows in SPRITES.items():
+        draw(rows).save(os.path.join(tex, name + '.png'))
+        parent = 'minecraft:item/handheld' if name == 'errand_wand' else 'minecraft:item/generated'
+        with open(os.path.join(models, name + '.json'), 'w') as f:
+            json.dump({'parent': parent, 'textures': {'layer0': f'{NS}:item/{name}'}}, f, indent=2)
+            f.write('\n')
+        print('wrote', name)
+
+
+if __name__ == '__main__':
+    main()
