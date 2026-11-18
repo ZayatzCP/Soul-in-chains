@@ -15,9 +15,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 /** Everything Catto brings into the game: the entity, its items, its menu and the bonding ritual. */
 public final class CattoContent {
@@ -46,13 +44,23 @@ public final class CattoContent {
     public static final DeferredItem<CattoItems.PackItem> BOTTOMLESS_PACK = item("bottomless_pack", () -> new CattoItems.PackItem(27, Rarity.RARE));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> SPAWN_EGG = item("catto_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(CATTO, 0xECDAB4, 0x4E2E78, new Item.Properties()));
-    public static final Map<CattoModule, DeferredItem<CattoItems.ModuleItem>> MODULES = new EnumMap<>(CattoModule.class);
-
-    static {
-        for (CattoModule module : CattoModule.values()) {
-            MODULES.put(module, item(module.id(), () -> new CattoItems.ModuleItem(module)));
-        }
-    }
+    // Catto's gear: headwear and armor of three sets.
+    public static final DeferredItem<CattoGear.GearItem> ARCANE_HOOD = item("arcane_catto_hood",
+            () -> new CattoGear.GearItem(CattoGear.Set.ARCANE, CattoGear.Slot.HEAD, 1, 300, CattoModule.KEEN_NOSE, CattoModule.FIREFLY));
+    public static final DeferredItem<CattoGear.GearItem> ARCANE_MANTLE = item("arcane_catto_mantle",
+            () -> new CattoGear.GearItem(CattoGear.Set.ARCANE, CattoGear.Slot.ARMOR, 3, 300, CattoModule.SOURCE_FUR));
+    public static final DeferredItem<CattoGear.GearItem> SOMBRERITO = item("catto_sombrero",
+            () -> new CattoGear.GearItem(CattoGear.Set.PSEUDOMAGE, CattoGear.Slot.HEAD, 1, 100, CattoModule.MAGNET_WHISKER));
+    public static final DeferredItem<CattoGear.GearItem> PONCHITO = item("catto_poncho",
+            () -> new CattoGear.GearItem(CattoGear.Set.PSEUDOMAGE, CattoGear.Slot.ARMOR, 5, 100, CattoModule.CAT_BOOTS));
+    public static final DeferredItem<CattoGear.GearItem> DRUID_WREATH = item("catto_druid_wreath",
+            () -> new CattoGear.GearItem(CattoGear.Set.DRUID, CattoGear.Slot.HEAD, 1, 200, CattoModule.GREEN_THUMB));
+    public static final DeferredItem<CattoGear.GearItem> DRUID_CLOAK = item("catto_druid_cloak",
+            () -> new CattoGear.GearItem(CattoGear.Set.DRUID, CattoGear.Slot.ARMOR, 3, 200, CattoModule.REGROWTH));
+    // Catto's tools.
+    public static final DeferredItem<CattoGear.HammerItem> HAMMER = item("catto_hammer", CattoGear.HammerItem::new);
+    public static final DeferredItem<CattoGear.ScytheItem> SCYTHE = item("catto_scythe", CattoGear.ScytheItem::new);
+    public static final DeferredItem<CattoGear.HatchetItem> HATCHET = item("catto_hatchet", CattoGear.HatchetItem::new);
 
     private static <T extends Item> DeferredItem<T> item(String name, java.util.function.Supplier<T> factory) {
         DeferredItem<T> item = ModItems.REGISTER.register(name, factory);

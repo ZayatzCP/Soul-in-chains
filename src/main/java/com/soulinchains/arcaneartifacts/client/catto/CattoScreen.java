@@ -24,12 +24,16 @@ import java.util.List;
  * (queue, skills, reports) with the status line and the command buttons under them.
  */
 public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
-    private static final int PARCHMENT = 0xFFEADCB8;
-    private static final int PARCHMENT_DARK = 0xFFD8C69C;
-    private static final int PURPLE = 0xFF5B3A7A;
+    // The colours of the player's inventory, with a little violet for Catto.
+    private static final int PARCHMENT = 0xFFC6C6C6;
+    private static final int PARCHMENT_DARK = 0xFF555555;
+    private static final int PURPLE = 0xFF4A2A6A;
     private static final int PURPLE_LIGHT = 0xFF8E62B5;
-    private static final int INK = 0xFF3B2A1A;
-    private static final int INK_SOFT = 0xFF6E5A44;
+    private static final int WHITE = 0xFFFFFFFF;
+    private static final int SLOT = 0xFF8B8B8B;
+    private static final int SLOT_DARK = 0xFF373737;
+    private static final int INK = 0xFF404040;
+    private static final int INK_SOFT = 0xFF606060;
     private static final int RED = 0xFFA8322A;
     private static final int PANEL_X = 180;
     private static final int PANEL_W = 164;
@@ -50,7 +54,7 @@ public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
     public CattoScreen(CattoMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         imageWidth = PANEL_X + PANEL_W;
-        imageHeight = 210;
+        imageHeight = 222;
         inventoryLabelY = CattoMenu.INVENTORY_Y - 10;
         titleLabelY = 6;
     }
@@ -129,8 +133,8 @@ public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
 
     @Override
     protected void renderTooltip(GuiGraphics g, int mouseX, int mouseY) {
-        if (menu.getCarried().isEmpty() && hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index < 5) {
-            String[] keys = {"tool", "work", "module", "module", "bag"};
+        if (menu.getCarried().isEmpty() && hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index < Catto.EQUIPMENT_SIZE) {
+            String[] keys = {"head", "armor", "bag", "tool", "weapon", "offhand"};
             g.renderTooltip(font, List.of(Component.translatable("arcane_artifacts.catto.slot." + keys[hoveredSlot.index]).getVisualOrderText(),
                     Component.translatable("arcane_artifacts.catto.slot." + keys[hoveredSlot.index] + ".hint").withStyle(ChatFormatting.GRAY).getVisualOrderText()),
                     mouseX, mouseY);
@@ -149,11 +153,16 @@ public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
             if (!slot.isActive()) {
                 continue;
             }
-            int sx = x + slot.x - 1;
-            int sy = y + slot.y - 1;
-            boolean special = slot.index < 5;
-            g.fill(sx, sy, sx + 18, sy + 18, special ? PURPLE_LIGHT : 0xFF8B7355);
-            g.fill(sx + 1, sy + 1, sx + 17, sy + 17, special ? 0xFFCDB8E0 : 0xFFC4AE84);
+            slot(g, x + slot.x - 1, y + slot.y - 1);
+        }
+        // Catto himself between the two equipment columns, like the player in the inventory.
+        int ex = x + 26;
+        int ey = y + 8;
+        g.fill(ex, ey, ex + 52, ey + 54, 0xFF000000);
+        g.fill(ex + 1, ey + 1, ex + 51, ey + 53, 0xFF2A2A2A);
+        if (menu.cat != null) {
+            net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventoryFollowsMouse(g, ex + 1, ey + 1, ex + 51, ey + 53,
+                    24, 0.0625F, mouseX, mouseY, menu.cat);
         }
         // Locked bag slots: shown as shadows so the player sees what a bigger bag would give.
         int capacity = data.contains("Capacity") ? data.getInt("Capacity") : Catto.MOUTH_SLOTS;
@@ -172,19 +181,41 @@ public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
         drawStatus(g, px + 4, y + imageHeight - 58);
     }
 
+    /** A panel with the raised edges of vanilla containers. */
     private static void frame(GuiGraphics g, int x, int y, int w, int h) {
-        g.fill(x, y, x + w, y + h, PURPLE);
-        g.fill(x + 2, y + 2, x + w - 2, y + h - 2, PARCHMENT);
-        g.fill(x + 2, y + h - 4, x + w - 2, y + h - 2, PARCHMENT_DARK);
+        g.fill(x, y, x + w, y + h, 0xFF000000);
+        g.fill(x + 1, y + 1, x + w - 1, y + h - 1, WHITE);
+        g.fill(x + 3, y + 3, x + w - 1, y + h - 1, PARCHMENT_DARK);
+        g.fill(x + 3, y + 3, x + w - 3, y + h - 3, PARCHMENT);
+    }
+
+    private static void slot(GuiGraphics g, int x, int y) {
+        g.fill(x, y, x + 18, y + 18, SLOT_DARK);
+        g.fill(x + 1, y + 1, x + 18, y + 18, WHITE);
+        g.fill(x + 1, y + 1, x + 17, y + 17, SLOT);
     }
 
     @Override
     protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
-        g.drawString(font, title, titleLabelX, titleLabelY, PURPLE, false);
-        g.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, INK_SOFT, false);
+        g.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, INK, false);
         int capacity = data.contains("Capacity") ? data.getInt("Capacity") : Catto.MOUTH_SLOTS;
-        g.drawString(font, Component.translatable("arcane_artifacts.catto.bag_label", capacity), 8, CattoMenu.BAG_Y - 9, INK_SOFT, false);
-        g.drawString(font, Component.translatable("arcane_artifacts.catto.equipment_label"), 122, CattoMenu.EQUIPMENT_Y + 5, INK_SOFT, false);
+        g.drawString(font, Component.translatable("arcane_artifacts.catto.bag_label", capacity), 8, CattoMenu.BAG_Y - 10, INK, false);
+        // Name, nature and the numbers that matter, to the right of the second column.
+        int ix = 102;
+        g.drawString(font, font.plainSubstrByWidth(title.getString(), 70), ix, 8, PURPLE, false);
+        String nature = data.contains("Nature") ? Component.translatable("arcane_artifacts.catto.nature."
+                + data.getString("Nature").toLowerCase(java.util.Locale.ROOT)).getString() : "";
+        g.drawString(font, font.plainSubstrByWidth(nature, 70), ix, 19, INK_SOFT, false);
+        g.drawString(font, Component.translatable("arcane_artifacts.catto.info.armor", data.getInt("Armor")), ix, 31, INK, false);
+        g.drawString(font, Component.translatable("arcane_artifacts.catto.info.bond", data.getInt("Bond")), ix, 41, INK, false);
+        int max = Math.max(1, data.getInt("MaxSource"));
+        g.drawString(font, Component.translatable("arcane_artifacts.catto.info.mana", data.getInt("Source"), max), ix, 51, 0xFF6A3A9A, false);
+        g.fill(ix, 61, ix + 66, 64, 0xFF555555);
+        g.fill(ix, 61, ix + Math.round(66 * Math.min(1.0F, data.getInt("Source") / (float) max)), 64, PURPLE_LIGHT);
+        if (data.contains("Set")) {
+            g.drawString(font, font.plainSubstrByWidth(Component.translatable("arcane_artifacts.catto.set."
+                    + data.getString("Set").toLowerCase(java.util.Locale.ROOT)).getString(), 70), ix, 66, 0xFF2A7A7A, false);
+        }
     }
 
     // ------------------------------------------------------------------ queue
@@ -275,7 +306,7 @@ public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
             g.fill(barX, y + 2, barX + Math.round(barW * part), y + 6, PURPLE_LIGHT);
             String perk = font.plainSubstrByWidth(skill.perk(tier).getString(), PANEL_W - 10);
             g.drawString(font, perk, x + 1, y + 9, INK_SOFT, false);
-            y += 21;
+            y += 19;
         }
     }
 
@@ -297,7 +328,7 @@ public class CattoScreen extends AbstractContainerScreen<CattoMenu> {
                 g.renderComponentTooltip(font, lines, mouseX, mouseY);
                 return;
             }
-            y += 21;
+            y += 19;
         }
     }
 

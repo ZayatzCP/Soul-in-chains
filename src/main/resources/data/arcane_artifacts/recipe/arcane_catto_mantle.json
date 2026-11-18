@@ -3,13 +3,13 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "minecraft:white_wool"
-    },
-    {
       "item": "ars_nouveau:source_gem"
     },
     {
       "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:abjuration_essence"
     },
     {
       "item": "ars_nouveau:magebloom_fiber"
@@ -19,11 +19,11 @@
     }
   ],
   "reagent": {
-    "item": "ars_nouveau:source_gem"
+    "item": "minecraft:leather_chestplate"
   },
   "result": {
     "count": 1,
-    "id": "arcane_artifacts:source_fur"
+    "id": "arcane_artifacts:arcane_catto_mantle"
   },
   "sourceCost": 2500
 }

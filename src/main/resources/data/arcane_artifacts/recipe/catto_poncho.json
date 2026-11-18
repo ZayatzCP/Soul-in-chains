@@ -1,0 +1,32 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    },
+    {
+      "item": "minecraft:green_dye"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:leather_chestplate"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:catto_poncho"
+  },
+  "sourceCost": 1500
+}

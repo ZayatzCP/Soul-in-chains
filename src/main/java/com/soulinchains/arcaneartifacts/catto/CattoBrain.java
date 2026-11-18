@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  * Tasks are planned one concrete step at a time by {@link CattoPlanner}, because the world changes while Catto walks.
  */
 public final class CattoBrain {
-    public enum State { IDLE, PLAN, TRAVEL, WORK, RETREAT, WAIT, RETURN, OFFLINE }
+    public enum State { IDLE, PLAN, TRAVEL, WORK, RETREAT, WAIT, RETURN, OFFLINE, FIGHT }
 
     /** One concrete thing to do somewhere. */
     public static final class Step {
@@ -133,6 +133,9 @@ public final class CattoBrain {
     private int waitTicks;
     private int idleTicks;
     private int hurtTicks;
+    private int attackCooldown;
+    @Nullable
+    private net.minecraft.world.entity.LivingEntity foe;
     @Nullable
     private Component waitReason;
     private final Map<Long, Long> blacklist = new HashMap<>();
@@ -278,7 +281,17 @@ public final class CattoBrain {
         if (hurtTicks > 0) {
             hurtTicks--;
         }
-        if ((state == State.TRAVEL || state == State.WORK || state == State.PLAN) && cat.tickCount % 5 == 0 && inDanger()) {
+        if (state != State.FIGHT && state != State.RETURN && state != State.RETREAT && cat.tickCount % 5 == 0 && wantsToFight()) {
+            net.minecraft.world.entity.LivingEntity target = findFoe();
+            if (target != null) {
+                cancelStep();
+                foe = target;
+                state = State.FIGHT;
+                cat.playSound(SoundEvents.CAT_HISS, 1.0F, 0.8F);
+            }
+        }
+        if ((state == State.TRAVEL || state == State.WORK || state == State.PLAN || state == State.FIGHT) && cat.tickCount % 5 == 0 && inDanger()) {
+            foe = null;
             enterRetreat();
         }
         if (state != State.IDLE && state != State.WAIT && state != State.OFFLINE) {
@@ -295,6 +308,7 @@ public final class CattoBrain {
             case RETREAT -> tickRetreat();
             case WAIT -> tickWait();
             case RETURN -> tickReturn();
+            case FIGHT -> tickFight();
             default -> state = State.IDLE;
         }
     }
@@ -459,6 +473,76 @@ public final class CattoBrain {
         state = State.PLAN;
     }
 
+    // ------------------------------------------------------------------ fighting (brawlers only)
+
+    private boolean wantsToFight() {
+        return cat.nature() == CattoNature.BRAWLER && cat.getHealth() > cat.getMaxHealth() * 0.3F || state == State.FIGHT;
+    }
+
+    /** A monster nearby (not a creeper: even a brawler knows better) or whoever just hurt the owner. */
+    @Nullable
+    private net.minecraft.world.entity.LivingEntity findFoe() {
+        ServerPlayer owner = cat.ownerPlayer();
+        if (owner != null && owner.level() == cat.level()) {
+            net.minecraft.world.entity.LivingEntity attacker = owner.getLastHurtByMob();
+            if (attacker != null && attacker.isAlive() && attacker != cat && !(attacker instanceof Player)
+                    && attacker.distanceToSqr(cat) < 16 * 16 && owner.tickCount - owner.getLastHurtByMobTimestamp() < 100) {
+                return attacker;
+            }
+        }
+        Monster threat = nearestThreat();
+        return threat instanceof Creeper ? null : threat;
+    }
+
+    private void tickFight() {
+        net.minecraft.world.entity.LivingEntity target = foe;
+        if (target == null || !target.isAlive() || target.distanceToSqr(cat) > 24 * 24 || cat.nature() != CattoNature.BRAWLER) {
+            foe = null;
+            state = cat.queue.isEmpty() || cat.paused ? State.IDLE : State.PLAN;
+            return;
+        }
+        show(Component.translatable("arcane_artifacts.catto.status.fighting", target.getDisplayName()), cat.weapon(), false);
+        cat.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        if (attackCooldown > 0) {
+            attackCooldown--;
+        }
+        double dist = cat.distanceTo(target);
+        if (attackCooldown == 0 && dist > 3.0 && dist < 14.0 && CattoCombat.spellOf(cat.weapon()) != null && cat.hasLineOfSight(target)
+                && CattoCombat.cast(cat, target)) {
+            attackCooldown = 30;
+            cat.getNavigation().stop();
+            afterHit(target);
+            return;
+        }
+        if (!cat.isWithinMeleeAttackRange(target)) {
+            if (cat.tickCount % 10 == 0 || cat.getNavigation().isDone()) {
+                cat.getNavigation().moveTo(target, 1.3);
+            }
+            return;
+        }
+        if (attackCooldown == 0) {
+            cat.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+            if (cat.doHurtTarget(target)) {
+                cat.addXp(CattoSkill.FIGHTER, 1);
+                // The blow wore the weapon shown in the paw: keep the wear.
+                if (ItemStack.isSameItem(cat.getMainHandItem(), cat.weapon())) {
+                    cat.equipment.setStackInSlot(Catto.SLOT_WEAPON, cat.getMainHandItem().copy());
+                }
+            }
+            attackCooldown = CattoCombat.attackCooldown(cat);
+            afterHit(target);
+        }
+    }
+
+    private void afterHit(net.minecraft.world.entity.LivingEntity target) {
+        if (!target.isAlive()) {
+            cat.addXp(CattoSkill.FIGHTER, 5);
+            cat.addBond(cat.nature().fightBond());
+            cat.playSound(SoundEvents.CAT_PURREOW, 0.8F, 1.2F);
+            foe = null;
+        }
+    }
+
     private void tickRetreat() {
         show(Component.translatable("arcane_artifacts.catto.status.retreating"), new ItemStack(net.minecraft.world.item.Items.SHIELD), true);
         ServerPlayer owner = cat.ownerPlayer();
@@ -598,6 +682,14 @@ public final class CattoBrain {
     }
 
     private boolean inDanger() {
+        if ((cat.isOnFire() || cat.isInLava()) && !cat.moduleActive(CattoModule.CAT_BOOTS)) {
+            return true;
+        }
+        if (cat.nature() == CattoNature.BRAWLER) {
+            // A brawler backs off only when badly hurt, or from a creeper about to blow.
+            return cat.getHealth() < cat.getMaxHealth() * 0.3F
+                    || !cat.level().getEntitiesOfClass(Creeper.class, cat.getBoundingBox().inflate(5), c -> c.getSwellDir() > 0 || c.isIgnited()).isEmpty();
+        }
         if (cat.getHealth() < cat.getMaxHealth() * 0.4F || hurtTicks > 0) {
             return true;
         }

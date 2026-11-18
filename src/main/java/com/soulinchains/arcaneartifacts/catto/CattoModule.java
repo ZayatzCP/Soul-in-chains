@@ -2,7 +2,7 @@ package com.soulinchains.arcaneartifacts.catto;
 
 import java.util.Locale;
 
-/** The magic modules Catto wears in the module slots. Each one spends Source while Catto works. */
+/** Effects of Catto's gear (headwear and armor, see {@link CattoGear}). Each one spends a little Source while Catto works. */
 public enum CattoModule {
     /** Picks up items from 4 blocks away and keeps the bag tidy while mining and gathering. */
     MAGNET_WHISKER,
@@ -13,7 +13,11 @@ public enum CattoModule {
     /** Slowly makes Source by itself. */
     SOURCE_FUR,
     /** Faster steps, no fall damage, no burning. */
-    CAT_BOOTS;
+    CAT_BOOTS,
+    /** Harvests like a Gatherer one tier higher and gathers 4 blocks further. */
+    GREEN_THUMB,
+    /** Slowly heals. */
+    REGROWTH;
 
     public String id() {
         return name().toLowerCase(Locale.ROOT);

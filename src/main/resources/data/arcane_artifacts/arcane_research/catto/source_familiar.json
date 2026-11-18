@@ -47,10 +47,11 @@
   "unlocks_items": [
     "arcane_artifacts:blueprint_parchment",
     "arcane_artifacts:bottomless_pack",
-    "arcane_artifacts:magnet_whisker",
-    "arcane_artifacts:keen_nose",
-    "arcane_artifacts:firefly",
-    "arcane_artifacts:source_fur",
-    "arcane_artifacts:cat_boots"
+    "arcane_artifacts:arcane_catto_hood",
+    "arcane_artifacts:arcane_catto_mantle",
+    "arcane_artifacts:catto_sombrero",
+    "arcane_artifacts:catto_poncho",
+    "arcane_artifacts:catto_druid_wreath",
+    "arcane_artifacts:catto_druid_cloak"
   ]
 }

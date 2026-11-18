@@ -3,27 +3,30 @@
   "keepNbtOfReagent": false,
   "pedestalItems": [
     {
-      "item": "minecraft:spider_eye"
+      "item": "minecraft:vine"
     },
     {
-      "item": "minecraft:redstone"
+      "item": "minecraft:vine"
     },
     {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "minecraft:leaves"
     },
     {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:moss_block"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
     },
     {
       "item": "ars_nouveau:earth_essence"
     }
   ],
   "reagent": {
-    "item": "ars_nouveau:source_gem"
+    "item": "minecraft:leather_chestplate"
   },
   "result": {
     "count": 1,
-    "id": "arcane_artifacts:keen_nose"
+    "id": "arcane_artifacts:catto_druid_cloak"
   },
   "sourceCost": 1500
 }

@@ -45,11 +45,13 @@ import java.util.UUID;
  * {@link CattoBrain}; the client only draws the cat, its bubble and the menu.
  */
 public class Catto extends Cat {
-    public static final int SLOT_TOOL = 0;
-    public static final int SLOT_WORK = 1;
-    public static final int SLOT_MODULE = 2;
-    public static final int SLOT_MODULE_2 = 3;
-    public static final int SLOT_BAG = 4;
+    public static final int SLOT_HEAD = 0;
+    public static final int SLOT_ARMOR = 1;
+    public static final int SLOT_BAG = 2;
+    public static final int SLOT_TOOL = 3;
+    public static final int SLOT_WEAPON = 4;
+    public static final int SLOT_OFFHAND = 5;
+    public static final int EQUIPMENT_SIZE = 6;
     public static final int BAG_SIZE = 27;
     public static final int MOUTH_SLOTS = 3;
     public static final int MAX_STORAGES = 8;
@@ -65,8 +67,8 @@ public class Catto extends Cat {
     private static final EntityDataAccessor<Integer> DATA_MAX_SOURCE = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_ALERT = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.BOOLEAN);
 
-    /** Tool, work item, two module slots, bag. */
-    public final ItemStackHandler equipment = new ItemStackHandler(5) {
+    /** Headwear, armor, bag, tool, weapon and the second paw (food, shield, torches). */
+    public final ItemStackHandler equipment = new ItemStackHandler(EQUIPMENT_SIZE) {
         @Override
         protected void onContentsChanged(int slot) {
             changed();
@@ -92,6 +94,8 @@ public class Catto extends Cat {
     public boolean stay;
     public int bond;
     public int source = 100;
+    /** Brawler or gentle: chosen once, when this Catto first appears. */
+    public CattoNature nature;
     private long lastPetTime = -100000;
     /** Game tests: works without an online owner. Never saved. */
     public boolean testMode;
@@ -103,6 +107,10 @@ public class Catto extends Cat {
     public Catto(EntityType<? extends Cat> type, Level level) {
         super(type, level);
         setPersistenceRequired();
+        nature = CattoNature.random(getRandom());
+        for (CattoSkill skill : CattoSkill.values()) {
+            xp[skill.ordinal()] = nature.startXp(skill);
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -212,12 +220,46 @@ public class Catto extends Cat {
         changed();
     }
 
+    /** Source pool: the Alchemist's tier plus what the headwear and armor add. */
     public int maxSource() {
-        return switch (tier(CattoSkill.ALCHEMIST)) {
+        int base = switch (tier(CattoSkill.ALCHEMIST)) {
             case 3 -> 2000;
             case 2 -> 1000;
             default -> 500;
         };
+        for (int slot : new int[]{SLOT_HEAD, SLOT_ARMOR}) {
+            if (equipment.getStackInSlot(slot).getItem() instanceof CattoGear.GearItem gear) {
+                base += gear.mana;
+            }
+        }
+        return base;
+    }
+
+    public int armor() {
+        int armor = 0;
+        for (int slot : new int[]{SLOT_HEAD, SLOT_ARMOR}) {
+            ItemStack stack = equipment.getStackInSlot(slot);
+            if (stack.getItem() instanceof CattoGear.GearItem gear) {
+                armor += gear.armor;
+            } else if (stack.getItem() instanceof net.minecraft.world.item.ArmorItem item) {
+                armor += item.getDefense();
+            }
+        }
+        return armor;
+    }
+
+    /** The set whose headwear and armor Catto wears together, if any. */
+    @Nullable
+    public CattoGear.Set fullSet() {
+        if (equipment.getStackInSlot(SLOT_HEAD).getItem() instanceof CattoGear.GearItem head
+                && equipment.getStackInSlot(SLOT_ARMOR).getItem() instanceof CattoGear.GearItem body && head.set == body.set) {
+            return head.set;
+        }
+        return null;
+    }
+
+    public CattoNature nature() {
+        return nature == null ? CattoNature.GENTLE : nature;
     }
 
     public void addSource(int amount) {
@@ -252,28 +294,29 @@ public class Catto extends Cat {
         return equipment.getStackInSlot(SLOT_TOOL);
     }
 
-    public ItemStack workItem() {
-        return equipment.getStackInSlot(SLOT_WORK);
+    public ItemStack weapon() {
+        return equipment.getStackInSlot(SLOT_WEAPON);
+    }
+
+    public ItemStack offhand() {
+        return equipment.getStackInSlot(SLOT_OFFHAND);
     }
 
     public int capacity() {
         return equipment.getStackInSlot(SLOT_BAG).getItem() instanceof CattoItems.PackItem pack ? pack.capacity : MOUTH_SLOTS;
     }
 
-    public boolean moduleSlotOpen(int slot) {
-        return slot == SLOT_MODULE || tier(CattoSkill.ALCHEMIST) >= 2;
-    }
-
+    /** Does the headwear or armor give this effect? */
     public boolean hasModule(CattoModule module) {
-        for (int slot : new int[]{SLOT_MODULE, SLOT_MODULE_2}) {
-            if (moduleSlotOpen(slot) && equipment.getStackInSlot(slot).getItem() instanceof CattoItems.ModuleItem item && item.module == module) {
+        for (int slot : new int[]{SLOT_HEAD, SLOT_ARMOR}) {
+            if (equipment.getStackInSlot(slot).getItem() instanceof CattoGear.GearItem gear && gear.effects.contains(module)) {
                 return true;
             }
         }
         return false;
     }
 
-    /** A module works only while Catto has Source to feed it. */
+    /** A gear effect works only while Catto has Source to feed it. */
     public boolean moduleActive(CattoModule module) {
         return source > 0 && hasModule(module);
     }
@@ -292,10 +335,19 @@ public class Catto extends Cat {
         if (stack.isEmpty()) {
             return true;
         }
+        var item = stack.getItem();
         return switch (slot) {
-            case SLOT_TOOL -> stack.isDamageableItem() || stack.getMaxStackSize() == 1;
-            case SLOT_MODULE, SLOT_MODULE_2 -> stack.getItem() instanceof CattoItems.ModuleItem && moduleSlotOpen(slot);
-            case SLOT_BAG -> stack.getItem() instanceof CattoItems.PackItem;
+            case SLOT_HEAD -> item instanceof CattoGear.GearItem gear ? gear.slot == CattoGear.Slot.HEAD
+                    : item instanceof net.minecraft.world.item.ArmorItem armor && armor.getType() == net.minecraft.world.item.ArmorItem.Type.HELMET;
+            case SLOT_ARMOR -> item instanceof CattoGear.GearItem gear ? gear.slot == CattoGear.Slot.ARMOR
+                    : item instanceof net.minecraft.world.item.ArmorItem armor && armor.getType() == net.minecraft.world.item.ArmorItem.Type.CHESTPLATE;
+            case SLOT_BAG -> item instanceof CattoItems.PackItem;
+            case SLOT_TOOL -> item instanceof net.minecraft.world.item.DiggerItem || item instanceof net.minecraft.world.item.ShearsItem;
+            case SLOT_WEAPON -> item instanceof net.minecraft.world.item.SwordItem || item instanceof net.minecraft.world.item.AxeItem
+                    || item instanceof net.minecraft.world.item.TridentItem || item instanceof net.minecraft.world.item.MaceItem
+                    || CattoCombat.spellOf(stack) != null;
+            case SLOT_OFFHAND -> stack.has(net.minecraft.core.component.DataComponents.FOOD) || item instanceof net.minecraft.world.item.ShieldItem
+                    || stack.is(Items.TORCH) || stack.is(Items.SOUL_TORCH);
             default -> true;
         };
     }
@@ -675,7 +727,7 @@ public class Catto extends Cat {
         if (held.is(Items.COD) || held.is(Items.SALMON)) {
             heal(4.0F);
             if (bond < 100) {
-                addBond(2);
+                addBond(nature().fishBond());
             }
             held.consume(1, player);
             ((ServerLevel) level()).sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 3, 0.2, 0.1, 0.2, 0);
@@ -698,7 +750,8 @@ public class Catto extends Cat {
             return InteractionResult.SUCCESS;
         }
         if (held.isEmpty()) {
-            openMenu(serverPlayer);
+            // Talk first: the conversation has a way to the inventory too.
+            CattoDialog.open(serverPlayer, this);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
@@ -739,7 +792,7 @@ public class Catto extends Cat {
         playSound(SoundEvents.CAT_PURR, 1.0F, 1.0F);
         if (level.getGameTime() - lastPetTime >= 6000) {
             lastPetTime = level.getGameTime();
-            addBond(3);
+            addBond(nature().petBond());
             CattoItems.tell(player, Component.translatable("arcane_artifacts.catto.petted", bond));
         }
     }
@@ -788,11 +841,6 @@ public class Catto extends Cat {
         if (entityData.get(DATA_SOURCE) != source) {
             entityData.set(DATA_SOURCE, source);
         }
-        // The tool is shown in Catto's paw: a copy in the main hand, which the game syncs to everyone and never drops.
-        if (!ItemStack.matches(getMainHandItem(), tool())) {
-            setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, tool().copy());
-            setDropChance(net.minecraft.world.entity.EquipmentSlot.MAINHAND, 0.0F);
-        }
         if (entityData.get(DATA_MAX_SOURCE) != maxSource()) {
             entityData.set(DATA_MAX_SOURCE, maxSource());
         }
@@ -815,6 +863,35 @@ public class Catto extends Cat {
         if (moduleActive(CattoModule.CAT_BOOTS) && isOnFire()) {
             clearFire();
         }
+        var attack = getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attack != null && attack.getBaseValue() != 3.0 + CattoCombat.fighterDamage(this)) {
+            attack.setBaseValue(3.0 + CattoCombat.fighterDamage(this));
+        }
+        if (time % 100 == 0 && moduleActive(CattoModule.REGROWTH) && getHealth() < getMaxHealth()) {
+            heal(1.0F);
+        }
+        if (fullSet() == CattoGear.Set.DRUID && hasEffect(net.minecraft.world.effect.MobEffects.POISON)) {
+            removeEffect(net.minecraft.world.effect.MobEffects.POISON);
+        }
+        // Food in the second paw: eaten when hurt.
+        if (time % 40 == 0 && getHealth() < getMaxHealth() * 0.6F && offhand().has(net.minecraft.core.component.DataComponents.FOOD)) {
+            var food = offhand().get(net.minecraft.core.component.DataComponents.FOOD);
+            heal(Math.max(2, food.nutrition()));
+            ItemStack rest = offhand().copy();
+            rest.shrink(1);
+            equipment.setStackInSlot(SLOT_OFFHAND, rest);
+            playSound(SoundEvents.CAT_EAT, 1.0F, 1.0F);
+        }
+        // What is shown in the paws: the weapon in a fight, otherwise the tool; the second paw holds its item.
+        ItemStack shown = brain().state() == CattoBrain.State.FIGHT && !weapon().isEmpty() ? weapon() : tool();
+        if (!ItemStack.matches(getOffhandItem(), offhand())) {
+            setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand().copy());
+            setDropChance(net.minecraft.world.entity.EquipmentSlot.OFFHAND, 0.0F);
+        }
+        if (!ItemStack.matches(getMainHandItem(), shown)) {
+            setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, shown.copy());
+            setDropChance(net.minecraft.world.entity.EquipmentSlot.MAINHAND, 0.0F);
+        }
     }
 
     @Override
@@ -829,6 +906,17 @@ public class Catto extends Cat {
     public boolean hurt(DamageSource source, float amount) {
         if (moduleActive(CattoModule.CAT_BOOTS) && source.is(net.minecraft.tags.DamageTypeTags.IS_FIRE)) {
             return false;
+        }
+        if (!level().isClientSide() && source.getEntity() != null && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_SHIELD)
+                && offhand().getItem() instanceof net.minecraft.world.item.ShieldItem && getRandom().nextFloat() < 0.4F) {
+            ItemStack shield = offhand().copy();
+            shield.hurtAndBreak(1, this, net.minecraft.world.entity.EquipmentSlot.OFFHAND);
+            equipment.setStackInSlot(SLOT_OFFHAND, shield);
+            playSound(SoundEvents.SHIELD_BLOCK, 1.0F, 1.0F);
+            return false;
+        }
+        if (!source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_ARMOR)) {
+            amount *= 1.0F - Math.min(0.6F, armor() * 0.04F);
         }
         boolean hurt = super.hurt(source, amount);
         if (hurt && !level().isClientSide()) {
@@ -896,6 +984,7 @@ public class Catto extends Cat {
         catto.putBoolean("Stay", stay);
         catto.putInt("Bond", bond);
         catto.putInt("Source", source);
+        catto.putString("Nature", nature().name());
         catto.putLong("LastPet", lastPetTime);
         tag.put("Catto", catto);
     }
@@ -908,6 +997,10 @@ public class Catto extends Cat {
         }
         CompoundTag catto = tag.getCompound("Catto");
         equipment.deserializeNBT(registryAccess(), catto.getCompound("Equipment"));
+        if (equipment.getSlots() != EQUIPMENT_SIZE) {
+            // Saved before the six-slot equipment: start the equipment afresh.
+            equipment.setSize(EQUIPMENT_SIZE);
+        }
         bag.deserializeNBT(registryAccess(), catto.getCompound("Bag"));
         queue.clear();
         for (Tag t : catto.getList("Queue", Tag.TAG_COMPOUND)) {
@@ -930,6 +1023,11 @@ public class Catto extends Cat {
         stay = catto.getBoolean("Stay");
         bond = catto.getInt("Bond");
         source = catto.getInt("Source");
+        try {
+            nature = CattoNature.valueOf(catto.getString("Nature"));
+        } catch (IllegalArgumentException ignored) {
+            // older Catto: keep the one rolled at creation
+        }
         lastPetTime = catto.getLong("LastPet");
         entityData.set(DATA_SOURCE, source);
     }
@@ -952,6 +1050,12 @@ public class Catto extends Cat {
         tag.putInt("QueueCap", queueCap());
         tag.putInt("Capacity", capacity());
         tag.putInt("Storages", storages.size());
+        tag.putString("Nature", nature().name());
+        tag.putInt("Armor", armor());
+        CattoGear.Set set = fullSet();
+        if (set != null) {
+            tag.putString("Set", set.name());
+        }
         return tag;
     }
 }

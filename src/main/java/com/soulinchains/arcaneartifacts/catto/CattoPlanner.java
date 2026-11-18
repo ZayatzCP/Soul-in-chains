@@ -234,7 +234,8 @@ public final class CattoPlanner {
             return new AABB(min.getX(), min.getY(), min.getZ(), max.getX() + 1, max.getY() + 1, max.getZ() + 1);
         }
         int tier = cat.tier(CattoSkill.GATHERER);
-        int radius = (tier >= 3 ? 16 : tier == 2 ? 12 : 8) + (cat.moduleActive(CattoModule.MAGNET_WHISKER) ? 4 : 0);
+        int radius = (tier >= 3 ? 16 : tier == 2 ? 12 : 8) + (cat.moduleActive(CattoModule.MAGNET_WHISKER) ? 4 : 0)
+                + (cat.moduleActive(CattoModule.GREEN_THUMB) ? 4 : 0);
         return new AABB(task.a).inflate(radius, 4, radius);
     }
 
@@ -305,7 +306,7 @@ public final class CattoPlanner {
                 s.accuracy = 0;
                 return Plan.step(s);
             }
-            int tier = cat.tier(CattoSkill.GATHERER);
+            int tier = gathererTier(cat);
             if (tier >= 2 && task.item.isEmpty()) {
                 BlockPos min = BlockPos.containing(box.minX, box.minY, box.minZ);
                 BlockPos max = BlockPos.containing(box.maxX - 1, box.maxY - 1, box.maxZ - 1);
@@ -481,7 +482,7 @@ public final class CattoPlanner {
                     }
                     return Plan.blocked(Component.translatable("arcane_artifacts.catto.blocked.bag_full"));
                 }
-                if (cat.workItem().is(Items.CRAFTING_TABLE)) {
+                if (CattoWorld.bagCount(cat, s -> s.is(Items.CRAFTING_TABLE)) > 0) {
                     Step s = step(Step.Kind.CRAFT, cat.blockPosition(), 64.0, craftTicks(cat));
                     s.blacklistOnFail = false;
                     return Plan.step(s);
@@ -783,13 +784,16 @@ public final class CattoPlanner {
                 if (!CattoWorld.toolHarvests(cat, before) || !CattoWorld.safeToBreak(cat, step.pos) || !CattoWorld.breakBlock(cat, step.pos)) {
                     return false;
                 }
-                CattoWorld.vacuum(cat, step.pos, cat.moduleActive(CattoModule.MAGNET_WHISKER) ? 4.0 : 1.5, s -> true);
                 if (task.type == CattoTask.Type.MINE) {
                     if (target != null && before.is(target)) {
                         task.done++;
                     }
                     cat.addXp(CattoSkill.MINER, 1);
+                    if (target != null && before.is(target)) {
+                        extraBreaks(cat, task, step.pos, target, before);
+                    }
                 }
+                CattoWorld.vacuum(cat, step.pos, cat.moduleActive(CattoModule.MAGNET_WHISKER) ? 4.0 : 2.5, s -> true);
                 return true;
             }
             case PLACE -> {
@@ -835,6 +839,47 @@ public final class CattoPlanner {
         return false;
     }
 
+    /**
+     * Catto's tools do more than one block: the hammer knocks out up to eight touching blocks of the same kind, the
+     * hatchet fells the whole tree (up to 64 logs).
+     */
+    private static void extraBreaks(Catto cat, CattoTask task, BlockPos origin, Block target, BlockState before) {
+        Level level = cat.level();
+        java.util.List<BlockPos> extra = new ArrayList<>();
+        if (cat.tool().getItem() instanceof CattoGear.HammerItem) {
+            for (BlockPos p : BlockPos.betweenClosed(origin.offset(-1, -1, -1), origin.offset(1, 1, 1))) {
+                if (extra.size() < 8 && !p.equals(origin) && level.getBlockState(p).is(target)) {
+                    extra.add(p.immutable());
+                }
+            }
+        } else if (cat.tool().getItem() instanceof CattoGear.HatchetItem && before.is(BlockTags.LOGS)) {
+            java.util.ArrayDeque<BlockPos> open = new java.util.ArrayDeque<>(List.of(origin));
+            Set<BlockPos> seen = new HashSet<>(List.of(origin));
+            while (!open.isEmpty() && extra.size() < 64) {
+                BlockPos at = open.poll();
+                for (BlockPos p : BlockPos.betweenClosed(at.offset(-1, 0, -1), at.offset(1, 1, 1))) {
+                    BlockPos q = p.immutable();
+                    if (seen.add(q) && level.getBlockState(q).is(BlockTags.LOGS)) {
+                        extra.add(q);
+                        open.add(q);
+                    }
+                }
+            }
+        }
+        for (BlockPos p : extra) {
+            BlockState state = level.getBlockState(p);
+            if (cat.tool().isEmpty() || !CattoWorld.toolHarvests(cat, state) || !CattoWorld.safeToBreak(cat, p)) {
+                continue;
+            }
+            if (CattoWorld.breakBlock(cat, p)) {
+                if (state.is(target)) {
+                    task.done++;
+                }
+                CattoWorld.vacuum(cat, p, 1.5, s -> true);
+            }
+        }
+    }
+
     private static int give(Catto cat, ServerPlayer owner, Predicate<ItemStack> filter, int amount) {
         int given = 0;
         int limit = amount <= 0 ? Integer.MAX_VALUE : amount;
@@ -855,10 +900,35 @@ public final class CattoPlanner {
         return given;
     }
 
+    /** The Gatherer tier for harvesting: the druid wreath and the scythe each count as one more. */
+    static int gathererTier(Catto cat) {
+        int tier = cat.tier(CattoSkill.GATHERER);
+        if (cat.moduleActive(CattoModule.GREEN_THUMB)) {
+            tier++;
+        }
+        if (cat.tool().getItem() instanceof CattoGear.ScytheItem) {
+            tier = Math.max(tier + 1, 2);
+        }
+        return Math.min(3, tier);
+    }
+
     private static boolean harvest(Catto cat, CattoTask task, BlockPos pos) {
+        boolean done = harvestOne(cat, task, pos);
+        // The scythe sweeps the ripe plants around the one Catto went for.
+        if (done && cat.tool().getItem() instanceof CattoGear.ScytheItem) {
+            for (BlockPos p : BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, 0, 1))) {
+                if (!p.equals(pos) && !CattoWorld.bagFull(cat)) {
+                    harvestOne(cat, task, p.immutable());
+                }
+            }
+        }
+        return done;
+    }
+
+    private static boolean harvestOne(Catto cat, CattoTask task, BlockPos pos) {
         ServerLevel level = (ServerLevel) cat.level();
         BlockState state = level.getBlockState(pos);
-        int tier = cat.tier(CattoSkill.GATHERER);
+        int tier = gathererTier(cat);
         if (!ripe(level, pos, state, tier)) {
             return false;
         }
@@ -876,6 +946,14 @@ public final class CattoPlanner {
                 return false;
             }
             picked = CattoWorld.vacuum(cat, pos, 1.5, s -> true);
+            // Druid set: half of the harvests give a second helping.
+            if (cat.fullSet() == CattoGear.Set.DRUID && cat.getRandom().nextBoolean()) {
+                for (ItemStack drop : net.minecraft.world.level.block.Block.getDrops(state, level, pos, null)) {
+                    if (!(drop.getItem() instanceof BlockItem bi && bi.getBlock() == block)) {
+                        picked += drop.getCount() - CattoWorld.bagInsert(cat, drop).getCount();
+                    }
+                }
+            }
             // Replant what grows from seeds; cocoa keeps its side of the log.
             if (block instanceof CropBlock || block instanceof NetherWartBlock || block instanceof CocoaBlock) {
                 BlockState replant = block instanceof CocoaBlock ? state.setValue(CocoaBlock.AGE, 0) : block.defaultBlockState();

@@ -32,10 +32,11 @@ public class CattoMenu extends AbstractContainerMenu {
     public static final int ROW_MORE = 3;
     public static final int ROW_LESS = 4;
 
-    public static final int EQUIPMENT_Y = 20;
-    public static final int BAG_Y = 44;
-    public static final int INVENTORY_Y = 112;
-    public static final int[] EQUIPMENT_X = {8, 30, 56, 74, 100};
+    /** Laid out like the player's inventory: head, armor, bag on the left, Catto in the middle, tool, weapon, second paw on the right. */
+    public static final int[] EQUIPMENT_X = {8, 8, 8, 80, 80, 80};
+    public static final int[] EQUIPMENT_Y = {8, 26, 44, 8, 26, 44};
+    public static final int BAG_Y = 72;
+    public static final int INVENTORY_Y = 138;
 
     @Nullable
     public final Catto cat;
@@ -56,11 +57,11 @@ public class CattoMenu extends AbstractContainerMenu {
         super(CattoContent.MENU.get(), id);
         this.cat = cat;
         this.catId = cat == null ? -1 : cat.getId();
-        ItemStackHandler equipment = cat != null ? cat.equipment : new ItemStackHandler(5);
+        ItemStackHandler equipment = cat != null ? cat.equipment : new ItemStackHandler(Catto.EQUIPMENT_SIZE);
         ItemStackHandler bag = cat != null ? cat.bag : new ItemStackHandler(Catto.BAG_SIZE);
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < Catto.EQUIPMENT_SIZE; i++) {
             final int slot = i;
-            addSlot(new SlotItemHandler(equipment, i, EQUIPMENT_X[i], EQUIPMENT_Y) {
+            addSlot(new SlotItemHandler(equipment, i, EQUIPMENT_X[i], EQUIPMENT_Y[i]) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
                     return CattoMenu.this.cat == null || CattoMenu.this.cat.fitsSlot(slot, stack);
@@ -72,8 +73,8 @@ public class CattoMenu extends AbstractContainerMenu {
                 }
 
                 @Override
-                public boolean isActive() {
-                    return slot != Catto.SLOT_MODULE_2 || CattoMenu.this.cat == null || CattoMenu.this.cat.moduleSlotOpen(slot);
+                public int getMaxStackSize() {
+                    return slot == Catto.SLOT_OFFHAND ? 64 : 1;
                 }
             });
         }
@@ -101,7 +102,7 @@ public class CattoMenu extends AbstractContainerMenu {
         }
     }
 
-    private static final int CAT_SLOTS = 5 + Catto.BAG_SIZE;
+    private static final int CAT_SLOTS = Catto.EQUIPMENT_SIZE + Catto.BAG_SIZE;
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
@@ -118,15 +119,15 @@ public class CattoMenu extends AbstractContainerMenu {
         } else {
             boolean moved = false;
             // Equipment first (a bag into the bag slot, a module into a module slot...), then the bag.
-            for (int i = 0; i < 5 && !moved; i++) {
+            for (int i = 0; i < Catto.EQUIPMENT_SIZE && !moved; i++) {
                 Slot target = slots.get(i);
-                if (target.isActive() && !target.hasItem() && target.mayPlace(stack) && i != Catto.SLOT_WORK) {
+                if (target.isActive() && target.mayPlace(stack) && (!target.hasItem() || i == Catto.SLOT_OFFHAND)) {
                     moved = moveItemStackTo(stack, i, i + 1, false);
                 }
             }
             if (!moved) {
-                int bagEnd = 5 + (cat == null ? Catto.BAG_SIZE : cat.capacity());
-                if (!moveItemStackTo(stack, 5, bagEnd, false)) {
+                int bagEnd = Catto.EQUIPMENT_SIZE + (cat == null ? Catto.BAG_SIZE : cat.capacity());
+                if (!moveItemStackTo(stack, Catto.EQUIPMENT_SIZE, bagEnd, false)) {
                     return ItemStack.EMPTY;
                 }
             }

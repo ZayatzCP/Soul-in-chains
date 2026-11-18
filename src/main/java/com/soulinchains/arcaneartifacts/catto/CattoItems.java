@@ -463,18 +463,4 @@ public final class CattoItems {
         }
     }
 
-    public static final class ModuleItem extends Item {
-        public final CattoModule module;
-
-        public ModuleItem(CattoModule module) {
-            super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
-            this.module = module;
-        }
-
-        @Override
-        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-            tooltip.add(Component.translatable("arcane_artifacts.catto.module." + module.id() + ".desc").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("arcane_artifacts.catto.module.hint").withStyle(ChatFormatting.DARK_GRAY));
-        }
-    }
 }

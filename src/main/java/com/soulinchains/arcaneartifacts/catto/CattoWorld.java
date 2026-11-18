@@ -361,7 +361,7 @@ public final class CattoWorld {
     public static void lightUp(Catto cat) {
         Level level = cat.level();
         BlockPos at = cat.blockPosition();
-        ItemStack work = cat.workItem();
+        ItemStack work = cat.offhand();
         if (!work.is(Items.TORCH) || level.getMaxLocalRawBrightness(at) >= 7 || !level.getBlockState(at).canBeReplaced()
                 || !Blocks.TORCH.defaultBlockState().canSurvive(level, at) || !level.getFluidState(at).isEmpty()) {
             return;
@@ -371,8 +371,9 @@ public final class CattoWorld {
             if (EventHooks.onBlockPlace(hands(cat), snapshot, Direction.UP)) {
                 snapshot.restore();
             } else {
-                work.shrink(1);
-                cat.equipment.setStackInSlot(Catto.SLOT_WORK, work);
+                ItemStack rest = work.copy();
+                rest.shrink(1);
+                cat.equipment.setStackInSlot(Catto.SLOT_OFFHAND, rest);
             }
         }
     }

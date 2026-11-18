@@ -5,11 +5,11 @@ import net.minecraft.network.chat.Component;
 import java.util.Locale;
 
 /**
- * Catto's six crafts. Experience comes only from finished work (a block mined, an item crafted, a block placed...),
- * never from fighting. Each tier opens concrete actions; see {@link Catto} and {@link CattoPlanner}.
+ * Catto's crafts. Experience comes from finished work (a block mined, an item crafted, a block placed...); only the
+ * Fighter learns from battles. Each tier opens concrete actions; see {@link Catto} and {@link CattoPlanner}.
  */
 public enum CattoSkill {
-    CRAFTER, MINER, GATHERER, EXPLORER, BUILDER, ALCHEMIST;
+    CRAFTER, MINER, GATHERER, EXPLORER, BUILDER, ALCHEMIST, FIGHTER;
 
     public static final int TIER_2 = 150;
     public static final int TIER_3 = 600;

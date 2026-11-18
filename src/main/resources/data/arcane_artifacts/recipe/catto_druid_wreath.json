@@ -1,0 +1,29 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "minecraft:vine"
+    },
+    {
+      "item": "minecraft:poppy"
+    },
+    {
+      "item": "minecraft:dandelion"
+    },
+    {
+      "item": "minecraft:moss_block"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:leather_helmet"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:catto_druid_wreath"
+  },
+  "sourceCost": 1000
+}

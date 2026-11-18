@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "arcane_artifacts:item/cat_boots"
+    "layer0": "arcane_artifacts:item/arcane_catto_hood"
   }
 }

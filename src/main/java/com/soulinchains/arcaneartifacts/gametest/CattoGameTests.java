@@ -32,6 +32,7 @@ public final class CattoGameTests {
     private static Catto catto(GameTestHelper helper, BlockPos at) {
         Catto cat = helper.spawn(CattoContent.CATTO.get(), at);
         cat.testMode = true;
+        cat.nature = com.soulinchains.arcaneartifacts.catto.CattoNature.GENTLE;
         cat.setOwnerUUID(UUID.randomUUID());
         cat.setTame(true, false);
         cat.equipment.setStackInSlot(Catto.SLOT_BAG, new ItemStack(CattoContent.TRAVELER_PACK.get()));
@@ -156,7 +157,7 @@ public final class CattoGameTests {
     @GameTest(template = ARENA, timeoutTicks = 600)
     public static void cattoCraftsPlanks(GameTestHelper helper) {
         Catto cat = catto(helper, new BlockPos(4, 2, 4));
-        cat.equipment.setStackInSlot(Catto.SLOT_WORK, new ItemStack(Items.CRAFTING_TABLE));
+        cat.bag.setStackInSlot(1, new ItemStack(Items.CRAFTING_TABLE));
         BlockPos chest = chest(helper, cat, new BlockPos(1, 2, 7));
         if (helper.getBlockEntity(chest) instanceof ChestBlockEntity box) {
             box.setItem(0, new ItemStack(Items.OAK_LOG, 4));
@@ -195,5 +196,49 @@ public final class CattoGameTests {
         Catto wild = level.getEntitiesOfClass(Catto.class, new net.minecraft.world.phys.AABB(at).inflate(1)).stream().findFirst().orElse(null);
         helper.assertTrue(wild != null && wild.getOwnerUUID() == null && !wild.isTame(), "The village Catto should have no owner");
         helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void cattoGearFitsItsSlots(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(4, 2, 4));
+        helper.assertTrue(cat.fitsSlot(Catto.SLOT_HEAD, new ItemStack(CattoContent.SOMBRERITO.get())), "The sombrero goes on the head");
+        helper.assertTrue(!cat.fitsSlot(Catto.SLOT_ARMOR, new ItemStack(CattoContent.SOMBRERITO.get())), "The sombrero is not armor");
+        helper.assertTrue(cat.fitsSlot(Catto.SLOT_TOOL, new ItemStack(CattoContent.HAMMER.get())), "The hammer is a tool");
+        helper.assertTrue(cat.fitsSlot(Catto.SLOT_WEAPON, new ItemStack(Items.IRON_SWORD)), "A sword is a weapon");
+        helper.assertTrue(cat.fitsSlot(Catto.SLOT_OFFHAND, new ItemStack(Items.COOKED_COD)) && cat.fitsSlot(Catto.SLOT_OFFHAND, new ItemStack(Items.SHIELD))
+                && cat.fitsSlot(Catto.SLOT_OFFHAND, new ItemStack(Items.TORCH)), "The second paw takes food, a shield and torches");
+        int before = cat.maxSource();
+        cat.equipment.setStackInSlot(Catto.SLOT_HEAD, new ItemStack(CattoContent.ARCANE_HOOD.get()));
+        cat.equipment.setStackInSlot(Catto.SLOT_ARMOR, new ItemStack(CattoContent.ARCANE_MANTLE.get()));
+        helper.assertTrue(cat.maxSource() == before + 600, "Arcane gear should add 600 Source");
+        helper.assertTrue(cat.fullSet() == com.soulinchains.arcaneartifacts.catto.CattoGear.Set.ARCANE, "Hood and mantle make the arcane set");
+        helper.assertTrue(cat.armor() == 4, "Hood and mantle give 4 armor");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 600)
+    public static void cattoHammerKnocksOutNeighbours(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(1, 2, 1));
+        cat.equipment.setStackInSlot(Catto.SLOT_TOOL, new ItemStack(CattoContent.HAMMER.get()));
+        chest(helper, cat, new BlockPos(1, 2, 7));
+        helper.setBlock(new BlockPos(5, 2, 5), Blocks.COPPER_ORE);
+        helper.setBlock(new BlockPos(6, 2, 5), Blocks.COPPER_ORE);
+        helper.setBlock(new BlockPos(5, 2, 6), Blocks.COPPER_ORE);
+        cat.queue.add(CattoTask.mine(Blocks.COPPER_ORE, helper.absolutePos(new BlockPos(5, 2, 5)), 1));
+        helper.succeedWhen(() -> {
+            for (BlockPos ore : new BlockPos[]{new BlockPos(5, 2, 5), new BlockPos(6, 2, 5), new BlockPos(5, 2, 6)}) {
+                helper.assertTrue(!helper.getBlockState(ore).is(Blocks.COPPER_ORE), "The hammer left copper ore at " + ore + why(cat));
+            }
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void brawlerCattoFights(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(2, 2, 2));
+        cat.nature = com.soulinchains.arcaneartifacts.catto.CattoNature.BRAWLER;
+        cat.equipment.setStackInSlot(Catto.SLOT_WEAPON, new ItemStack(Items.IRON_SWORD));
+        net.minecraft.world.entity.monster.Husk husk = helper.spawnWithNoFreeWill(net.minecraft.world.entity.EntityType.HUSK, new BlockPos(6, 2, 6));
+        husk.setTarget(cat);
+        helper.succeedWhen(() -> helper.assertTrue(husk.getHealth() < husk.getMaxHealth(), "The brawler did not hit the husk" + why(cat)));
     }
 }
