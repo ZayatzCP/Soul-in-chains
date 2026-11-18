@@ -486,6 +486,10 @@ public final class CattoBrain {
             workLeft = workTotal;
             return;
         }
+        // In the air (just spawned, jumping, falling) no path can be made: wait until Catto lands.
+        if (!cat.onGround() && !cat.isInWater() && !cat.isInLava()) {
+            return;
+        }
         if (--pathCooldown <= 0 || cat.getNavigation().isDone()) {
             pathCooldown = 20;
             BlockPos goal = s.entity != null ? s.entity.blockPosition() : s.pos;
@@ -509,7 +513,7 @@ public final class CattoBrain {
     private void unreachable(Step s) {
         lastFail = s.kind + "@" + s.pos.toShortString() + " stuck=" + stuckTicks;
         if (s.blacklistOnFail) {
-            blacklist(s.pos, 1200);
+            blacklist(s.pos, s.idle ? 200 : 1200);
         }
         cat.getNavigation().stop();
         step = null;
