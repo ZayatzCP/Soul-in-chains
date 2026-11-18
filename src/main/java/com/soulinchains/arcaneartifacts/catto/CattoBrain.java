@@ -161,6 +161,14 @@ public final class CattoBrain {
         return state;
     }
 
+    /** For game test messages. */
+    public String debug() {
+        return "step=" + (step == null ? "none" : step.kind + (step.idle ? "(idle)" : "")) + " blacklist=" + blacklist.size()
+                + " stuck=" + stuckTicks + " chore=" + choreCooldown + " talk=" + talkTicks + " lastFail=" + lastFail;
+    }
+
+    private String lastFail = "";
+
     public boolean working() {
         return state != State.IDLE && state != State.OFFLINE && state != State.WAIT;
     }
@@ -499,6 +507,7 @@ public final class CattoBrain {
     }
 
     private void unreachable(Step s) {
+        lastFail = s.kind + "@" + s.pos.toShortString() + " stuck=" + stuckTicks;
         if (s.blacklistOnFail) {
             blacklist(s.pos, 1200);
         }

@@ -47,7 +47,8 @@ public final class CattoGameTests {
     }
 
     private static String why(Catto cat) {
-        StringBuilder out = new StringBuilder(" [state=" + cat.brain().state() + ", status=" + cat.status().getString() + ", pos=" + cat.blockPosition());
+        StringBuilder out = new StringBuilder(" [state=" + cat.brain().state() + ", status=" + cat.status().getString() + ", pos=" + cat.blockPosition()
+                + ", " + cat.brain().debug());
         cat.reports.forEach(r -> out.append(" | ").append(r.key()).append(r.args()));
         return out.append("]").toString();
     }
