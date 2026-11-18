@@ -13,6 +13,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,9 +32,10 @@ public final class CattoCinematic {
 
     /** Ticks to ease in or out. */
     private static final float BLEND_TICKS = 14.0F;
-    private static final double BACK = 2.4;
-    private static final double SIDE = 1.15;
-    private static final double UP = 0.35;
+    /** Over the player's right shoulder, close in, so Catto is in the middle of the shot and the player at its left. */
+    private static final double BACK = 1.6;
+    private static final double SIDE = 1.3;
+    private static final double UP = 0.1;
 
     private static int catId = -1;
     private static boolean active;
@@ -65,6 +68,33 @@ public final class CattoCinematic {
 
     public static boolean running() {
         return active || blend > 0.0F;
+    }
+
+    /** While talking the player just stands: no walking, jumping or sneaking, whatever mod lets keys through screens. */
+    @SubscribeEvent
+    public static void freezeMovement(MovementInputUpdateEvent event) {
+        if (!active) {
+            return;
+        }
+        var input = event.getInput();
+        input.leftImpulse = 0.0F;
+        input.forwardImpulse = 0.0F;
+        input.up = false;
+        input.down = false;
+        input.left = false;
+        input.right = false;
+        input.jumping = false;
+        input.shiftKeyDown = false;
+        event.getEntity().setSprinting(false);
+    }
+
+    /** ...and does not swing, use or pick blocks either. */
+    @SubscribeEvent
+    public static void freezeActions(InputEvent.InteractionKeyMappingTriggered event) {
+        if (active) {
+            event.setCanceled(true);
+            event.setSwingHand(false);
+        }
     }
 
     @SubscribeEvent
@@ -100,7 +130,7 @@ public final class CattoCinematic {
         }
         Vec3 catPos = lastCatPos;
         if (minecraft.level.getEntity(catId) instanceof Catto cat) {
-            catPos = cat.getPosition(partialTick).add(0.0, cat.getBbHeight() * 0.55, 0.0);
+            catPos = cat.getPosition(partialTick).add(0.0, cat.getBbHeight() * 0.6, 0.0);
             lastCatPos = catPos;
         }
         if (catPos == null) {
