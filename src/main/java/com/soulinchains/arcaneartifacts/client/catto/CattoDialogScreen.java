@@ -13,11 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -30,7 +26,6 @@ import java.util.Locale;
  * player and Catto, black bars close in from above and below, Catto's line runs along the bottom bar and the player's
  * answers line up on the right (also on the number keys). When the conversation ends, the camera goes back.
  */
-@EventBusSubscriber(modid = ArcaneArtifacts.MODID, value = Dist.CLIENT)
 public class CattoDialogScreen extends Screen {
     private enum Node { ROOT, JOBS, COUNT, PLANS, GUARD, NAME, AFTER }
 
