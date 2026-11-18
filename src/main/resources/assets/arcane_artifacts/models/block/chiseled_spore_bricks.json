@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "arcane_artifacts:block/chiseled_spore_bricks"
+    "end": "arcane_artifacts:block/polished_spore_clay",
+    "side": "arcane_artifacts:block/chiseled_spore_bricks"
   }
 }

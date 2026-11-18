@@ -38,7 +38,12 @@ def retarget(obj):
 # ---- cubes
 for name in CUBES:
     w(A + 'blockstates/' + name + '.json', {'variants': {'': {'model': NS + ':block/' + name}}})
-    w(A + 'models/block/' + name + '.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': NS + ':block/' + name}})
+    if name == 'chiseled_spore_bricks':
+        # Like chiseled sandstone: carved sides, polished top and bottom.
+        w(A + 'models/block/' + name + '.json', {'parent': 'minecraft:block/cube_column', 'textures': {
+            'end': NS + ':block/polished_spore_clay', 'side': NS + ':block/' + name}})
+    else:
+        w(A + 'models/block/' + name + '.json', {'parent': 'minecraft:block/cube_all', 'textures': {'all': NS + ':block/' + name}})
     w(A + 'models/item/' + name + '.json', {'parent': NS + ':block/' + name})
 
 # ---- stairs, slab, wall from the mud brick ones
