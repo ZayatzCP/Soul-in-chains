@@ -184,4 +184,16 @@ public final class CattoGameTests {
         helper.assertTrue(parchment.is(CattoContent.BLUEPRINT.get()), "Blueprint item missing");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void wildCattoHasNoOwnerAndNoVillageHere(GameTestHelper helper) {
+        var level = helper.getLevel();
+        BlockPos at = helper.absolutePos(new BlockPos(4, 2, 4));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.catto.CattoVillageSpawner.trySpawn(level, at) == null,
+                "A Catto should not move into the test arena: there is no village");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.catto.CattoVillageSpawner.spawnAt(level, at) != null, "No room for a village Catto");
+        Catto wild = level.getEntitiesOfClass(Catto.class, new net.minecraft.world.phys.AABB(at).inflate(1)).stream().findFirst().orElse(null);
+        helper.assertTrue(wild != null && wild.getOwnerUUID() == null && !wild.isTame(), "The village Catto should have no owner");
+        helper.succeed();
+    }
 }

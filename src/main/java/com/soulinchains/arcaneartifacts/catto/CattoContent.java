@@ -44,6 +44,8 @@ public final class CattoContent {
     public static final DeferredItem<CattoItems.PackItem> TRAVELER_PACK = item("traveler_pack", () -> new CattoItems.PackItem(9, Rarity.COMMON));
     public static final DeferredItem<CattoItems.PackItem> EXPEDITION_PACK = item("expedition_pack", () -> new CattoItems.PackItem(18, Rarity.UNCOMMON));
     public static final DeferredItem<CattoItems.PackItem> BOTTOMLESS_PACK = item("bottomless_pack", () -> new CattoItems.PackItem(27, Rarity.RARE));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> SPAWN_EGG = item("catto_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(CATTO, 0xECDAB4, 0x4E2E78, new Item.Properties()));
     public static final Map<CattoModule, DeferredItem<CattoItems.ModuleItem>> MODULES = new EnumMap<>(CattoModule.class);
 
     static {

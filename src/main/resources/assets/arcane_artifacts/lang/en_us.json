@@ -1177,5 +1177,10 @@
   "arcane_artifacts.page1.blueprint_parchment": "Use on two corners: the parchment remembers a building up to 16x16x16 and up to 1024 blocks. With the parchment in your off hand, the Errand Wand in Build mode places a copy at the spot you point at. Needs Builder II.",
   "arcane_artifacts.lore.blueprint_parchment": "\"Catto builds exactly to the blueprint. Crooked walls are the original's artistic intent.\" - Hellmerus Morra",
   "arcane_artifacts.page1.bottomless_pack": "27 slots in Catto's bag. Bigger on the inside, and something seems to rustle in there.",
-  "arcane_artifacts.lore.bottomless_pack": "\"I found three of my lost gloves in it, and somebody else's boot.\" - Hellmerus Morra"
+  "arcane_artifacts.lore.bottomless_pack": "\"I found three of my lost gloves in it, and somebody else's boot.\" - Hellmerus Morra",
+  "item.arcane_artifacts.catto_spawn_egg": "Catto Spawn Egg",
+  "arcane_artifacts.catto.village.already": "You already have a Catto. This one looks understanding, but will not take the fish.",
+  "arcane_artifacts.catto.village.thinking": "Catto ate the fish and is thinking. Maybe one more.",
+  "arcane_artifacts.catto.village.bonded": "The village Catto chose you! It is your Catto now.",
+  "arcane_artifacts.page4.catto": "Cattos live in villages too: wherever there are enough occupied beds, sooner or later a Catto without an owner moves in. It strolls around, studies the villagers and follows anyone holding fish. Every cod or salmon is a one-in-three chance that it chooses you. A village Catto starts from nothing, no skills and no belongings, but needs no ritual and no collar."
 }

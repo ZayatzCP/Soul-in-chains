@@ -102,7 +102,7 @@ final class NotebookContent {
 
         // Catto, the arcane cat familiar.
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto"),
-                new ItemStack(com.soulinchains.arcaneartifacts.catto.CattoContent.ARCANE_COLLAR.get()), "catto", 3, null));
+                new ItemStack(com.soulinchains.arcaneartifacts.catto.CattoContent.ARCANE_COLLAR.get()), "catto", 4, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto_errands"),
                 new ItemStack(com.soulinchains.arcaneartifacts.catto.CattoContent.WAND.get()), "catto_errands", 4, null));
         entries.add(textEntry(font, Component.translatable("arcane_artifacts.page.catto_skills"),

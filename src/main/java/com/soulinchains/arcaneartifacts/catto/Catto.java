@@ -130,9 +130,15 @@ public class Catto extends Cat {
 
     @Override
     protected void registerGoals() {
-        // Catto does not need the wild cat's goals (tempting, avoiding players, lying on beds): one brain drives it.
+        // A bound Catto is driven by one brain (it holds movement all the time). A village Catto without an owner
+        // only strolls around, watches people and follows someone holding fish.
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new CattoBrain.Goal(this));
+        goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.TemptGoal(this, 0.7,
+                net.minecraft.world.item.crafting.Ingredient.of(Items.COD, Items.SALMON), false));
+        goalSelector.addGoal(5, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 0.6));
+        goalSelector.addGoal(6, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(7, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
     }
 
     // ------------------------------------------------------------------ synced state
@@ -619,6 +625,13 @@ public class Catto extends Cat {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack held = player.getItemInHand(hand);
         boolean owner = isOwnedBy(player);
+        if (getOwnerUUID() == null && (held.is(Items.COD) || held.is(Items.SALMON))) {
+            if (level().isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
+            befriend((ServerPlayer) player, held);
+            return InteractionResult.SUCCESS;
+        }
         if (!owner) {
             if (held.isEmpty() && player.isShiftKeyDown()) {
                 if (level() instanceof ServerLevel level) {
@@ -691,6 +704,35 @@ public class Catto extends Cat {
         return InteractionResult.PASS;
     }
 
+    /**
+     * A village Catto and a fish: one chance in three that it chooses the player. A player has one Catto at a time,
+     * so a Catto that is alive or asleep in a bell has to be let go first (a fallen one is replaced).
+     */
+    private void befriend(ServerPlayer player, ItemStack fish) {
+        ServerLevel level = (ServerLevel) level();
+        CattoSavedData data = CattoSavedData.get(level.getServer());
+        CattoSavedData.Entry entry = data.entry(player.getUUID());
+        if (find(player) != null || entry != null && entry.status == CattoSavedData.Status.IN_BELL) {
+            CattoItems.tell(player, Component.translatable("arcane_artifacts.catto.village.already"));
+            return;
+        }
+        fish.consume(1, player);
+        playSound(SoundEvents.CAT_EAT, 1.0F, 1.0F);
+        if (random.nextInt(3) != 0) {
+            level.sendParticles(ParticleTypes.SMOKE, getX(), getY() + 0.7, getZ(), 5, 0.2, 0.2, 0.2, 0.01);
+            CattoItems.tell(player, Component.translatable("arcane_artifacts.catto.village.thinking"));
+            return;
+        }
+        tame(player);
+        setOrderedToSit(false);
+        bond = 10;
+        data.alive(player.getUUID(), this);
+        level.sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 7, 0.3, 0.2, 0.3, 0);
+        playSound(SoundEvents.CAT_PURREOW, 1.0F, 1.0F);
+        player.sendSystemMessage(Component.translatable("arcane_artifacts.catto.village.bonded"));
+        changed();
+    }
+
     private void pet(ServerPlayer player) {
         ServerLevel level = (ServerLevel) level();
         level.sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 4, 0.25, 0.1, 0.25, 0);
@@ -758,7 +800,7 @@ public class Catto extends Cat {
             CattoSavedData.get(level.getServer()).moved(getOwnerUUID(), this);
         }
         // Source: refills from Source Jars around, Source Fur makes a little by itself, modules spend it while working.
-        if (time % 40 == 0 && source <= maxSource() - 50
+        if (time % 40 == 0 && getOwnerUUID() != null && source <= maxSource() - 50
                 && com.hollingsworth.arsnouveau.api.util.SourceUtil.takeSource(blockPosition(), level, 6, 50) != null) {
             addSource(50);
             addXp(CattoSkill.ALCHEMIST, 5);
