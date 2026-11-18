@@ -48,13 +48,14 @@ public final class CattoDialog {
     }
 
     /** Client -> server: the player's answer that asks Catto to do something. */
-    public record CommandPayload(int entityId, String command, int count, long pos) implements CustomPacketPayload {
+    public record CommandPayload(int entityId, String command, int count, long pos, String text) implements CustomPacketPayload {
         public static final Type<CommandPayload> TYPE = new Type<>(ArcaneArtifacts.id("catto_command"));
         public static final StreamCodec<ByteBuf, CommandPayload> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, CommandPayload::entityId,
                 ByteBufCodecs.STRING_UTF8, CommandPayload::command,
                 ByteBufCodecs.VAR_INT, CommandPayload::count,
                 ByteBufCodecs.VAR_LONG, CommandPayload::pos,
+                ByteBufCodecs.stringUtf8(64), CommandPayload::text,
                 CommandPayload::new);
 
         @Override
@@ -140,6 +141,19 @@ public final class CattoDialog {
                     yield say(cat, "confused");
                 }
                 yield order(player, cat, CattoTask.mine(blockItem.getBlock(), player.blockPosition(), count));
+            }
+            case "name" -> {
+                String name = net.minecraft.util.StringUtil.filterText(payload.text()).strip();
+                if (name.isEmpty()) {
+                    yield say(cat, "confused");
+                }
+                if (name.length() > 24) {
+                    name = name.substring(0, 24);
+                }
+                cat.setCustomName(Component.literal(name));
+                cat.changed();
+                cat.playSound(net.minecraft.sounds.SoundEvents.CAT_PURREOW, 0.8F, 1.1F);
+                yield say(cat, "named", name);
             }
             case "guard" -> {
                 cat.mode = CattoMode.GUARD;

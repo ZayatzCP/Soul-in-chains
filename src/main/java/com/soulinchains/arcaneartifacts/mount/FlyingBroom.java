@@ -24,11 +24,14 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * The Spellcaster's Flying Broom. Flies where the rider looks (forward/back, strafing), hovers when left
- * alone, and drinks the rider's mana: {@link #MANA_PER_SECOND} a second. Out of mana it only glides down,
+ * alone. Low over the ground (up to {@link #FREE_HEIGHT} blocks) it flies for free; higher up it drinks the
+ * rider's mana: {@link #MANA_PER_SECOND} a second. Out of mana it only glides down,
  * gently. Neither broom nor rider takes fall damage while riding.
  */
 public class FlyingBroom extends ClassMount {
-    public static final int MANA_PER_SECOND = 3;
+    public static final int MANA_PER_SECOND = 10;
+    /** Up to this many blocks above the ground (or water) the broom costs nothing. */
+    public static final int FREE_HEIGHT = 8;
     /** Blocks per tick at full speed (before the Pseudomage's spurs, if anyone dares). */
     public static final double SPEED = 0.6;
     /** Momentum (0..1) the rider has built up holding forward; diving builds it faster, climbing drains it. */
@@ -70,12 +73,20 @@ public class FlyingBroom extends ClassMount {
             passenger.resetFallDistance();
         }
         if (!level().isClientSide && tickCount % 20 == 0 && getControllingPassenger() instanceof Player rider) {
-            entityData.set(CHARGED, drink(rider));
+            entityData.set(CHARGED, nearGround() || drink(rider));
         }
         if (level().isClientSide && isVehicle() && isCharged() && random.nextInt(3) == 0) {
             Vec3 tail = position().add(Vec3.directionFromRotation(0, getYRot()).scale(-0.9)).add(0, 0.35, 0);
             level().addParticle(ParticleTypes.WITCH, tail.x, tail.y, tail.z, 0, 0, 0);
         }
+    }
+
+    /** Something solid (or water) within {@link #FREE_HEIGHT} blocks below the broom. */
+    public boolean nearGround() {
+        Vec3 from = position();
+        var hit = level().clip(new net.minecraft.world.level.ClipContext(from, from.subtract(0, FREE_HEIGHT, 0),
+                net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.ANY, this));
+        return hit.getType() != net.minecraft.world.phys.HitResult.Type.MISS;
     }
 
     /** Takes this second's mana from the rider; false if there is not enough (creative riders fly free). */

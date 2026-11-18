@@ -77,10 +77,10 @@ public class MycelinoidVillage extends Structure {
             double angle = start + i * Math.PI * 2 / wanted + (random.nextDouble() - 0.5) * 0.3;
             int hx = x + (int) Math.round(Math.cos(angle) * RADIUS);
             int hz = z + (int) Math.round(Math.sin(angle) * RADIUS);
-            int hy = floorNear(context, hx, hz, floorY);
-            if (hy == Integer.MIN_VALUE) {
+            if (floorNear(context, hx, hz, floorY) == Integer.MIN_VALUE) {
                 continue;
             }
+            int hy = floorY;     // one level for the whole village (the plaza levels the ground)
             // The door faces the hall.
             Direction door = Math.abs(x - hx) > Math.abs(z - hz) ? (x > hx ? Direction.EAST : Direction.WEST) : (z > hz ? Direction.SOUTH : Direction.NORTH);
             houses.add(new House(new BlockPos(hx, hy, hz), HouseType.AROUND[i % HouseType.AROUND.length], door));
@@ -90,6 +90,8 @@ public class MycelinoidVillage extends Structure {
         }
         MushroomWood.Kind[] kinds = MushroomWood.Kind.values();
         List<net.minecraft.world.level.levelgen.structure.StructurePiece> pieces = new ArrayList<>();
+        // First the ground: everything else stands on it.
+        pieces.add(new VillageHousePiece(hallFloor, hallFloor, HouseType.PLAZA, kinds[0], Direction.NORTH, random.nextLong()));
         for (House house : houses) {
             pieces.add(new VillageHousePiece(house.floor(), hallFloor, house.type(), kinds[random.nextInt(kinds.length)], house.door(), random.nextLong()));
         }
@@ -97,13 +99,13 @@ public class MycelinoidVillage extends Structure {
         for (House house : houses.subList(1, houses.size())) {
             double angle = Math.atan2(house.floor().getZ() - z, house.floor().getX() - x);
             BlockPos from = new BlockPos(x + (int) Math.round(Math.cos(angle) * 5), floorY, z + (int) Math.round(Math.sin(angle) * 5));
-            BlockPos to = new BlockPos(x + (int) Math.round(Math.cos(angle) * (RADIUS - 4)), house.floor().getY(),
+            BlockPos to = new BlockPos(x + (int) Math.round(Math.cos(angle) * (RADIUS - 4)), floorY,
                     z + (int) Math.round(Math.sin(angle) * (RADIUS - 4)));
             pieces.add(new VillagePathPiece(from, to));
             int lx = x + (int) Math.round(Math.cos(angle + 0.2) * 9);
             int lz = z + (int) Math.round(Math.sin(angle + 0.2) * 9);
-            int ly = floorNear(context, lx, lz, floorY, 5);
-            if (ly != Integer.MIN_VALUE) {
+            int ly = floorY;
+            {
                 pieces.add(new VillageHousePiece(new BlockPos(lx, ly, lz), hallFloor, HouseType.LAMP, kinds[random.nextInt(kinds.length)], Direction.NORTH, random.nextLong()));
             }
         }
@@ -114,8 +116,8 @@ public class MycelinoidVillage extends Structure {
             double mid = Math.atan2(Math.sin(a1) + Math.sin(a2), Math.cos(a1) + Math.cos(a2));
             int wx = x + (int) Math.round(Math.cos(mid) * 8);
             int wz = z + (int) Math.round(Math.sin(mid) * 8);
-            int wy = floorNear(context, wx, wz, floorY, 6);
-            if (wy != Integer.MIN_VALUE) {
+            int wy = floorY;
+            {
                 pieces.add(new VillageHousePiece(new BlockPos(wx, wy, wz), hallFloor, HouseType.WELL, kinds[random.nextInt(kinds.length)], Direction.NORTH, random.nextLong()));
             }
         }
@@ -125,10 +127,15 @@ public class MycelinoidVillage extends Structure {
             double angle = start + Math.PI / wanted + i * Math.PI * 2 / HouseType.OUTSKIRTS.length;
             int ox = x + (int) Math.round(Math.cos(angle) * OUTER_RADIUS);
             int oz = z + (int) Math.round(Math.sin(angle) * OUTER_RADIUS);
-            int oy = floorNear(context, ox, oz, floorY, type == HouseType.WATCHTOWER ? CLEARANCE : 6);
-            if (oy == Integer.MIN_VALUE) {
+            if (floorNear(context, ox, oz, floorY, type == HouseType.WATCHTOWER ? CLEARANCE : 6) == Integer.MIN_VALUE) {
                 continue;
             }
+            int oy = floorY;
+            // A path out to it as well.
+            BlockPos pathFrom = new BlockPos(x + (int) Math.round(Math.cos(angle) * 5), floorY, z + (int) Math.round(Math.sin(angle) * 5));
+            BlockPos pathTo = new BlockPos(x + (int) Math.round(Math.cos(angle) * (OUTER_RADIUS - 5)), floorY,
+                    z + (int) Math.round(Math.sin(angle) * (OUTER_RADIUS - 5)));
+            pieces.add(new VillagePathPiece(pathFrom, pathTo));
             Direction door = Math.abs(x - ox) > Math.abs(z - oz) ? (x > ox ? Direction.EAST : Direction.WEST) : (z > oz ? Direction.SOUTH : Direction.NORTH);
             pieces.add(new VillageHousePiece(new BlockPos(ox, oy, oz), hallFloor, type, kinds[random.nextInt(kinds.length)], door, random.nextLong()));
         }

@@ -48,7 +48,7 @@ public class VillageHousePiece extends StructurePiece {
 
     static BoundingBox bounds(BlockPos floor, HouseType type) {
         int r = type.capRadius();
-        return new BoundingBox(floor.getX() - r - 1, floor.getY() - 1, floor.getZ() - r - 1,
+        return new BoundingBox(floor.getX() - r - 1, floor.getY() - (type == HouseType.PLAZA ? 9 : 1), floor.getZ() - r - 1,
                 floor.getX() + r + 1, floor.getY() + type.height + 3, floor.getZ() + r + 1);
     }
 

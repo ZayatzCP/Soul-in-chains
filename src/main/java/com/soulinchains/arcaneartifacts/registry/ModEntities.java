@@ -24,16 +24,17 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Mudzya>> MUDZYA = REGISTER.register("mudzya",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Mudzya::new, MobCategory.CREATURE)
                     .sized(0.55F, 0.65F).clientTrackingRange(8).build(ArcaneArtifacts.MODID + ":mudzya"));
+    // Mycelinoids are slim enough (0.6-0.65) to pass an open door: its leaf leaves about 0.8 of a block.
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Gribushka>> GRIBUSHKA = REGISTER.register("gribushka",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Gribushka::new, MobCategory.CREATURE)
-                    .sized(0.8F, 1.95F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":gribushka"));
+                    .sized(0.6F, 1.85F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":gribushka"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Amanitoid>> AMANITOID = REGISTER.register("amanitoid",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Amanitoid::new, MobCategory.CREATURE)
-                    .sized(0.9F, 1.95F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":amanitoid"));
+                    .sized(0.65F, 1.85F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":amanitoid"));
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.ElderMycelinoid>> ELDER_MYCELINOID = REGISTER.register("elder_mycelinoid",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.ElderMycelinoid::new, MobCategory.CREATURE)
-                    .sized(0.8F, 1.95F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":elder_mycelinoid"));
+                    .sized(0.6F, 1.85F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":elder_mycelinoid"));
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Gribulka>> GRIBULKA = REGISTER.register("gribulka",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Gribulka::new, MobCategory.CREATURE)
                     .sized(0.45F, 0.6F).clientTrackingRange(8).build(ArcaneArtifacts.MODID + ":gribulka"));

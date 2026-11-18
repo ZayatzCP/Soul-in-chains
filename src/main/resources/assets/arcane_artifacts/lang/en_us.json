@@ -808,7 +808,7 @@
   "item.arcane_artifacts.flying_broom": "Flying Broom",
   "item.arcane_artifacts.flying_broom.lore": "It sweeps the sky. The sky did not ask.",
   "item.arcane_artifacts.flying_broom.desc.1": "Use: the broom appears under you. Flies where you look and builds up speed.",
-  "item.arcane_artifacts.flying_broom.desc.2": "Drinks 3 mana a second. Out of mana it glides gently down.",
+  "item.arcane_artifacts.flying_broom.desc.2": "Low over the ground (up to 8 blocks) it flies for free; higher up it drinks 10 mana a second. Out of mana it glides down.",
   "item.arcane_artifacts.flying_broom.desc.3": "Let go of the keys: it glides on. Sneak + use folds it.",
   "entity.arcane_artifacts.flying_broom": "Flying Broom",
   "arcane_artifacts.page1.flying_broom": "The Spellcaster's ride. Use the broom and you are already on it. Forward follows your gaze: look up to climb, down to dive; left and right slide sideways. The longer you hold forward, the faster it goes: a few seconds to full speed, diving builds it faster, climbing and bumping into things bleed it off. At full speed the rider lies along the broom like on elytra.",
@@ -1537,5 +1537,17 @@
   "arcane_artifacts.catto.chat.9.c": "♪ Meow-meow-meow ♪",
   "arcane_artifacts.page.catto_village": "Cattos in villages",
   "arcane_artifacts.page1.catto_village": "Villages now have market stalls with striped awnings, little storerooms and junk piles - each with a Catto Cushion, and sooner or later a Catto settles there. Village Cattos stay by their cushion, sit on it, chat with each other and sometimes hum well-known tunes - Ode to Joy, Korobeiniki, Frère Jacques. You can make a cushion yourself too.",
-  "arcane_artifacts.page2.catto_village": "Catto notices what lies around and decides what it needs: a better tool or weapon, a helmet or armor for an empty slot, food or torches for its second paw, materials for errands, fish. A Curious one takes the rest anyway; the others carry it to the main storage if one is bound. With the Cat Fishing Rod Catto fishes while you are by the water; whatever it wears shows on it."
+  "arcane_artifacts.page2.catto_village": "Catto notices what lies around and decides what it needs: a better tool or weapon, a helmet or armor for an empty slot, food or torches for its second paw, materials for errands, fish. A Curious one takes the rest anyway; the others carry it to the main storage if one is bound. With the Cat Fishing Rod Catto fishes while you are by the water; whatever it wears shows on it.",
+  "arcane_artifacts.catto.dialog.opt.name": "Let me give you a name.",
+  "arcane_artifacts.catto.dialog.opt.name_done": "This is your name (Enter).",
+  "arcane_artifacts.catto.dialog.name_ask.brawler": "A name? Make it sound fierce.",
+  "arcane_artifacts.catto.dialog.named.brawler": "Call me %s. Sounds right!",
+  "arcane_artifacts.catto.dialog.name_ask.gentle": "A name? For me? Oh... what is it?",
+  "arcane_artifacts.catto.dialog.named.gentle": "%s... I love it! Thank you!",
+  "arcane_artifacts.catto.dialog.name_ask.curious": "A name! I wonder what? Write it!",
+  "arcane_artifacts.catto.dialog.named.curious": "%s! What does it mean? Never mind, I like it!",
+  "arcane_artifacts.catto.dialog.name_ask.lazy": "A name... Keep it short, I will have to answer to it.",
+  "arcane_artifacts.catto.dialog.named.lazy": "%s. Fine. It will do.",
+  "arcane_artifacts.catto.dialog.name_ask.thrifty": "A name is serious business. Write it down.",
+  "arcane_artifacts.catto.dialog.named.thrifty": "%s. Recorded."
 }

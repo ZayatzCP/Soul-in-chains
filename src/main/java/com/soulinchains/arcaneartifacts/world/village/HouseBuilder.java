@@ -82,6 +82,10 @@ public final class HouseBuilder {
                 lamp(floor, wood);
                 return;
             }
+            case PLAZA -> {
+                plaza(floor, type.radius);
+                return;
+            }
             default -> {
             }
         }
@@ -320,21 +324,61 @@ public final class HouseBuilder {
     }
 
     /** A path of moss carpet from {@code from} to {@code to}, laid on whatever floor there is. */
+    /**
+     * A path three blocks wide on the village level: trodden earth in the middle, moss along the edges, nothing
+     * standing on it.
+     */
     public void path(BlockPos from, BlockPos to) {
         int steps = Math.max(Math.abs(to.getX() - from.getX()), Math.abs(to.getZ() - from.getZ()));
+        int y = from.getY();
+        double dx = to.getX() - from.getX();
+        double dz = to.getZ() - from.getZ();
+        double length = Math.max(1.0, Math.sqrt(dx * dx + dz * dz));
+        double sideX = -dz / length;
+        double sideZ = dx / length;
         for (int i = 0; i <= steps; i++) {
             double t = steps == 0 ? 0 : (double) i / steps;
-            int x = (int) Math.round(from.getX() + (to.getX() - from.getX()) * t);
-            int z = (int) Math.round(from.getZ() + (to.getZ() - from.getZ()) * t);
-            int y = (int) Math.round(from.getY() + (to.getY() - from.getY()) * t);
-            for (int dy = 3; dy >= -3; dy--) {
-                BlockPos pos = new BlockPos(x, y + dy, z);
-                if (!box.isInside(pos)) {
-                    break;
+            for (int w = -1; w <= 1; w++) {
+                int x = (int) Math.round(from.getX() + dx * t + sideX * w);
+                int z = (int) Math.round(from.getZ() + dz * t + sideZ * w);
+                BlockPos top = new BlockPos(x, y - 1, z);
+                set(top, w == 0 ? Blocks.DIRT_PATH.defaultBlockState() : ModBlocks.MUSHROOM_MOSS.get().defaultBlockState());
+                for (int up = 0; up < 2; up++) {
+                    BlockPos above = top.above(1 + up);
+                    if (box.isInside(above) && !level.getBlockState(above).isAir()) {
+                        set(above, Blocks.AIR.defaultBlockState());
+                    }
                 }
-                if (level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)) {
-                    set(pos, MushroomWood.MUSHROOM_MOSS_CARPET.get().defaultBlockState());
-                    break;
+            }
+        }
+    }
+
+    /** One level for the whole village: holes and drops filled up, bumps and boulders cut away. */
+    private void plaza(BlockPos centre, int radius) {
+        BlockState ground = ModBlocks.MUSHROOM_MOSS.get().defaultBlockState();
+        BlockState fill = Blocks.COBBLED_DEEPSLATE.defaultBlockState();
+        BlockState air = Blocks.AIR.defaultBlockState();
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                if (dx * dx + dz * dz > radius * radius) {
+                    continue;
+                }
+                for (int y = 0; y < 4; y++) {
+                    BlockPos pos = centre.offset(dx, y, dz);
+                    if (box.isInside(pos) && !level.getBlockState(pos).isAir()) {
+                        set(pos, air);
+                    }
+                }
+                BlockPos top = centre.offset(dx, -1, dz);
+                if (box.isInside(top) && !level.getBlockState(top).isFaceSturdy(level, top, Direction.UP)) {
+                    set(top, ground);
+                }
+                for (int y = -2; y >= -8; y--) {
+                    BlockPos pos = centre.offset(dx, y, dz);
+                    if (!box.isInside(pos) || level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP)) {
+                        break;
+                    }
+                    set(pos, fill);
                 }
             }
         }

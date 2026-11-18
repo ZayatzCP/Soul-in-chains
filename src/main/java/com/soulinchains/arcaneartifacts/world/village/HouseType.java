@@ -23,7 +23,9 @@ public enum HouseType {
     /** A fenced garden of every cave mushroom, with a little huge mushroom in the middle. */
     GARDEN(4, 5, 1, 0, false),
     /** A lamp post by the path. */
-    LAMP(1, 4, 0, 0, false);
+    LAMP(1, 4, 0, 0, false),
+    /** The village ground: one level for the whole village, holes filled, bumps cut away. Built first. */
+    PLAZA(MycelinoidVillage.OUTER_RADIUS + 6, 4, 0, 0, false);
 
     /** Outer radius of the stem (the walls), or half the size of the building. */
     public final int radius;

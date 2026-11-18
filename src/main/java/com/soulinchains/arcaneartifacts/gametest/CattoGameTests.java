@@ -298,4 +298,12 @@ public final class CattoGameTests {
                 "A calico cat should stay calico");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void broomIsFreeLowOverTheGround(GameTestHelper helper) {
+        var broom = helper.spawn(com.soulinchains.arcaneartifacts.registry.ModEntities.FLYING_BROOM.get(), new BlockPos(4, 4, 4));
+        broom.setNoGravity(true);
+        helper.assertTrue(broom.nearGround(), "Two blocks over the floor the broom should fly for free");
+        helper.succeed();
+    }
 }

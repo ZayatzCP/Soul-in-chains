@@ -4,7 +4,6 @@ import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.catto.Catto;
 import com.soulinchains.arcaneartifacts.catto.CattoDialog;
 import com.soulinchains.arcaneartifacts.catto.CattoTask;
-import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -19,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -34,7 +32,7 @@ import java.util.Locale;
  */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID, value = Dist.CLIENT)
 public class CattoDialogScreen extends Screen {
-    private enum Node { ROOT, JOBS, COUNT, PLANS, GUARD, AFTER }
+    private enum Node { ROOT, JOBS, COUNT, PLANS, GUARD, NAME, AFTER }
 
     private static final int BAR = 0xFF000000;
     private static final int NAME = 0xFFE8C8FF;
@@ -52,9 +50,8 @@ public class CattoDialogScreen extends Screen {
     private final List<Option> options = new ArrayList<>();
     /** 0..1: how far the cutscene framing has come in (bars, camera). */
     private float intro;
-    private CameraType previousCamera;
-    private boolean previousHideGui;
-    private boolean cinematic;
+    @org.jetbrains.annotations.Nullable
+    private net.minecraft.client.gui.components.EditBox nameBox;
 
     private record Option(Component label, Runnable action) {
     }
@@ -76,14 +73,6 @@ public class CattoDialogScreen extends Screen {
         CattoDialogScreen screen = new CattoDialogScreen(payload.entityId(), payload.context());
         payload.say().ifPresent(line -> screen.speech = line);
         minecraft.setScreen(screen);
-    }
-
-    /** The camera stays close over the shoulder while Catto is talked to. */
-    @SubscribeEvent
-    public static void cameraDistance(CalculateDetachedCameraDistanceEvent event) {
-        if (Minecraft.getInstance().screen instanceof CattoDialogScreen dialog) {
-            event.setDistance(Mth.lerp(dialog.intro, event.getDistance(), 2.6F));
-        }
     }
 
     // ------------------------------------------------------------------ helpers
@@ -113,7 +102,11 @@ public class CattoDialogScreen extends Screen {
     }
 
     private void send(String command, int count) {
-        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, command, count, context.getLong("Here")));
+        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, command, count, context.getLong("Here"), ""));
+    }
+
+    private void sendName(String name) {
+        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, "name", 0, 0, name));
     }
 
     private ItemStack offhand() {
@@ -145,6 +138,7 @@ public class CattoDialogScreen extends Screen {
                     onClose();
                 }));
                 options.add(new Option(option("give"), () -> send("give_all", 0)));
+                options.add(new Option(option("name"), () -> say(line("name_ask"), Node.NAME)));
                 options.add(new Option(context.getBoolean("Stay") ? option("follow") : option("stay"),
                         () -> send(context.getBoolean("Stay") ? "follow" : "stay", 0)));
                 options.add(new Option(option(node == Node.AFTER ? "thanks" : "bye"), this::onClose));
@@ -188,6 +182,14 @@ public class CattoDialogScreen extends Screen {
                 if (!"NONE".equals(context.getString("Mode"))) {
                     options.add(new Option(option("dismiss"), () -> send("dismiss", 0)));
                 }
+                options.add(new Option(option("back"), () -> say(line("more"), Node.ROOT)));
+            }
+            case NAME -> {
+                options.add(new Option(option("name_done"), () -> {
+                    if (nameBox != null && !nameBox.getValue().isBlank()) {
+                        sendName(nameBox.getValue());
+                    }
+                }));
                 options.add(new Option(option("back"), () -> say(line("more"), Node.ROOT)));
             }
             case PLANS -> {
@@ -252,13 +254,7 @@ public class CattoDialogScreen extends Screen {
 
     @Override
     protected void init() {
-        if (!cinematic && minecraft != null) {
-            cinematic = true;
-            previousCamera = minecraft.options.getCameraType();
-            previousHideGui = minecraft.options.hideGui;
-            minecraft.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-            minecraft.options.hideGui = true;
-        }
+        CattoCinematic.start(entityId);
         rebuild();
     }
 
@@ -273,6 +269,16 @@ public class CattoDialogScreen extends Screen {
             Option opt = options.get(i);
             String text = font.plainSubstrByWidth((i + 1) + ". " + opt.label().getString(), w - 10);
             addRenderableWidget(Button.builder(Component.literal(text), b -> opt.action().run()).bounds(x, y + i * 21, w, 19).build());
+        }
+        String old = nameBox == null ? "" : nameBox.getValue();
+        nameBox = null;
+        if (node == Node.NAME) {
+            nameBox = new net.minecraft.client.gui.components.EditBox(font, x, y - 24, w, 18, Component.translatable("arcane_artifacts.catto.dialog.opt.name"));
+            nameBox.setMaxLength(24);
+            Catto cat = cat();
+            nameBox.setValue(!old.isEmpty() ? old : cat != null && cat.hasCustomName() ? cat.getCustomName().getString() : "");
+            addRenderableWidget(nameBox);
+            setInitialFocus(nameBox);
         }
     }
 
@@ -290,43 +296,34 @@ public class CattoDialogScreen extends Screen {
             onClose();
             return;
         }
-        // Over the shoulder: the player turns toward Catto, a little to the side so both stay in the frame.
-        double dx = cat.getX() - player.getX();
-        double dz = cat.getZ() - player.getZ();
-        double flat = Math.sqrt(dx * dx + dz * dz);
-        float yaw = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90.0F - 22.0F;
-        float pitch = (float) (Mth.atan2(player.getEyeY() - (cat.getY() + 0.5), Math.max(0.5, flat)) * Mth.RAD_TO_DEG) + 8.0F;
-        float newYaw = player.getYRot() + Mth.wrapDegrees(yaw - player.getYRot()) * 0.25F;
-        float newPitch = Mth.lerp(0.25F, player.getXRot(), Mth.clamp(pitch, -20.0F, 45.0F));
-        player.setYRot(newYaw);
-        player.setYHeadRot(newYaw);
-        player.setXRot(newPitch);
     }
 
     @Override
     public void onClose() {
-        if (cinematic && minecraft != null) {
-            minecraft.options.setCameraType(previousCamera == null ? CameraType.FIRST_PERSON : previousCamera);
-            minecraft.options.hideGui = previousHideGui;
-            cinematic = false;
-        }
-        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, "bye", 0, 0));
+        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, "bye", 0, 0, ""));
         super.onClose();
     }
 
     @Override
     public void removed() {
-        // Closed by another screen (the inventory, death...): give the camera back too.
-        if (cinematic && minecraft != null) {
-            minecraft.options.setCameraType(previousCamera == null ? CameraType.FIRST_PERSON : previousCamera);
-            minecraft.options.hideGui = previousHideGui;
-            cinematic = false;
-        }
+        // However the talk ends (closed, the inventory opened, death...), the camera eases back.
+        CattoCinematic.stop();
         super.removed();
     }
 
     @Override
     public boolean keyPressed(int key, int scan, int modifiers) {
+        if (nameBox != null && nameBox.isFocused()) {
+            if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER) {
+                if (!nameBox.getValue().isBlank()) {
+                    sendName(nameBox.getValue());
+                }
+                return true;
+            }
+            if (key != GLFW.GLFW_KEY_ESCAPE) {
+                return nameBox.keyPressed(key, scan, modifiers) || super.keyPressed(key, scan, modifiers);
+            }
+        }
         if (key >= GLFW.GLFW_KEY_1 && key <= GLFW.GLFW_KEY_9) {
             int index = key - GLFW.GLFW_KEY_1;
             if (index < options.size()) {
@@ -334,7 +331,7 @@ public class CattoDialogScreen extends Screen {
                 return true;
             }
         }
-        if (key == GLFW.GLFW_KEY_SPACE) {
+        if (key == GLFW.GLFW_KEY_SPACE && nameBox == null) {
             shown = Float.MAX_VALUE;
             return true;
         }
