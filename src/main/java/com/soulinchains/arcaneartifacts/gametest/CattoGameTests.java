@@ -266,7 +266,10 @@ public final class CattoGameTests {
         pick.setNoPickUpDelay();
         pick.setDeltaMovement(Vec3.ZERO);
         helper.getLevel().addFreshEntity(pick);
-        helper.succeedWhen(() -> helper.assertTrue(cat.tool().is(Items.IRON_PICKAXE), "Catto did not take the pickaxe" + why(cat)));
+        helper.succeedWhen(() -> helper.assertTrue(cat.tool().is(Items.IRON_PICKAXE), "Catto did not take the pickaxe" + why(cat)
+                + " want=" + com.soulinchains.arcaneartifacts.catto.CattoLoot.want(cat, new ItemStack(Items.IRON_PICKAXE))
+                + " alive=" + pick.isAlive() + " delay=" + pick.hasPickUpDelay() + " at=" + pick.blockPosition()
+                + " seen=" + helper.getLevel().getEntitiesOfClass(ItemEntity.class, cat.getBoundingBox().inflate(6, 3, 6)).size()));
     }
 
     @GameTest(template = ARENA, timeoutTicks = 400)
