@@ -43,21 +43,7 @@ public final class ClientSetup {
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(MudzyaModel.LAYER, MudzyaModel::createLayer);
         event.registerLayerDefinition(com.soulinchains.arcaneartifacts.client.catto.CattoModel.LAYER, com.soulinchains.arcaneartifacts.client.catto.CattoModel::createLayer);
-    }
-
-    /** Mushroom moss is one colour everywhere (the colour zones still decide which mushrooms grow where). */
-    public static final int MOSS_COLOR = 0x8FD3F0;
-
-    @SubscribeEvent
-    public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tint) -> MOSS_COLOR, com.soulinchains.arcaneartifacts.registry.ModBlocks.MUSHROOM_MOSS.get(),
-                com.soulinchains.arcaneartifacts.registry.MushroomWood.MUSHROOM_MOSS_CARPET.get());
-    }
-
-    @SubscribeEvent
-    public static void registerMossItemColor(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, tint) -> MOSS_COLOR, com.soulinchains.arcaneartifacts.registry.ModItems.MUSHROOM_MOSS.get(),
-                com.soulinchains.arcaneartifacts.registry.MushroomWood.MUSHROOM_MOSS_CARPET_ITEM.get());
+        event.registerLayerDefinition(com.soulinchains.arcaneartifacts.client.catto.CattoGearLayer.LAYER, com.soulinchains.arcaneartifacts.client.catto.CattoGearLayer::createLayer);
     }
 
     @SubscribeEvent

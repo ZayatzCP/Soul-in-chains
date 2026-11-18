@@ -599,7 +599,9 @@ public final class CattoPlanner {
             memo.put("cursor", cursor);
             task.done = done;
             if (CattoWorld.bagCount(cat, isItem) > 0) {
-                Step s = step(Step.Kind.PLACE, pos, 3.5, tier >= 3 ? 3 : tier == 2 ? 5 : 8);
+                // The trowel: placed from further away and twice as fast.
+                boolean trowel = cat.tool().getItem() instanceof CattoGear.TrowelItem;
+                Step s = step(Step.Kind.PLACE, pos, trowel ? 4.5 : 3.5, (tier >= 3 ? 3 : tier == 2 ? 5 : 8) / (trowel ? 2 : 1));
                 s.state = target;
                 return Plan.step(s);
             }
@@ -800,6 +802,10 @@ public final class CattoPlanner {
                 if (step.state == null || !CattoWorld.place(cat, step.pos, step.state)) {
                     return false;
                 }
+                // A thrifty Catto sometimes makes do with less.
+                if (cat.getRandom().nextFloat() < cat.nature().thrift()) {
+                    CattoWorld.bagInsert(cat, new ItemStack(step.state.getBlock().asItem()));
+                }
                 task.done++;
                 cat.addXp(CattoSkill.BUILDER, 1);
                 return true;
@@ -990,6 +996,9 @@ public final class CattoPlanner {
             }
         }
         ItemStack result = holder.value().getResultItem(cat.level().registryAccess()).copy();
+        if (cat.getRandom().nextFloat() < cat.nature().thrift() && !ings.isEmpty() && ings.get(0).getItems().length > 0) {
+            leftovers.add(ings.get(0).getItems()[0].copyWithCount(1));
+        }
         task.done += result.getCount();
         leftovers.add(result);
         for (ItemStack stack : leftovers) {

@@ -1,21 +1,25 @@
 package com.soulinchains.arcaneartifacts.client.catto;
 
+import com.soulinchains.arcaneartifacts.ArcaneArtifacts;
 import com.soulinchains.arcaneartifacts.catto.Catto;
 import com.soulinchains.arcaneartifacts.catto.CattoDialog;
 import com.soulinchains.arcaneartifacts.catto.CattoTask;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,26 +28,33 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A conversation with Catto: Catto on the left, its line in a speech box, the player's answers under it (also on the
- * number keys). Answers that are orders go to the server, and Catto's reply comes back as its next line.
+ * A conversation with Catto, filmed like a cutscene: the camera swings behind the player's shoulder to frame the
+ * player and Catto, black bars close in from above and below, Catto's line runs along the bottom bar and the player's
+ * answers line up on the right (also on the number keys). When the conversation ends, the camera goes back.
  */
+@EventBusSubscriber(modid = ArcaneArtifacts.MODID, value = Dist.CLIENT)
 public class CattoDialogScreen extends Screen {
-    private enum Node { ROOT, JOBS, COUNT, PLANS, AFTER }
+    private enum Node { ROOT, JOBS, COUNT, PLANS, GUARD, AFTER }
 
-    private static final int PANEL_BG = 0xE0161020;
-    private static final int PANEL_EDGE = 0xFF8E62B5;
+    private static final int BAR = 0xFF000000;
     private static final int NAME = 0xFFE8C8FF;
     private static final int TEXT = 0xFFF0F0F0;
     private static final int QUIET = 0xFFB0A0C0;
+    private static final int OPTION_BG = 0xA0100818;
+    private static final int OPTION_EDGE = 0xFF8E62B5;
 
     private final int entityId;
     private CompoundTag context;
     private Node node = Node.ROOT;
     private Component speech;
     private float shown;
-    /** The order waiting for an amount: mine, fetch or craft. */
     private String pending = "";
     private final List<Option> options = new ArrayList<>();
+    /** 0..1: how far the cutscene framing has come in (bars, camera). */
+    private float intro;
+    private CameraType previousCamera;
+    private boolean previousHideGui;
+    private boolean cinematic;
 
     private record Option(Component label, Runnable action) {
     }
@@ -55,7 +66,6 @@ public class CattoDialogScreen extends Screen {
         this.speech = greeting();
     }
 
-    /** A dialog packet: opens the conversation, or continues the one on screen. */
     public static void receive(CattoDialog.DialogPayload payload) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.screen instanceof CattoDialogScreen open && open.entityId == payload.entityId()) {
@@ -66,6 +76,14 @@ public class CattoDialogScreen extends Screen {
         CattoDialogScreen screen = new CattoDialogScreen(payload.entityId(), payload.context());
         payload.say().ifPresent(line -> screen.speech = line);
         minecraft.setScreen(screen);
+    }
+
+    /** The camera stays close over the shoulder while Catto is talked to. */
+    @SubscribeEvent
+    public static void cameraDistance(CalculateDetachedCameraDistanceEvent event) {
+        if (Minecraft.getInstance().screen instanceof CattoDialogScreen dialog) {
+            event.setDistance(Mth.lerp(dialog.intro, event.getDistance(), 2.6F));
+        }
     }
 
     // ------------------------------------------------------------------ helpers
@@ -94,16 +112,8 @@ public class CattoDialogScreen extends Screen {
         rebuild();
     }
 
-    private void go(Node next, Component text) {
-        say(text, next);
-    }
-
-    private void send(String command, int count, long pos) {
-        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, command, count, pos));
-    }
-
-    private long lookPos() {
-        return context.getLong("LookPos");
+    private void send(String command, int count) {
+        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, command, count, context.getLong("Here")));
     }
 
     private ItemStack offhand() {
@@ -113,85 +123,88 @@ public class CattoDialogScreen extends Screen {
         return ItemStack.parseOptional(minecraft.level.registryAccess(), context.getCompound("Offhand"));
     }
 
-    private Component lookBlockName() {
-        ResourceLocation id = ResourceLocation.tryParse(context.getString("LookBlock"));
-        return id == null ? Component.literal("?") : BuiltInRegistries.BLOCK.get(id).getName();
+    private Catto cat() {
+        return minecraft != null && minecraft.level != null && minecraft.level.getEntity(entityId) instanceof Catto cat ? cat : null;
     }
 
     // ------------------------------------------------------------------ the conversation
 
     private void fillOptions() {
         options.clear();
+        ItemStack sample = offhand();
         switch (node) {
             case ROOT, AFTER -> {
                 if (node == Node.AFTER) {
-                    options.add(new Option(option("more"), () -> go(Node.ROOT, line("more"))));
+                    options.add(new Option(option("more"), () -> say(line("more"), Node.ROOT)));
                 }
-                options.add(new Option(option("job"), () -> go(Node.JOBS, line("jobs"))));
-                options.add(new Option(option("plans"), () -> go(Node.PLANS, plans())));
+                options.add(new Option(option("job"), () -> say(line("jobs"), Node.JOBS)));
+                options.add(new Option(option("guard_menu"), () -> say(line("guard_ask"), Node.GUARD)));
+                options.add(new Option(option("plans"), () -> say(plans(), Node.PLANS)));
                 options.add(new Option(option("gear"), () -> {
-                    send("inventory", 0, 0);
+                    send("inventory", 0);
                     onClose();
                 }));
-                options.add(new Option(option("give"), () -> send("give_all", 0, 0)));
-                if (context.getBoolean("Stay")) {
-                    options.add(new Option(option("follow"), () -> send("follow", 0, 0)));
-                } else {
-                    options.add(new Option(option("stay"), () -> send("stay", 0, 0)));
-                }
+                options.add(new Option(option("give"), () -> send("give_all", 0)));
+                options.add(new Option(context.getBoolean("Stay") ? option("follow") : option("stay"),
+                        () -> send(context.getBoolean("Stay") ? "follow" : "stay", 0)));
                 options.add(new Option(option(node == Node.AFTER ? "thanks" : "bye"), this::onClose));
             }
             case JOBS -> {
-                if (context.contains("LookBlock")) {
-                    options.add(new Option(option("mine", lookBlockName()), () -> {
+                if (context.getBoolean("OffhandBlock")) {
+                    options.add(new Option(option("mine", sample.getHoverName()), () -> {
                         pending = "mine";
-                        go(Node.COUNT, line("how_many"));
+                        say(line("how_many"), Node.COUNT);
                     }));
                 }
-                options.add(new Option(option("collect"), () -> send("collect", 0, lookPos())));
-                ItemStack sample = offhand();
                 if (!sample.isEmpty()) {
                     options.add(new Option(option("fetch", sample.getHoverName()), () -> {
                         pending = "fetch";
-                        go(Node.COUNT, line("how_many"));
+                        say(line("how_many"), Node.COUNT);
                     }));
                     options.add(new Option(option("craft", sample.getHoverName()), () -> {
                         pending = "craft";
-                        go(Node.COUNT, line("how_many"));
+                        say(line("how_many"), Node.COUNT);
                     }));
                 } else {
-                    options.add(new Option(option("fetch_hint"), () -> go(Node.JOBS, line("hint_sample"))));
+                    options.add(new Option(option("fetch_hint"), () -> say(line("hint_sample"), Node.JOBS)));
                 }
-                options.add(new Option(option("explore"), () -> send("explore", 0, lookPos())));
-                options.add(new Option(option("build"), () -> go(Node.JOBS, line("hint_build"))));
-                options.add(new Option(option("back"), () -> go(Node.ROOT, line("more"))));
+                options.add(new Option(option("collect"), () -> send("collect", 0)));
+                options.add(new Option(option("explore"), () -> send("explore", 0)));
+                options.add(new Option(option("build"), () -> say(line("hint_build"), Node.JOBS)));
+                options.add(new Option(option("back"), () -> say(line("more"), Node.ROOT)));
             }
             case COUNT -> {
                 for (int n : new int[]{8, 16, 32, 64}) {
-                    options.add(new Option(option("count", n), () -> send(pending, n, lookPos())));
+                    options.add(new Option(option("count", n), () -> send(pending, n)));
                 }
-                ItemStack sample = offhand();
                 if (!"mine".equals(pending) && !sample.isEmpty()) {
-                    options.add(new Option(option("held", sample.getCount()), () -> send(pending, 0, lookPos())));
+                    options.add(new Option(option("held", sample.getCount()), () -> send(pending, 0)));
                 }
-                options.add(new Option(option("back"), () -> go(Node.JOBS, line("jobs"))));
+                options.add(new Option(option("back"), () -> say(line("jobs"), Node.JOBS)));
+            }
+            case GUARD -> {
+                options.add(new Option(option("guard"), () -> send("guard", 0)));
+                options.add(new Option(option("escort"), () -> send("escort", 0)));
+                if (!"NONE".equals(context.getString("Mode"))) {
+                    options.add(new Option(option("dismiss"), () -> send("dismiss", 0)));
+                }
+                options.add(new Option(option("back"), () -> say(line("more"), Node.ROOT)));
             }
             case PLANS -> {
                 if (context.getInt("QueueSize") > 0) {
-                    options.add(new Option(option("cancel_first"), () -> send("cancel_first", 0, 0)));
-                    options.add(new Option(option("clear"), () -> send("clear", 0, 0)));
+                    options.add(new Option(option("cancel_first"), () -> send("cancel_first", 0)));
+                    options.add(new Option(option("clear"), () -> send("clear", 0)));
                 }
                 if (context.getBoolean("Paused")) {
-                    options.add(new Option(option("resume"), () -> send("resume", 0, 0)));
+                    options.add(new Option(option("resume"), () -> send("resume", 0)));
                 } else if (context.getInt("QueueSize") > 0) {
-                    options.add(new Option(option("pause"), () -> send("pause", 0, 0)));
+                    options.add(new Option(option("pause"), () -> send("pause", 0)));
                 }
-                options.add(new Option(option("back"), () -> go(Node.ROOT, line("more"))));
+                options.add(new Option(option("back"), () -> say(line("more"), Node.ROOT)));
             }
         }
     }
 
-    /** What Catto is busy with, in its own words. */
     private Component plans() {
         List<CattoTask> tasks = new ArrayList<>();
         if (minecraft != null && minecraft.level != null) {
@@ -204,11 +217,14 @@ public class CattoDialogScreen extends Screen {
         }
         Component mood = Component.translatable("arcane_artifacts.catto.dialog.mood", context.getInt("Bond"),
                 context.getInt("Source"), context.getInt("MaxSource"));
+        String mode = context.getString("Mode");
+        if (!"NONE".equals(mode) && !mode.isEmpty()) {
+            return line("plans_" + mode.toLowerCase(Locale.ROOT)).copy().append(" ").append(mood);
+        }
         if (tasks.isEmpty()) {
             return line("plans_none").copy().append(" ").append(mood);
         }
-        Component now = line("plans_now", tasks.get(0).describe());
-        var text = now.copy();
+        var text = line("plans_now", tasks.get(0).describe()).copy();
         if (tasks.size() > 1) {
             text.append(" ").append(Component.translatable("arcane_artifacts.catto.dialog.plans_next", tasks.get(1).describe(),
                     context.getInt("QueueSize") - 1));
@@ -219,58 +235,94 @@ public class CattoDialogScreen extends Screen {
         return text.append(" ").append(mood);
     }
 
-    // ------------------------------------------------------------------ layout
+    // ------------------------------------------------------------------ cutscene
 
-    private int panelW() {
-        return Math.min(440, width - 20);
+    private int barHeight() {
+        return Math.round(height * 0.14F * intro);
     }
 
-    private int panelX() {
-        return (width - panelW()) / 2;
+    /** The lower bar holds the subtitles: tall enough for the name and three lines. */
+    private int bottomBar() {
+        return Math.round(Math.max(height * 0.14F, 52.0F) * intro);
     }
 
-    private int textW() {
-        return panelW() - 130;
-    }
-
-    private int speechTop() {
-        return Math.max(10, height / 2 - 100);
-    }
-
-    private int speechHeight() {
-        return Math.max(40, font.split(speech, textW() - 12).size() * 10 + 26);
+    private int optionWidth() {
+        return Math.min(220, width / 3);
     }
 
     @Override
     protected void init() {
+        if (!cinematic && minecraft != null) {
+            cinematic = true;
+            previousCamera = minecraft.options.getCameraType();
+            previousHideGui = minecraft.options.hideGui;
+            minecraft.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+            minecraft.options.hideGui = true;
+        }
         rebuild();
     }
 
     private void rebuild() {
         clearWidgets();
         fillOptions();
-        int x = panelX() + 124;
-        int y = speechTop() + speechHeight() + 6;
+        int w = optionWidth();
+        int x = width - w - 12;
+        int total = options.size() * 21;
+        int y = Math.max(barHeight() + 8, (height - total) / 2 - 10);
         for (int i = 0; i < options.size(); i++) {
             Option opt = options.get(i);
-            Component label = Component.literal((i + 1) + ". ").append(opt.label());
-            String text = font.plainSubstrByWidth(label.getString(), textW() - 12);
-            addRenderableWidget(Button.builder(Component.literal(text), b -> opt.action().run())
-                    .bounds(x, y + i * 21, textW(), 19).build());
+            String text = font.plainSubstrByWidth((i + 1) + ". " + opt.label().getString(), w - 10);
+            addRenderableWidget(Button.builder(Component.literal(text), b -> opt.action().run()).bounds(x, y + i * 21, w, 19).build());
         }
     }
 
     @Override
     public void tick() {
         shown += 3.0F;
-        Catto cat = cat();
-        if (cat == null || !cat.isAlive() || minecraft != null && minecraft.player != null && cat.distanceToSqr(minecraft.player) > 24 * 24) {
-            onClose();
+        float before = intro;
+        intro = Math.min(1.0F, intro + 0.12F);
+        if (before < 1.0F) {
+            rebuild();
         }
+        Catto cat = cat();
+        LocalPlayer player = minecraft == null ? null : minecraft.player;
+        if (cat == null || player == null || !cat.isAlive() || cat.distanceToSqr(player) > 24 * 24) {
+            onClose();
+            return;
+        }
+        // Over the shoulder: the player turns toward Catto, a little to the side so both stay in the frame.
+        double dx = cat.getX() - player.getX();
+        double dz = cat.getZ() - player.getZ();
+        double flat = Math.sqrt(dx * dx + dz * dz);
+        float yaw = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90.0F - 22.0F;
+        float pitch = (float) (Mth.atan2(player.getEyeY() - (cat.getY() + 0.5), Math.max(0.5, flat)) * Mth.RAD_TO_DEG) + 8.0F;
+        float newYaw = player.getYRot() + Mth.wrapDegrees(yaw - player.getYRot()) * 0.25F;
+        float newPitch = Mth.lerp(0.25F, player.getXRot(), Mth.clamp(pitch, -20.0F, 45.0F));
+        player.setYRot(newYaw);
+        player.setYHeadRot(newYaw);
+        player.setXRot(newPitch);
     }
 
-    private Catto cat() {
-        return minecraft != null && minecraft.level != null && minecraft.level.getEntity(entityId) instanceof Catto cat ? cat : null;
+    @Override
+    public void onClose() {
+        if (cinematic && minecraft != null) {
+            minecraft.options.setCameraType(previousCamera == null ? CameraType.FIRST_PERSON : previousCamera);
+            minecraft.options.hideGui = previousHideGui;
+            cinematic = false;
+        }
+        PacketDistributor.sendToServer(new CattoDialog.CommandPayload(entityId, "bye", 0, 0));
+        super.onClose();
+    }
+
+    @Override
+    public void removed() {
+        // Closed by another screen (the inventory, death...): give the camera back too.
+        if (cinematic && minecraft != null) {
+            minecraft.options.setCameraType(previousCamera == null ? CameraType.FIRST_PERSON : previousCamera);
+            minecraft.options.hideGui = previousHideGui;
+            cinematic = false;
+        }
+        super.removed();
     }
 
     @Override
@@ -290,46 +342,45 @@ public class CattoDialogScreen extends Screen {
     }
 
     @Override
+    public void renderBackground(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        // No blur and no dimming: the world is the scene.
+    }
+
+    @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
-        super.render(g, mouseX, mouseY, partialTick);
-        int px = panelX();
-        int top = speechTop();
-        // Catto, big, on the left.
-        int boxH = Math.max(150, speechHeight() + 6 + options.size() * 21);
-        g.fill(px, top, px + 116, top + boxH, PANEL_BG);
-        g.renderOutline(px, top, 116, boxH, PANEL_EDGE);
-        Catto cat = cat();
-        if (cat != null) {
-            InventoryScreen.renderEntityInInventoryFollowsMouse(g, px + 4, top + 4, px + 112, top + boxH - 4, 52, 0.0625F, mouseX, mouseY, cat);
+        int bar = barHeight();
+        g.fill(0, 0, width, bar, BAR);
+        int bottom = bottomBar();
+        g.fill(0, height - bottom, width, height, BAR);
+        // Options: a soft panel behind the buttons.
+        if (!options.isEmpty()) {
+            int w = optionWidth();
+            int x = width - w - 12;
+            int total = options.size() * 21;
+            int y = Math.max(bar + 8, (height - total) / 2 - 10);
+            g.fill(x - 6, y - 6, x + w + 6, y + total + 4, OPTION_BG);
+            g.renderOutline(x - 6, y - 6, w + 12, total + 10, OPTION_EDGE);
         }
-        // The speech box with Catto's name and nature.
-        int sx = px + 124;
-        int sw = textW();
-        int sh = speechHeight();
-        g.fill(sx, top, sx + sw, top + sh, PANEL_BG);
-        g.renderOutline(sx, top, sw, sh, PANEL_EDGE);
+        super.render(g, mouseX, mouseY, partialTick);
+        // Catto's line, like subtitles in the lower bar.
+        Catto cat = cat();
         Component name = cat != null ? cat.getDisplayName() : title;
-        g.drawString(font, name, sx + 6, top + 6, NAME, false);
         Component nature = Component.translatable("arcane_artifacts.catto.nature." + nature());
-        g.drawString(font, nature, sx + sw - 6 - font.width(nature), top + 6, QUIET, false);
+        int textW = Math.min(width - 40, 420);
+        int left = (width - textW) / 2;
+        int top = height - bottom + 6;
+        g.drawString(font, name.copy().append(Component.literal("  ·  ").append(nature).withStyle(s -> s.withColor(QUIET))), left, top, NAME, true);
         String full = speech.getString();
         String visible = full.substring(0, (int) Math.min(full.length(), shown));
-        int y = top + 20;
-        for (FormattedCharSequence line : font.split(Component.literal(visible), sw - 12)) {
-            g.drawString(font, line, sx + 6, y, TEXT, false);
+        int y = top + 12;
+        for (FormattedCharSequence line : font.split(Component.literal(visible), textW)) {
+            g.drawString(font, line, left, y, TEXT, true);
             y += 10;
         }
-        // A little tail of the speech bubble pointing at Catto.
-        g.fill(sx - 6, top + 14, sx, top + 16, PANEL_EDGE);
     }
 
     @Override
     public boolean isPauseScreen() {
         return false;
-    }
-
-    @SuppressWarnings("unused")
-    private static BlockPos at(long pos) {
-        return BlockPos.of(pos);
     }
 }

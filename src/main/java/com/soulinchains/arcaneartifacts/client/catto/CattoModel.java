@@ -58,14 +58,13 @@ public class CattoModel extends HierarchicalModel<Catto> implements ArmedModel {
                 .texOffs(16, 48).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F), PartPose.offset(0.0F, -6.6F, -2.4F));
         PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create()
                         .texOffs(0, 0).addBox(-3.5F, -6.0F, -3.0F, 7.0F, 6.0F, 6.0F)
-                        .texOffs(28, 5).addBox(-1.5F, -2.5F, -4.0F, 3.0F, 2.0F, 1.0F)
-                        // The hood, one pixel bigger than the head, open at the face.
-                        .texOffs(0, 32).addBox(-4.0F, -6.5F, -3.5F, 8.0F, 7.0F, 7.0F),
+                        .texOffs(28, 5).addBox(-1.5F, -2.5F, -4.0F, 3.0F, 2.0F, 1.0F),
                 PartPose.offset(0.0F, 12.0F, 0.0F));
+        // Plain cat ears: the hood and the hats are gear now (see CattoGearLayer).
         head.addOrReplaceChild("right_ear", CubeListBuilder.create()
-                .texOffs(32, 32).addBox(-1.5F, -3.0F, -1.0F, 3.0F, 3.0F, 2.0F), PartPose.offsetAndRotation(-2.3F, -6.3F, 0.0F, 0.0F, 0.0F, -0.25F));
+                .texOffs(40, 0).addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F), PartPose.offsetAndRotation(-2.2F, -6.0F, 0.0F, 0.0F, 0.0F, -0.2F));
         head.addOrReplaceChild("left_ear", CubeListBuilder.create()
-                .texOffs(32, 32).mirror().addBox(-1.5F, -3.0F, -1.0F, 3.0F, 3.0F, 2.0F), PartPose.offsetAndRotation(2.3F, -6.3F, 0.0F, 0.0F, 0.0F, 0.25F));
+                .texOffs(40, 0).mirror().addBox(-1.0F, -2.0F, -0.5F, 2.0F, 2.0F, 1.0F), PartPose.offsetAndRotation(2.2F, -6.0F, 0.0F, 0.0F, 0.0F, 0.2F));
         root.addOrReplaceChild("right_arm", CubeListBuilder.create()
                 .texOffs(22, 14).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F), PartPose.offset(-4.0F, 12.5F, 0.0F));
         root.addOrReplaceChild("left_arm", CubeListBuilder.create()
@@ -82,6 +81,14 @@ public class CattoModel extends HierarchicalModel<Catto> implements ArmedModel {
     @Override
     public ModelPart root() {
         return root;
+    }
+
+    public ModelPart head() {
+        return head;
+    }
+
+    public ModelPart body() {
+        return body;
     }
 
     @Override

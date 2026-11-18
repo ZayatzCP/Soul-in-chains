@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "decorations",
+  "pattern": [
+    "CCC",
+    "WWW"
+  ],
+  "key": {
+    "C": {
+      "tag": "minecraft:wool_carpets"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "result": {
+    "count": 2,
+    "id": "arcane_artifacts:catto_cushion"
+  }
+}

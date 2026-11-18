@@ -65,6 +65,8 @@ public class Catto extends Cat {
     private static final EntityDataAccessor<ItemStack> DATA_ICON = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<Integer> DATA_SOURCE = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_MAX_SOURCE = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Byte> DATA_COAT = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Component> DATA_SPEECH = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.COMPONENT);
     private static final EntityDataAccessor<Boolean> DATA_ALERT = SynchedEntityData.defineId(Catto.class, EntityDataSerializers.BOOLEAN);
 
     /** Headwear, armor, bag, tool, weapon and the second paw (food, shield, torches). */
@@ -94,8 +96,18 @@ public class Catto extends Cat {
     public boolean stay;
     public int bond;
     public int source = 100;
-    /** Brawler or gentle: chosen once, when this Catto first appears. */
+    /** Temperament: chosen once, when this Catto first appears. */
     public CattoNature nature;
+    /** Standing order: guard a spot or escort the owner (the queue waits meanwhile). */
+    public CattoMode mode = CattoMode.NONE;
+    @Nullable
+    public BlockPos guardPos;
+    /** A village Catto's cushion: it stays around it. */
+    @Nullable
+    public BlockPos homePos;
+    /** Talking to other Cattos and humming tunes. */
+    public final CattoChatter chatter = new CattoChatter(this);
+    private int speechTicks;
     private long lastPetTime = -100000;
     /** Game tests: works without an online owner. Never saved. */
     public boolean testMode;
@@ -108,6 +120,7 @@ public class Catto extends Cat {
         super(type, level);
         setPersistenceRequired();
         nature = CattoNature.random(getRandom());
+        entityData.set(DATA_COAT, (byte) CattoCoat.random(getRandom()).ordinal());
         for (CattoSkill skill : CattoSkill.values()) {
             xp[skill.ordinal()] = nature.startXp(skill);
         }
@@ -134,6 +147,8 @@ public class Catto extends Cat {
         builder.define(DATA_SOURCE, 0);
         builder.define(DATA_ALERT, false);
         builder.define(DATA_MAX_SOURCE, 500);
+        builder.define(DATA_COAT, (byte) 0);
+        builder.define(DATA_SPEECH, Component.empty());
     }
 
     @Override
@@ -142,11 +157,57 @@ public class Catto extends Cat {
         // only strolls around, watches people and follows someone holding fish.
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new CattoBrain.Goal(this));
+        goalSelector.addGoal(2, new CushionGoal(this));
+        goalSelector.addGoal(4, new net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal(this, 0.8));
         goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.TemptGoal(this, 0.7,
                 net.minecraft.world.item.crafting.Ingredient.of(Items.COD, Items.SALMON), false));
         goalSelector.addGoal(5, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 0.6));
         goalSelector.addGoal(6, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(7, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
+    }
+
+    /** A village Catto goes back to its cushion now and then and sits on it for a while. */
+    static final class CushionGoal extends net.minecraft.world.entity.ai.goal.Goal {
+        private final Catto cat;
+        private int sitTicks;
+
+        CushionGoal(Catto cat) {
+            this.cat = cat;
+            setFlags(java.util.EnumSet.of(Flag.MOVE, Flag.JUMP));
+        }
+
+        @Override
+        public boolean canUse() {
+            return cat.getOwnerUUID() == null && cat.homePos != null && cat.getRandom().nextInt(200) == 0
+                    && cat.homePos.distSqr(cat.blockPosition()) < 24 * 24;
+        }
+
+        @Override
+        public void start() {
+            sitTicks = 300 + cat.getRandom().nextInt(900);
+            cat.getNavigation().moveTo(cat.homePos.getX() + 0.5, cat.homePos.getY(), cat.homePos.getZ() + 0.5, 0.8);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return sitTicks > 0 && cat.getOwnerUUID() == null;
+        }
+
+        @Override
+        public void tick() {
+            if (cat.homePos != null && cat.position().distanceToSqr(net.minecraft.world.phys.Vec3.atBottomCenterOf(cat.homePos)) < 1.5) {
+                cat.getNavigation().stop();
+                cat.setInSittingPose(true);
+                sitTicks--;
+            } else if (cat.getNavigation().isDone()) {
+                sitTicks -= 20;
+            }
+        }
+
+        @Override
+        public void stop() {
+            cat.setInSittingPose(false);
+        }
     }
 
     // ------------------------------------------------------------------ synced state
@@ -171,6 +232,25 @@ public class Catto extends Cat {
 
     public int shownMaxSource() {
         return entityData.get(DATA_MAX_SOURCE);
+    }
+
+    public CattoCoat coat() {
+        CattoCoat[] coats = CattoCoat.values();
+        return coats[Math.floorMod(entityData.get(DATA_COAT), coats.length)];
+    }
+
+    public void setCoat(CattoCoat coat) {
+        entityData.set(DATA_COAT, (byte) coat.ordinal());
+    }
+
+    /** A line over Catto's head (conversation, song, remark). */
+    public Component speech() {
+        return entityData.get(DATA_SPEECH);
+    }
+
+    public void say(Component line, int ticks) {
+        entityData.set(DATA_SPEECH, line);
+        speechTicks = ticks;
     }
 
     public boolean alert() {
@@ -239,10 +319,9 @@ public class Catto extends Cat {
         int armor = 0;
         for (int slot : new int[]{SLOT_HEAD, SLOT_ARMOR}) {
             ItemStack stack = equipment.getStackInSlot(slot);
+            // Vanilla helmets and chestplates protect through the game's own armor (they are worn in Catto's armor slots).
             if (stack.getItem() instanceof CattoGear.GearItem gear) {
                 armor += gear.armor;
-            } else if (stack.getItem() instanceof net.minecraft.world.item.ArmorItem item) {
-                armor += item.getDefense();
             }
         }
         return armor;
@@ -342,7 +421,8 @@ public class Catto extends Cat {
             case SLOT_ARMOR -> item instanceof CattoGear.GearItem gear ? gear.slot == CattoGear.Slot.ARMOR
                     : item instanceof net.minecraft.world.item.ArmorItem armor && armor.getType() == net.minecraft.world.item.ArmorItem.Type.CHESTPLATE;
             case SLOT_BAG -> item instanceof CattoItems.PackItem;
-            case SLOT_TOOL -> item instanceof net.minecraft.world.item.DiggerItem || item instanceof net.minecraft.world.item.ShearsItem;
+            case SLOT_TOOL -> item instanceof net.minecraft.world.item.DiggerItem || item instanceof net.minecraft.world.item.ShearsItem
+                    || item instanceof net.minecraft.world.item.FishingRodItem;
             case SLOT_WEAPON -> item instanceof net.minecraft.world.item.SwordItem || item instanceof net.minecraft.world.item.AxeItem
                     || item instanceof net.minecraft.world.item.TridentItem || item instanceof net.minecraft.world.item.MaceItem
                     || CattoCombat.spellOf(stack) != null;
@@ -778,6 +858,8 @@ public class Catto extends Cat {
         }
         tame(player);
         setOrderedToSit(false);
+        homePos = null;
+        clearRestriction();
         bond = 10;
         data.alive(player.getUUID(), this);
         level.sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 7, 0.3, 0.2, 0.3, 0);
@@ -790,6 +872,7 @@ public class Catto extends Cat {
         ServerLevel level = (ServerLevel) level();
         level.sendParticles(ParticleTypes.HEART, getX(), getY() + 0.7, getZ(), 4, 0.25, 0.1, 0.25, 0);
         playSound(SoundEvents.CAT_PURR, 1.0F, 1.0F);
+        say(Component.translatable("arcane_artifacts.catto.petted_line." + nature().key()), 50);
         if (level.getGameTime() - lastPetTime >= 6000) {
             lastPetTime = level.getGameTime();
             addBond(nature().petBond());
@@ -838,6 +921,10 @@ public class Catto extends Cat {
             return;
         }
         long time = level.getGameTime();
+        if (speechTicks > 0 && --speechTicks == 0) {
+            entityData.set(DATA_SPEECH, Component.empty());
+        }
+        chatter.tick(level);
         if (entityData.get(DATA_SOURCE) != source) {
             entityData.set(DATA_SOURCE, source);
         }
@@ -884,6 +971,15 @@ public class Catto extends Cat {
         }
         // What is shown in the paws: the weapon in a fight, otherwise the tool; the second paw holds its item.
         ItemStack shown = brain().state() == CattoBrain.State.FIGHT && !weapon().isEmpty() ? weapon() : tool();
+        // Headwear and armor are worn for real: drawn on Catto, and vanilla armor protects as usual.
+        for (var pair : new Object[][]{{net.minecraft.world.entity.EquipmentSlot.HEAD, SLOT_HEAD}, {net.minecraft.world.entity.EquipmentSlot.CHEST, SLOT_ARMOR}}) {
+            var slot = (net.minecraft.world.entity.EquipmentSlot) pair[0];
+            ItemStack worn = equipment.getStackInSlot((Integer) pair[1]);
+            if (!ItemStack.matches(getItemBySlot(slot), worn)) {
+                setItemSlot(slot, worn.copy());
+                setDropChance(slot, 0.0F);
+            }
+        }
         if (!ItemStack.matches(getOffhandItem(), offhand())) {
             setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand().copy());
             setDropChance(net.minecraft.world.entity.EquipmentSlot.OFFHAND, 0.0F);
@@ -985,6 +1081,14 @@ public class Catto extends Cat {
         catto.putInt("Bond", bond);
         catto.putInt("Source", source);
         catto.putString("Nature", nature().name());
+        catto.putString("Coat", coat().name());
+        catto.putString("Mode", mode.name());
+        if (guardPos != null) {
+            catto.putLong("GuardPos", guardPos.asLong());
+        }
+        if (homePos != null) {
+            catto.putLong("HomePos", homePos.asLong());
+        }
         catto.putLong("LastPet", lastPetTime);
         tag.put("Catto", catto);
     }
@@ -993,6 +1097,10 @@ public class Catto extends Cat {
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (!tag.contains("Catto")) {
+            // A cat turned into Catto by the ritual keeps (roughly) its coat.
+            if (tag.contains("variant")) {
+                setCoat(CattoCoat.fromVanilla(tag.getString("variant")));
+            }
             return;
         }
         CompoundTag catto = tag.getCompound("Catto");
@@ -1024,6 +1132,21 @@ public class Catto extends Cat {
         bond = catto.getInt("Bond");
         source = catto.getInt("Source");
         try {
+            setCoat(CattoCoat.valueOf(catto.getString("Coat")));
+        } catch (IllegalArgumentException ignored) {
+            // keep the rolled coat
+        }
+        try {
+            mode = CattoMode.valueOf(catto.getString("Mode"));
+        } catch (IllegalArgumentException ignored) {
+            mode = CattoMode.NONE;
+        }
+        guardPos = catto.contains("GuardPos") ? BlockPos.of(catto.getLong("GuardPos")) : null;
+        homePos = catto.contains("HomePos") ? BlockPos.of(catto.getLong("HomePos")) : null;
+        if (homePos != null) {
+            restrictTo(homePos, 10);
+        }
+        try {
             nature = CattoNature.valueOf(catto.getString("Nature"));
         } catch (IllegalArgumentException ignored) {
             // older Catto: keep the one rolled at creation
@@ -1051,7 +1174,8 @@ public class Catto extends Cat {
         tag.putInt("Capacity", capacity());
         tag.putInt("Storages", storages.size());
         tag.putString("Nature", nature().name());
-        tag.putInt("Armor", armor());
+        tag.putString("Mode", mode.name());
+        tag.putInt("Armor", armor() + getArmorValue());
         CattoGear.Set set = fullSet();
         if (set != null) {
             tag.putString("Set", set.name());

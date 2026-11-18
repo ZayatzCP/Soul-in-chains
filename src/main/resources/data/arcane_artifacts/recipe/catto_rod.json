@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "  S",
+    " SW",
+    "SNW"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "W": {
+      "item": "minecraft:string"
+    },
+    "N": {
+      "item": "minecraft:cod"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:catto_rod"
+  }
+}

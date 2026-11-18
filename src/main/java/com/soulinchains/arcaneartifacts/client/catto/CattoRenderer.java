@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
@@ -17,16 +18,17 @@ import net.minecraft.world.item.ItemStack;
 
 /** Catto on its hind legs with its tool in the paw, plus a bubble over its head: what it is busy with, "!" when stuck. */
 public class CattoRenderer extends MobRenderer<Catto, CattoModel> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("arcane_artifacts", "textures/entity/catto.png");
 
     public CattoRenderer(EntityRendererProvider.Context context) {
         super(context, new CattoModel(context.bakeLayer(CattoModel.LAYER)), 0.35F);
+        addLayer(new CattoGearLayer(this, context.getModelSet()));
         addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
     }
 
+    /** One texture per coat. */
     @Override
     public ResourceLocation getTextureLocation(Catto entity) {
-        return TEXTURE;
+        return ResourceLocation.fromNamespaceAndPath("arcane_artifacts", "textures/entity/catto/" + entity.coat().key() + ".png");
     }
 
     @Override
@@ -41,6 +43,7 @@ public class CattoRenderer extends MobRenderer<Catto, CattoModel> {
         if (cat.isInvisible()) {
             return;
         }
+        renderSpeech(cat, partialTicks, pose, buffers);
         ItemStack icon = cat.bubble();
         boolean alert = cat.alert();
         if (icon.isEmpty() && !alert) {
@@ -66,6 +69,27 @@ public class CattoRenderer extends MobRenderer<Catto, CattoModel> {
             font.drawInBatch(mark, -font.width(mark) / 2.0F, 0, 0xFFFF5040, false, pose.last().pose(), buffers,
                     Font.DisplayMode.NORMAL, 0x80000000, LightTexture.FULL_BRIGHT);
             pose.popPose();
+        }
+        pose.popPose();
+    }
+
+    /** What Catto says (to another Catto, to itself, a tune), in a little box above its head. */
+    private void renderSpeech(Catto cat, float partialTicks, PoseStack pose, MultiBufferSource buffers) {
+        Component speech = cat.speech();
+        if (speech.getString().isEmpty() || entityRenderDispatcher.distanceToSqr(cat) > 32 * 32) {
+            return;
+        }
+        Font font = getFont();
+        java.util.List<net.minecraft.util.FormattedCharSequence> lines = font.split(speech, 150);
+        pose.pushPose();
+        pose.translate(0.0, cat.getBbHeight() + (cat.bubble().isEmpty() ? 0.55 : 1.0), 0.0);
+        pose.mulPose(entityRenderDispatcher.cameraOrientation());
+        pose.scale(0.022F, -0.022F, 0.022F);
+        float y = -lines.size() * 10.0F;
+        for (net.minecraft.util.FormattedCharSequence line : lines) {
+            float x = -font.width(line) / 2.0F;
+            font.drawInBatch(line, x, y, 0xFFFFFFFF, false, pose.last().pose(), buffers, Font.DisplayMode.NORMAL, 0x90201030, LightTexture.FULL_BRIGHT);
+            y += 10.0F;
         }
         pose.popPose();
     }

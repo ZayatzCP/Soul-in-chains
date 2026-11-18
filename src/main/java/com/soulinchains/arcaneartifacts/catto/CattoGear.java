@@ -110,6 +110,29 @@ public final class CattoGear {
         }
     }
 
+    public static final class TrowelItem extends net.minecraft.world.item.ShovelItem {
+        public TrowelItem() {
+            super(net.minecraft.world.item.Tiers.IRON, new Item.Properties()
+                    .attributes(net.minecraft.world.item.ShovelItem.createAttributes(net.minecraft.world.item.Tiers.IRON, 1.5F, -3.0F)));
+        }
+
+        @Override
+        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+            tooltip.add(Component.translatable("arcane_artifacts.catto.tool.trowel").withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    public static final class RodItem extends net.minecraft.world.item.FishingRodItem {
+        public RodItem() {
+            super(new Item.Properties().durability(128));
+        }
+
+        @Override
+        public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+            tooltip.add(Component.translatable("arcane_artifacts.catto.tool.rod").withStyle(ChatFormatting.GRAY));
+        }
+    }
+
     static java.util.Set<CattoModule> none() {
         return EnumSet.noneOf(CattoModule.class);
     }

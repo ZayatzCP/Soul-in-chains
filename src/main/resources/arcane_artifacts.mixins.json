@@ -6,7 +6,8 @@
   "mixins": [
     "ScribesTileMixin",
     "EnchantingApparatusTileMixin",
-    "OverworldBiomeBuilderMixin"
+    "OverworldBiomeBuilderMixin",
+    "StructureTemplatePoolAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

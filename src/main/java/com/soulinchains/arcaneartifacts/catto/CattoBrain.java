@@ -57,6 +57,8 @@ public final class CattoBrain {
         public int accuracy = 1;
         /** For blocks found by the planner: not tried again for a while when it fails. */
         public boolean blacklistOnFail = true;
+        /** A chore of Catto's own between errands (picking something up, taking junk away, fishing). */
+        public boolean idle;
 
         Step(Kind kind, BlockPos pos) {
             this.kind = kind;
@@ -134,6 +136,11 @@ public final class CattoBrain {
     private int idleTicks;
     private int hurtTicks;
     private int attackCooldown;
+    /** Talking with the owner: Catto stands still and looks at them. */
+    @Nullable
+    private ServerPlayer listener;
+    private int talkTicks;
+    private int choreCooldown;
     @Nullable
     private net.minecraft.world.entity.LivingEntity foe;
     @Nullable
@@ -278,6 +285,15 @@ public final class CattoBrain {
         if (state == State.OFFLINE) {
             state = cat.queue.isEmpty() || cat.paused ? State.IDLE : State.PLAN;
         }
+        if (talkTicks > 0 && listener != null) {
+            talkTicks--;
+            cat.getNavigation().stop();
+            cat.getLookControl().setLookAt(listener, 30.0F, 30.0F);
+            if (!listener.isAlive() || listener.distanceToSqr(cat) > 24 * 24) {
+                talkTicks = 0;
+            }
+            return;
+        }
         if (hurtTicks > 0) {
             hurtTicks--;
         }
@@ -314,9 +330,32 @@ public final class CattoBrain {
     }
 
     private void tickIdle() {
-        if (!cat.queue.isEmpty() && !cat.paused && !cat.stay) {
+        if (!cat.queue.isEmpty() && !cat.paused && !cat.stay && cat.mode == CattoMode.NONE) {
             state = State.PLAN;
             return;
+        }
+        switch (cat.mode) {
+            case GUARD -> {
+                show(Component.translatable("arcane_artifacts.catto.status.guarding"), cat.weapon(), false);
+                BlockPos post = cat.guardPos == null ? cat.blockPosition() : cat.guardPos;
+                if (cat.blockPosition().distSqr(post) > 9) {
+                    sit(false);
+                    if (cat.tickCount % 10 == 0 || cat.getNavigation().isDone()) {
+                        cat.getNavigation().moveTo(post.getX() + 0.5, post.getY(), post.getZ() + 0.5, 1.1);
+                    }
+                } else {
+                    cat.getNavigation().stop();
+                    sit(true);
+                }
+                return;
+            }
+            case ESCORT -> {
+                show(Component.translatable("arcane_artifacts.catto.status.escorting"), cat.weapon(), false);
+                followOwner(2.5, 1.25);
+                return;
+            }
+            default -> {
+            }
         }
         Component status = cat.stay ? Component.translatable("arcane_artifacts.catto.status.staying")
                 : cat.paused && !cat.queue.isEmpty() ? Component.translatable("arcane_artifacts.catto.status.paused", cat.queue.size())
@@ -327,7 +366,39 @@ public final class CattoBrain {
             sit(true);
             return;
         }
-        followOwner(6.0, 1.1);
+        // Between errands Catto looks after itself: picks up what is lying around, takes junk away, fishes.
+        if (--choreCooldown <= 0) {
+            choreCooldown = 20;
+            Step chore = CattoLoot.chore(cat, this);
+            if (chore != null) {
+                chore.idle = true;
+                step = chore;
+                state = State.TRAVEL;
+                pathCooldown = 0;
+                stuckTicks = 0;
+                lastDist = Double.MAX_VALUE;
+                return;
+            }
+        }
+        followOwner(cat.nature() == CattoNature.LAZY ? 8.0 : 6.0, cat.nature() == CattoNature.LAZY ? 0.9 : 1.1);
+    }
+
+    /** The owner started talking: stand still and listen for a while (renewed with every answer). */
+    public void listen(ServerPlayer player) {
+        if (step != null && !step.idle) {
+            cancelStep();
+            if (state != State.FIGHT && state != State.RETREAT) {
+                state = cat.queue.isEmpty() ? State.IDLE : State.PLAN;
+            }
+        }
+        listener = player;
+        talkTicks = 600;
+        sit(false);
+    }
+
+    public void stopListening() {
+        talkTicks = 0;
+        listener = null;
     }
 
     private void followOwner(double near, double speed) {
@@ -403,7 +474,7 @@ public final class CattoBrain {
         if (dist <= s.reach) {
             cat.getNavigation().stop();
             state = State.WORK;
-            workTotal = Math.max(1, s.workTicks);
+            workTotal = Math.max(1, s.idle ? s.workTicks : Math.round(s.workTicks * cat.nature().workFactor()));
             workLeft = workTotal;
             return;
         }
@@ -433,8 +504,8 @@ public final class CattoBrain {
         }
         cat.getNavigation().stop();
         step = null;
-        state = State.PLAN;
-        if (s.kind == Step.Kind.GIVE) {
+        state = s.idle ? State.IDLE : State.PLAN;
+        if (s.kind == Step.Kind.GIVE && !s.idle) {
             enterWait(Component.translatable("arcane_artifacts.catto.blocked.owner_unreachable"));
         }
     }
@@ -462,7 +533,7 @@ public final class CattoBrain {
             return;
         }
         CattoTask task = cat.queue.isEmpty() ? null : cat.queue.get(0);
-        boolean ok = task != null && CattoPlanner.perform(cat, this, task, s);
+        boolean ok = s.idle ? CattoLoot.perform(cat, this, s) : task != null && CattoPlanner.perform(cat, this, task, s);
         if (!ok && s.blacklistOnFail) {
             blacklist(s.pos, 600);
         }
@@ -470,13 +541,21 @@ public final class CattoBrain {
             CattoWorld.lightUp(cat);
         }
         step = null;
-        state = State.PLAN;
+        state = s.idle ? State.IDLE : State.PLAN;
     }
 
-    // ------------------------------------------------------------------ fighting (brawlers only)
+    // ------------------------------------------------------------------ fighting
 
+    /**
+     * Brawlers go for monsters on their own; any Catto fights when told to guard or escort; brawlers and thrifty ones
+     * hit back when hurt. Nobody fights below its retreat health.
+     */
     private boolean wantsToFight() {
-        return cat.nature() == CattoNature.BRAWLER && cat.getHealth() > cat.getMaxHealth() * 0.3F || state == State.FIGHT;
+        if (cat.getHealth() <= cat.getMaxHealth() * cat.nature().retreatHealth()) {
+            return false;
+        }
+        return state == State.FIGHT || cat.nature().attacksMonsters() || cat.mode != CattoMode.NONE
+                || cat.nature().hitsBack() && hurtTicks > 0;
     }
 
     /** A monster nearby (not a creeper: even a brawler knows better) or whoever just hurt the owner. */
@@ -490,13 +569,43 @@ public final class CattoBrain {
                 return attacker;
             }
         }
+        if (cat.nature().hitsBack() && hurtTicks > 0) {
+            net.minecraft.world.entity.LivingEntity attacker = cat.getLastHurtByMob();
+            if (attacker != null && attacker.isAlive() && !(attacker instanceof Player) && attacker.distanceToSqr(cat) < 16 * 16) {
+                return attacker;
+            }
+        }
+        if (cat.mode == CattoMode.GUARD && cat.guardPos != null) {
+            BlockPos post = cat.guardPos;
+            Monster best = null;
+            double bestDist = 12 * 12;
+            for (Monster m : cat.level().getEntitiesOfClass(Monster.class, new net.minecraft.world.phys.AABB(post).inflate(12),
+                    m -> m.isAlive() && !(m instanceof Creeper) && (!cat.testMode || m.getTarget() == cat))) {
+                double d = m.distanceToSqr(Vec3.atCenterOf(post));
+                if (d < bestDist) {
+                    bestDist = d;
+                    best = m;
+                }
+            }
+            return best;
+        }
+        if (cat.mode == CattoMode.ESCORT && owner != null && owner.level() == cat.level()) {
+            for (Monster m : cat.level().getEntitiesOfClass(Monster.class, owner.getBoundingBox().inflate(10),
+                    m -> m.isAlive() && !(m instanceof Creeper))) {
+                return m;
+            }
+        }
+        if (!cat.nature().attacksMonsters() && cat.mode == CattoMode.NONE) {
+            return null;
+        }
         Monster threat = nearestThreat();
         return threat instanceof Creeper ? null : threat;
     }
 
     private void tickFight() {
         net.minecraft.world.entity.LivingEntity target = foe;
-        if (target == null || !target.isAlive() || target.distanceToSqr(cat) > 24 * 24 || cat.nature() != CattoNature.BRAWLER) {
+        boolean tooFarFromPost = cat.mode == CattoMode.GUARD && cat.guardPos != null && cat.blockPosition().distSqr(cat.guardPos) > 20 * 20;
+        if (target == null || !target.isAlive() || target.distanceToSqr(cat) > 24 * 24 || !wantsToFight() || tooFarFromPost) {
             foe = null;
             state = cat.queue.isEmpty() || cat.paused ? State.IDLE : State.PLAN;
             return;
@@ -685,12 +794,15 @@ public final class CattoBrain {
         if ((cat.isOnFire() || cat.isInLava()) && !cat.moduleActive(CattoModule.CAT_BOOTS)) {
             return true;
         }
-        if (cat.nature() == CattoNature.BRAWLER) {
-            // A brawler backs off only when badly hurt, or from a creeper about to blow.
-            return cat.getHealth() < cat.getMaxHealth() * 0.3F
-                    || !cat.level().getEntitiesOfClass(Creeper.class, cat.getBoundingBox().inflate(5), c -> c.getSwellDir() > 0 || c.isIgnited()).isEmpty();
+        if (cat.getHealth() < cat.getMaxHealth() * cat.nature().retreatHealth()
+                || !cat.level().getEntitiesOfClass(Creeper.class, cat.getBoundingBox().inflate(5), c -> c.getSwellDir() > 0 || c.isIgnited()).isEmpty()) {
+            return true;
         }
-        if (cat.getHealth() < cat.getMaxHealth() * 0.4F || hurtTicks > 0) {
+        // Fighters (by nature or by order) do not run from a monster; the others back off as soon as one shows up or hurts them.
+        if (cat.nature().attacksMonsters() || cat.mode != CattoMode.NONE || cat.nature().hitsBack() && state == State.FIGHT) {
+            return false;
+        }
+        if (hurtTicks > 0) {
             return true;
         }
         if ((cat.isOnFire() || cat.isInLava()) && !cat.moduleActive(CattoModule.CAT_BOOTS)) {

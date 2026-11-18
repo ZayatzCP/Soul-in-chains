@@ -80,25 +80,22 @@ public final class CattoDialog {
         }
         tag.put("Queue", queue);
         tag.putInt("Storages", cat.storages.size());
-        HitResult hit = player.pick(24.0, 1.0F, false);
-        if (hit instanceof BlockHitResult blockHit && hit.getType() == HitResult.Type.BLOCK) {
-            BlockPos pos = blockHit.getBlockPos();
-            BlockState state = player.level().getBlockState(pos);
-            tag.putLong("LookPos", pos.asLong());
-            if (!state.isAir() && state.getDestroySpeed(player.level(), pos) >= 0) {
-                tag.putString("LookBlock", BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
-            }
-        } else {
-            tag.putLong("LookPos", player.blockPosition().asLong());
-        }
+        tag.putString("Mode", cat.mode.name());
+        // Orders are about the place where the player stands and the item in their second hand.
+        tag.putLong("Here", player.blockPosition().asLong());
         ItemStack offhand = player.getOffhandItem();
         if (!offhand.isEmpty()) {
             tag.put("Offhand", offhand.save(cat.registryAccess()));
+            if (offhand.getItem() instanceof net.minecraft.world.item.BlockItem blockItem
+                    && blockItem.getBlock().defaultBlockState().getDestroySpeed(player.level(), player.blockPosition()) >= 0) {
+                tag.putBoolean("OffhandBlock", true);
+            }
         }
         return tag;
     }
 
     public static void open(ServerPlayer player, Catto cat) {
+        cat.brain().listen(player);
         cat.playSound(net.minecraft.sounds.SoundEvents.CAT_AMBIENT, 0.8F, 1.1F);
         PacketDistributor.sendToPlayer(player, new DialogPayload(cat.getId(), context(player, cat), Optional.empty()));
     }
@@ -115,9 +112,15 @@ public final class CattoDialog {
                 return;
             }
             if ("inventory".equals(payload.command())) {
+                cat.brain().stopListening();
                 cat.openMenu(player);
                 return;
             }
+            if ("bye".equals(payload.command())) {
+                cat.brain().stopListening();
+                return;
+            }
+            cat.brain().listen(player);
             Component reply = run(player, cat, payload);
             PacketDistributor.sendToPlayer(player, new DialogPayload(cat.getId(), context(player, cat), Optional.ofNullable(reply)));
         });
@@ -125,19 +128,41 @@ public final class CattoDialog {
 
     @Nullable
     private static Component run(ServerPlayer player, Catto cat, CommandPayload payload) {
-        BlockPos pos = BlockPos.of(payload.pos());
-        boolean near = pos.distSqr(player.blockPosition()) <= 40 * 40;
         int count = Math.max(1, Math.min(9999, payload.count()));
         return switch (payload.command()) {
             case "mine" -> {
-                BlockState state = player.level().getBlockState(pos);
-                if (!near || state.isAir() || state.getDestroySpeed(player.level(), pos) < 0) {
+                // The block to dig is the one the player holds in the second hand; Catto digs around the player.
+                if (!(player.getOffhandItem().getItem() instanceof net.minecraft.world.item.BlockItem blockItem)) {
+                    yield say(cat, "no_sample");
+                }
+                BlockState state = blockItem.getBlock().defaultBlockState();
+                if (state.isAir() || state.getDestroySpeed(player.level(), player.blockPosition()) < 0) {
                     yield say(cat, "confused");
                 }
-                yield order(player, cat, CattoTask.mine(state.getBlock(), pos, count));
+                yield order(player, cat, CattoTask.mine(blockItem.getBlock(), player.blockPosition(), count));
             }
-            case "collect" -> near ? order(player, cat, CattoTask.collect(pos, null, ItemStack.EMPTY)) : say(cat, "confused");
-            case "explore" -> near ? order(player, cat, CattoTask.explore(pos)) : say(cat, "confused");
+            case "guard" -> {
+                cat.mode = CattoMode.GUARD;
+                cat.guardPos = player.blockPosition();
+                cat.stay = false;
+                cat.changed();
+                yield say(cat, "guard");
+            }
+            case "escort" -> {
+                cat.mode = CattoMode.ESCORT;
+                cat.stay = false;
+                cat.changed();
+                yield say(cat, "escort");
+            }
+            case "dismiss" -> {
+                cat.mode = CattoMode.NONE;
+                cat.guardPos = null;
+                cat.changed();
+                yield say(cat, "dismiss");
+            }
+            case "collect" -> order(player, cat, CattoTask.collect(player.blockPosition(), null, player.getOffhandItem().isEmpty()
+                    || player.getOffhandItem().getItem() instanceof net.minecraft.world.item.BlockItem ? ItemStack.EMPTY : player.getOffhandItem()));
+            case "explore" -> order(player, cat, CattoTask.explore(player.blockPosition()));
             case "fetch", "craft" -> {
                 ItemStack sample = player.getOffhandItem();
                 if (sample.isEmpty()) {

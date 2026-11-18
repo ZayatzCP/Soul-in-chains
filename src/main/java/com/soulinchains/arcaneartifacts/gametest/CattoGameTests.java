@@ -241,4 +241,57 @@ public final class CattoGameTests {
         husk.setTarget(cat);
         helper.succeedWhen(() -> helper.assertTrue(husk.getHealth() < husk.getMaxHealth(), "The brawler did not hit the husk" + why(cat)));
     }
+
+    @GameTest(template = ARENA)
+    public static void cattoVillagePiecesLoad(GameTestHelper helper) {
+        var manager = helper.getLevel().getStructureManager();
+        for (String piece : com.soulinchains.arcaneartifacts.catto.CattoVillage.PIECES) {
+            var template = manager.get(ArcaneArtifacts.id("village/" + piece));
+            helper.assertTrue(template.isPresent(), "Missing village piece " + piece);
+            var jigsaws = template.get().filterBlocks(BlockPos.ZERO, new net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings(),
+                    Blocks.JIGSAW);
+            helper.assertTrue(!jigsaws.isEmpty(), "Village piece " + piece + " has no jigsaw to join a street");
+            var cushions = template.get().filterBlocks(BlockPos.ZERO, new net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings(),
+                    com.soulinchains.arcaneartifacts.catto.CattoVillage.CUSHION.get());
+            helper.assertTrue(!cushions.isEmpty(), "Village piece " + piece + " has no Catto Cushion");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 300)
+    public static void cattoPicksUpABetterTool(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(2, 2, 2));
+        Vec3 pos = helper.absoluteVec(new Vec3(5.5, 2, 5.5));
+        ItemEntity pick = new ItemEntity(helper.getLevel(), pos.x, pos.y, pos.z, new ItemStack(Items.IRON_PICKAXE));
+        pick.setNoPickUpDelay();
+        pick.setDeltaMovement(Vec3.ZERO);
+        helper.getLevel().addFreshEntity(pick);
+        helper.succeedWhen(() -> helper.assertTrue(cat.tool().is(Items.IRON_PICKAXE), "Catto did not take the pickaxe" + why(cat)));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void gentleCattoGuardsWhenTold(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(2, 2, 2));
+        cat.mode = com.soulinchains.arcaneartifacts.catto.CattoMode.GUARD;
+        cat.guardPos = helper.absolutePos(new BlockPos(3, 2, 3));
+        cat.equipment.setStackInSlot(Catto.SLOT_WEAPON, new ItemStack(Items.IRON_SWORD));
+        net.minecraft.world.entity.monster.Husk husk = helper.spawnWithNoFreeWill(net.minecraft.world.entity.EntityType.HUSK, new BlockPos(6, 2, 6));
+        husk.setTarget(cat);
+        helper.succeedWhen(() -> helper.assertTrue(husk.getHealth() < husk.getMaxHealth(), "The guarding Catto did not fight" + why(cat)));
+    }
+
+    @GameTest(template = ARENA)
+    public static void cattoKeepsItsCoat(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(4, 2, 4));
+        cat.setCoat(com.soulinchains.arcaneartifacts.catto.CattoCoat.CALICO);
+        cat.nature = com.soulinchains.arcaneartifacts.catto.CattoNature.THRIFTY;
+        Catto copy = CattoContent.CATTO.get().create(helper.getLevel());
+        helper.assertTrue(copy != null, "Catto could not be created");
+        copy.load(cat.saveWithoutId(new CompoundTag()));
+        helper.assertTrue(copy.coat() == com.soulinchains.arcaneartifacts.catto.CattoCoat.CALICO
+                && copy.nature() == com.soulinchains.arcaneartifacts.catto.CattoNature.THRIFTY, "Coat or temperament lost on saving");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.catto.CattoCoat.fromVanilla("minecraft:calico") == com.soulinchains.arcaneartifacts.catto.CattoCoat.CALICO,
+                "A calico cat should stay calico");
+        helper.succeed();
+    }
 }

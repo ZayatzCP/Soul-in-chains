@@ -61,6 +61,10 @@ public final class CattoContent {
     public static final DeferredItem<CattoGear.HammerItem> HAMMER = item("catto_hammer", CattoGear.HammerItem::new);
     public static final DeferredItem<CattoGear.ScytheItem> SCYTHE = item("catto_scythe", CattoGear.ScytheItem::new);
     public static final DeferredItem<CattoGear.HatchetItem> HATCHET = item("catto_hatchet", CattoGear.HatchetItem::new);
+    public static final DeferredItem<CattoGear.TrowelItem> TROWEL = item("catto_trowel", CattoGear.TrowelItem::new);
+    public static final DeferredItem<CattoGear.RodItem> ROD = item("catto_rod", CattoGear.RodItem::new);
+    public static final DeferredItem<net.minecraft.world.item.BlockItem> CUSHION = item("catto_cushion",
+            () -> new net.minecraft.world.item.BlockItem(CattoVillage.CUSHION.get(), new Item.Properties()));
 
     private static <T extends Item> DeferredItem<T> item(String name, java.util.function.Supplier<T> factory) {
         DeferredItem<T> item = ModItems.REGISTER.register(name, factory);
