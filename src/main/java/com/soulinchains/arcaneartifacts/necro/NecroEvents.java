@@ -35,6 +35,28 @@ public final class NecroEvents {
         cancelIfShackled(event);
     }
 
+    /** A phantom cannot be hurt (except by the void or /kill) and cannot attack. */
+    @SubscribeEvent(priority = net.neoforged.bus.api.EventPriority.HIGH)
+    public static void onPhantomHurt(LivingIncomingDamageEvent event) {
+        if (event.getEntity().hasEffect(ModEffects.PHANTOM) && !event.getSource().is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPhantomAttack(net.neoforged.neoforge.event.entity.player.AttackEntityEvent event) {
+        if (event.getEntity().hasEffect(ModEffects.PHANTOM)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPhantomTargeted(net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent event) {
+        if (event.getNewAboutToBeSetTarget() != null && event.getNewAboutToBeSetTarget().hasEffect(ModEffects.PHANTOM)) {
+            event.setCanceled(true);
+        }
+    }
+
     private static boolean splitting;
 
     @SubscribeEvent

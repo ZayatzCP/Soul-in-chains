@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "WPW",
+    "WSW",
+    "W W"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:black_wool"
+    },
+    "P": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "S": {
+      "item": "minecraft:soul_soil"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:shroud"
+  }
+}

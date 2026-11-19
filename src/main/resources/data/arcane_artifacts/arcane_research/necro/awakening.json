@@ -48,11 +48,17 @@
   "notes": 1,
   "unlocks_items": [
     "arcane_artifacts:warden_rod",
-    "arcane_artifacts:ritual_awakening"
+    "arcane_artifacts:ritual_awakening",
+    "arcane_artifacts:shackle_gloves",
+    "arcane_artifacts:shroud",
+    "arcane_artifacts:bone_crown",
+    "arcane_artifacts:consecrated_soil",
+    "arcane_artifacts:desecrated_soil"
   ],
   "unlocks": [
     "arcane_artifacts:glyph_raise_dead",
     "arcane_artifacts:glyph_devour",
-    "arcane_artifacts:glyph_bond"
+    "arcane_artifacts:glyph_bond",
+    "arcane_artifacts:glyph_phantom_step"
   ]
 }

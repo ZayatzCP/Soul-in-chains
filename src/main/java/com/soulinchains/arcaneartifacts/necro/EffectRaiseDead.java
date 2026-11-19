@@ -109,12 +109,16 @@ public class EffectRaiseDead extends AreaEffect {
         }
         for (Map.Entry<SoulType, Integer> e : kind.cost.entrySet()) {
             for (int i = 0; i < e.getValue(); i++) {
-                Souls.take(master, e.getKey());
+                Souls.spend(master, e.getKey());
             }
         }
         servant.moveTo(at.x, at.y, at.z, master.getYRot(), 0);
         servant.dress();
         servant.bind(master);
+        boolean desecrated = level.getBlockState(net.minecraft.core.BlockPos.containing(at).below()).is(com.soulinchains.arcaneartifacts.registry.ModBlocks.DESECRATED_SOIL.get())
+                || level.getBlockState(net.minecraft.core.BlockPos.containing(at)).is(com.soulinchains.arcaneartifacts.registry.ModBlocks.DESECRATED_SOIL.get());
+        double health = (ShackledSet.wearsShroud(master) ? ShackledSet.SHROUD_HEALTH : 0) + (desecrated ? GraveSoilBlock.DESECRATED_BONUS : 0);
+        servant.empower(health, desecrated ? GraveSoilBlock.DESECRATED_BONUS : 0);
         level.addFreshEntity(servant);
         level.sendParticles(ParticleTypes.SOUL, at.x, at.y + 1, at.z, 24, 0.4, 0.8, 0.4, 0.03);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y + 0.2, at.z, 12, 0.4, 0.1, 0.4, 0.01);

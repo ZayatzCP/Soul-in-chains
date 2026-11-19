@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:chain_sickle"
+    "arcane_artifacts:chain_sickle",
+    "arcane_artifacts:ritual_dagger"
   ]
 }

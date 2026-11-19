@@ -358,6 +358,35 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
+    public void die(DamageSource source) {
+        super.die(source);
+        if (level() instanceof ServerLevel level && getOwner() instanceof Player master && ShackledSet.complete(master)) {
+            ShackledSet.chainReaction(level, this, master);
+        }
+    }
+
+    /** Raised stronger: Shroud (+30% health) and desecrated ground (+30% health and damage). */
+    public void empower(double healthBonus, double damageBonus) {
+        if (healthBonus > 0) {
+            var health = getAttribute(Attributes.MAX_HEALTH);
+            if (health != null) {
+                health.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                        com.soulinchains.arcaneartifacts.ArcaneArtifacts.id("servant_health"), healthBonus,
+                        net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                setHealth(getMaxHealth());
+            }
+        }
+        if (damageBonus > 0) {
+            var attack = getAttribute(Attributes.ATTACK_DAMAGE);
+            if (attack != null) {
+                attack.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                        com.soulinchains.arcaneartifacts.ArcaneArtifacts.id("servant_damage"), damageBonus,
+                        net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+            }
+        }
+    }
+
+    @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, source, recentlyHit);
         Containers.dropContents(level, blockPosition(), cargo);

@@ -64,6 +64,9 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> REAP_MARK = REGISTER.register("reap_mark",
             () -> new MobEffect(net.minecraft.world.effect.MobEffectCategory.NEUTRAL, 0x5DE2E7) {
             });
+    public static final DeferredHolder<MobEffect, MobEffect> PHANTOM = REGISTER.register("phantom",
+            () -> new MobEffect(net.minecraft.world.effect.MobEffectCategory.BENEFICIAL, 0x9FE8FF) {
+            });
     public static final DeferredHolder<MobEffect, MobEffect> ENTANGLED = REGISTER.register("entangled",
             com.soulinchains.arcaneartifacts.effect.RootedEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> SPORE_INFECTION = REGISTER.register("spore_infection",

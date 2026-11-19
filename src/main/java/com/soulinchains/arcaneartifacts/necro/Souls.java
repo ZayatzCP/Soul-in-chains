@@ -82,6 +82,20 @@ public final class Souls {
         return true;
     }
 
+    /** Spends a soul (raising, devouring, rituals): it leaves the lantern and adds Corruption. */
+    public static boolean spend(Player player, SoulType type) {
+        if (!take(player, type)) {
+            return false;
+        }
+        Corruption.spend(player, type);
+        return true;
+    }
+
+    /** A soul caught from the world (wisp, Reap): the full Shackled set sometimes makes it stronger. */
+    public static boolean catchSoul(LivingEntity catcher, SoulType type) {
+        return store(catcher, ShackledSet.caught(catcher, type));
+    }
+
     public static boolean canStore(LivingEntity entity) {
         return lantern(entity).map(s -> SoulLanternItem.store(s).total() < SoulLanternItem.capacity(s)).orElse(false);
     }
@@ -109,7 +123,7 @@ public final class Souls {
         if (dead.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.REAP_MARK) && dead.getPersistentData().contains(REAPER_TAG)) {
             CompoundTag tag = dead.getPersistentData().getCompound(REAPER_TAG);
             SoulType reaped = tag.getBoolean("up") ? type.upgraded() : type;
-            if (tag.hasUUID("by") && level.getEntity(tag.getUUID("by")) instanceof LivingEntity reaper && store(reaper, reaped)) {
+            if (tag.hasUUID("by") && level.getEntity(tag.getUUID("by")) instanceof LivingEntity reaper && catchSoul(reaper, reaped)) {
                 SoulWisp.burst(level, dead.position().add(0, dead.getBbHeight() / 2, 0), reaped);
                 return;
             }
@@ -120,7 +134,13 @@ public final class Souls {
         if (killer == null) {
             return;
         }
-        boolean sure = event.getSource().getWeaponItem() != null && event.getSource().getWeaponItem().getItem() instanceof ChainSickleItem;
+        var weapon = event.getSource().getWeaponItem();
+        boolean dagger = weapon != null && weapon.getItem() instanceof RitualDaggerItem;
+        boolean sure = weapon != null && weapon.getItem() instanceof ChainSickleItem || dagger;
+        if (dagger && dead.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.SHACKLED)) {
+            // A proper ritual kill: the chained creature's soul comes clean and washes a little Corruption away.
+            Corruption.add(killer, -RitualDaggerItem.CORRUPTION_WASH);
+        }
         if (sure || level.random.nextDouble() < Config.SOUL_CHANCE.get()) {
             spawnWisp(level, dead, type);
         }

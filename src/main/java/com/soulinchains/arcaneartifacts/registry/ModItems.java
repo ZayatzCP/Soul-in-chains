@@ -39,6 +39,18 @@ public final class ModItems {
             REGISTER.register("chain_sickle", com.soulinchains.arcaneartifacts.necro.ChainSickleItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.WardenRodItem> WARDEN_ROD =
             REGISTER.register("warden_rod", com.soulinchains.arcaneartifacts.necro.WardenRodItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackledGearItem> SHACKLE_GLOVES =
+            REGISTER.register("shackle_gloves", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.GLOVES));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackledGearItem> SHROUD =
+            REGISTER.register("shroud", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.SHROUD));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackledGearItem> BONE_CROWN =
+            REGISTER.register("bone_crown", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.CROWN));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RitualDaggerItem> RITUAL_DAGGER =
+            REGISTER.register("ritual_dagger", com.soulinchains.arcaneartifacts.necro.RitualDaggerItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulVesselItem> SOUL_VESSEL =
+            REGISTER.register("soul_vessel", com.soulinchains.arcaneartifacts.necro.SoulVesselItem::new);
+    public static final DeferredItem<BlockItem> CONSECRATED_SOIL = REGISTER.registerSimpleBlockItem(ModBlocks.CONSECRATED_SOIL);
+    public static final DeferredItem<BlockItem> DESECRATED_SOIL = REGISTER.registerSimpleBlockItem(ModBlocks.DESECRATED_SOIL);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.belt.BottomlessBeltItem> BOTTOMLESS_BELT =
             REGISTER.register("bottomless_belt", com.soulinchains.arcaneartifacts.belt.BottomlessBeltItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem> AMULET_OF_OPPOSITES =

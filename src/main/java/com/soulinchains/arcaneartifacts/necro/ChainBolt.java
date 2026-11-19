@@ -58,7 +58,7 @@ public class ChainBolt extends Projectile {
         setOwner(thrower);
         this.resolver = resolver;
         this.pullSelf = pullSelf;
-        this.range = Config.CHAIN_RANGE.get();
+        this.range = Config.CHAIN_RANGE.get() * (ShackledSet.wearsGloves(thrower) ? ShackledSet.GLOVES_RANGE : 1.0);
         Vec3 eye = thrower.getEyePosition();
         setPos(eye.x, eye.y - 0.2, eye.z);
         start = position();

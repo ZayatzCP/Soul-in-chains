@@ -45,7 +45,9 @@
   "notes": 1,
   "unlocks_items": [
     "arcane_artifacts:soul_lantern",
-    "arcane_artifacts:chain_sickle"
+    "arcane_artifacts:chain_sickle",
+    "arcane_artifacts:ritual_dagger",
+    "arcane_artifacts:soul_vessel"
   ],
   "unlocks": [
     "arcane_artifacts:glyph_chain",

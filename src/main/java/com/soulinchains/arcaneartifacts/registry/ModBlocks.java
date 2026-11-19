@@ -28,6 +28,12 @@ public final class ModBlocks {
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PINK)
                     .requiresCorrectToolForDrops().strength(5.0f, 6.0f).sound(SoundType.METAL)));
 
+    // ------------------------------------------------------------------ Shackled: graveyard soil
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.GraveSoilBlock> CONSECRATED_SOIL = BLOCKS.register("consecrated_soil",
+            () -> new com.soulinchains.arcaneartifacts.necro.GraveSoilBlock(true));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.GraveSoilBlock> DESECRATED_SOIL = BLOCKS.register("desecrated_soil",
+            () -> new com.soulinchains.arcaneartifacts.necro.GraveSoilBlock(false));
+
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)

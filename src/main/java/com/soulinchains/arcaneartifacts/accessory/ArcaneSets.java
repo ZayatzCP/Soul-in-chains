@@ -39,7 +39,8 @@ public final class ArcaneSets {
         REFLECTION("reflection", List.of(ModItems.MANTLE_OF_REFLECTION, ModItems.RING_OF_REVERSAL, ModItems.MIRROR_SHIELD)),
         POOR_MAGIC("poor_magic", List.of(ModItems.PONCHO, ModItems.SOMBRERO, ModItems.PSEUDOMAGE_BOOTS, ModItems.PSEUDOMAGE_GLOVES, ModItems.BANDOLIER)),
         AMANITOID("amanitoid", List.of(ModItems.MUSHROOM_SHIELD, ModItems.MUSHROOM_CLUB)),
-        DRUID("druid", List.of(ModItems.DRUID_MANTLE, ModItems.DRUID_HAT, ModItems.DRUID_GLOVES, ModItems.DRUID_BOOTS));
+        DRUID("druid", List.of(ModItems.DRUID_MANTLE, ModItems.DRUID_HAT, ModItems.DRUID_GLOVES, ModItems.DRUID_BOOTS)),
+        SHACKLED("shackled", List.of(ModItems.SOUL_LANTERN, ModItems.SHACKLE_GLOVES, ModItems.SHROUD, ModItems.BONE_CROWN));
 
         public final String id;
         public final List<? extends Supplier<? extends Item>> pieces;

@@ -253,4 +253,85 @@ public final class NecroGameTests {
                 "Without Sable there are no ships");
         helper.succeed();
     }
+
+    // ------------------------------------------------------------------ 1.27: Corruption, set, Phantom Step, soils, tools
+
+    @GameTest(template = ARENA)
+    public static void corruptionGrowsInStages(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 0);
+        for (int i = 0; i < 9; i++) {
+            com.soulinchains.arcaneartifacts.necro.Corruption.spend(player, SoulType.CURSED);
+        }
+        helper.assertTrue(Math.abs(com.soulinchains.arcaneartifacts.necro.Corruption.get(player) - 27F) < 1e-3, "Nine cursed souls must give 27 Corruption");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Corruption.stage(player) == 1, "27 Corruption is Touched");
+        com.soulinchains.arcaneartifacts.necro.Corruption.add(player, 500);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Corruption.get(player) == com.soulinchains.arcaneartifacts.necro.Corruption.MAX,
+                "Without the Lich ritual Corruption stops at 99");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Corruption.stage(player) == 3, "99 Corruption is Unclean");
+        com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 0);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void daggerKillWashesCorruption(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.RITUAL_DAGGER.get()));
+        com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 5);
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(4, 2, 4));
+        zombie.addEffect(new MobEffectInstance(ModEffects.SHACKLED, 100));
+        zombie.hurt(helper.getLevel().damageSources().playerAttack(player), 1000F);
+        helper.assertTrue(Math.abs(com.soulinchains.arcaneartifacts.necro.Corruption.get(player) - 4F) < 1e-3,
+                "A ritual kill must wash 1 Corruption away, got " + com.soulinchains.arcaneartifacts.necro.Corruption.get(player));
+        helper.assertTrue(wisps(helper).size() == 1, "A dagger kill always leaves a soul");
+        com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 0);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void phantomStepsThroughAThinWall(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 start = helper.absoluteVec(new Vec3(2.5, 2, 4.5));
+        player.setPos(start.x, start.y, start.z);
+        player.setYRot(-90F);
+        helper.setBlock(new BlockPos(3, 2, 4), net.minecraft.world.level.block.Blocks.STONE);
+        helper.setBlock(new BlockPos(3, 3, 4), net.minecraft.world.level.block.Blocks.STONE);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.EffectPhantomStep.stepThrough(helper.getLevel(), player), "The phantom must step through a one-block wall");
+        helper.assertTrue(player.getX() > start.x + 1.5, "The player must come out on the far side, x " + player.getX() + " from " + start.x);
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(6, 2, 6));
+        pig.addEffect(new MobEffectInstance(ModEffects.PHANTOM, 40));
+        pig.hurt(helper.getLevel().damageSources().generic(), 5F);
+        helper.assertTrue(pig.getHealth() == pig.getMaxHealth(), "A phantom cannot be hurt");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void consecratedSoilKeepsMonstersAway(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(4, 1, 4);
+        helper.setBlock(pos, com.soulinchains.arcaneartifacts.registry.ModBlocks.CONSECRATED_SOIL.get());
+        var state = helper.getBlockState(pos);
+        BlockPos abs = helper.absolutePos(pos);
+        helper.assertTrue(!state.isValidSpawn(helper.getLevel(), abs, EntityType.ZOMBIE), "No monster may spawn on consecrated soil");
+        helper.assertTrue(state.isValidSpawn(helper.getLevel(), abs, EntityType.PIG), "Animals may still spawn on it");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, batch = "necro_vessel")
+    public static void soulVesselHoldsASoul(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            Souls.store(player, SoulType.VOID);
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.SOUL_VESSEL.get()));
+            ModItems.SOUL_VESSEL.get().use(helper.getLevel(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
+            helper.assertTrue(Souls.count(player, SoulType.VOID) == 0, "The soul must leave the lantern");
+            boolean found = false;
+            for (ItemStack stack : player.getInventory().items) {
+                if (com.soulinchains.arcaneartifacts.necro.SoulVesselItem.soul(stack) == SoulType.VOID) {
+                    found = true;
+                }
+            }
+            helper.assertTrue(found, "A vessel with the void soul must be in the inventory");
+            helper.succeed();
+        });
+    }
 }

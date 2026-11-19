@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "arcane_artifacts:druid_gloves",
-    "arcane_artifacts:pseudomage_gloves"
+    "arcane_artifacts:pseudomage_gloves",
+    "arcane_artifacts:shackle_gloves"
   ]
 }

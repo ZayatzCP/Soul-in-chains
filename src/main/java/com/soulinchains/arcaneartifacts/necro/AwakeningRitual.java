@@ -100,7 +100,7 @@ public class AwakeningRitual extends AbstractRitual {
         int left = SOULS;
         for (int strength = 1; strength <= 3 && left > 0; strength++) {
             for (SoulType type : SoulType.values()) {
-                while (type.strength == strength && left > 0 && Souls.take(player, type)) {
+                while (type.strength == strength && left > 0 && Souls.spend(player, type)) {
                     left--;
                 }
             }

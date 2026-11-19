@@ -34,6 +34,13 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SOUL_LANTERN.get());
                 output.accept(ModItems.CHAIN_SICKLE.get());
                 output.accept(ModItems.WARDEN_ROD.get());
+                output.accept(ModItems.SHACKLE_GLOVES.get());
+                output.accept(ModItems.SHROUD.get());
+                output.accept(ModItems.BONE_CROWN.get());
+                output.accept(ModItems.RITUAL_DAGGER.get());
+                output.accept(ModItems.SOUL_VESSEL.get());
+                output.accept(ModItems.CONSECRATED_SOIL.get());
+                output.accept(ModItems.DESECRATED_SOIL.get());
                 output.accept(ModItems.AMULET_OF_OPPOSITES.get());
                 output.accept(ModItems.RING_OF_CALM.get());
                 output.accept(ModItems.HOP_SLIPPERS.get());

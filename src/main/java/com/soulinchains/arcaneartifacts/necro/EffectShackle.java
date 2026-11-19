@@ -66,7 +66,7 @@ public class EffectShackle extends AreaEffect {
 
     @Override
     protected void resolveAt(ServerLevel level, Vec3 point, @Nullable Entity target, LivingEntity shooter, SpellStats stats, SpellContext context) {
-        int ticks = ticks(stats);
+        int ticks = ticks(stats) + (ShackledSet.wearsGloves(shooter) ? ShackledSet.GLOVES_HOLD_TICKS : 0);
         if (target instanceof LivingEntity living && living != shooter) {
             shackle(level, living, ticks, shooter);
         } else if (target != null && com.soulinchains.arcaneartifacts.compat.ContraptionCompat.isContraption(target)) {

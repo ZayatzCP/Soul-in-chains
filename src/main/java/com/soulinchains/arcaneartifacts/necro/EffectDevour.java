@@ -65,7 +65,7 @@ public class EffectDevour extends AreaEffect {
             return;
         }
         SoulType soul = weakest(player);
-        if (soul == null || !Souls.take(player, soul)) {
+        if (soul == null || !Souls.spend(player, soul)) {
             player.displayClientMessage(Component.translatable("arcane_artifacts.necro.no_souls"), true);
             return;
         }

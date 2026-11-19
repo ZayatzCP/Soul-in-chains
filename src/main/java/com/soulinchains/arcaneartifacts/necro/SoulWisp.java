@@ -68,7 +68,7 @@ public class SoulWisp extends Entity {
         if (catcher != null) {
             Vec3 to = catcher.position().add(0, catcher.getBbHeight() * 0.5, 0).subtract(position());
             if (to.lengthSqr() < 1.2 * 1.2) {
-                if (Souls.store(catcher, soul())) {
+                if (Souls.catchSoul(catcher, soul())) {
                     burst((ServerLevel) level(), position(), soul());
                     discard();
                     return;

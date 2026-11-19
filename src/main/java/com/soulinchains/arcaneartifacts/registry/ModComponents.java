@@ -23,6 +23,11 @@ public final class ModComponents {
             REGISTER.registerComponentType("soul_store", b -> b.persistent(com.soulinchains.arcaneartifacts.necro.SoulStore.CODEC)
                     .networkSynchronized(com.soulinchains.arcaneartifacts.necro.SoulStore.STREAM_CODEC));
 
+    /** The soul inside a Soul Vessel (ordinal of SoulType); absent = empty vessel. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> VESSEL_SOUL =
+            REGISTER.registerComponentType("vessel_soul", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+
     /** Polarity of the Amulet of Opposites: true = repels. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> REPELLING =
             REGISTER.registerComponentType("repelling", b -> b.persistent(com.mojang.serialization.Codec.BOOL)

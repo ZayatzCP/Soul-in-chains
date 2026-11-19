@@ -67,6 +67,9 @@ public final class ResearchNetwork {
         registrar.playToClient(com.soulinchains.arcaneartifacts.catto.CattoDialog.DialogPayload.TYPE,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog.DialogPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> com.soulinchains.arcaneartifacts.client.catto.CattoDialogScreen.receive(payload)));
+        registrar.playToClient(com.soulinchains.arcaneartifacts.necro.Corruption.SyncPayload.TYPE,
+                com.soulinchains.arcaneartifacts.necro.Corruption.SyncPayload.STREAM_CODEC,
+                com.soulinchains.arcaneartifacts.necro.Corruption::handleSync);
         registrar.playToServer(com.soulinchains.arcaneartifacts.catto.CattoDialog.CommandPayload.TYPE,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog.CommandPayload.STREAM_CODEC,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog::handleCommand);
