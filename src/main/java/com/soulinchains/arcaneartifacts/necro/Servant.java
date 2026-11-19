@@ -2,7 +2,7 @@ package com.soulinchains.arcaneartifacts.necro;
 
 import com.soulinchains.arcaneartifacts.Config;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NbtUtils;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -357,8 +357,8 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return kind == ServantKind.ROWER;
+    public boolean canDrownInFluidType(net.neoforged.neoforge.fluids.FluidType type) {
+        return kind != ServantKind.ROWER && super.canDrownInFluidType(type);
     }
 
     @Override
