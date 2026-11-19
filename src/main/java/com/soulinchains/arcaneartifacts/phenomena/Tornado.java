@@ -211,7 +211,7 @@ public final class Tornado implements Phenomena.Phenomenon, Phenomena.Located {
         if (distance > settings.radius) {
             return false;
         }
-        double strength = settings.strength;
+        double strength = settings.strength * com.soulinchains.arcaneartifacts.necro.Pvp.vortex(entity);
         Vec3 tangent = distance > 0.1 ? new Vec3(-flat.z, 0, flat.x).normalize() : Vec3.ZERO;
         Vec3 inward = distance > 0.1 ? flat.normalize().scale(-0.08) : Vec3.ZERO;
         double lift = entity.getY() < center.y + settings.radius * 2.2 ? 0.13 * strength + 0.06 : -0.02;

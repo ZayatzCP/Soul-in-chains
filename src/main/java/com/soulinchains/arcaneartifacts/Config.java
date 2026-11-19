@@ -62,6 +62,11 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue TORNADO_RADIUS;
     public static final ModConfigSpec.IntValue TORNADO_SECONDS;
     public static final ModConfigSpec.DoubleValue SOUL_CHANCE;
+    public static final ModConfigSpec.DoubleValue PVP_HOLD_MULTIPLIER;
+    public static final ModConfigSpec.BooleanValue PVP_CHAIN_PULLS_PLAYERS;
+    public static final ModConfigSpec.DoubleValue PVP_PULL_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue PVP_VORTEX_MULTIPLIER;
+    public static final ModConfigSpec.IntValue PVP_HOLD_IMMUNITY_TICKS;
     public static final ModConfigSpec.IntValue SOUL_WISP_SECONDS;
     public static final ModConfigSpec.IntValue SOUL_LANTERN_CAPACITY;
     public static final ModConfigSpec.DoubleValue CHAIN_RANGE;
@@ -212,6 +217,18 @@ public final class Config {
         SOUL_LANTERN_CAPACITY = b.defineInRange("soul_lantern_capacity", 10, 1, 1000);
         CHAIN_RANGE = b.comment("How far a thrown chain flies (Chain Sickle, Chain form).").defineInRange("chain_range", 12.0, 2.0, 64.0);
         SICKLE_COOLDOWN_TICKS = b.defineInRange("sickle_cooldown_ticks", 40, 0, 1200);
+        b.pop();
+
+        b.push("pvp");
+        b.comment("How the addon's control spells treat other players (mobs are not affected).");
+        PVP_HOLD_MULTIPLIER = b.comment("Duration multiplier of Shackle and Entangle on players.")
+                .defineInRange("hold_multiplier", 0.5, 0.0, 1.0);
+        PVP_HOLD_IMMUNITY_TICKS = b.comment("After a Shackle or Entangle ends, a player cannot be held again for this many ticks.")
+                .defineInRange("hold_immunity_ticks", 60, 0, 1200);
+        PVP_CHAIN_PULLS_PLAYERS = b.comment("Whether the Chain Sickle and the Chain form pull other players.")
+                .define("chain_pulls_players", true);
+        PVP_PULL_MULTIPLIER = b.comment("Strength multiplier of chain pulls on players.").defineInRange("pull_multiplier", 0.6, 0.0, 2.0);
+        PVP_VORTEX_MULTIPLIER = b.comment("Strength multiplier of Tornado and Black Hole on players.").defineInRange("vortex_multiplier", 0.6, 0.0, 2.0);
         b.pop();
 
         b.push("research");

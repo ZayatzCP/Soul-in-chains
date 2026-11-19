@@ -127,7 +127,7 @@ public class ChainBolt extends Projectile {
                 || target instanceof LivingEntity living && living.getMaxHealth() > HEAVY_HEALTH;
         // A creature already in shackles stays where the chains hold it.
         boolean held = target instanceof LivingEntity living && living.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.SHACKLED);
-        if ((heavy || held) && !pullSelf) {
+        if ((heavy || held || Pvp.pull(target) <= 0) && !pullSelf) {
             discard();
             return;
         }
@@ -173,7 +173,7 @@ public class ChainBolt extends Projectile {
             discard();
             return;
         }
-        double speed = Math.min(1.4, 0.35 + distance * 0.18);
+        double speed = Math.min(1.4, 0.35 + distance * 0.18) * (pullSelf ? 1.0 : Pvp.pull(moving));
         Vec3 motion = to.normalize().scale(speed).add(0, moving.onGround() ? 0.15 : 0.04, 0);
         moving.setDeltaMovement(motion);
         moving.hurtMarked = true;

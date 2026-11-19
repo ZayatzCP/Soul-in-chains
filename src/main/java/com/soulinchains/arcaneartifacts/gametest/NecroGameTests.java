@@ -150,4 +150,18 @@ public final class NecroGameTests {
             helper.assertTrue(pig.distanceTo(caster) < before - 1.0, "The chain must reel the villager in: " + before + " -> " + pig.distanceTo(caster));
         });
     }
+
+    @GameTest(template = ARENA)
+    public static void pvpHoldsPlayersShorterWithImmunity(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 2, 4));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Pvp.holdTicks(pig, 60) == 60, "Mobs are held for the full time");
+        int first = com.soulinchains.arcaneartifacts.necro.Pvp.holdTicks(player, 60);
+        helper.assertTrue(first == 30, "A player must be held half as long by default, got " + first);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Pvp.holdTicks(player, 60) == 0, "A player just held must be immune for a while");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Pvp.pull(player) < 1.0 && com.soulinchains.arcaneartifacts.necro.Pvp.pull(pig) == 1.0,
+                "Chains must pull players weaker than mobs");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Pvp.vortex(player) < 1.0, "Vortices must throw players around less");
+        helper.succeed();
+    }
 }

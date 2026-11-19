@@ -68,6 +68,10 @@ public class EffectShackle extends AreaEffect {
             living.getPersistentData().putLong(BOSS_COOLDOWN_TAG, now + BOSS_COOLDOWN_TICKS);
             ticks = Math.max(10, ticks / 2);
         }
+        ticks = Pvp.holdTicks(living, ticks);
+        if (ticks <= 0) {
+            return false;
+        }
         living.addEffect(new MobEffectInstance(ModEffects.SHACKLED, ticks, 0, false, true, true), source);
         living.setDeltaMovement(0, Math.min(0, living.getDeltaMovement().y), 0);
         living.hurtMarked = true;

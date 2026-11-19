@@ -93,7 +93,7 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
         if (distance > radius) {
             return;
         }
-        double force = strength * (0.35 + 0.65 * (1.0 - distance / radius));
+        double force = strength * com.soulinchains.arcaneartifacts.necro.Pvp.vortex(entity) * (0.35 + 0.65 * (1.0 - distance / radius));
         Vec3 motion = distance > 0.2 ? toCenter.normalize().scale(force) : Vec3.ZERO;
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.6).add(motion));
         entity.hurtMarked = true;

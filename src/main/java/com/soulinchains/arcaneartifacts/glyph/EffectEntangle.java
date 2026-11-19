@@ -53,6 +53,10 @@ public class EffectEntangle extends AreaEffect {
 
     /** Vines grab the creature: Entangled for the given time. */
     public static void entangle(ServerLevel level, LivingEntity living, int ticks, @Nullable LivingEntity source) {
+        ticks = com.soulinchains.arcaneartifacts.necro.Pvp.holdTicks(living, ticks);
+        if (ticks <= 0) {
+            return;
+        }
         living.addEffect(new MobEffectInstance(ModEffects.ENTANGLED, ticks, 0, false, true, true), source);
         living.setDeltaMovement(0, Math.min(0, living.getDeltaMovement().y), 0);
         level.sendParticles(ParticleTypes.COMPOSTER, living.getX(), living.getY() + 0.3, living.getZ(), 24, 0.4, 0.4, 0.4, 0.02);
