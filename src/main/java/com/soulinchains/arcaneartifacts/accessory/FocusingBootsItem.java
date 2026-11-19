@@ -25,7 +25,12 @@ import java.util.List;
  */
 public class FocusingBootsItem extends ArcaneAccessoryItem implements ICasterTool {
     public FocusingBootsItem() {
-        super(new Item.Properties().rarity(Rarity.RARE).component(DataComponentRegistry.SPELL_CASTER, new SpellCaster()), 3);
+        super(new Item.Properties().rarity(Rarity.RARE).component(DataComponentRegistry.SPELL_CASTER, new SpellCaster()), 4);
+    }
+
+    @Override
+    protected int manaDiscount() {
+        return 10;
     }
 
     public static Spell storedSpell(ItemStack stack) {

@@ -31,6 +31,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import com.hollingsworth.arsnouveau.common.entity.pathfinding.MinecoloniesAdvancedPathNavigate;
+import com.hollingsworth.arsnouveau.common.entity.pathfinding.PathingStuckHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -149,6 +151,30 @@ public class Catto extends Cat {
         builder.define(DATA_MAX_SOURCE, 500);
         builder.define(DATA_COAT, (byte) 0);
         builder.define(DATA_SPEECH, Component.empty());
+    }
+
+    /**
+     * Catto walks with the Ars Nouveau (MineColonies) navigator, like a Starbuncle: paths are worked out on a worker
+     * thread, go through doors, over ladders and through water, and a Catto stuck for good is teleported along its path.
+     */
+    @Override
+    protected net.minecraft.world.entity.ai.navigation.PathNavigation createNavigation(Level level) {
+        MinecoloniesAdvancedPathNavigate nav = new MinecoloniesAdvancedPathNavigate(this, level);
+        nav.setCanFloat(true);
+        nav.setSwimSpeedFactor(2.0);
+        nav.getPathingOptions().setEnterDoors(true);
+        nav.getPathingOptions().setCanOpenDoors(true);
+        nav.getPathingOptions().setCanFitInOneCube(true);
+        nav.setStuckHandler(PathingStuckHandler.createStuckHandler().withTeleportOnFullStuck().withTeleportSteps(5));
+        return nav;
+    }
+
+    @Override
+    public MinecoloniesAdvancedPathNavigate getNavigation() {
+        if (!(navigation instanceof MinecoloniesAdvancedPathNavigate)) {
+            navigation = createNavigation(level());
+        }
+        return (MinecoloniesAdvancedPathNavigate) navigation;
     }
 
     @Override

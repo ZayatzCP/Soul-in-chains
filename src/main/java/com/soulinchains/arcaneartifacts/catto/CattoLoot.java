@@ -43,7 +43,8 @@ public final class CattoLoot {
 
     /** The next chore, or null when there is nothing to do. */
     @Nullable
-    static Step chore(Catto cat, CattoBrain brain) {
+    /** The nearest loose item Catto wants, or null. */
+    static Step pickup(Catto cat, CattoBrain brain) {
         int radius = cat.nature().pickupRadius() + (cat.moduleActive(CattoModule.MAGNET_WHISKER) ? 4 : 0);
         ItemEntity best = null;
         double bestDist = Double.MAX_VALUE;
@@ -58,26 +59,36 @@ public final class CattoLoot {
                 best = item;
             }
         }
-        if (best != null) {
-            Step step = new Step(Step.Kind.PICKUP, best.blockPosition());
-            step.entity = best;
-            step.reach = 1.3;
-            step.accuracy = 0;
-            step.workTicks = 2;
-            return step;
+        if (best == null) {
+            return null;
         }
-        // Junk goes to the main storage.
+        Step step = new Step(Step.Kind.PICKUP, best.blockPosition());
+        step.entity = best;
+        step.reach = 1.3;
+        step.accuracy = 0;
+        step.workTicks = 2;
+        return step;
+    }
+
+    /** A trip to put the junk from the bag into the main storage, or null. */
+    static Step junkRun(Catto cat) {
         Predicate<ItemStack> junk = s -> !needed(cat, s);
-        if (!cat.storages.isEmpty() && CattoWorld.bagCount(cat, junk) > 0) {
-            BlockPos storage = CattoWorld.storageFor(cat, junk);
-            if (storage != null) {
-                Step step = new Step(Step.Kind.PUT, storage);
-                step.filter = junk;
-                step.reach = 2.5;
-                step.workTicks = 8;
-                return step;
-            }
+        if (cat.storages.isEmpty() || CattoWorld.bagCount(cat, junk) <= 0) {
+            return null;
         }
+        BlockPos storage = CattoWorld.storageFor(cat, junk);
+        if (storage == null) {
+            return null;
+        }
+        Step step = new Step(Step.Kind.PUT, storage);
+        step.filter = junk;
+        step.reach = 2.5;
+        step.workTicks = 8;
+        return step;
+    }
+
+    /** A fishing trip, or null. */
+    static Step fish(Catto cat, CattoBrain brain) {
         return fishing(cat, brain);
     }
 

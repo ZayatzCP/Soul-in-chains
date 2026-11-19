@@ -37,9 +37,15 @@ import java.util.List;
  * Like an Ars Nouveau wand, an inscribed spell without a form is cast as a Projectile, so the
  * "default form" of the gloves is Projectile; a spell that starts with its own form keeps it.
  */
-public class FocusingGlovesItem extends ModItem implements ICasterTool {
+public class FocusingGlovesItem extends ModItem implements ICasterTool, com.hollingsworth.arsnouveau.api.mana.IManaDiscountEquipment {
     public FocusingGlovesItem() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).component(DataComponentRegistry.SPELL_CASTER, new SpellCaster()));
+    }
+
+    /** Casting through the gloves costs 10 mana less (Ars Nouveau counts the casting tool's discount). */
+    @Override
+    public int getManaDiscount(ItemStack stack, com.hollingsworth.arsnouveau.api.spell.Spell spell) {
+        return 10;
     }
 
     public static Spell storedSpell(ItemStack stack) {
@@ -101,7 +107,7 @@ public class FocusingGlovesItem extends ModItem implements ICasterTool {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 4; i++) {
             tooltip.add(Component.translatable(getDescriptionId() + ".desc." + i).withStyle(ChatFormatting.GRAY));
         }
         Spell stored = storedSpell(stack);

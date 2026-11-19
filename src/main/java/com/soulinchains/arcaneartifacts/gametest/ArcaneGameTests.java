@@ -1206,4 +1206,24 @@ public final class ArcaneGameTests {
         helper.assertTrue(focus != null && focus.getAmplifier() == 1, "Standing still 4 seconds in the poncho must give Duel Focus II, got " + focus);
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void accessoriesGiveArsManaAttributes(GameTestHelper helper) {
+        Player player = player(helper, 4.5, 1, 4.5);
+        var context = new top.theillusivec4.curios.api.SlotContext("head", player, 0, false, true);
+        var id = ArcaneArtifacts.id("test_wreath");
+        var wreath = ModItems.WREATH_OF_MANIPULATION.get().getAttributeModifiers(context, id, new ItemStack(ModItems.WREATH_OF_MANIPULATION.get()));
+        helper.assertTrue(wreath.get(com.hollingsworth.arsnouveau.api.perk.PerkAttributes.MAX_MANA).stream().anyMatch(m -> m.amount() == 100),
+                "The wreath must add 100 to Ars max mana, got " + wreath);
+        var cosmetic = new top.theillusivec4.curios.api.SlotContext("head", player, 0, true, true);
+        helper.assertTrue(ModItems.WREATH_OF_MANIPULATION.get().getAttributeModifiers(cosmetic, id, new ItemStack(ModItems.WREATH_OF_MANIPULATION.get())).isEmpty(),
+                "A cosmetic wreath must not add mana");
+        var calm = ModItems.RING_OF_CALM.get().getAttributeModifiers(context, id, new ItemStack(ModItems.RING_OF_CALM.get()));
+        helper.assertTrue(calm.get(com.hollingsworth.arsnouveau.api.perk.PerkAttributes.MANA_REGEN_BONUS).stream().anyMatch(m -> m.amount() == 2.0),
+                "The ring of calm must add 2 Ars mana regen, got " + calm);
+        var spell = new com.hollingsworth.arsnouveau.api.spell.Spell();
+        int discount = com.hollingsworth.arsnouveau.api.util.ManaUtil.getPlayerDiscounts(player, spell, new ItemStack(ModItems.FOCUSING_GLOVES.get()));
+        helper.assertTrue(discount == 10, "Casting through focusing gloves must be 10 mana cheaper, got " + discount);
+        helper.succeed();
+    }
 }

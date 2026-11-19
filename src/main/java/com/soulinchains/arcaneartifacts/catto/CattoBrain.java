@@ -17,6 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
+import com.hollingsworth.arsnouveau.common.entity.pathfinding.MinecoloniesAdvancedPathNavigate;
+import com.hollingsworth.arsnouveau.common.entity.pathfinding.PathResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -140,7 +142,19 @@ public final class CattoBrain {
     @Nullable
     private ServerPlayer listener;
     private int talkTicks;
-    private int choreCooldown;
+    /**
+     * Idle chores are chosen like a Starbuncle chooses its work: by priority, and each kind of chore that found nothing
+     * waits a random, growing while before it looks again, so Catto does not scan the world every tick.
+     */
+    private int pickupBackoff;
+    private int junkBackoff;
+    private int fishBackoff;
+    private int pickupGrow = 10;
+    private int junkGrow = 20;
+    private int fishGrow = 40;
+    /** The path being computed or followed by the Ars (MineColonies) navigator for the current step. */
+    @Nullable
+    private PathResult<?> pathResult;
     @Nullable
     private net.minecraft.world.entity.LivingEntity foe;
     @Nullable
@@ -164,7 +178,7 @@ public final class CattoBrain {
     /** For game test messages. */
     public String debug() {
         return "step=" + (step == null ? "none" : step.kind + (step.idle ? "(idle)" : "")) + " blacklist=" + blacklist.size()
-                + " stuck=" + stuckTicks + " chore=" + choreCooldown + " talk=" + talkTicks + " lastFail=" + lastFail;
+                + " stuck=" + stuckTicks + " backoff=" + pickupBackoff + "/" + junkBackoff + "/" + fishBackoff + " talk=" + talkTicks + " lastFail=" + lastFail;
     }
 
     private String lastFail = "";
@@ -240,6 +254,7 @@ public final class CattoBrain {
             cat.level().destroyBlockProgress(cat.getId(), step.pos, -1);
         }
         step = null;
+        pathResult = null;
         cat.getNavigation().stop();
     }
 
@@ -375,20 +390,71 @@ public final class CattoBrain {
             return;
         }
         // Between errands Catto looks after itself: picks up what is lying around, takes junk away, fishes.
-        if (--choreCooldown <= 0) {
-            choreCooldown = 20;
-            Step chore = CattoLoot.chore(cat, this);
-            if (chore != null) {
-                chore.idle = true;
-                step = chore;
-                state = State.TRAVEL;
-                pathCooldown = 0;
-                stuckTicks = 0;
-                lastDist = Double.MAX_VALUE;
-                return;
-            }
+        Step chore = decideChore();
+        if (chore != null) {
+            chore.idle = true;
+            step = chore;
+            state = State.TRAVEL;
+            pathCooldown = 0;
+            stuckTicks = 0;
+            lastDist = Double.MAX_VALUE;
+            pathResult = null;
+            return;
         }
         followOwner(cat.nature() == CattoNature.LAZY ? 8.0 : 6.0, cat.nature() == CattoNature.LAZY ? 0.9 : 1.1);
+    }
+
+    /**
+     * Priorities: a full bag goes to storage first, then loose items, then junk, then fishing. A branch that found
+     * nothing backs off for a random while that grows (up to a cap); one that found work resets its growth.
+     */
+    @Nullable
+    private Step decideChore() {
+        pickupBackoff--;
+        junkBackoff--;
+        fishBackoff--;
+        boolean full = CattoWorld.bagFull(cat);
+        if (full && junkBackoff <= 0) {
+            Step s = CattoLoot.junkRun(cat);
+            if (s != null) {
+                junkGrow = 20;
+                return s;
+            }
+            junkBackoff = backoff(junkGrow);
+            junkGrow = Math.min(200, junkGrow + 20);
+        }
+        if (!full && pickupBackoff <= 0) {
+            Step s = CattoLoot.pickup(cat, this);
+            if (s != null) {
+                pickupGrow = 10;
+                return s;
+            }
+            pickupBackoff = backoff(pickupGrow);
+            pickupGrow = Math.min(60, pickupGrow + 10);
+        }
+        if (!full && junkBackoff <= 0) {
+            Step s = CattoLoot.junkRun(cat);
+            if (s != null) {
+                junkGrow = 20;
+                return s;
+            }
+            junkBackoff = backoff(junkGrow);
+            junkGrow = Math.min(200, junkGrow + 20);
+        }
+        if (fishBackoff <= 0) {
+            Step s = CattoLoot.fish(cat, this);
+            if (s != null) {
+                fishGrow = 40;
+                return s;
+            }
+            fishBackoff = backoff(fishGrow);
+            fishGrow = Math.min(400, fishGrow + 40);
+        }
+        return null;
+    }
+
+    private int backoff(int base) {
+        return base + cat.getRandom().nextInt(Math.max(1, base / 2));
     }
 
     /** The owner started talking: stand still and listen for a while (renewed with every answer). */
@@ -459,6 +525,7 @@ public final class CattoBrain {
             return;
         }
         step = plan.step;
+        pathResult = null;
         state = State.TRAVEL;
         pathCooldown = 0;
         stuckTicks = 0;
@@ -490,15 +557,22 @@ public final class CattoBrain {
         if (!cat.onGround() && !cat.isInWater() && !cat.isInLava()) {
             return;
         }
-        if (--pathCooldown <= 0 || cat.getNavigation().isDone()) {
+        MinecoloniesAdvancedPathNavigate nav = cat.getNavigation();
+        double speed = cat.moduleActive(CattoModule.CAT_BOOTS) ? 1.3 : 1.0;
+        BlockPos goal = s.entity != null ? s.entity.blockPosition() : s.pos;
+        if (--pathCooldown <= 0 || pathResult == null || nav.isDone() && !pathResult.isComputing()) {
             pathCooldown = 20;
-            BlockPos goal = s.entity != null ? s.entity.blockPosition() : s.pos;
-            Path path = cat.getNavigation().createPath(goal, s.accuracy);
-            if (path == null || !path.canReach() && path.getDistToTarget() > s.reach + 0.5) {
+            // The Ars navigator works out the path on a worker thread; until it is ready Catto keeps its old one.
+            pathResult = nav.moveToXYZ(goal.getX() + 0.5, goal.getY(), goal.getZ() + 0.5, speed);
+        }
+        PathResult<?> result = pathResult;
+        if (result != null && result.isDone() && !result.isCancelled()) {
+            Path path = result.getPath();
+            if (path == null || result.failedToReachDestination() && endDistance(path, goal) > s.reach + 0.5) {
+                pathResult = null;
                 unreachable(s);
                 return;
             }
-            cat.getNavigation().moveTo(path, cat.moduleActive(CattoModule.CAT_BOOTS) ? 1.3 : 1.0);
         }
         if (dist >= lastDist - 0.02) {
             if (++stuckTicks > 120) {
@@ -510,11 +584,21 @@ public final class CattoBrain {
         lastDist = Math.min(lastDist, dist);
     }
 
+    /** How far the end of a path is from where Catto wanted to go. */
+    private static double endDistance(Path path, BlockPos goal) {
+        net.minecraft.world.level.pathfinder.Node end = path.getEndNode();
+        if (end == null) {
+            return Double.MAX_VALUE;
+        }
+        return Math.sqrt(end.asBlockPos().distSqr(goal));
+    }
+
     private void unreachable(Step s) {
         lastFail = s.kind + "@" + s.pos.toShortString() + " stuck=" + stuckTicks;
         if (s.blacklistOnFail) {
             blacklist(s.pos, s.idle ? 200 : 1200);
         }
+        pathResult = null;
         cat.getNavigation().stop();
         step = null;
         state = s.idle ? State.IDLE : State.PLAN;

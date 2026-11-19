@@ -36,6 +36,11 @@ public class DruidGearItem extends ArcaneAccessoryItem {
         this.piece = piece;
     }
 
+    @Override
+    protected double manaRegenBonus() {
+        return 1.0;
+    }
+
     public Piece piece() {
         return piece;
     }

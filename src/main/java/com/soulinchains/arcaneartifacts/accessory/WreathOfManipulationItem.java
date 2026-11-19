@@ -35,6 +35,11 @@ public class WreathOfManipulationItem extends ArcaneAccessoryItem {
         super(new Item.Properties().rarity(Rarity.EPIC).component(ModComponents.RUSH_STATE, RushState.EMPTY), 3);
     }
 
+    @Override
+    protected int maxManaBonus() {
+        return 100;
+    }
+
     public static RushState state(ItemStack stack) {
         return stack.getOrDefault(ModComponents.RUSH_STATE, RushState.EMPTY);
     }

@@ -8,4 +8,9 @@ public class MantleOfReflectionItem extends ArcaneAccessoryItem {
     public MantleOfReflectionItem() {
         super(new Item.Properties().rarity(Rarity.EPIC), 3);
     }
+
+    @Override
+    protected int maxManaBonus() {
+        return 50;
+    }
 }

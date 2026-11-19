@@ -39,6 +39,16 @@ public class AmuletOfOppositesItem extends ArcaneAccessoryItem {
         super(new Item.Properties().rarity(Rarity.RARE).component(ModComponents.REPELLING, false), 2);
     }
 
+    @Override
+    protected int maxManaBonus() {
+        return 50;
+    }
+
+    @Override
+    protected double manaRegenBonus() {
+        return 1.0;
+    }
+
     public static boolean isRepelling(ItemStack stack) {
         return stack.getOrDefault(ModComponents.REPELLING, false);
     }

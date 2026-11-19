@@ -12,4 +12,9 @@ public class RingOfReversalItem extends ArcaneAccessoryItem {
     public RingOfReversalItem() {
         super(new Item.Properties().rarity(Rarity.RARE), 3);
     }
+
+    @Override
+    protected double manaRegenBonus() {
+        return 1.0;
+    }
 }

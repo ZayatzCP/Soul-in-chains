@@ -47,6 +47,11 @@ public class RingOfCalmItem extends ArcaneAccessoryItem {
     }
 
     @Override
+    protected double manaRegenBonus() {
+        return 2.0;
+    }
+
+    @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         LivingEntity wearer = slotContext.entity();
         if (wearer.level().isClientSide || slotContext.cosmetic() || !(wearer instanceof Player player) || player.tickCount % 10 != 0) {

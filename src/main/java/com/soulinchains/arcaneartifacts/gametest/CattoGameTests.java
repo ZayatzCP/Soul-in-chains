@@ -306,4 +306,13 @@ public final class CattoGameTests {
         helper.assertTrue(broom.nearGround(), "Two blocks over the floor the broom should fly for free");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void cattoWalksWithArsNavigator(GameTestHelper helper) {
+        Catto cat = catto(helper, new BlockPos(4, 2, 4));
+        helper.assertTrue(cat.getNavigation() instanceof com.hollingsworth.arsnouveau.common.entity.pathfinding.MinecoloniesAdvancedPathNavigate,
+                "Catto must use the Ars Nouveau navigator, got " + cat.getNavigation().getClass().getSimpleName());
+        helper.assertTrue(cat.getNavigation().getPathingOptions().canOpenDoors(), "Catto must be able to open doors");
+        helper.succeed();
+    }
 }
