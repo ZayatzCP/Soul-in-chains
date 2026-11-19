@@ -30,7 +30,10 @@ public final class ArcaneGlyphs {
             EffectFear.INSTANCE,
             EffectEntangle.INSTANCE,
             EffectGrove.INSTANCE,
-            EffectBeeSwarm.INSTANCE
+            EffectBeeSwarm.INSTANCE,
+            com.soulinchains.arcaneartifacts.necro.MethodChain.INSTANCE,
+            com.soulinchains.arcaneartifacts.necro.EffectShackle.INSTANCE,
+            com.soulinchains.arcaneartifacts.necro.EffectReap.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */

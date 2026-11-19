@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " C ",
+    "ISI",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:soul_lantern"
+    },
+    "B": {
+      "item": "ars_nouveau:source_gem"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:soul_lantern"
+  }
+}

@@ -59,6 +59,11 @@ public final class ModEffects {
 
     /** Mycelinoid spores: sneezing every 2.5 seconds, passed on to other monsters nearby. */
     /** Entangled (the Druid's glyph): cannot walk or jump. */
+    public static final DeferredHolder<MobEffect, MobEffect> SHACKLED = REGISTER.register("shackled",
+            com.soulinchains.arcaneartifacts.necro.ShackledEffect::new);
+    public static final DeferredHolder<MobEffect, MobEffect> REAP_MARK = REGISTER.register("reap_mark",
+            () -> new MobEffect(net.minecraft.world.effect.MobEffectCategory.NEUTRAL, 0x5DE2E7) {
+            });
     public static final DeferredHolder<MobEffect, MobEffect> ENTANGLED = REGISTER.register("entangled",
             com.soulinchains.arcaneartifacts.effect.RootedEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> SPORE_INFECTION = REGISTER.register("spore_infection",

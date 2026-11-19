@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:villager",
+    "minecraft:wandering_trader",
+    "minecraft:allay",
+    {
+      "id": "arcane_artifacts:gribushka",
+      "required": false
+    },
+    {
+      "id": "arcane_artifacts:elder_mycelinoid",
+      "required": false
+    }
+  ]
+}

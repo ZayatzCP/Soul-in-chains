@@ -1,0 +1,55 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:chain",
+  "sort": 400,
+  "subjects": [
+    "minecraft:chain",
+    "minecraft:soul_sand",
+    "minecraft:bone"
+  ],
+  "properties": [
+    "bound",
+    "spectral"
+  ],
+  "experiments": [
+    {
+      "id": "harm",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_harm",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "snare",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_snare",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "wither",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:effect_applied",
+          "effect": "minecraft:wither"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:soul_lantern",
+    "arcane_artifacts:chain_sickle"
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_chain",
+    "arcane_artifacts:glyph_shackle",
+    "arcane_artifacts:glyph_reap"
+  ]
+}

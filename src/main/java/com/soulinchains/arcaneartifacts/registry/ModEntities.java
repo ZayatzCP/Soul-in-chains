@@ -21,6 +21,19 @@ public final class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(ArcaneArtifacts.MODID + ":arcane_missile"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.SoulWisp>> SOUL_WISP = REGISTER.register("soul_wisp",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.necro.SoulWisp>of(com.soulinchains.arcaneartifacts.necro.SoulWisp::new, MobCategory.MISC)
+                    .sized(0.4F, 0.4F).noSave().fireImmune().clientTrackingRange(8).updateInterval(2)
+                    .build(ArcaneArtifacts.MODID + ":soul_wisp"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.ChainBolt>> CHAIN_BOLT = REGISTER.register("chain_bolt",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.necro.ChainBolt>of(com.soulinchains.arcaneartifacts.necro.ChainBolt::new, MobCategory.MISC)
+                    .sized(0.3F, 0.3F).noSave().fireImmune().clientTrackingRange(8).updateInterval(1).setShouldReceiveVelocityUpdates(true)
+                    .build(ArcaneArtifacts.MODID + ":chain_bolt"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.ShackleAnchor>> SHACKLE_ANCHOR = REGISTER.register("shackle_anchor",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.necro.ShackleAnchor>of(com.soulinchains.arcaneartifacts.necro.ShackleAnchor::new, MobCategory.MISC)
+                    .sized(0.2F, 0.2F).noSave().fireImmune().clientTrackingRange(8).updateInterval(10)
+                    .build(ArcaneArtifacts.MODID + ":shackle_anchor"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Mudzya>> MUDZYA = REGISTER.register("mudzya",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Mudzya::new, MobCategory.CREATURE)
                     .sized(0.55F, 0.65F).clientTrackingRange(8).build(ArcaneArtifacts.MODID + ":mudzya"));

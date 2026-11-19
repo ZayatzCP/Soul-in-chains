@@ -31,6 +31,8 @@ public final class ModCreativeTab {
                 output.accept(ModItems.FLYING_BROOM.get());
                 output.accept(ModItems.CRYSTAL_BALL.get());
                 output.accept(ModItems.BOTTOMLESS_BELT.get());
+                output.accept(ModItems.SOUL_LANTERN.get());
+                output.accept(ModItems.CHAIN_SICKLE.get());
                 output.accept(ModItems.AMULET_OF_OPPOSITES.get());
                 output.accept(ModItems.RING_OF_CALM.get());
                 output.accept(ModItems.HOP_SLIPPERS.get());

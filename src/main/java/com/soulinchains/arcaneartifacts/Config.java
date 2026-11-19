@@ -61,6 +61,11 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue BLACK_HOLE_DAMAGE;
     public static final ModConfigSpec.DoubleValue TORNADO_RADIUS;
     public static final ModConfigSpec.IntValue TORNADO_SECONDS;
+    public static final ModConfigSpec.DoubleValue SOUL_CHANCE;
+    public static final ModConfigSpec.IntValue SOUL_WISP_SECONDS;
+    public static final ModConfigSpec.IntValue SOUL_LANTERN_CAPACITY;
+    public static final ModConfigSpec.DoubleValue CHAIN_RANGE;
+    public static final ModConfigSpec.IntValue SICKLE_COOLDOWN_TICKS;
     public static final ModConfigSpec.IntValue WEATHER_SECONDS;
     public static final ModConfigSpec.IntValue COUNTERSPELL_SILENCE_SECONDS;
     public static final ModConfigSpec.DoubleValue COUNTERSPELL_RADIUS;
@@ -198,6 +203,15 @@ public final class Config {
 
         b.push("pseudomage");
         MANA_TANK_CAPACITY = b.comment("Source held by one Mana Tank block.").defineInRange("mana_tank_capacity", 10000, 100, 1000000);
+        b.pop();
+
+        b.push("necro");
+        SOUL_CHANCE = b.comment("Chance that a mob killed by a player leaves a soul (the Chain Sickle, the Ritual Dagger and Reap always do).")
+                .defineInRange("soul_chance", 0.35, 0.0, 1.0);
+        SOUL_WISP_SECONDS = b.defineInRange("soul_wisp_seconds", 8, 1, 120);
+        SOUL_LANTERN_CAPACITY = b.defineInRange("soul_lantern_capacity", 10, 1, 1000);
+        CHAIN_RANGE = b.comment("How far a thrown chain flies (Chain Sickle, Chain form).").defineInRange("chain_range", 12.0, 2.0, 64.0);
+        SICKLE_COOLDOWN_TICKS = b.defineInRange("sickle_cooldown_ticks", 40, 0, 1200);
         b.pop();
 
         b.push("research");

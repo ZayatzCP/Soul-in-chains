@@ -18,6 +18,11 @@ public final class ModComponents {
             REGISTER.registerComponentType("belt_contents", b -> b.persistent(com.soulinchains.arcaneartifacts.belt.BeltContents.CODEC)
                     .networkSynchronized(com.soulinchains.arcaneartifacts.belt.BeltContents.STREAM_CODEC));
 
+    /** Souls kept in a Soul Lantern. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.soulinchains.arcaneartifacts.necro.SoulStore>> SOUL_STORE =
+            REGISTER.registerComponentType("soul_store", b -> b.persistent(com.soulinchains.arcaneartifacts.necro.SoulStore.CODEC)
+                    .networkSynchronized(com.soulinchains.arcaneartifacts.necro.SoulStore.STREAM_CODEC));
+
     /** Polarity of the Amulet of Opposites: true = repels. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> REPELLING =
             REGISTER.registerComponentType("repelling", b -> b.persistent(com.mojang.serialization.Codec.BOOL)

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wolf",
+    "minecraft:polar_bear",
+    "minecraft:hoglin",
+    "minecraft:zoglin",
+    "minecraft:cave_spider",
+    "minecraft:ravager"
+  ]
+}

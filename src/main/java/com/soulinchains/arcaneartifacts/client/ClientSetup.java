@@ -36,6 +36,9 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.SPORE_CLOUD.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.CRYSTAL_ORB.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.8F, true));
         event.registerEntityRenderer(com.soulinchains.arcaneartifacts.catto.CattoContent.CATTO.get(), com.soulinchains.arcaneartifacts.client.catto.CattoRenderer::new);
+        event.registerEntityRenderer(ModEntities.SOUL_WISP.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(ModEntities.CHAIN_BOLT.get(), com.soulinchains.arcaneartifacts.client.necro.ChainBoltRenderer::new);
+        event.registerEntityRenderer(ModEntities.SHACKLE_ANCHOR.get(), com.soulinchains.arcaneartifacts.client.necro.ShackleAnchorRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
     }
 
