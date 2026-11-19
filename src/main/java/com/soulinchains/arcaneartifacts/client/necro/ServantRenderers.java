@@ -71,8 +71,8 @@ public final class ServantRenderers {
                            float partial, float age, float headYaw, float headPitch) {
             poseStack.pushPose();
             poseStack.scale(1.04F, 1.02F, 1.04F);
-            getParentModel().renderToBuffer(poseStack, buffers.getBuffer(RenderType.entityTranslucent(texture(servant.kind))),
-                    light, OverlayTexture.NO_OVERLAY, tint(servant.kind));
+            getParentModel().renderToBuffer(poseStack, buffers.getBuffer(RenderType.entityTranslucent(texture(servant.kind()))),
+                    light, OverlayTexture.NO_OVERLAY, tint(servant.kind()));
             poseStack.popPose();
         }
     }
@@ -97,12 +97,12 @@ public final class ServantRenderers {
 
         @Override
         public ResourceLocation getTextureLocation(Servant servant) {
-            return texture(servant.kind);
+            return texture(servant.kind());
         }
 
         @Override
         protected void scale(Servant servant, PoseStack poseStack, float partial) {
-            float s = ServantRenderers.scale(servant.kind);
+            float s = ServantRenderers.scale(servant.kind());
             poseStack.scale(s, s, s);
         }
 
@@ -122,7 +122,7 @@ public final class ServantRenderers {
 
         @Override
         public ResourceLocation getTextureLocation(Servant servant) {
-            return texture(servant.kind);
+            return texture(servant.kind());
         }
 
         @Override

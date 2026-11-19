@@ -71,7 +71,8 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     /** Servants per master in each loaded level (for limits and the mana reserve). */
     private static final Map<UUID, Set<Servant>> BY_OWNER = new HashMap<>();
 
-    public final ServantKind kind;
+    /** Looked up from the entity type: goals are registered inside the Mob constructor, before fields are set. */
+    private ServantKind kindCache;
     @Nullable
     private UUID ownerId;
     @Nullable
@@ -81,9 +82,25 @@ public class Servant extends PathfinderMob implements OwnableEntity {
 
     public Servant(EntityType<? extends Servant> type, Level level, ServantKind kind) {
         super(type, level);
-        this.kind = kind;
+        kindCache = kind;
         setPersistenceRequired();
         xpReward = 0;
+    }
+
+    public ServantKind kind() {
+        if (kindCache == null) {
+            kindCache = kindOf(getType());
+        }
+        return kindCache;
+    }
+
+    public static ServantKind kindOf(EntityType<?> type) {
+        for (var entry : com.soulinchains.arcaneartifacts.registry.ModEntities.SERVANTS.entrySet()) {
+            if (entry.getValue().get() == type) {
+                return entry.getKey();
+            }
+        }
+        return ServantKind.SKELETON;
     }
 
     public static AttributeSupplier.Builder createAttributes(ServantKind kind) {
@@ -106,7 +123,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        if (kind.fights()) {
+        if (kind().fights()) {
             goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.25, true));
         } else {
             goalSelector.addGoal(2, new CollectLootGoal(this));
@@ -114,7 +131,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
         goalSelector.addGoal(4, new StayWithMasterGoal(this));
         goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(9, new RandomLookAroundGoal(this));
-        if (kind.fights()) {
+        if (kind().fights()) {
             targetSelector.addGoal(1, new DefendMasterGoal(this));
             targetSelector.addGoal(2, new AssistMasterGoal(this));
             targetSelector.addGoal(3, new HurtByTargetGoal(this).setAlertOthers());
@@ -226,7 +243,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     public static float reserveOf(UUID owner) {
         float sum = 0;
         for (Servant servant : of(owner)) {
-            sum += servant.kind.reserve;
+            sum += servant.kind().reserve;
         }
         return sum;
     }
@@ -264,12 +281,12 @@ public class Servant extends PathfinderMob implements OwnableEntity {
         ability(master);
     }
 
-    /** What each kind does on its own. */
+    /** What each kind() does on its own. */
     private void ability(ServerPlayer master) {
         if (abilityCooldown > 0) {
             return;
         }
-        switch (kind) {
+        switch (kind()) {
             case ASSASSIN -> {
                 LivingEntity target = getTarget();
                 if (target != null && target.isAlive() && distanceTo(target) < 16 && distanceTo(target) > 3) {
@@ -306,7 +323,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     public boolean doHurtTarget(Entity target) {
         boolean hit = super.doHurtTarget(target);
         if (hit && target instanceof LivingEntity living) {
-            switch (kind) {
+            switch (kind()) {
                 case HOUND -> living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1), this);
                 case KNIGHT -> living.igniteForSeconds(3.0F);
                 case PLAGUE_DOCTOR -> living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 80, 0), this);
@@ -332,8 +349,8 @@ public class Servant extends PathfinderMob implements OwnableEntity {
         level.playSound(null, blockPosition(), SoundEvents.SKELETON_DEATH, SoundSource.NEUTRAL, 0.8F, 0.6F);
         if (giveSoulBack) {
             LivingEntity master = getOwner();
-            if (!(master instanceof Player player) || !Souls.store(player, kind.keySoul())) {
-                Souls.spawnWisp(level, this, kind.keySoul());
+            if (!(master instanceof Player player) || !Souls.store(player, kind().keySoul())) {
+                Souls.spawnWisp(level, this, kind().keySoul());
             }
         }
         Containers.dropContents(level, blockPosition(), cargo);
@@ -353,12 +370,12 @@ public class Servant extends PathfinderMob implements OwnableEntity {
 
     @Override
     public boolean fireImmune() {
-        return kind.fireImmune || super.fireImmune();
+        return kind().fireImmune || super.fireImmune();
     }
 
     @Override
     public boolean canDrownInFluidType(net.neoforged.neoforge.fluids.FluidType type) {
-        return kind != ServantKind.ROWER && super.canDrownInFluidType(type);
+        return kind() != ServantKind.ROWER && super.canDrownInFluidType(type);
     }
 
     @Override
@@ -367,7 +384,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
 
     /** Gives the servant the look of its trade (never dropped). */
     public void dress() {
-        switch (kind) {
+        switch (kind()) {
             case KNIGHT -> setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
             case ASSASSIN -> setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.STONE_SWORD));
             case SKELETON -> setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.CHAIN));
@@ -388,13 +405,13 @@ public class Servant extends PathfinderMob implements OwnableEntity {
         if (!player.getUUID().equals(ownerId) || player.getItemInHand(hand).getItem() instanceof WardenRodItem) {
             return super.mobInteract(player, hand);
         }
-        if (kind == ServantKind.PORTER) {
+        if (kind() == ServantKind.PORTER) {
             if (!level().isClientSide) {
                 player.openMenu(new SimpleMenuProvider((id, inv, p) -> ChestMenu.threeRows(id, inv, cargo), getDisplayName()));
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
-        if (kind == ServantKind.ROWER && !isVehicle()) {
+        if (kind() == ServantKind.ROWER && !isVehicle()) {
             if (!level().isClientSide) {
                 player.startRiding(this);
             }
@@ -410,7 +427,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     @Override
     @Nullable
     public LivingEntity getControllingPassenger() {
-        return kind == ServantKind.ROWER && getFirstPassenger() instanceof Player player ? player : null;
+        return kind() == ServantKind.ROWER && getFirstPassenger() instanceof Player player ? player : null;
     }
 
     @Override
@@ -466,7 +483,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
 
     @Override
     public Component getTypeName() {
-        return Component.translatable("entity.arcane_artifacts." + kind.id);
+        return Component.translatable("entity.arcane_artifacts." + kind().id);
     }
 
     // ------------------------------------------------------------------ goals

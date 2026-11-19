@@ -73,7 +73,7 @@ public final class NecroGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = ARENA)
+    @GameTest(template = ARENA, batch = "necro_lantern")
     public static void soulLanternHoldsTenSouls(GameTestHelper helper) {
         Player player = playerWithLantern(helper);
         helper.runAfterDelay(2, () -> {
@@ -173,7 +173,7 @@ public final class NecroGameTests {
         }
     }
 
-    @GameTest(template = ARENA)
+    @GameTest(template = ARENA, batch = "necro_awakening")
     public static void awakeningMakesAnOverseer(GameTestHelper helper) {
         Player player = playerWithLantern(helper);
         helper.runAfterDelay(2, () -> {
@@ -189,7 +189,7 @@ public final class NecroGameTests {
         });
     }
 
-    @GameTest(template = ARENA)
+    @GameTest(template = ARENA, batch = "necro_raise")
     public static void raiseDeadSpendsSoulsAndHoldsMana(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = playerWithLantern(helper);
@@ -214,7 +214,7 @@ public final class NecroGameTests {
         });
     }
 
-    @GameTest(template = ARENA)
+    @GameTest(template = ARENA, batch = "necro_devour")
     public static void devourBurnsTheWeakestSoul(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         Player player = playerWithLantern(helper);

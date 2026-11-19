@@ -56,7 +56,7 @@ public class WardenRodItem extends Item {
         Set<Servant> servants = Servant.of(player.getUUID());
         int sent = 0;
         for (Servant servant : servants) {
-            if (servant.kind.fights() && servant.canAttack(target)) {
+            if (servant.kind().fights() && servant.canAttack(target)) {
                 servant.setTarget(target);
                 sent++;
             }
