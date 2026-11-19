@@ -73,6 +73,9 @@ public final class Config {
     public static final ModConfigSpec.IntValue SICKLE_COOLDOWN_TICKS;
     public static final ModConfigSpec.ConfigValue<java.util.List<? extends Integer>> SERVANT_LIMITS;
     public static final ModConfigSpec.IntValue SERVANT_TETHER;
+    public static final ModConfigSpec.DoubleValue SHIP_PULL_ACCELERATION;
+    public static final ModConfigSpec.DoubleValue SHIP_MAX_FORCE;
+    public static final ModConfigSpec.DoubleValue SHIP_BRAKE;
     public static final ModConfigSpec.DoubleValue SERVANT_MAX_RESERVE;
     public static final ModConfigSpec.IntValue WEATHER_SECONDS;
     public static final ModConfigSpec.IntValue COUNTERSPELL_SILENCE_SECONDS;
@@ -224,6 +227,12 @@ public final class Config {
                 .defineList("servant_limits", java.util.List.of(2, 3, 5), o -> o instanceof Integer i && i >= 0 && i <= 64);
         SERVANT_TETHER = b.comment("Servants farther than this from their master break their chain and crumble (their soul goes back to the lantern).")
                 .defineInRange("servant_tether", 24, 4, 256);
+        SHIP_PULL_ACCELERATION = b.comment("Create Aeronautics: how hard a chain pulls a ship (acceleration of a light ship, m/s^2).")
+                .defineInRange("ship_pull_acceleration", 6.0, 0.0, 100.0);
+        SHIP_MAX_FORCE = b.comment("Create Aeronautics: the strongest pull of one chain; heavy ships move slower. A shackle brakes with up to 3x this.")
+                .defineInRange("ship_max_force", 2500.0, 0.0, 1.0E7);
+        SHIP_BRAKE = b.comment("Create Aeronautics: how hard a shackle brakes a ship (share of its momentum removed per second).")
+                .defineInRange("ship_brake", 4.0, 0.0, 100.0);
         SERVANT_MAX_RESERVE = b.comment("At most this share of the master's maximum mana can be held by servants.")
                 .defineInRange("servant_max_reserve", 0.7, 0.0, 1.0);
         b.pop();

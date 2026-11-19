@@ -42,17 +42,47 @@ public class EffectShackle extends AreaEffect {
         super(ArcaneArtifacts.id("glyph_shackle"), "Shackle");
     }
 
+    /** On a block of a Create Aeronautics ship the chains anchor the ship. */
+    @Override
+    public void onResolve(net.minecraft.world.phys.HitResult hit, net.minecraft.world.level.Level world, @NotNull LivingEntity shooter, SpellStats stats,
+                          SpellContext context, com.hollingsworth.arsnouveau.api.spell.SpellResolver resolver) {
+        if (hit instanceof net.minecraft.world.phys.BlockHitResult block && world instanceof ServerLevel level) {
+            Vec3 inside = block.getLocation().subtract(Vec3.atLowerCornerOf(block.getDirection().getNormal()).scale(0.05));
+            var ship = com.soulinchains.arcaneartifacts.compat.ShipCompat.at(level, inside);
+            if (ship != null) {
+                anchorShip(level, ship, ticks(stats) * SHIP_TIME_FACTOR);
+                return;
+            }
+        }
+        super.onResolve(hit, world, shooter, stats, context, resolver);
+    }
+
+    /** Ships are held twice as long as creatures (they are braked, not frozen). */
+    public static final int SHIP_TIME_FACTOR = 2;
+
+    private static int ticks(SpellStats stats) {
+        return Math.max(20, BASE_TICKS + (int) Math.round(stats.getDurationMultiplier() * 20));
+    }
+
     @Override
     protected void resolveAt(ServerLevel level, Vec3 point, @Nullable Entity target, LivingEntity shooter, SpellStats stats, SpellContext context) {
-        int ticks = Math.max(20, BASE_TICKS + (int) Math.round(stats.getDurationMultiplier() * 20));
+        int ticks = ticks(stats);
         if (target instanceof LivingEntity living && living != shooter) {
             shackle(level, living, ticks, shooter);
+        } else if (target != null && com.soulinchains.arcaneartifacts.compat.ContraptionCompat.isContraption(target)) {
+            shackleContraption(level, target, ticks);
         }
         if (stats.getAoeMultiplier() > 0) {
             double radius = 1.5 + stats.getAoeMultiplier();
             for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(point, point).inflate(radius))) {
                 if (living != shooter && living != target) {
                     shackle(level, living, ticks, shooter);
+                }
+            }
+            for (Entity contraption : level.getEntities((Entity) null, new AABB(point, point).inflate(radius),
+                    com.soulinchains.arcaneartifacts.compat.ContraptionCompat::isContraption)) {
+                if (contraption != target) {
+                    shackleContraption(level, contraption, ticks);
                 }
             }
         }
@@ -82,6 +112,24 @@ public class EffectShackle extends AreaEffect {
         return true;
     }
 
+    /** A Create contraption stops (stalls) while the chains hold it: bearings, pistons, minecarts and trains alike. */
+    public static void shackleContraption(ServerLevel level, Entity contraption, int ticks) {
+        com.soulinchains.arcaneartifacts.compat.ContraptionCompat.freeze(contraption, ticks);
+        ShackleAnchor anchor = new ShackleAnchor(ModEntities.SHACKLE_ANCHOR.get(), level);
+        anchor.hold(contraption, ticks);
+        level.addFreshEntity(anchor);
+        level.playSound(null, contraption.blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 1.2F, 0.4F);
+    }
+
+    /** A ship gets an anchor: chains to the ground that brake it hard for a while. */
+    public static void anchorShip(ServerLevel level, com.soulinchains.arcaneartifacts.compat.ShipCompat.ShipPoint ship, int ticks) {
+        ShackleAnchor anchor = new ShackleAnchor(ModEntities.SHACKLE_ANCHOR.get(), level);
+        anchor.holdShip(ship, ticks);
+        level.addFreshEntity(anchor);
+        Vec3 at = ship.world();
+        level.playSound(null, at.x, at.y, at.z, SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.8F, 0.5F);
+    }
+
     @Override
     public int getDefaultManaCost() {
         return 30;
@@ -108,7 +156,7 @@ public class EffectShackle extends AreaEffect {
 
     @Override
     public String getBookDescription() {
-        return "Chains rise from the ground and hold the target on the spot for 3 seconds: it can neither walk, jump nor teleport. Bosses are held half as long, at most once every 20 seconds.";
+        return "Chains rise from the ground and hold the target on the spot for 3 seconds: it can neither walk, jump nor teleport. Bosses are held half as long, at most once every 20 seconds. A Create contraption stops; a Create Aeronautics ship is anchored for twice as long.";
     }
 
     @Override

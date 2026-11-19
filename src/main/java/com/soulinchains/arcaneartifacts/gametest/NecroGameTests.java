@@ -243,4 +243,14 @@ public final class NecroGameTests {
                 "8 damage must be split 4 / 4, got " + a.getHealth() + " / " + b.getHealth());
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void createCompatIsSilentWithoutCreate(GameTestHelper helper) {
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 2, 4));
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.compat.ContraptionCompat.isContraption(pig), "A pig is not a contraption");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.compat.ContraptionCompat.pullable(pig) == null, "Nothing to pull without Create");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.compat.ShipCompat.at(helper.getLevel(), helper.absoluteVec(new Vec3(4.5, 1.5, 4.5))) == null,
+                "Without Sable there are no ships");
+        helper.succeed();
+    }
 }

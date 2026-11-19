@@ -1,5 +1,8 @@
 package com.soulinchains.arcaneartifacts.necro;
 
+import com.soulinchains.arcaneartifacts.Config;
+import com.soulinchains.arcaneartifacts.compat.ContraptionCompat;
+import com.soulinchains.arcaneartifacts.compat.ShipCompat;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -7,17 +10,29 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 /**
- * The ground end of a Shackle: four chains run from it to the creature while it is held. It keeps the creature on the
- * spot (knockback cannot carry it away) and disappears when the hold ends. Not saved.
+ * The ground end of a Shackle: four chains run from it up to what it holds.
+ * <ul>
+ *     <li>A creature: kept on the spot (knockback cannot carry it away) while it is Shackled.</li>
+ *     <li>A Create contraption: kept stalled (its bearing, piston, minecart or train stops).</li>
+ *     <li>A Create Aeronautics ship: the chains brake it hard, like an anchor.</li>
+ * </ul>
+ * Disappears when the hold ends. Not saved.
  */
 public class ShackleAnchor extends Entity {
     private static final EntityDataAccessor<Integer> TARGET = SynchedEntityData.defineId(ShackleAnchor.class, EntityDataSerializers.INT);
+    /** Where the chains end (a ship point, followed as the ship moves). */
+    private static final EntityDataAccessor<Vector3f> TOP = SynchedEntityData.defineId(ShackleAnchor.class, EntityDataSerializers.VECTOR3);
     private int ticksLeft;
+    @Nullable
+    private ShipCompat.ShipPoint ship;
 
     public ShackleAnchor(EntityType<? extends ShackleAnchor> type, Level level) {
         super(type, level);
@@ -25,15 +40,27 @@ public class ShackleAnchor extends Entity {
         setNoGravity(true);
     }
 
-    public void hold(LivingEntity target, int ticks) {
+    /** Holds a creature or a contraption. */
+    public void hold(Entity target, int ticks) {
         entityData.set(TARGET, target.getId());
         setPos(target.position());
         ticksLeft = ticks;
     }
 
+    /** Anchors a ship: the anchor sits on the ground below the hooked point. */
+    public void holdShip(ShipCompat.ShipPoint point, int ticks) {
+        ship = point;
+        ticksLeft = ticks;
+        Vec3 top = point.world();
+        var hit = level().clip(new ClipContext(top.subtract(0, 1.5, 0), top.subtract(0, 24, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
+        setPos(hit.getType() == HitResult.Type.MISS ? top.subtract(0, 6, 0) : hit.getLocation());
+        entityData.set(TOP, top.toVector3f());
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(TARGET, -1);
+        builder.define(TOP, new Vector3f());
     }
 
     @Nullable
@@ -42,22 +69,55 @@ public class ShackleAnchor extends Entity {
         return id < 0 ? null : level().getEntity(id);
     }
 
+    /** The upper end of the chains, or null when nothing is held. */
+    @Nullable
+    public Vec3 top(float partial) {
+        Entity target = target();
+        if (target != null) {
+            return target.getPosition(partial).add(0, target.getBbHeight() * 0.5, 0);
+        }
+        Vector3f top = entityData.get(TOP);
+        return top.lengthSquared() == 0 ? null : new Vec3(top.x, top.y, top.z);
+    }
+
     @Override
     public void tick() {
         super.tick();
         if (level().isClientSide) {
             return;
         }
-        Entity target = target();
-        if (!(target instanceof LivingEntity living) || !living.isAlive() || ticksLeft-- <= 0
-                || !living.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.SHACKLED)) {
+        if (ticksLeft-- <= 0) {
             discard();
             return;
         }
-        Vec3 off = living.position().subtract(position());
-        if (off.horizontalDistanceSqr() > 0.25) {
-            living.setDeltaMovement(new Vec3(-off.x * 0.5, Math.min(0, living.getDeltaMovement().y), -off.z * 0.5));
-            living.hurtMarked = true;
+        if (ship != null) {
+            if (!ship.valid()) {
+                discard();
+                return;
+            }
+            ship.brake(Config.SHIP_BRAKE.get());
+            entityData.set(TOP, ship.world().toVector3f());
+            return;
+        }
+        Entity target = target();
+        if (target == null || !target.isAlive()) {
+            discard();
+            return;
+        }
+        if (target instanceof LivingEntity living) {
+            if (!living.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.SHACKLED)) {
+                discard();
+                return;
+            }
+            Vec3 off = living.position().subtract(position());
+            if (off.horizontalDistanceSqr() > 0.25) {
+                living.setDeltaMovement(new Vec3(-off.x * 0.5, Math.min(0, living.getDeltaMovement().y), -off.z * 0.5));
+                living.hurtMarked = true;
+            }
+        } else if (!ContraptionCompat.isFrozen(target)) {
+            discard();
+        } else {
+            setPos(target.position());
         }
     }
 

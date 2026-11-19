@@ -20,18 +20,19 @@ public class ShackleAnchorRenderer extends EntityRenderer<ShackleAnchor> {
 
     @Override
     public boolean shouldRender(ShackleAnchor anchor, Frustum frustum, double x, double y, double z) {
-        return anchor.target() != null;
+        return anchor.top(0) != null;
     }
 
     @Override
     public void render(ShackleAnchor anchor, float yaw, float partial, PoseStack poseStack, MultiBufferSource buffers, int light) {
-        Entity target = anchor.target();
-        if (target == null) {
+        Vec3 top = anchor.top(partial);
+        if (top == null) {
             return;
         }
+        Entity target = anchor.target();
         Vec3 here = anchor.getPosition(partial);
-        Vec3 body = target.getPosition(partial).add(0, target.getBbHeight() * 0.5, 0).subtract(here);
-        double spread = SPREAD + target.getBbWidth() * 0.5;
+        Vec3 body = top.subtract(here);
+        double spread = SPREAD + (target != null ? Math.min(3.0, target.getBbWidth() * 0.5) : 1.2);
         for (int i = 0; i < 4; i++) {
             double a = Math.PI / 4 + i * Math.PI / 2;
             Vec3 ground = new Vec3(Math.cos(a) * spread, 0.02, Math.sin(a) * spread);

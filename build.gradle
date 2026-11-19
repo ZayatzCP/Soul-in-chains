@@ -70,6 +70,16 @@ repositories {
         name = "Jared's maven (Ars Nouveau)"
         url = 'https://maven.blamejared.com/'
     }
+    // Sable (physics of Create Aeronautics ships): compile-only, for the optional ship compatibility.
+    exclusiveContent {
+        forRepository {
+            maven { url = 'https://maven.ryanhcode.dev/releases' }
+        }
+        filter {
+            includeGroup('dev.ryanhcode.sable')
+            includeGroup('dev.ryanhcode.sable-companion')
+        }
+    }
 }
 
 dependencies {
@@ -80,6 +90,9 @@ dependencies {
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
     implementation "com.hollingsworth.nuggets:nuggets-neoforge-1.21.1:${nuggets_version}"
+    // Optional: chains and shackles grab Create Aeronautics ships. Only touched when Sable is installed.
+    compileOnly("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") { transitive = false }
+    compileOnly("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:${sable_companion_version}") { transitive = false }
 }
 
 var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
