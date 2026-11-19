@@ -422,8 +422,7 @@ public final class ArcaneGameTests {
         Vec3 at = caster.position().add(1, 1, 0);
         projectile.setPos(at.x, at.y, at.z);
         level.addFreshEntity(projectile);
-        Phenomena.add(new Vortex(level, caster.getUUID(), Vortex.Kind.TORNADO, at, 3.0, 200, 0f, 1.0,
-                com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO).main, com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO).impact));
+        Phenomena.add(new com.soulinchains.arcaneartifacts.phenomena.Tornado(level, caster.getUUID(), at, tornadoSettings(3.0, 200)));
         int undone = EffectCounterspell.counter(level, caster.getUUID(), caster.position());
         helper.assertTrue(undone >= 2, "Counterspell undid " + undone + " spells, expected the projectile and the tornado");
         helper.assertTrue(projectile.isRemoved(), "Spell projectile survived Counterspell");
@@ -1225,5 +1224,75 @@ public final class ArcaneGameTests {
         int discount = com.hollingsworth.arsnouveau.api.util.ManaUtil.getPlayerDiscounts(player, spell, new ItemStack(ModItems.FOCUSING_GLOVES.get()));
         helper.assertTrue(discount == 10, "Casting through focusing gloves must be 10 mana cheaper, got " + discount);
         helper.succeed();
+    }
+
+    private static com.soulinchains.arcaneartifacts.phenomena.Tornado.Settings tornadoSettings(double radius, int ticks) {
+        var settings = new com.soulinchains.arcaneartifacts.phenomena.Tornado.Settings();
+        var style = com.soulinchains.arcaneartifacts.fx.Fx.defaults(com.soulinchains.arcaneartifacts.fx.ModTimelines.TORNADO);
+        settings.radius = radius;
+        settings.durationTicks = ticks;
+        settings.style = style.main;
+        settings.impact = style.impact;
+        return settings;
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void tornadoCarriesTheRestOfTheSpell(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Husk caster = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(1, 2, 1));
+        net.minecraft.world.entity.animal.Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(5, 2, 5));
+        Spell spell = new Spell(com.hollingsworth.arsnouveau.common.spell.method.MethodTouch.INSTANCE,
+                com.soulinchains.arcaneartifacts.glyph.EffectTornado.INSTANCE, com.hollingsworth.arsnouveau.common.spell.effect.EffectIgnite.INSTANCE);
+        SpellResolver resolver = new SpellResolver(new SpellContext(level, spell, caster, LivingCaster.from(caster)));
+        BlockPos floor = helper.absolutePos(new BlockPos(5, 1, 5));
+        resolver.onResolveEffect(level, new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(floor), net.minecraft.core.Direction.UP, floor, false));
+        var tornado = Phenomena.active().stream().filter(p -> p.owner().equals(caster.getUUID()))
+                .map(p -> (com.soulinchains.arcaneartifacts.phenomena.Tornado) p).findFirst().orElse(null);
+        helper.assertTrue(tornado != null, "Tornado did not start");
+        helper.assertTrue(tornado.element() == com.soulinchains.arcaneartifacts.phenomena.Tornado.Element.FIRE, "Ignite after the Tornado must make a fire tornado");
+        helper.assertTrue(!pig.isOnFire(), "Ignite must not happen at the point of impact as well (the Tornado carries it)");
+        helper.succeedWhen(() -> {
+            helper.assertTrue(pig.isOnFire(), "The tornado must cast Ignite on the pig it caught");
+            helper.assertTrue(!caster.isOnFire(), "The caster is never caught");
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void tornadoCarryingCostsMore(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Husk caster = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(1, 2, 1));
+        var touch = com.hollingsworth.arsnouveau.common.spell.method.MethodTouch.INSTANCE;
+        var tornado = com.soulinchains.arcaneartifacts.glyph.EffectTornado.INSTANCE;
+        var ignite = com.hollingsworth.arsnouveau.common.spell.effect.EffectIgnite.INSTANCE;
+        int plain = new SpellResolver(new SpellContext(level, new Spell(touch, tornado), caster, LivingCaster.from(caster))).getResolveCost();
+        int carrying = new SpellResolver(new SpellContext(level, new Spell(touch, tornado, ignite), caster, LivingCaster.from(caster))).getResolveCost();
+        int ignited = new SpellResolver(new SpellContext(level, new Spell(touch, ignite, tornado), caster, LivingCaster.from(caster))).getResolveCost();
+        helper.assertTrue(carrying - plain == com.soulinchains.arcaneartifacts.glyph.EffectTornado.CARRY_SURCHARGE + ignite.getCastingCost(),
+                "Carrying must cost the surcharge: plain " + plain + ", carrying " + carrying);
+        helper.assertTrue(ignited - plain == ignite.getCastingCost(), "Ignite before the Tornado is not carried and costs no surcharge, got " + ignited);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void sensitiveTornadoTearsOutBlocksButNotChests(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Husk caster = helper.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(1, 2, 1));
+        BlockPos chest = new BlockPos(4, 2, 4);
+        helper.setBlock(chest, net.minecraft.world.level.block.Blocks.CHEST);
+        for (int x = 2; x <= 6; x++) {
+            for (int z = 2; z <= 6; z++) {
+                if (x != 4 || z != 4) {
+                    helper.setBlock(new BlockPos(x, 2, z), net.minecraft.world.level.block.Blocks.DIRT);
+                }
+            }
+        }
+        var settings = tornadoSettings(3.0, 160);
+        settings.sensitive = true;
+        var tornado = new com.soulinchains.arcaneartifacts.phenomena.Tornado(level, caster.getUUID(), helper.absoluteVec(new Vec3(4.5, 3.0, 4.5)), settings);
+        Phenomena.add(tornado);
+        helper.succeedWhen(() -> {
+            helper.assertTrue(!tornado.lifted().isEmpty(), "The sensitive tornado must tear out some blocks");
+            helper.assertBlockPresent(net.minecraft.world.level.block.Blocks.CHEST, chest);
+        });
     }
 }

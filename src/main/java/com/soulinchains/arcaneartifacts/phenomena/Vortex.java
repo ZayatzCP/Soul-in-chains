@@ -15,17 +15,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 /**
- * A swirling vortex.
- * <ul>
- *     <li>{@link Kind#BLACK_HOLE}: pulls every entity (creatures, items, projectiles) toward its centre,
- *     harder the closer they are, and deals magic damage twice a second to creatures caught in the core.</li>
- *     <li>{@link Kind#TORNADO}: spins creatures and items around its axis and lifts them up; what it
- *     carries falls down when it ends.</li>
- * </ul>
+ * A swirling vortex ({@link Kind#BLACK_HOLE}): pulls every entity (creatures, items, projectiles) toward its centre,
+ * harder the closer they are, and deals magic damage twice a second to creatures caught in the core.
+ * The Tornado has its own phenomenon, {@link Tornado}.
  * The caster is never pulled (but is hurt by the core like anyone else), nor are spectators and creative players. Blocks are never broken.
  */
 public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
-    public enum Kind { BLACK_HOLE, TORNADO }
+    public enum Kind { BLACK_HOLE }
 
     private final ServerLevel level;
     private final UUID owner;
@@ -37,9 +33,6 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
     private final java.util.List<ParticleEmitter> emitters = new java.util.ArrayList<>();
     private final TimelineEntryData style;
     private final TimelineEntryData impact;
-    /** Tornado: progress (0..1 of the height) of each strand of the funnel, and where each strand is now. */
-    private final double[] strandProgress = new double[STRANDS];
-    private final Vec3[] strandPosition = new Vec3[STRANDS];
     private int ticksLeft;
     private int age;
 
@@ -55,17 +48,7 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
         this.strength = strength;
         this.style = style;
         this.impact = impact;
-        if (kind == Kind.TORNADO) {
-            // One tall funnel: STRANDS trails spiral from the ground to the top, again and again.
-            for (int i = 0; i < STRANDS; i++) {
-                final int strand = i;
-                strandProgress[i] = i / (double) STRANDS;
-                strandPosition[i] = funnelPoint(i, strandProgress[i]);
-                emitters.add(Fx.follow(style, () -> strandPosition[strand]));
-            }
-        } else {
-            emitters.add(Fx.follow(style, () -> center));
-        }
+        emitters.add(Fx.follow(style, () -> center));
     }
 
     @Override
@@ -94,16 +77,11 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
             return false;
         }
         age++;
-        AABB area = kind == Kind.TORNADO ? new AABB(center, center).inflate(radius, 1, radius).expandTowards(0, radius * 2.6, 0)
-                : new AABB(center, center).inflate(radius);
+        AABB area = new AABB(center, center).inflate(radius);
         @Nullable Entity caster = level.getEntity(owner);
         for (Entity entity : level.getEntities((Entity) null, area, e -> e.isAlive() && !e.getUUID().equals(owner) && !e.isSpectator()
                 && !(e instanceof Player p && p.getAbilities().instabuild))) {
-            if (kind == Kind.BLACK_HOLE) {
-                pull(entity, caster);
-            } else {
-                spin(entity);
-            }
+            pull(entity, caster);
         }
         particles();
         return true;
@@ -127,64 +105,12 @@ public final class Vortex implements Phenomena.Phenomenon, Phenomena.Located {
         }
     }
 
-    private void spin(Entity entity) {
-        Vec3 offset = entity.position().subtract(center);
-        Vec3 flat = new Vec3(offset.x, 0, offset.z);
-        double distance = flat.length();
-        if (distance > radius) {
-            return;
-        }
-        Vec3 tangent = distance > 0.1 ? new Vec3(-flat.z, 0, flat.x).normalize() : Vec3.ZERO;
-        Vec3 inward = distance > 0.1 ? flat.normalize().scale(-0.08) : Vec3.ZERO;
-        double lift = entity.getY() < center.y + radius * 2.2 ? 0.13 * strength + 0.06 : -0.02;
-        Vec3 motion = tangent.scale(0.45 * strength).add(inward).add(0, lift, 0);
-        entity.setDeltaMovement(entity.getDeltaMovement().scale(0.5).add(motion));
-        entity.hurtMarked = true;
-    }
-
     /**
      * Drawn with the glyph's Ars particle timeline (restylable in the spell book). The area stays marked
      * with the impact style. The black hole keeps its dark core (ink and reverse portal particles).
      */
-    private static final int STRANDS = 3;
-    private static final int STEPS_PER_TICK = 4;
-    private static final double SWEEP_STEPS = 44.0;
-    /** The funnel walls lean out at about 75 degrees from the ground: radius grows by cot(75) per block. */
-    private static final double WALL_SLOPE = 1.0 / Math.tan(Math.toRadians(75));
-
-    private double funnelHeight() {
-        return Math.max(4.0, radius * 2.2);
-    }
-
-    /** A point of strand {@code strand} at height fraction {@code t}: two full turns from bottom to top. */
-    private Vec3 funnelPoint(int strand, double t) {
-        double h = t * funnelHeight();
-        double r = 0.5 + h * WALL_SLOPE;
-        double angle = strand * (Math.PI * 2 / STRANDS) + t * Math.PI * 4 + age * 0.25;
-        return center.add(Math.cos(angle) * r, h, Math.sin(angle) * r);
-    }
-
-    private void tornadoParticles() {
-        for (int i = 0; i < STRANDS; i++) {
-            for (int step = 0; step < STEPS_PER_TICK; step++) {
-                strandProgress[i] += 1.0 / SWEEP_STEPS;
-                if (strandProgress[i] >= 1.0) {
-                    // Back to the ground: a fresh trail, so no line is drawn from the top down.
-                    strandProgress[i] -= 1.0;
-                    strandPosition[i] = funnelPoint(i, strandProgress[i]);
-                    final int strand = i;
-                    emitters.set(i, Fx.follow(style, () -> strandPosition[strand]));
-                }
-                strandPosition[i] = funnelPoint(i, strandProgress[i]);
-                emitters.get(i).tick(level);
-            }
-        }
-    }
-
     private void particles() {
-        if (kind == Kind.TORNADO) {
-            tornadoParticles();
-        } else if (age % 2 == 0) {
+        if (age % 2 == 0) {
             for (ParticleEmitter emitter : emitters) {
                 emitter.tick(level);
             }

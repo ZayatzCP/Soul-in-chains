@@ -38,9 +38,15 @@ public abstract class AreaEffect extends AbstractEffect {
         } else {
             point = hit.getLocation();
         }
-        resolveAt(server, point, target, shooter, stats, context);
+        resolveAt(server, point, target, shooter, stats, context, resolver);
     }
 
     protected abstract void resolveAt(ServerLevel level, Vec3 point, @Nullable net.minecraft.world.entity.Entity target,
                                       LivingEntity shooter, SpellStats stats, SpellContext context);
+
+    /** Same, for effects that need the resolver (to carry the rest of the spell, like Burst does). */
+    protected void resolveAt(ServerLevel level, Vec3 point, @Nullable net.minecraft.world.entity.Entity target,
+                             LivingEntity shooter, SpellStats stats, SpellContext context, SpellResolver resolver) {
+        resolveAt(level, point, target, shooter, stats, context);
+    }
 }
