@@ -39,6 +39,9 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.SOUL_WISP.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_BOLT.get(), com.soulinchains.arcaneartifacts.client.necro.ChainBoltRenderer::new);
         event.registerEntityRenderer(ModEntities.SHACKLE_ANCHOR.get(), com.soulinchains.arcaneartifacts.client.necro.ShackleAnchorRenderer::new);
+        event.registerEntityRenderer(ModEntities.RESTLESS.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.RestlessRenderer::new);
+        event.registerEntityRenderer(ModEntities.SOUL_EATER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.SoulEaterRenderer::new);
+        event.registerEntityRenderer(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.MournerRenderer::new);
         event.registerEntityRenderer(ModEntities.BOND_LINK.get(), com.soulinchains.arcaneartifacts.client.necro.BondLinkRenderer::new);
         ModEntities.SERVANTS.forEach((kind, type) -> {
             switch (kind) {

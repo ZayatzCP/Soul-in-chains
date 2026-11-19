@@ -1715,5 +1715,16 @@
   "arcane_artifacts.phylactery.saved": "Смерть отступает: филактерия рвёт вас обратно.",
   "item.arcane_artifacts.shackled_boots": "Сапоги Скованного",
   "item.arcane_artifacts.shackled_boots.desc.1": "Ноги. Тяжёлые: отбрасывает вдвое слабее, чужие цепи не могут вас притянуть.",
-  "item.arcane_artifacts.shackled_boots.desc.2": "На песке и почве душ и на кладбищенской земле вы бежите быстрее. Набор Скованного."
+  "item.arcane_artifacts.shackled_boots.desc.2": "На песке и почве душ и на кладбищенской земле вы бежите быстрее. Набор Скованного.",
+  "entity.arcane_artifacts.restless": "Неупокоенный",
+  "entity.arcane_artifacts.soul_eater": "Пожиратель душ",
+  "entity.arcane_artifacts.mourner": "Плакальщица",
+  "item.arcane_artifacts.restless_spawn_egg": "Яйцо призыва неупокоенного",
+  "item.arcane_artifacts.soul_eater_spawn_egg": "Яйцо призыва пожирателя душ",
+  "item.arcane_artifacts.mourner_spawn_egg": "Яйцо призыва плакальщицы",
+  "block.arcane_artifacts.grave": "Могила",
+  "item.arcane_artifacts.gravedigger_shovel": "Лопата могильщика",
+  "item.arcane_artifacts.gravedigger_shovel.desc.1": "ПКМ по могиле — раскопать: кости, старые безделушки, иногда душа… и иногда хозяин могилы.",
+  "arcane_artifacts.soul_eater.stole": "Пожиратель вырвал из Фонаря: %s!",
+  "arcane_artifacts.soul_eater.coming": "Кто-то голодный почуял ваши души…"
 }

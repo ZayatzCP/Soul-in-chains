@@ -40,6 +40,11 @@ public final class ModCreativeTab {
                 output.accept(ModItems.PHYLACTERY_AMULET.get());
                 output.accept(ModItems.SHACKLED_BOOTS.get());
                 output.accept(ModItems.RITUAL_DAGGER.get());
+                output.accept(ModItems.GRAVEDIGGER_SHOVEL.get());
+                output.accept(ModItems.GRAVE.get());
+                output.accept(ModItems.RESTLESS_SPAWN_EGG.get());
+                output.accept(ModItems.SOUL_EATER_SPAWN_EGG.get());
+                output.accept(ModItems.MOURNER_SPAWN_EGG.get());
                 output.accept(ModItems.SOUL_VESSEL.get());
                 output.accept(ModItems.CONSECRATED_SOIL.get());
                 output.accept(ModItems.DESECRATED_SOIL.get());

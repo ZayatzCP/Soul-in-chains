@@ -57,6 +57,70 @@ public final class NecroEvents {
         }
     }
 
+    /** A Shackled who dies with a full lantern: half the souls burst out as Restless (up to five). */
+    @SubscribeEvent
+    public static void onPlayerDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Player player) || !(player.level() instanceof net.minecraft.server.level.ServerLevel level)) {
+            return;
+        }
+        int total = Souls.total(player);
+        if (total < RELEASE_THRESHOLD) {
+            return;
+        }
+        int lost = total / 2;
+        int released = 0;
+        for (SoulType type : SoulType.values()) {
+            while (released < lost && Souls.take(player, type)) {
+                released++;
+            }
+        }
+        for (int i = 0; i < Math.min(released, 5); i++) {
+            var ghost = com.soulinchains.arcaneartifacts.registry.ModEntities.RESTLESS.get().create(level);
+            if (ghost != null) {
+                ghost.moveTo(player.getX() + level.random.nextGaussian(), player.getY() + 1, player.getZ() + level.random.nextGaussian(), 0, 0);
+                ghost.shortLived();
+                level.addFreshEntity(ghost);
+            }
+        }
+    }
+
+    public static final int RELEASE_THRESHOLD = 10;
+
+    /** At night a Soul Eater may come for a Shackled with Corruption 50 or more. */
+    @SubscribeEvent
+    public static void onPlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (!(player.level() instanceof net.minecraft.server.level.ServerLevel level) || player.tickCount % 200 != 0 || player.isCreative() || player.isSpectator()
+                || level.isDay() || Corruption.stage(player) < 2 || Souls.total(player) <= 0 || level.random.nextInt(EATER_CHANCE) != 0
+                || !level.getEntitiesOfClass(com.soulinchains.arcaneartifacts.necro.mob.SoulEater.class, player.getBoundingBox().inflate(64)).isEmpty()) {
+            return;
+        }
+        for (int attempt = 0; attempt < 10; attempt++) {
+            double angle = level.random.nextDouble() * Math.PI * 2;
+            double distance = 16 + level.random.nextInt(9);
+            int x = net.minecraft.util.Mth.floor(player.getX() + Math.cos(angle) * distance);
+            int z = net.minecraft.util.Mth.floor(player.getZ() + Math.sin(angle) * distance);
+            int y = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            if (Math.abs(y - player.getY()) > 12) {
+                continue;
+            }
+            var eater = com.soulinchains.arcaneartifacts.registry.ModEntities.SOUL_EATER.get().create(level);
+            if (eater == null) {
+                return;
+            }
+            eater.moveTo(x + 0.5, y, z + 0.5, level.random.nextFloat() * 360, 0);
+            if (level.noCollision(eater)) {
+                eater.setTarget(player);
+                level.addFreshEntity(eater);
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("arcane_artifacts.soul_eater.coming"), true);
+                return;
+            }
+        }
+    }
+
+    /** One in this many checks (every 10 seconds) at night brings a Soul Eater: about once per 25 minutes. */
+    public static final int EATER_CHANCE = 150;
+
     private static boolean splitting;
 
     @SubscribeEvent

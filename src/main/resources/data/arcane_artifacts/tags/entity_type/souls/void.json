@@ -3,6 +3,7 @@
   "values": [
     "minecraft:enderman",
     "minecraft:shulker",
-    "minecraft:endermite"
+    "minecraft:endermite",
+    "arcane_artifacts:soul_eater"
   ]
 }

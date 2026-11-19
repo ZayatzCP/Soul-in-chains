@@ -39,6 +39,16 @@ public final class ModEntities {
                     .sized(0.2F, 0.2F).noSave().fireImmune().clientTrackingRange(8).updateInterval(2)
                     .build(ArcaneArtifacts.MODID + ":bond_link"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.mob.Restless>> RESTLESS = REGISTER.register("restless",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.Restless::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.7F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":restless"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.mob.SoulEater>> SOUL_EATER = REGISTER.register("soul_eater",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.SoulEater::new, MobCategory.MONSTER)
+                    .sized(0.6F, 2.9F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":soul_eater"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.mob.Mourner>> MOURNER = REGISTER.register("mourner",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.Mourner::new, MobCategory.MONSTER)
+                    .sized(0.6F, 1.95F).clientTrackingRange(10).build(ArcaneArtifacts.MODID + ":mourner"));
+
     /** The Shackled's servants, one entity type per kind. */
     public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
             DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> SERVANTS = servants();

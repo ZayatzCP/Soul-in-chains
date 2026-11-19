@@ -22,6 +22,9 @@ public final class ModCommonEvents {
     @SubscribeEvent
     public static void attributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.MUDZYA.get(), Mudzya.createAttributes().build());
+        event.put(ModEntities.RESTLESS.get(), com.soulinchains.arcaneartifacts.necro.mob.Restless.createAttributes().build());
+        event.put(ModEntities.SOUL_EATER.get(), com.soulinchains.arcaneartifacts.necro.mob.SoulEater.createAttributes().build());
+        event.put(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.necro.mob.Mourner.createAttributes().build());
         ModEntities.SERVANTS.forEach((kind, type) -> event.put(type.get(), com.soulinchains.arcaneartifacts.necro.Servant.createAttributes(kind).build()));
         event.put(ModEntities.GRIBUSHKA.get(), Gribushka.createAttributes().build());
         event.put(ModEntities.AMANITOID.get(), com.soulinchains.arcaneartifacts.entity.Amanitoid.createAttributes().build());

@@ -355,4 +355,88 @@ public final class NecroGameTests {
             helper.succeed();
         });
     }
+
+    // ------------------------------------------------------------------ 1.28: crypts, graves, new enemies
+
+    @GameTest(template = ARENA)
+    public static void graveDigsOnce(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(4, 2, 4);
+        helper.setBlock(pos, com.soulinchains.arcaneartifacts.registry.ModBlocks.GRAVE.get());
+        BlockPos abs = helper.absolutePos(pos);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.GraveBlock.dig(helper.getLevel(), abs, null), "A fresh grave must be dug up");
+        helper.assertTrue(helper.getBlockState(pos).getValue(com.soulinchains.arcaneartifacts.necro.GraveBlock.DUG), "The grave must be dug now");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.necro.GraveBlock.dig(helper.getLevel(), abs, null), "A dug grave gives nothing more");
+        helper.assertTrue(!helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(abs).inflate(2)).isEmpty(),
+                "Digging must turn up something");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void restlessDrainsMana(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        var mana = com.hollingsworth.arsnouveau.setup.registry.CapabilityRegistry.getMana(player);
+        helper.assertTrue(mana != null, "The player must have Ars mana");
+        mana.setMaxMana(100);
+        mana.setMana(100);
+        var ghost = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.RESTLESS.get(), new BlockPos(4, 2, 4));
+        ghost.doHurtTarget(player);
+        helper.assertTrue(mana.getCurrentMana() <= 100 - com.soulinchains.arcaneartifacts.necro.mob.Restless.MANA_DRAIN + 1e-3,
+                "A Restless touch must drain mana, left " + mana.getCurrentMana());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, batch = "necro_eater")
+    public static void soulEaterStealsAndRepaysTwice(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            fill(player, SoulType.WANDERING, 2);
+            var eater = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.SOUL_EATER.get(), new BlockPos(4, 2, 4));
+            eater.doHurtTarget(player);
+            helper.assertTrue(Souls.total(player) == 1 && eater.stolen().size() == 1, "One hit must tear one soul out, left " + Souls.total(player));
+            eater.hurt(helper.getLevel().damageSources().genericKill(), 1000F);
+            helper.assertTrue(wisps(helper).size() == 2, "A slain Soul Eater gives back every stolen soul twice, got " + wisps(helper).size());
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void mournerWailsAndTearsAtServants(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var mourner = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.MOURNER.get(), new BlockPos(4, 2, 4));
+        var servant = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.SERVANTS
+                .get(com.soulinchains.arcaneartifacts.necro.ServantKind.SKELETON).get(), new BlockPos(6, 2, 4));
+        float before = servant.getHealth();
+        int called = mourner.wail(level);
+        helper.assertTrue(servant.getHealth() < before, "The wail must tear at servants");
+        helper.assertTrue(called >= 1, "The wail must call the dead out of the ground");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, batch = "necro_release")
+    public static void dyingWithAFullLanternReleasesRestless(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            fill(player, SoulType.WANDERING, 10);
+            player.hurt(helper.getLevel().damageSources().generic(), 1000F);
+            int ghosts = helper.getLevel().getEntitiesOfClass(com.soulinchains.arcaneartifacts.necro.mob.Restless.class,
+                    player.getBoundingBox().inflate(8)).size();
+            helper.assertTrue(ghosts == 5, "Ten souls lost: five Restless must burst out, got " + ghosts);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void cryptBuildsItsHall(GameTestHelper helper) {
+        BlockPos origin = helper.absolutePos(new BlockPos(4, 24, 4));
+        var box = new net.minecraft.world.level.levelgen.structure.BoundingBox(origin.getX() - 6, origin.getY() - 11, origin.getZ() - 6,
+                origin.getX() + 6, origin.getY() + 6, origin.getZ() + 6);
+        com.soulinchains.arcaneartifacts.world.crypt.CryptPiece.build(helper.getLevel(), box, helper.getLevel().random, origin, false);
+        int floor = origin.getY() - com.soulinchains.arcaneartifacts.world.crypt.CryptPiece.DEPTH;
+        helper.assertTrue(helper.getLevel().getBlockState(origin).is(net.minecraft.world.level.block.Blocks.LADDER), "A ladder must lead down from the mausoleum");
+        helper.assertTrue(helper.getLevel().getBlockState(new BlockPos(origin.getX() - 3, floor + 1, origin.getZ() - 3))
+                .is(com.soulinchains.arcaneartifacts.registry.ModBlocks.GRAVE.get()), "The hall must hold graves");
+        helper.assertTrue(helper.getLevel().getBlockState(new BlockPos(origin.getX(), floor + 1, origin.getZ() + 4))
+                .is(net.minecraft.world.level.block.Blocks.CHEST), "The hall must hold a chest");
+        helper.succeed();
+    }
 }

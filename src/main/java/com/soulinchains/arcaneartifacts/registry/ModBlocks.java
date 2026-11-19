@@ -34,6 +34,9 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.GraveSoilBlock> DESECRATED_SOIL = BLOCKS.register("desecrated_soil",
             () -> new com.soulinchains.arcaneartifacts.necro.GraveSoilBlock(false));
 
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.GraveBlock> GRAVE = BLOCKS.register("grave",
+            com.soulinchains.arcaneartifacts.necro.GraveBlock::new);
+
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)

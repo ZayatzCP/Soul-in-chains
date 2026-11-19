@@ -1,0 +1,36 @@
+{
+  "variants": {
+    "dug=false,facing=north": {
+      "model": "arcane_artifacts:block/grave",
+      "y": 180
+    },
+    "dug=false,facing=east": {
+      "model": "arcane_artifacts:block/grave",
+      "y": 270
+    },
+    "dug=false,facing=south": {
+      "model": "arcane_artifacts:block/grave",
+      "y": 0
+    },
+    "dug=false,facing=west": {
+      "model": "arcane_artifacts:block/grave",
+      "y": 90
+    },
+    "dug=true,facing=north": {
+      "model": "arcane_artifacts:block/grave_dug",
+      "y": 180
+    },
+    "dug=true,facing=east": {
+      "model": "arcane_artifacts:block/grave_dug",
+      "y": 270
+    },
+    "dug=true,facing=south": {
+      "model": "arcane_artifacts:block/grave_dug",
+      "y": 0
+    },
+    "dug=true,facing=west": {
+      "model": "arcane_artifacts:block/grave_dug",
+      "y": 90
+    }
+  }
+}

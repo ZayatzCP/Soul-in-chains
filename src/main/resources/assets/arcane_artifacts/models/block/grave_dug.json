@@ -1,0 +1,236 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/coarse_dirt",
+    "mound": "minecraft:block/coarse_dirt",
+    "hole": "minecraft:block/rooted_dirt",
+    "stone": "minecraft:block/mossy_cobblestone",
+    "mark": "minecraft:block/polished_deepslate"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        1,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#hole"
+        },
+        "east": {
+          "texture": "#hole"
+        },
+        "south": {
+          "texture": "#hole"
+        },
+        "west": {
+          "texture": "#hole"
+        },
+        "up": {
+          "texture": "#hole"
+        },
+        "down": {
+          "texture": "#hole"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        3,
+        2,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#mound"
+        },
+        "east": {
+          "texture": "#mound"
+        },
+        "south": {
+          "texture": "#mound"
+        },
+        "west": {
+          "texture": "#mound"
+        },
+        "up": {
+          "texture": "#mound"
+        },
+        "down": {
+          "texture": "#mound"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        2,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#mound"
+        },
+        "east": {
+          "texture": "#mound"
+        },
+        "south": {
+          "texture": "#mound"
+        },
+        "west": {
+          "texture": "#mound"
+        },
+        "up": {
+          "texture": "#mound"
+        },
+        "down": {
+          "texture": "#mound"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        0,
+        1
+      ],
+      "to": [
+        13,
+        2,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#mound"
+        },
+        "east": {
+          "texture": "#mound"
+        },
+        "south": {
+          "texture": "#mound"
+        },
+        "west": {
+          "texture": "#mound"
+        },
+        "up": {
+          "texture": "#mound"
+        },
+        "down": {
+          "texture": "#mound"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        0,
+        12
+      ],
+      "to": [
+        11,
+        12,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#stone"
+        },
+        "east": {
+          "texture": "#stone"
+        },
+        "south": {
+          "texture": "#stone"
+        },
+        "west": {
+          "texture": "#stone"
+        },
+        "up": {
+          "texture": "#stone"
+        },
+        "down": {
+          "texture": "#stone"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        8,
+        11.5
+      ],
+      "to": [
+        9,
+        12,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#mark"
+        },
+        "east": {
+          "texture": "#mark"
+        },
+        "south": {
+          "texture": "#mark"
+        },
+        "west": {
+          "texture": "#mark"
+        },
+        "up": {
+          "texture": "#mark"
+        },
+        "down": {
+          "texture": "#mark"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        9.5,
+        11.5
+      ],
+      "to": [
+        10,
+        10.5,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#mark"
+        },
+        "east": {
+          "texture": "#mark"
+        },
+        "south": {
+          "texture": "#mark"
+        },
+        "west": {
+          "texture": "#mark"
+        },
+        "up": {
+          "texture": "#mark"
+        },
+        "down": {
+          "texture": "#mark"
+        }
+      }
+    }
+  ]
+}

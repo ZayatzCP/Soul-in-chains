@@ -19,6 +19,11 @@ public final class ModStructures {
     public static final DeferredHolder<StructurePieceType, StructurePieceType> PATH_PIECE =
             PIECES.register("mycelinoid_path", () -> VillagePathPiece::new);
 
+    public static final DeferredHolder<StructureType<?>, StructureType<com.soulinchains.arcaneartifacts.world.crypt.CryptStructure>> CRYPT =
+            TYPES.register("crypt", () -> () -> com.soulinchains.arcaneartifacts.world.crypt.CryptStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> CRYPT_PIECE =
+            PIECES.register("crypt", () -> com.soulinchains.arcaneartifacts.world.crypt.CryptPiece::new);
+
     private ModStructures() {
     }
 }

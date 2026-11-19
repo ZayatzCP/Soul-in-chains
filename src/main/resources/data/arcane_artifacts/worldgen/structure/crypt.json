@@ -1,0 +1,7 @@
+{
+  "type": "arcane_artifacts:crypt",
+  "biomes": "#arcane_artifacts:has_structure/crypt",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin"
+}

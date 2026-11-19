@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_shovel"
+    },
+    {
+      "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:soul_soil"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:gravedigger_shovel"
+  }
+}

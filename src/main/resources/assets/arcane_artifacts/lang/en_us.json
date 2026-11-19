@@ -1715,5 +1715,16 @@
   "arcane_artifacts.phylactery.saved": "Death recoils: the phylactery tears you back.",
   "item.arcane_artifacts.shackled_boots": "Shackled Boots",
   "item.arcane_artifacts.shackled_boots.desc.1": "Feet. Heavy: half the knockback, and nobody's chain can pull you.",
-  "item.arcane_artifacts.shackled_boots.desc.2": "On soul sand, soul soil and graveyard soil you run faster. Shackled set."
+  "item.arcane_artifacts.shackled_boots.desc.2": "On soul sand, soul soil and graveyard soil you run faster. Shackled set.",
+  "entity.arcane_artifacts.restless": "Restless",
+  "entity.arcane_artifacts.soul_eater": "Soul Eater",
+  "entity.arcane_artifacts.mourner": "Mourner",
+  "item.arcane_artifacts.restless_spawn_egg": "Restless Spawn Egg",
+  "item.arcane_artifacts.soul_eater_spawn_egg": "Soul Eater Spawn Egg",
+  "item.arcane_artifacts.mourner_spawn_egg": "Mourner Spawn Egg",
+  "block.arcane_artifacts.grave": "Grave",
+  "item.arcane_artifacts.gravedigger_shovel": "Gravedigger's Shovel",
+  "item.arcane_artifacts.gravedigger_shovel.desc.1": "Right click a grave to dig it up: bones, old trinkets, sometimes a soul... and sometimes the tenant.",
+  "arcane_artifacts.soul_eater.stole": "The Soul Eater tore out of your lantern: %s!",
+  "arcane_artifacts.soul_eater.coming": "Something hungry has smelled your souls..."
 }

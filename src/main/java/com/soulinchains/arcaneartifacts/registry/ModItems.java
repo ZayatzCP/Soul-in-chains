@@ -49,6 +49,15 @@ public final class ModItems {
             REGISTER.register("phylactery_amulet", com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackledGearItem> SHACKLED_BOOTS =
             REGISTER.register("shackled_boots", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.BOOTS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.GravediggerShovelItem> GRAVEDIGGER_SHOVEL =
+            REGISTER.register("gravedigger_shovel", com.soulinchains.arcaneartifacts.necro.GravediggerShovelItem::new);
+    public static final DeferredItem<BlockItem> GRAVE = REGISTER.registerSimpleBlockItem(ModBlocks.GRAVE);
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RESTLESS_SPAWN_EGG = REGISTER.register("restless_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RESTLESS, 0x9FE8FF, 0x2A6B78, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> SOUL_EATER_SPAWN_EGG = REGISTER.register("soul_eater_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.SOUL_EATER, 0x14101A, 0x8E3FD0, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> MOURNER_SPAWN_EGG = REGISTER.register("mourner_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.MOURNER, 0x4A5060, 0xC8D8E8, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RitualDaggerItem> RITUAL_DAGGER =
             REGISTER.register("ritual_dagger", com.soulinchains.arcaneartifacts.necro.RitualDaggerItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulVesselItem> SOUL_VESSEL =
