@@ -37,6 +37,8 @@ public final class ModItems {
             REGISTER.register("soul_lantern", com.soulinchains.arcaneartifacts.necro.SoulLanternItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ChainSickleItem> CHAIN_SICKLE =
             REGISTER.register("chain_sickle", com.soulinchains.arcaneartifacts.necro.ChainSickleItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.WardenRodItem> WARDEN_ROD =
+            REGISTER.register("warden_rod", com.soulinchains.arcaneartifacts.necro.WardenRodItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.belt.BottomlessBeltItem> BOTTOMLESS_BELT =
             REGISTER.register("bottomless_belt", com.soulinchains.arcaneartifacts.belt.BottomlessBeltItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem> AMULET_OF_OPPOSITES =

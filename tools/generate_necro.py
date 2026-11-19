@@ -133,7 +133,94 @@ REAP_ICON = [
     '..................',
 ]
 
+ROD = [
+    '................',
+    '...........SSS..',
+    '..........S.c.S.',
+    '..........SsWsS.',
+    '..........S.s.S.',
+    '...........SSS..',
+    '..........k.....',
+    '.........k......',
+    '........b.......',
+    '.......b........',
+    '......b.........',
+    '.....b..........',
+    '....b...........',
+    '...b............',
+    '..B.............',
+    '................',
+]
+PAL_ROD = {'S': '#3A3D46', 'c': '#6E7280', 's': '#2EC4D6', 'W': '#8BF3FF', 'k': '#5E626E', 'b': '#E8E2CF', 'B': '#B8B09A'}
+TABLET = [
+    '................',
+    '...aaaaaaaaaa...',
+    '..abbbbbbbbbba..',
+    '..abccbbbbccba..',
+    '..abbbbbbbbbba..',
+    '..abbbbddbbbba..',
+    '..abbbdbbdbbba..',
+    '..abbbbddbbbba..',
+    '..abbbbddbbbba..',
+    '..abbbdeedbbba..',
+    '..abbbbddbbbba..',
+    '..abbbbbbbbbba..',
+    '..abccbbbbccba..',
+    '..abbbbbbbbbba..',
+    '...aaaaaaaaaa...',
+    '................',
+]
+PAL_TABLET = {'a': '#5A5A64', 'b': '#9696A0', 'c': '#C8C8D2', 'd': '#2EA8BE', 'e': '#8BF3FF'}
+GLYPHS_126 = {
+    'glyph_raise_dead': [
+        '............',
+        '....####....',
+        '...#.tt.#...',
+        '...#t..t#...',
+        '....####....',
+        '.....##.....',
+        '...######...',
+        '.....##.....',
+        '....#..#....',
+        '..########..',
+        '.##########.',
+        '............',
+    ],
+    'glyph_devour': [
+        '............',
+        '...######...',
+        '..#......#..',
+        '.#.v.vv.v.#.',
+        '.#..tTTt..#.',
+        '.#..tTTt..#.',
+        '.#.v.vv.v.#.',
+        '..#......#..',
+        '...######...',
+        '............',
+        '............',
+        '............',
+    ],
+    'glyph_bond': [
+        '............',
+        '.##......##.',
+        '#..#....#..#',
+        '#..#.tt.#..#',
+        '.##.t..t.##.',
+        '....t..t....',
+        '.##.t..t.##.',
+        '#..#.tt.#..#',
+        '#..#....#..#',
+        '.##......##.',
+        '............',
+        '............',
+    ],
+}
+
 if __name__ == '__main__':
+    save(sprite(ROD, PAL_ROD), 'item', 'warden_rod.png')
+    save(sprite(TABLET, PAL_TABLET), 'item', 'ritual_awakening.png')
+    for name, rows in GLYPHS_126.items():
+        save(glyph(rows, {'T': '#8BF3FF', 't': '#2EC4D6'}), 'item', name + '.png')
     save(sprite(LANTERN, PAL_LANTERN), 'item', 'soul_lantern.png')
     save(sprite(SICKLE, PAL_SICKLE), 'item', 'chain_sickle.png')
     for name, rows in GLYPHS.items():

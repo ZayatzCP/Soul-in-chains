@@ -75,5 +75,6 @@ public final class CattoContent {
     /** Called from the mod constructor: the ritual must be known before Ars registers its tablet items. */
     public static void init() {
         RitualRegistry.registerRitual(new FamiliarBondRitual());
+        RitualRegistry.registerRitual(new com.soulinchains.arcaneartifacts.necro.AwakeningRitual());
     }
 }

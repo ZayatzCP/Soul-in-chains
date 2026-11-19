@@ -34,6 +34,33 @@ public final class ModEntities {
                     .sized(0.2F, 0.2F).noSave().fireImmune().clientTrackingRange(8).updateInterval(10)
                     .build(ArcaneArtifacts.MODID + ":shackle_anchor"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.BondLink>> BOND_LINK = REGISTER.register("bond_link",
+            () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.necro.BondLink>of(com.soulinchains.arcaneartifacts.necro.BondLink::new, MobCategory.MISC)
+                    .sized(0.2F, 0.2F).noSave().fireImmune().clientTrackingRange(8).updateInterval(2)
+                    .build(ArcaneArtifacts.MODID + ":bond_link"));
+
+    /** The Shackled's servants, one entity type per kind. */
+    public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
+            DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> SERVANTS = servants();
+
+    private static java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
+            DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> servants() {
+        var map = new java.util.EnumMap<com.soulinchains.arcaneartifacts.necro.ServantKind,
+                DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>>(com.soulinchains.arcaneartifacts.necro.ServantKind.class);
+        for (var kind : com.soulinchains.arcaneartifacts.necro.ServantKind.values()) {
+            float width = kind == com.soulinchains.arcaneartifacts.necro.ServantKind.HOUND ? 0.6F : kind == com.soulinchains.arcaneartifacts.necro.ServantKind.KNIGHT ? 0.7F : 0.6F;
+            float height = kind == com.soulinchains.arcaneartifacts.necro.ServantKind.HOUND ? 0.85F : kind == com.soulinchains.arcaneartifacts.necro.ServantKind.KNIGHT ? 2.2F : 1.95F;
+            EntityType.Builder<com.soulinchains.arcaneartifacts.necro.Servant> builder = EntityType.Builder
+                    .<com.soulinchains.arcaneartifacts.necro.Servant>of((type, level) -> new com.soulinchains.arcaneartifacts.necro.Servant(type, level, kind), MobCategory.MISC)
+                    .sized(width, height).clientTrackingRange(10);
+            if (kind.fireImmune) {
+                builder.fireImmune();
+            }
+            map.put(kind, REGISTER.register(kind.id, () -> builder.build(ArcaneArtifacts.MODID + ":" + kind.id)));
+        }
+        return java.util.Collections.unmodifiableMap(map);
+    }
+
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.entity.Mudzya>> MUDZYA = REGISTER.register("mudzya",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.entity.Mudzya::new, MobCategory.CREATURE)
                     .sized(0.55F, 0.65F).clientTrackingRange(8).build(ArcaneArtifacts.MODID + ":mudzya"));

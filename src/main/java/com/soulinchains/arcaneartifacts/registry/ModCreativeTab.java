@@ -33,6 +33,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.BOTTOMLESS_BELT.get());
                 output.accept(ModItems.SOUL_LANTERN.get());
                 output.accept(ModItems.CHAIN_SICKLE.get());
+                output.accept(ModItems.WARDEN_ROD.get());
                 output.accept(ModItems.AMULET_OF_OPPOSITES.get());
                 output.accept(ModItems.RING_OF_CALM.get());
                 output.accept(ModItems.HOP_SLIPPERS.get());
@@ -107,6 +108,11 @@ public final class ModCreativeTab {
                         .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.catto.FamiliarBondRitual.ID));
                 if (tablet != null) {
                     output.accept(tablet);
+                }
+                var awakening = com.hollingsworth.arsnouveau.api.registry.RitualRegistry.getRitualItemMap()
+                        .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.necro.AwakeningRitual.ID));
+                if (awakening != null) {
+                    output.accept(awakening);
                 }
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
                     if (part.glyphItem != null) {

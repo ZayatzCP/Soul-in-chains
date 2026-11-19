@@ -1,0 +1,58 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:soul_lantern",
+  "sort": 410,
+  "subjects": [
+    "minecraft:soul_lantern",
+    "minecraft:bone_block",
+    "minecraft:rotten_flesh"
+  ],
+  "properties": [
+    "bound",
+    "undying"
+  ],
+  "requires": [
+    "arcane_artifacts:necro/shackling"
+  ],
+  "experiments": [
+    {
+      "id": "reap",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_reap",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "shackle",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_shackle",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "chain",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_cast",
+          "glyph": "arcane_artifacts:glyph_chain"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:warden_rod",
+    "arcane_artifacts:ritual_awakening"
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_raise_dead",
+    "arcane_artifacts:glyph_devour",
+    "arcane_artifacts:glyph_bond"
+  ]
+}

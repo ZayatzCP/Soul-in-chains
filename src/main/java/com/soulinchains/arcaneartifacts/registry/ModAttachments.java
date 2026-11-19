@@ -23,6 +23,10 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<PlayerResearch>> RESEARCH = REGISTER.register("research",
             () -> AttachmentType.builder(PlayerResearch::new).serialize(PlayerResearch.CODEC).copyOnDeath().build());
 
+    /** Rank of the Shackled class earned by ritual (1 Novice, 2 Overseer, 3 Chainlord); kept through death. */
+    public static final Supplier<AttachmentType<Integer>> NECRO_RANK = REGISTER.register("necro_rank",
+            () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+
     private ModAttachments() {
     }
 }

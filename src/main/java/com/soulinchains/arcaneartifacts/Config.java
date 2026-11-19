@@ -71,6 +71,9 @@ public final class Config {
     public static final ModConfigSpec.IntValue SOUL_LANTERN_CAPACITY;
     public static final ModConfigSpec.DoubleValue CHAIN_RANGE;
     public static final ModConfigSpec.IntValue SICKLE_COOLDOWN_TICKS;
+    public static final ModConfigSpec.ConfigValue<java.util.List<? extends Integer>> SERVANT_LIMITS;
+    public static final ModConfigSpec.IntValue SERVANT_TETHER;
+    public static final ModConfigSpec.DoubleValue SERVANT_MAX_RESERVE;
     public static final ModConfigSpec.IntValue WEATHER_SECONDS;
     public static final ModConfigSpec.IntValue COUNTERSPELL_SILENCE_SECONDS;
     public static final ModConfigSpec.DoubleValue COUNTERSPELL_RADIUS;
@@ -217,6 +220,12 @@ public final class Config {
         SOUL_LANTERN_CAPACITY = b.defineInRange("soul_lantern_capacity", 10, 1, 1000);
         CHAIN_RANGE = b.comment("How far a thrown chain flies (Chain Sickle, Chain form).").defineInRange("chain_range", 12.0, 2.0, 64.0);
         SICKLE_COOLDOWN_TICKS = b.defineInRange("sickle_cooldown_ticks", 40, 0, 1200);
+        SERVANT_LIMITS = b.comment("How many servants a Shackled of rank 1, 2 and 3 can keep.")
+                .defineList("servant_limits", java.util.List.of(2, 3, 5), o -> o instanceof Integer i && i >= 0 && i <= 64);
+        SERVANT_TETHER = b.comment("Servants farther than this from their master break their chain and crumble (their soul goes back to the lantern).")
+                .defineInRange("servant_tether", 24, 4, 256);
+        SERVANT_MAX_RESERVE = b.comment("At most this share of the master's maximum mana can be held by servants.")
+                .defineInRange("servant_max_reserve", 0.7, 0.0, 1.0);
         b.pop();
 
         b.push("pvp");

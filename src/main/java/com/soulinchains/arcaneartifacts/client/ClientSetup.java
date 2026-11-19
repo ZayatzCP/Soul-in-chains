@@ -39,6 +39,14 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.SOUL_WISP.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_BOLT.get(), com.soulinchains.arcaneartifacts.client.necro.ChainBoltRenderer::new);
         event.registerEntityRenderer(ModEntities.SHACKLE_ANCHOR.get(), com.soulinchains.arcaneartifacts.client.necro.ShackleAnchorRenderer::new);
+        event.registerEntityRenderer(ModEntities.BOND_LINK.get(), com.soulinchains.arcaneartifacts.client.necro.BondLinkRenderer::new);
+        ModEntities.SERVANTS.forEach((kind, type) -> {
+            switch (kind) {
+                case HOUND -> event.registerEntityRenderer(type.get(), com.soulinchains.arcaneartifacts.client.necro.ServantRenderers.Hound::new);
+                case ROWER -> event.registerEntityRenderer(type.get(), c -> new com.soulinchains.arcaneartifacts.client.necro.ServantRenderers.Humanoid(c, true));
+                default -> event.registerEntityRenderer(type.get(), c -> new com.soulinchains.arcaneartifacts.client.necro.ServantRenderers.Humanoid(c, false));
+            }
+        });
         event.registerEntityRenderer(ModEntities.BULLET.get(), context -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(context, 0.5F, true));
     }
 

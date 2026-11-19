@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "  S",
+    " C ",
+    "B  "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:soul_lantern"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "B": {
+      "item": "minecraft:bone"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:warden_rod"
+  }
+}

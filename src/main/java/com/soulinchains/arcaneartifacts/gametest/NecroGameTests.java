@@ -164,4 +164,83 @@ public final class NecroGameTests {
         helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Pvp.vortex(player) < 1.0, "Vortices must throw players around less");
         helper.succeed();
     }
+
+    // ------------------------------------------------------------------ 1.26: ranks, servants, Devour, Bond
+
+    private static void fill(Player player, SoulType type, int n) {
+        for (int i = 0; i < n; i++) {
+            Souls.store(player, type);
+        }
+    }
+
+    @GameTest(template = ARENA)
+    public static void awakeningMakesAnOverseer(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.NOVICE);
+            fill(player, SoulType.WANDERING, 9);
+            helper.assertTrue(!com.soulinchains.arcaneartifacts.necro.AwakeningRitual.awaken(player), "Nine souls are not enough");
+            fill(player, SoulType.VOID, 1);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.AwakeningRitual.awaken(player), "Ten souls must awaken a Novice");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Necro.rank(player) == com.soulinchains.arcaneartifacts.necro.Necro.OVERSEER, "The player must be an Overseer now");
+            helper.assertTrue(Souls.total(player) == 0, "The ritual must take all ten souls, left " + Souls.total(player));
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Necro.servantLimit(player) == 3, "An Overseer keeps 3 servants");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void raiseDeadSpendsSoulsAndHoldsMana(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.OVERSEER);
+            fill(player, SoulType.WANDERING, 3);
+            fill(player, SoulType.VOID, 1);
+            var weak = com.soulinchains.arcaneartifacts.necro.EffectRaiseDead.choose(player, false, true);
+            helper.assertTrue(weak == com.soulinchains.arcaneartifacts.necro.ServantKind.SKELETON, "Dampen must keep the void soul and pick the skeleton, got " + weak);
+            var best = com.soulinchains.arcaneartifacts.necro.EffectRaiseDead.choose(player, false, false);
+            helper.assertTrue(best == com.soulinchains.arcaneartifacts.necro.ServantKind.ASSASSIN, "A void soul and 2 wandering must raise the assassin, got " + best);
+            var servant = com.soulinchains.arcaneartifacts.necro.EffectRaiseDead.raise(level, player, best, helper.absoluteVec(new Vec3(5.5, 2, 5.5)));
+            helper.assertTrue(servant != null && player.getUUID().equals(servant.getOwnerUUID()), "The assassin must rise bound to the player");
+            helper.assertTrue(Souls.count(player, SoulType.VOID) == 0 && Souls.count(player, SoulType.WANDERING) == 1, "The assassin costs a void soul and 2 wandering");
+            float reserve = com.soulinchains.arcaneartifacts.necro.Servant.reserveOf(player.getUUID());
+            helper.assertTrue(Math.abs(reserve - com.soulinchains.arcaneartifacts.necro.ServantKind.ASSASSIN.reserve) < 1e-4, "The assassin must hold its share of mana, got " + reserve);
+            float arsReserve = com.hollingsworth.arsnouveau.api.util.ManaUtil.calcMaxMana(player).Reserve();
+            helper.assertTrue(arsReserve >= reserve - 1e-4, "Ars Nouveau must see the reserved mana, got " + arsReserve);
+            servant.crumble(true);
+            helper.assertTrue(servant.isRemoved(), "A dismissed servant must crumble");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void devourBurnsTheWeakestSoul(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.OVERSEER);
+            fill(player, SoulType.CURSED, 1);
+            fill(player, SoulType.WANDERING, 1);
+            player.setHealth(10);
+            var context = new SpellContext(level, new Spell(), player, LivingCaster.from(player));
+            com.soulinchains.arcaneartifacts.necro.EffectDevour.INSTANCE.onResolve(new net.minecraft.world.phys.EntityHitResult(player), level, player,
+                    new com.hollingsworth.arsnouveau.api.spell.SpellStats.Builder().build(), context, null);
+            helper.assertTrue(player.getHealth() >= 16 - 1e-3, "Devour must heal 3 hearts, health " + player.getHealth());
+            helper.assertTrue(Souls.count(player, SoulType.WANDERING) == 0 && Souls.count(player, SoulType.CURSED) == 1, "Devour must burn the weakest soul first");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void bondSplitsDamage(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Pig a = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(3, 2, 4));
+        Pig b = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(5, 2, 4));
+        com.soulinchains.arcaneartifacts.necro.EffectBond.bond(level, a, b, 100);
+        a.hurt(level.damageSources().generic(), 8F);
+        helper.assertTrue(Math.abs(a.getHealth() - 6F) < 0.01F && Math.abs(b.getHealth() - 6F) < 0.01F,
+                "8 damage must be split 4 / 4, got " + a.getHealth() + " / " + b.getHealth());
+        helper.succeed();
+    }
 }
