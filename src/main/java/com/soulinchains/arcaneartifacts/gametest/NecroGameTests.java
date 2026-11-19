@@ -139,14 +139,15 @@ public final class NecroGameTests {
         caster.setYRot(-90F);
         caster.setYHeadRot(-90F);
         caster.setXRot(0F);
-        Pig pig = helper.spawn(EntityType.PIG, new BlockPos(8, 2, 4));
+        // A tall target: the chain flies at the caster's eye height.
+        var pig = helper.spawn(EntityType.VILLAGER, new BlockPos(8, 2, 4));
         double before = pig.distanceTo(caster);
         Spell spell = new Spell(MethodChain.INSTANCE, com.soulinchains.arcaneartifacts.necro.EffectReap.INSTANCE);
         SpellResolver resolver = new SpellResolver(new SpellContext(level, spell, caster, LivingCaster.from(caster)));
         level.addFreshEntity(new ChainBolt(level, caster, resolver, false, 1.8F));
         helper.succeedWhen(() -> {
-            helper.assertTrue(pig.hasEffect(ModEffects.REAP_MARK), "The chain must carry Reap to the pig it hooks");
-            helper.assertTrue(pig.distanceTo(caster) < before - 1.0, "The chain must reel the pig in: " + before + " -> " + pig.distanceTo(caster));
+            helper.assertTrue(pig.hasEffect(ModEffects.REAP_MARK), "The chain must carry Reap to the villager it hooks");
+            helper.assertTrue(pig.distanceTo(caster) < before - 1.0, "The chain must reel the villager in: " + before + " -> " + pig.distanceTo(caster));
         });
     }
 }
