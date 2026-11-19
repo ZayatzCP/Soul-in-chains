@@ -127,7 +127,7 @@ public final class NecroGameTests {
         Vec3 start = pig.position();
         pig.setDeltaMovement(1.5, 0, 0);
         helper.runAfterDelay(20, () -> {
-            helper.assertTrue(pig.position().horizontalDistanceTo(start) < 1.5, "A shackled pig must stay on the spot, moved " + pig.position().horizontalDistanceTo(start));
+            helper.assertTrue(pig.position().subtract(start).horizontalDistance() < 1.5, "A shackled pig must stay on the spot, moved " + pig.position().subtract(start).horizontalDistance());
             helper.succeed();
         });
     }
