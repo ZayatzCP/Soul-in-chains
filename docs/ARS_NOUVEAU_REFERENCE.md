@@ -357,3 +357,47 @@
    - Событие оставить только для условных скидок.
 4. **Блоки и мобы, реагирующие на заклинания** (поглотить, отразить): capability `IResolveListener` чище, чем `EffectResolveEvent`.
 5. **Свои отложенные действия:** `ITimedEvent` + `EventQueue` вместо самописных счётчиков.
+
+---
+
+## 16. VFX заклинаний — подробно
+
+### 16.1 Из чего состоит эффект
+Цепочка: **Spell → TimelineMap → Timeline → TimelineEntryData → (ParticleMotion + PropertyParticleOptions) → ParticleEmitter**.
+
+| Уровень | Класс | Что задаёт |
+|---|---|---|
+| Заклинание | `Spell.particleTimeline()` → `TimelineMap` | По таймлайну на каждый глиф, у которого он есть (`map.get(TYPE)`; если нет — создаётся по умолчанию) |
+| Таймлайн | `IParticleTimeline<T>` (`ProjectileTimeline`, `BurstTimeline` …) | Набор «слотов» глифа: Spawn, Trail, Impact, Flair, Tick + звуки (`SoundProperty`) |
+| Слот | `TimelineEntryData` | Одна пара: **движение** (`ParticleMotion`) + **частица** (`PropertyParticleOptions`) |
+| Движение | `ParticleMotion` (+ `PropMap` свойств) | Где и сколько частиц рождается за тик: burst, trail, spiral, helix, wave, zigzag, tornado, upward_wall/field, light, brazier, wisp, none |
+| Частица | `PropertyParticleOptions` + `ParticleTypeProperty` | Тип частицы (свечение `new_glow`, дым, снег, лист, вода, end_rod, crit, enchant, огонь, души, сердца, sonic_boom …) и её **свойства**: цвет (`ColorProperty`, в т.ч. радуга), плотность и радиус (`ParticleDensityProperty`: SPHERE/CUBE), скорость (`SpeedProperty`), звук |
+| Излучатель | `ParticleEmitter(posSupplier, rotSupplier, entryData)` | Живой объект: каждый `tick(level)` спавнит частицы движения в текущей точке, интерполируя от прошлой (трейл без дыр) |
+
+Все слои — кодеки (`CODEC`/`STREAM_CODEC`): стиль хранится в предмете-кастере и передаётся по сети целиком.
+
+### 16.2 Где работает (клиент/сервер)
+- `ParticleEmitter.tick` **на сервере** отправляет `TickEmitterPacket` всем рядом — клиент повторяет движение. Значит, эффект можно запускать из серверной логики глифа без своих пакетов. Цена — по пакету на каждый тик излучателя: долгоживущие излучатели на сервере дороги, их лучше вести на клиенте (как делает снаряд — сущность тикает свой `ParticleEmitter` на клиенте).
+- На клиенте `particleConfig.tick(...)` → `level.addAlwaysVisibleParticle(...)` (видно с любой дистанции, не режется настройкой частиц «минимум» — учитывать в плотности).
+- Ориентация: `toEmitterSpace(...)` поворачивает локальные координаты по `rotation` излучателя (yaw/pitch) — так спирали и хеликсы закручиваются вокруг направления полёта.
+- `getNumParticles(perSecond)` переводит «частиц в секунду» в целое число за тик без дрожи.
+
+### 16.3 Как это видит игрок
+Стол «Spell Style» (стиль в книге): игрок выбирает глиф → слот (Spawn/Trail/Impact/Flair/Tick) → движение из **разрешённого списка этого слота** → тип частицы → цвет/плотность/скорость/звук; справа превью (`ParticleTimelinePreview`, `EmitterTimelinePreview`). Модель снаряда — `ModelProperty` (`none`, `cube`, `spike`, расширяемый список `ModelProperty.resources`).
+
+### 16.4 Точки расширения для аддона
+| Что | Как |
+|---|---|
+| Таймлайн для своего глифа | `DeferredRegister.create(ParticleTimelineRegistry.PARTICLE_TIMELINE_REGISTRY, MODID)` + `SimpleParticleTimelineType<>(glyph, CODEC, STREAM, ::new, preview)`; в глифе: `ctx.getParticleTimeline(TYPE.get())` → `createStaticEmitter(entry, pos).tick(level)` и `timeline.resolveSound.sound.playSound(...)`. **У нас уже сделано** (`fx/ModTimelines`, `GlyphTimeline`, `Fx`) для 15 глифов |
+| Своё движение (новая форма облака) | Класс `extends ParticleMotion` с `tick(...)` и `getProperties(...)`, регистрация в `ParticleMotionRegistry.PARTICLE_CONFIG_REGISTRY` через `SimpleParticleMotionType`; иконка `textures/particle_config/<id>.png`, имя `<mod>.particle_config.<id>` |
+| Добавить движение в чужой слот | Статические списки опций: `ProjectileTimeline.TRAIL_OPTIONS / RESOLVING_OPTIONS / SPAWN_OPTIONS / FLAIR_OPTIONS`, `WallTimeline.TRAIL_OPTIONS`, `LingerTimeline`, `OrbitTimeline`, `TouchTimeline`, `SelfTimeline`, `LightTimeline.TICKING_OPTIONS`, `DelayTimeline`, `PrestidigitationTimeline` — `add(...)` в `FMLCommonSetupEvent` (после регистрации). Тогда наше движение можно выбрать и для ванильных форм Ars |
+| Свой тип частицы в списке | Частица с `PropertyParticleOptions` + `ParticleTypeProperty.addType(new ParticleData(type, acceptsColor[, legacyRGB]))` (с `.withSound()` если частица звучит) |
+| Своя модель снаряда | `ModelProperty.resources.add(new Model(id, icon, supportsColor, …))` + рендер |
+| Цвет без стиля | `ParticleColor(r,g,b)` / `fromInt` / `makeRandomColor`; старые хелперы: `GlowParticleData.createData(color, size, alpha, age)`, `ParticleLineData`, `ParticleSparkleData`, `ParticleUtil.spawnPoof / spawnTouch / beam / spawnRitualAreaEffect / spawnOrb / spawnLight` |
+| Реакция на частицы | `ParticleTimelineEvent` — подменить/дополнить эффект чужого глифа |
+
+### 16.5 Что можно сделать в нашем моде
+1. **Свои движения**: «кольцо-ударная волна» (для Чёрной дыры, Страха, Купидона), «колонна/столб» (Торнадо, Метеоры), «луч-линия» с плотностью по длине (Луч) — сейчас наши `Fx.ring/line/area` спавнят частицы вручную; оформив их как `ParticleMotion`, игрок сможет выбрать их в Spell Style, и их же можно повесить на ванильные Снаряд/Касание.
+2. **Подписать наши формы под стиль**: у формы Луч уже есть таймлайн; добавить Flair/Spawn-слоты, как у снаряда.
+3. **Тематические частицы** (споры, грибной мох, ноты для Котто-песен) зарегистрировать как `ParticleTypeProperty`, чтобы ими можно было красить любые заклинания.
+4. **Экономия пакетов**: долгие эффекты (Чёрная дыра, Торнадо) вести клиентскими излучателями через сущность/BE, а не серверным `tick` каждый тик.
