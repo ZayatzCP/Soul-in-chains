@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * The Shackled set: Soul Lantern, Shackle Gloves, Shroud, Bone Crown.
+ * The Shackled set: Soul Lantern, Shackle Gloves, Shroud, Bone Crown, Phylactery Amulet, Shackled Boots.
  * <ul>
  *     <li>Gloves: chains fly 1.5 times farther, shackles hold 1 second longer.</li>
  *     <li>Shroud: servants rise with 30% more health; +75 maximum mana.</li>
@@ -30,6 +30,7 @@ public final class ShackledSet {
     public static final double GLOVES_RANGE = 1.5;
     public static final int GLOVES_HOLD_TICKS = 20;
     public static final float SOUL_UPGRADE_CHANCE = 0.15F;
+    public static final double BOOTS_KNOCKBACK = 0.5;
 
     private ShackledSet() {
     }
@@ -44,6 +45,10 @@ public final class ShackledSet {
 
     public static boolean wearsCrown(LivingEntity entity) {
         return ArcaneSets.has(entity, ModItems.BONE_CROWN.get());
+    }
+
+    public static boolean wearsBoots(LivingEntity entity) {
+        return ArcaneSets.has(entity, ModItems.SHACKLED_BOOTS.get());
     }
 
     public static boolean complete(LivingEntity entity) {

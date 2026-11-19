@@ -34,6 +34,10 @@ public final class Pvp {
 
     /** Multiplier of a chain pull on this entity (0 = not pulled). */
     public static double pull(Entity target) {
+        if (target instanceof LivingEntity living && ShackledSet.wearsBoots(living)) {
+            // Shackled Boots: too heavy for anyone's chain.
+            return 0.0;
+        }
         if (!(target instanceof Player)) {
             return 1.0;
         }

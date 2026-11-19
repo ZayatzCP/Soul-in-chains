@@ -53,7 +53,9 @@
     "arcane_artifacts:shroud",
     "arcane_artifacts:bone_crown",
     "arcane_artifacts:consecrated_soil",
-    "arcane_artifacts:desecrated_soil"
+    "arcane_artifacts:desecrated_soil",
+    "arcane_artifacts:phylactery_amulet",
+    "arcane_artifacts:shackled_boots"
   ],
   "unlocks": [
     "arcane_artifacts:glyph_raise_dead",

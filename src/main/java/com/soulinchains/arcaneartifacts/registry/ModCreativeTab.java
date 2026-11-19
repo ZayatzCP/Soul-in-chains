@@ -37,6 +37,8 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SHACKLE_GLOVES.get());
                 output.accept(ModItems.SHROUD.get());
                 output.accept(ModItems.BONE_CROWN.get());
+                output.accept(ModItems.PHYLACTERY_AMULET.get());
+                output.accept(ModItems.SHACKLED_BOOTS.get());
                 output.accept(ModItems.RITUAL_DAGGER.get());
                 output.accept(ModItems.SOUL_VESSEL.get());
                 output.accept(ModItems.CONSECRATED_SOIL.get());

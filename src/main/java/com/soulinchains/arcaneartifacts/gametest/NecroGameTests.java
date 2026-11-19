@@ -334,4 +334,25 @@ public final class NecroGameTests {
             helper.succeed();
         });
     }
+
+    @GameTest(template = ARENA, batch = "necro_phylactery")
+    public static void phylacterySavesFromDeath(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 start = helper.absoluteVec(new Vec3(6.5, 2, 6.5));
+        player.setPos(start.x, start.y, start.z);
+        com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.OVERSEER);
+        ItemStack amulet = new ItemStack(ModItems.PHYLACTERY_AMULET.get());
+        BlockPos home = helper.absolutePos(new BlockPos(2, 2, 2));
+        com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem.bind(amulet, net.minecraft.core.GlobalPos.of(helper.getLevel().dimension(), home));
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.setEquippedCurio("necklace", 0, amulet));
+        helper.runAfterDelay(2, () -> {
+            player.hurt(helper.getLevel().damageSources().generic(), 1000F);
+            helper.assertTrue(player.isAlive() && player.getHealth() > 0, "The phylactery must avert death");
+            helper.assertTrue(player.blockPosition().equals(home), "The wearer must be torn back to the bound place, at " + player.blockPosition() + " not " + home);
+            var worn = CurioHelper.findEquipped(player, ModItems.PHYLACTERY_AMULET.get()).orElseThrow();
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem.state(worn).readyAt() > helper.getLevel().getGameTime(),
+                    "The amulet must sleep after saving its wearer");
+            helper.succeed();
+        });
+    }
 }

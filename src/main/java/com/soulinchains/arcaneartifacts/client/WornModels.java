@@ -123,6 +123,17 @@ public final class WornModels {
                         stack -> !com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.isRepelling(stack)),
                 new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/amulet_of_opposites_repel"), Placement.NONE,
                         com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem::isRepelling)));
+        // The Phylactery Amulet hangs on the chest in the look its wearer chose.
+        java.util.List<Attachment> phylactery = new java.util.ArrayList<>();
+        for (int style = 0; style < com.soulinchains.arcaneartifacts.necro.Phylactery.STYLES; style++) {
+            final int s = style;
+            phylactery.add(new Attachment(BodyPart.BODY, ArcaneArtifacts.id("item/worn/phylactery_amulet_" + style), Placement.NONE,
+                    stack -> com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem.style(stack) == s));
+        }
+        ATTACHMENTS.put(ModItems.PHYLACTERY_AMULET, List.copyOf(phylactery));
+        ATTACHMENTS.put(ModItems.SHACKLED_BOOTS, List.of(
+                worn(BodyPart.RIGHT_LEG, "shackled_boots_right"),
+                worn(BodyPart.LEFT_LEG, "shackled_boots_left")));
         ATTACHMENTS.put(ModItems.HEART_CHARM, List.of(worn(BodyPart.BODY, "heart_charm")));
         ATTACHMENTS.put(ModItems.DIAMOND_CHARM, List.of(worn(BodyPart.BODY, "diamond_charm")));
         ATTACHMENTS.put(ModItems.CLUB_CHARM, List.of(worn(BodyPart.BODY, "club_charm")));

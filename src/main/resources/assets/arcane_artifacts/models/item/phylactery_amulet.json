@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "arcane_artifacts:item/phylactery_amulet_0"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "arcane_artifacts:style": 0.05
+      },
+      "model": "arcane_artifacts:item/phylactery_amulet_1"
+    },
+    {
+      "predicate": {
+        "arcane_artifacts:style": 0.15000000000000002
+      },
+      "model": "arcane_artifacts:item/phylactery_amulet_2"
+    },
+    {
+      "predicate": {
+        "arcane_artifacts:style": 0.25
+      },
+      "model": "arcane_artifacts:item/phylactery_amulet_3"
+    },
+    {
+      "predicate": {
+        "arcane_artifacts:style": 0.35000000000000003
+      },
+      "model": "arcane_artifacts:item/phylactery_amulet_4"
+    }
+  ]
+}

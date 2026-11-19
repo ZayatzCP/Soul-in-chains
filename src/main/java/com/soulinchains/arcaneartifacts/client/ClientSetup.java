@@ -92,6 +92,8 @@ public final class ClientSetup {
                     CuriosRendererRegistry.register(item.get(), () -> new AccessoryCurioRenderer(attachments)));
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.AMULET_OF_OPPOSITES.get(), ArcaneArtifacts.id("repelling"),
                     (stack, level, entity, seed) -> com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.isRepelling(stack) ? 1.0F : 0.0F);
+            net.minecraft.client.renderer.item.ItemProperties.register(ModItems.PHYLACTERY_AMULET.get(), ArcaneArtifacts.id("style"),
+                    (stack, level, entity, seed) -> com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem.style(stack) / 10.0F);
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.MUSHROOM_SHIELD.get(), net.minecraft.resources.ResourceLocation.withDefaultNamespace("blocking"),
                     (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.BANDOLIER.get(), ArcaneArtifacts.id("filled"),

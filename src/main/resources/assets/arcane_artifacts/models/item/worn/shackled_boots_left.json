@@ -1,0 +1,144 @@
+{
+  "textures": {
+    "b": "arcane_artifacts:item/worn/shackled_boots",
+    "particle": "arcane_artifacts:item/worn/shackled_boots"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        -4.3,
+        5.5
+      ],
+      "to": [
+        10.5,
+        0.6,
+        10.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#b",
+          "uv": [
+            0,
+            0,
+            5,
+            10
+          ]
+        },
+        "east": {
+          "texture": "#b",
+          "uv": [
+            0,
+            0,
+            5,
+            10
+          ]
+        },
+        "south": {
+          "texture": "#b",
+          "uv": [
+            0,
+            0,
+            5,
+            10
+          ]
+        },
+        "west": {
+          "texture": "#b",
+          "uv": [
+            0,
+            0,
+            5,
+            10
+          ]
+        },
+        "up": {
+          "texture": "#b",
+          "uv": [
+            0,
+            0,
+            5,
+            10
+          ]
+        },
+        "down": {
+          "texture": "#b",
+          "uv": [
+            0,
+            0,
+            5,
+            10
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5.25,
+        0.6,
+        5.25
+      ],
+      "to": [
+        10.75,
+        1.6,
+        10.75
+      ],
+      "faces": {
+        "north": {
+          "texture": "#b",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#b",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#b",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#b",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#b",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#b",
+          "uv": [
+            0,
+            12,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

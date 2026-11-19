@@ -76,6 +76,7 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue SHIP_PULL_ACCELERATION;
     public static final ModConfigSpec.DoubleValue SHIP_MAX_FORCE;
     public static final ModConfigSpec.DoubleValue SHIP_BRAKE;
+    public static final ModConfigSpec.IntValue PHYLACTERY_COOLDOWN_DAYS;
     public static final ModConfigSpec.DoubleValue SERVANT_MAX_RESERVE;
     public static final ModConfigSpec.IntValue WEATHER_SECONDS;
     public static final ModConfigSpec.IntValue COUNTERSPELL_SILENCE_SECONDS;
@@ -233,6 +234,8 @@ public final class Config {
                 .defineInRange("ship_max_force", 2500.0, 0.0, 1.0E7);
         SHIP_BRAKE = b.comment("Create Aeronautics: how hard a shackle brakes a ship (share of its momentum removed per second).")
                 .defineInRange("ship_brake", 4.0, 0.0, 100.0);
+        PHYLACTERY_COOLDOWN_DAYS = b.comment("Phylactery Amulet: in-game days before it can save its wearer again.")
+                .defineInRange("phylactery_cooldown_days", 3, 0, 365);
         SERVANT_MAX_RESERVE = b.comment("At most this share of the master's maximum mana can be held by servants.")
                 .defineInRange("servant_max_reserve", 0.7, 0.0, 1.0);
         b.pop();

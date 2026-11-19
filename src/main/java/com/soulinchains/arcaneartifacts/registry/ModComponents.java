@@ -28,6 +28,11 @@ public final class ModComponents {
             REGISTER.registerComponentType("vessel_soul", b -> b.persistent(com.mojang.serialization.Codec.INT)
                     .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
 
+    /** Look, binding and cooldown of a Phylactery Amulet. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<com.soulinchains.arcaneartifacts.necro.Phylactery>> PHYLACTERY =
+            REGISTER.registerComponentType("phylactery", b -> b.persistent(com.soulinchains.arcaneartifacts.necro.Phylactery.CODEC)
+                    .networkSynchronized(com.soulinchains.arcaneartifacts.necro.Phylactery.STREAM_CODEC));
+
     /** Polarity of the Amulet of Opposites: true = repels. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> REPELLING =
             REGISTER.registerComponentType("repelling", b -> b.persistent(com.mojang.serialization.Codec.BOOL)

@@ -45,6 +45,10 @@ public final class ModItems {
             REGISTER.register("shroud", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.SHROUD));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackledGearItem> BONE_CROWN =
             REGISTER.register("bone_crown", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.CROWN));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem> PHYLACTERY_AMULET =
+            REGISTER.register("phylactery_amulet", com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackledGearItem> SHACKLED_BOOTS =
+            REGISTER.register("shackled_boots", () -> new com.soulinchains.arcaneartifacts.necro.ShackledGearItem(com.soulinchains.arcaneartifacts.necro.ShackledGearItem.Piece.BOOTS));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RitualDaggerItem> RITUAL_DAGGER =
             REGISTER.register("ritual_dagger", com.soulinchains.arcaneartifacts.necro.RitualDaggerItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulVesselItem> SOUL_VESSEL =
