@@ -45,6 +45,10 @@ public final class ModCreativeTab {
                 output.accept(ModItems.RESTLESS_SPAWN_EGG.get());
                 output.accept(ModItems.SOUL_EATER_SPAWN_EGG.get());
                 output.accept(ModItems.MOURNER_SPAWN_EGG.get());
+                output.accept(ModItems.CHAIN_GHOST_SPAWN_EGG.get());
+                output.accept(ModItems.JAILER_SPAWN_EGG.get());
+                output.accept(ModItems.SHACKLE_KEY.get());
+                output.accept(ModItems.EXECUTIONER_AXE.get());
                 output.accept(ModItems.SOUL_VESSEL.get());
                 output.accept(ModItems.CONSECRATED_SOIL.get());
                 output.accept(ModItems.DESECRATED_SOIL.get());
@@ -127,6 +131,11 @@ public final class ModCreativeTab {
                         .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.necro.AwakeningRitual.ID));
                 if (awakening != null) {
                     output.accept(awakening);
+                }
+                var eternal = com.hollingsworth.arsnouveau.api.registry.RitualRegistry.getRitualItemMap()
+                        .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.necro.EternalBindingRitual.ID));
+                if (eternal != null) {
+                    output.accept(eternal);
                 }
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
                     if (part.glyphItem != null) {

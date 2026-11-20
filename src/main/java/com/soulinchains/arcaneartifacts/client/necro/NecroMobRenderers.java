@@ -1,6 +1,8 @@
 package com.soulinchains.arcaneartifacts.client.necro;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.soulinchains.arcaneartifacts.necro.mob.ChainGhost;
+import com.soulinchains.arcaneartifacts.necro.mob.Jailer;
 import com.soulinchains.arcaneartifacts.necro.mob.Mourner;
 import com.soulinchains.arcaneartifacts.necro.mob.Restless;
 import com.soulinchains.arcaneartifacts.necro.mob.SoulEater;
@@ -104,6 +106,46 @@ public final class NecroMobRenderers {
         @Override
         public ResourceLocation getTextureLocation(Mourner mob) {
             return TEXTURE;
+        }
+    }
+
+    /** Chain Ghost: a faint grey prisoner still dragging its chains. */
+    public static class ChainGhostRenderer extends HumanoidMobRenderer<ChainGhost, HumanoidModel<ChainGhost>> {
+        private static final ResourceLocation TEXTURE = vanilla("skeleton/stray");
+
+        public ChainGhostRenderer(EntityRendererProvider.Context context) {
+            super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.STRAY)), 0.0F);
+            addLayer(new Overlay<>(this, TEXTURE, 0x77A0A8B8));
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(ChainGhost mob) {
+            return TEXTURE;
+        }
+
+        @Override
+        protected boolean isBodyVisible(ChainGhost mob) {
+            return false;
+        }
+    }
+
+    /** The Jailer: a towering wither skeleton under a dark iron haze. */
+    public static class JailerRenderer extends HumanoidMobRenderer<Jailer, HumanoidModel<Jailer>> {
+        private static final ResourceLocation TEXTURE = vanilla("skeleton/wither_skeleton");
+
+        public JailerRenderer(EntityRendererProvider.Context context) {
+            super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.WITHER_SKELETON)), 0.9F);
+            addLayer(new Overlay<>(this, TEXTURE, 0x553A3F52));
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(Jailer mob) {
+            return TEXTURE;
+        }
+
+        @Override
+        protected void scale(Jailer mob, PoseStack pose, float partial) {
+            pose.scale(1.5F, 1.5F, 1.5F);
         }
     }
 }

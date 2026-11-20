@@ -46,6 +46,17 @@ public final class SableShips {
         return ForceGroups.REGISTRY.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("sable", path));
     }
 
+    public static boolean onShip(net.minecraft.world.entity.Entity entity) {
+        var box = entity.getBoundingBox().inflate(0.5, 1.0, 0.5);
+        BoundingBox3d bounds = new BoundingBox3d(box.minX, box.minY - 1.0, box.minZ, box.maxX, box.maxY, box.maxZ);
+        for (var access : Sable.HELPER.getAllIntersecting(entity.level(), bounds)) {
+            if (access instanceof ServerSubLevel ship && !ship.isRemoved()) {
+                return true;
+            }
+        }
+        return Sable.HELPER.getContaining(entity) != null;
+    }
+
     private record Point(ServerSubLevel ship, Vector3d local) implements ShipCompat.ShipPoint {
         @Override
         public boolean valid() {

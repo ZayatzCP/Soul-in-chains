@@ -24,6 +24,11 @@ public final class ModStructures {
     public static final DeferredHolder<StructurePieceType, StructurePieceType> CRYPT_PIECE =
             PIECES.register("crypt", () -> com.soulinchains.arcaneartifacts.world.crypt.CryptPiece::new);
 
+    public static final DeferredHolder<StructureType<?>, StructureType<com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonStructure>> SOUL_DUNGEON =
+            TYPES.register("soul_dungeon", () -> () -> com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> SOUL_DUNGEON_PIECE =
+            PIECES.register("soul_dungeon", () -> com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonPiece::new);
+
     private ModStructures() {
     }
 }

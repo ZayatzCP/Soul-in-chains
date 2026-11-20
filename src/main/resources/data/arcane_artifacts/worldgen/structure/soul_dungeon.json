@@ -1,0 +1,7 @@
+{
+  "type": "arcane_artifacts:soul_dungeon",
+  "biomes": "#arcane_artifacts:has_structure/soul_dungeon",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

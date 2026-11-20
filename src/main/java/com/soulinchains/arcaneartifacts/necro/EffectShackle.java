@@ -36,6 +36,8 @@ public class EffectShackle extends AreaEffect {
     public static final EffectShackle INSTANCE = new EffectShackle();
     public static final int BASE_TICKS = 60;
     public static final int BOSS_COOLDOWN_TICKS = 400;
+    /** Who put the chains on (for Chain Execution). */
+    public static final String SHACKLED_BY = ArcaneArtifacts.MODID + ":shackled_by";
     private static final String BOSS_COOLDOWN_TAG = ArcaneArtifacts.MODID + ":shackle_cooldown";
 
     private EffectShackle() {
@@ -103,6 +105,9 @@ public class EffectShackle extends AreaEffect {
             return false;
         }
         living.addEffect(new MobEffectInstance(ModEffects.SHACKLED, ticks, 0, false, true, true), source);
+        if (source != null) {
+            living.getPersistentData().putUUID(SHACKLED_BY, source.getUUID());
+        }
         living.setDeltaMovement(0, Math.min(0, living.getDeltaMovement().y), 0);
         living.hurtMarked = true;
         ShackleAnchor anchor = new ShackleAnchor(ModEntities.SHACKLE_ANCHOR.get(), level);

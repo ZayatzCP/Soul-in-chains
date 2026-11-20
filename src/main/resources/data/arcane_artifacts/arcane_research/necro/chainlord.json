@@ -1,0 +1,57 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:chain",
+  "sort": 420,
+  "subjects": [
+    "minecraft:chain",
+    "minecraft:wither_skeleton_skull",
+    "minecraft:soul_soil"
+  ],
+  "properties": [
+    "bound",
+    "undying"
+  ],
+  "requires": [
+    "arcane_artifacts:necro/awakening"
+  ],
+  "experiments": [
+    {
+      "id": "raise",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_raise_dead",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "bond",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_bond",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "shackle_wither",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_shackle",
+          "entity": "minecraft:wither_skeleton"
+        }
+      ]
+    }
+  ],
+  "notes": 2,
+  "unlocks_items": [
+    "arcane_artifacts:ritual_eternal_binding"
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_curse_of_shackles",
+    "arcane_artifacts:glyph_chain_execution"
+  ]
+}

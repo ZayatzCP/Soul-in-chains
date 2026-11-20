@@ -121,6 +121,22 @@ public final class NecroEvents {
     /** One in this many checks (every 10 seconds) at night brings a Soul Eater: about once per 25 minutes. */
     public static final int EATER_CHANCE = 150;
 
+    /** Curse of Shackles: no healing. */
+    @SubscribeEvent
+    public static void onCursedHeal(net.neoforged.neoforge.event.entity.living.LivingHealEvent event) {
+        if (event.getEntity().hasEffect(ModEffects.CURSED_CHAINS)) {
+            event.setCanceled(true);
+        }
+    }
+
+    /** Curse of Shackles: the cursed deal a quarter less damage. */
+    @SubscribeEvent
+    public static void onCursedHit(LivingIncomingDamageEvent event) {
+        if (event.getSource().getEntity() instanceof LivingEntity attacker && attacker.hasEffect(ModEffects.CURSED_CHAINS)) {
+            event.setAmount(event.getAmount() * EffectCurseOfShackles.DAMAGE_DEALT);
+        }
+    }
+
     private static boolean splitting;
 
     @SubscribeEvent
@@ -154,7 +170,7 @@ public final class NecroEvents {
     }
 
     private static void cancelIfShackled(EntityTeleportEvent event) {
-        if (event.getEntity() instanceof LivingEntity living && living.hasEffect(ModEffects.SHACKLED)) {
+        if (event.getEntity() instanceof LivingEntity living && (living.hasEffect(ModEffects.SHACKLED) || living.hasEffect(ModEffects.CURSED_CHAINS))) {
             event.setCanceled(true);
         }
     }

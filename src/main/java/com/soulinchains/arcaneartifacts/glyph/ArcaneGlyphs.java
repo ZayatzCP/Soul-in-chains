@@ -37,7 +37,9 @@ public final class ArcaneGlyphs {
             com.soulinchains.arcaneartifacts.necro.EffectRaiseDead.INSTANCE,
             com.soulinchains.arcaneartifacts.necro.EffectDevour.INSTANCE,
             com.soulinchains.arcaneartifacts.necro.EffectBond.INSTANCE,
-            com.soulinchains.arcaneartifacts.necro.EffectPhantomStep.INSTANCE
+            com.soulinchains.arcaneartifacts.necro.EffectPhantomStep.INSTANCE,
+            com.soulinchains.arcaneartifacts.necro.EffectCurseOfShackles.INSTANCE,
+            com.soulinchains.arcaneartifacts.necro.EffectChainExecution.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */

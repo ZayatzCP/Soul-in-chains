@@ -76,5 +76,6 @@ public final class CattoContent {
     public static void init() {
         RitualRegistry.registerRitual(new FamiliarBondRitual());
         RitualRegistry.registerRitual(new com.soulinchains.arcaneartifacts.necro.AwakeningRitual());
+        RitualRegistry.registerRitual(new com.soulinchains.arcaneartifacts.necro.EternalBindingRitual());
     }
 }

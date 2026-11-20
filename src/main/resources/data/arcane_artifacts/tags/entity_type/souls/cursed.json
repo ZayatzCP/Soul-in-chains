@@ -6,6 +6,7 @@
     "minecraft:evoker",
     "minecraft:vindicator",
     "minecraft:illusioner",
-    "arcane_artifacts:mourner"
+    "arcane_artifacts:mourner",
+    "arcane_artifacts:chain_ghost"
   ]
 }

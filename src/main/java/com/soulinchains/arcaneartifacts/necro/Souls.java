@@ -134,6 +134,11 @@ public final class Souls {
         if (killer == null) {
             return;
         }
+        // Executed with the Executioner's Axe: always a soul, one step stronger.
+        if (dead.getTags().contains(ExecutionerAxeItem.EXECUTED_TAG)) {
+            spawnWisp(level, dead, type.upgraded());
+            return;
+        }
         var weapon = event.getSource().getWeaponItem();
         boolean dagger = weapon != null && weapon.getItem() instanceof RitualDaggerItem;
         boolean sure = weapon != null && weapon.getItem() instanceof ChainSickleItem || dagger;

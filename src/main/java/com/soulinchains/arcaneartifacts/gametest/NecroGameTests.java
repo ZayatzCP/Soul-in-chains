@@ -439,4 +439,114 @@ public final class NecroGameTests {
                 .is(net.minecraft.world.level.block.Blocks.CHEST), "The hall must hold a chest");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void chainExecutionStrikesOnlyYourPrisoners(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Zombie caster = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(2, 2, 2));
+        Zombie other = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(8, 2, 8));
+        Pig mine = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 2, 4));
+        Pig theirs = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(6, 2, 4));
+        Pig free = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 2, 6));
+        EffectShackle.shackle(level, mine, 100, caster);
+        EffectShackle.shackle(level, theirs, 100, other);
+        int struck = com.soulinchains.arcaneartifacts.necro.EffectChainExecution.execute(level, caster, 4F);
+        helper.assertTrue(struck == 1, "Only the caster's own prisoner may be struck, got " + struck);
+        helper.assertTrue(mine.getHealth() < mine.getMaxHealth(), "The caster's prisoner must be hurt");
+        helper.assertTrue(theirs.getHealth() == theirs.getMaxHealth() && free.getHealth() == free.getMaxHealth(), "Others must be spared");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void cursedChainsBlockHealingAndWeakenHits(GameTestHelper helper) {
+        Zombie cursed = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(3, 2, 4));
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(5, 2, 4));
+        cursed.addEffect(new MobEffectInstance(ModEffects.CURSED_CHAINS, 200));
+        cursed.setHealth(10F);
+        cursed.heal(5F);
+        helper.assertTrue(cursed.getHealth() == 10F, "Cursed chains must block healing, health " + cursed.getHealth());
+        pig.hurt(helper.getLevel().damageSources().mobAttack(cursed), 8F);
+        helper.assertTrue(Math.abs(pig.getHealth() - 4F) < 0.01F, "A cursed attacker must hit for 3/4, pig at " + pig.getHealth());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void shackleKeyFreesTheHolder(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.addEffect(new MobEffectInstance(ModEffects.CURSED_CHAINS, 200));
+        player.addEffect(new MobEffectInstance(ModEffects.SHACKLED, 200));
+        ItemStack key = new ItemStack(ModItems.SHACKLE_KEY.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, key);
+        key.use(helper.getLevel(), player, net.minecraft.world.InteractionHand.MAIN_HAND);
+        helper.assertTrue(!player.hasEffect(ModEffects.CURSED_CHAINS) && !player.hasEffect(ModEffects.SHACKLED), "The key must open every shackle");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, batch = "necro_binding")
+    public static void eternalBindingKeepsAndLevelsAServant(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.CHAINLORD);
+            fill(player, SoulType.WANDERING, 3);
+            var servant = com.soulinchains.arcaneartifacts.necro.EffectRaiseDead.raise(level, player, com.soulinchains.arcaneartifacts.necro.ServantKind.SKELETON, helper.absoluteVec(new Vec3(4.5, 2, 4.5)));
+            helper.assertTrue(servant != null, "A servant must rise");
+            BlockPos brazier = helper.absolutePos(new BlockPos(4, 2, 6));
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.EternalBindingRitual.bind(level, brazier, player) == null, "No cursed soul, no binding");
+            fill(player, SoulType.CURSED, 1);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.EternalBindingRitual.bind(level, brazier, player) == servant && servant.isBound(), "The servant must be bound for ever");
+            helper.assertTrue(Souls.count(player, SoulType.CURSED) == 0, "Binding costs the cursed soul");
+            float health = servant.getMaxHealth();
+            for (int i = 0; i < com.soulinchains.arcaneartifacts.necro.Servant.killsFor(0); i++) {
+                Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(6, 2, 6));
+                servant.killedEntity(level, pig);
+                pig.discard();
+            }
+            helper.assertTrue(servant.servantLevel() == 1, "Five kills must raise the bound servant to level 1, got " + servant.servantLevel());
+            helper.assertTrue(servant.getMaxHealth() > health, "A level must add health");
+            servant.crumble(true);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, batch = "necro_execution")
+    public static void executionerAxeExecutesAndUpgradesTheSoul(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.CHAINLORD);
+            Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(4, 2, 4));
+            zombie.setHealth(2F);
+            ItemStack axe = new ItemStack(ModItems.EXECUTIONER_AXE.get());
+            axe.getItem().hurtEnemy(axe, zombie, player);
+            helper.assertTrue(!zombie.isAlive(), "The axe must execute a creature at 15% health");
+            var upgraded = SoulType.of(zombie).upgraded();
+            helper.assertTrue(wisps(helper).stream().anyMatch(w -> w.soul() == upgraded), "The executed soul must come out one grade stronger");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, batch = "necro_jailer")
+    public static void slayingTheJailerMakesAChainlord(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.OVERSEER);
+            var jailer = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.JAILER.get(), new BlockPos(5, 2, 5));
+            jailer.hurt(helper.getLevel().damageSources().playerAttack(player), 10000F);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Necro.rank(player) == com.soulinchains.arcaneartifacts.necro.Necro.CHAINLORD, "The Jailer's fall must make an Overseer a Chainlord");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void soulDungeonBuildsItsHall(GameTestHelper helper) {
+        BlockPos origin = helper.absolutePos(new BlockPos(4, 4, 4));
+        var box = new net.minecraft.world.level.levelgen.structure.BoundingBox(origin.getX() - 2, origin.getY() - 1, origin.getZ() - 2,
+                origin.getX() + 2, origin.getY() + 2 * com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonPiece.STOREY + 1, origin.getZ() + 2);
+        com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonPiece.build(helper.getLevel(), box, helper.getLevel().random, origin, false);
+        helper.assertTrue(helper.getLevel().getBlockState(origin).is(net.minecraft.world.level.block.Blocks.POLISHED_BLACKSTONE), "The hall must have a floor");
+        helper.assertTrue(helper.getLevel().getBlockState(origin.above()).isAir(), "The hall must be hollow");
+        helper.assertTrue(helper.getLevel().getBlockState(origin.above(com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonPiece.STOREY))
+                .is(net.minecraft.world.level.block.Blocks.POLISHED_BLACKSTONE_BRICKS), "Storeys must be split by a slab");
+        helper.succeed();
+    }
 }

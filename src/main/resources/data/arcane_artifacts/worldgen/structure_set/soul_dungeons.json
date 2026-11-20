@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "arcane_artifacts:soul_dungeon",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 40,
+    "separation": 16,
+    "salt": 731904562
+  }
+}

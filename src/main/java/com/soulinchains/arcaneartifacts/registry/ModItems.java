@@ -58,6 +58,14 @@ public final class ModItems {
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.SOUL_EATER, 0x14101A, 0x8E3FD0, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> MOURNER_SPAWN_EGG = REGISTER.register("mourner_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.MOURNER, 0x4A5060, 0xC8D8E8, new Item.Properties()));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackleKeyItem> SHACKLE_KEY =
+            REGISTER.register("shackle_key", com.soulinchains.arcaneartifacts.necro.ShackleKeyItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ExecutionerAxeItem> EXECUTIONER_AXE =
+            REGISTER.register("executioner_axe", com.soulinchains.arcaneartifacts.necro.ExecutionerAxeItem::new);
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> CHAIN_GHOST_SPAWN_EGG = REGISTER.register("chain_ghost_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.CHAIN_GHOST, 0x9AA3B5, 0x2A6B78, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> JAILER_SPAWN_EGG = REGISTER.register("jailer_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.JAILER, 0x1A1620, 0x6E7280, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RitualDaggerItem> RITUAL_DAGGER =
             REGISTER.register("ritual_dagger", com.soulinchains.arcaneartifacts.necro.RitualDaggerItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulVesselItem> SOUL_VESSEL =

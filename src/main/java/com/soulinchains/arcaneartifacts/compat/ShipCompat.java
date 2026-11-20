@@ -36,6 +36,18 @@ public final class ShipCompat {
         return loaded;
     }
 
+    /** Whether the entity stands on (or rides) a Create Aeronautics ship. */
+    public static boolean onShip(net.minecraft.world.entity.Entity entity) {
+        if (!loaded() || entity.level().isClientSide) {
+            return false;
+        }
+        try {
+            return com.soulinchains.arcaneartifacts.compat.sable.SableShips.onShip(entity);
+        } catch (LinkageError | RuntimeException e) {
+            return false;
+        }
+    }
+
     /** The ship whose block is at this point (in ship-plot or world coordinates), or null. */
     @Nullable
     public static ShipPoint at(Level level, Vec3 point) {

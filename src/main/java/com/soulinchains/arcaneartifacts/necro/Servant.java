@@ -78,6 +78,12 @@ public class Servant extends PathfinderMob implements OwnableEntity {
     @Nullable
     private BlockPos guardPos;
     private final SimpleContainer cargo = new SimpleContainer(27);
+    /** Eternal Binding: the servant never crumbles, waits when its chain is stretched, and grows with its kills. */
+    private boolean bound;
+    private int grade;
+    private int kills;
+    public static final int MAX_LEVEL = 10;
+    public static final int MAX_BOUND = 3;
     private int abilityCooldown;
 
     public Servant(EntityType<? extends Servant> type, Level level, ServantKind kind) {
@@ -268,9 +274,22 @@ public class Servant extends PathfinderMob implements OwnableEntity {
             }
             return;
         }
-        if (master.level() != level() || master.distanceTo(this) > Config.SERVANT_TETHER.get()) {
+        boolean stretched = master.level() != level() || master.distanceTo(this) > Config.SERVANT_TETHER.get();
+        if (stretched) {
+            // On a Create Aeronautics ship the chains hold; a bound servant never breaks its chain: both wait instead.
+            if (bound || com.soulinchains.arcaneartifacts.compat.ShipCompat.onShip(master)) {
+                if (command() == Command.FOLLOW) {
+                    guard(blockPosition());
+                    waiting = true;
+                }
+                return;
+            }
             crumble(true);
             return;
+        }
+        if (waiting && master.distanceTo(this) < 16) {
+            waiting = false;
+            follow();
         }
         if (entityData.get(OWNER_ID) != master.getId()) {
             entityData.set(OWNER_ID, master.getId());
@@ -484,9 +503,72 @@ public class Servant extends PathfinderMob implements OwnableEntity {
 
     // ------------------------------------------------------------------ saving
 
+    /** Left behind (bound servant, or master on a ship): follows again when the master comes back. */
+    private boolean waiting;
+
+    public boolean isBound() {
+        return bound;
+    }
+
+    public int servantLevel() {
+        return grade;
+    }
+
+    /** Eternal Binding: kept for good, levels up from kills. */
+    public void bindForever() {
+        bound = true;
+        setPersistenceRequired();
+    }
+
+    public static long boundCount(UUID owner) {
+        return of(owner).stream().filter(Servant::isBound).count();
+    }
+
+    /** Kills to the next level: 5, 10, 15... */
+    public static int killsFor(int level) {
+        return 5 * (level + 1);
+    }
+
+    @Override
+    public boolean killedEntity(ServerLevel level, LivingEntity victim) {
+        boolean result = super.killedEntity(level, victim);
+        if (bound && grade < MAX_LEVEL && ++kills >= killsFor(grade)) {
+            kills = 0;
+            grade++;
+            applyLevel();
+            setHealth(getMaxHealth());
+            level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, getX(), getY() + 1, getZ(), 20, 0.4, 0.6, 0.4, 0.2);
+            if (getOwner() instanceof Player master) {
+                master.displayClientMessage(Component.translatable("arcane_artifacts.servant.level_up", getDisplayName(), grade), true);
+            }
+        }
+        return result;
+    }
+
+    /** +5% health and damage per level. */
+    private void applyLevel() {
+        double bonus = 0.05 * grade;
+        var health = getAttribute(Attributes.MAX_HEALTH);
+        if (health != null) {
+            health.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                    com.soulinchains.arcaneartifacts.ArcaneArtifacts.id("servant_level_health"), bonus,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        }
+        var attack = getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attack != null) {
+            attack.addOrReplacePermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                    com.soulinchains.arcaneartifacts.ArcaneArtifacts.id("servant_level_damage"), bonus,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        }
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
+        tag.putBoolean("Bound", bound);
+        tag.putInt("Level", grade);
+        tag.putInt("Kills", kills);
+        tag.putBoolean("Waiting", waiting);
         if (ownerId != null) {
             tag.putUUID("Master", ownerId);
         }
@@ -507,6 +589,13 @@ public class Servant extends PathfinderMob implements OwnableEntity {
         Optional<BlockPos> pos = NbtUtils.readBlockPos(tag, "GuardPos");
         guardPos = pos.orElse(null);
         cargo.fromTag(tag.getList("Cargo", 10), registryAccess());
+        bound = tag.getBoolean("Bound");
+        grade = tag.getInt("Level");
+        if (grade > 0) {
+            applyLevel();
+        }
+        kills = tag.getInt("Kills");
+        waiting = tag.getBoolean("Waiting");
         register();
     }
 
