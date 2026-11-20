@@ -88,7 +88,8 @@ public final class ClientSmokeTest {
                 LevelSettings settings = new LevelSettings("arcane_smoke", GameType.CREATIVE, false, Difficulty.NORMAL, true,
                         new GameRules(), WorldDataConfiguration.DEFAULT);
                 mc.createWorldOpenFlows().createFreshLevel("arcane_smoke", settings, new WorldOptions(20251120L, false, false),
-                        WorldPresets::createNormalWorldFromPreset, mc.screen);
+                        registries -> registries.registryOrThrow(Registries.WORLD_PRESET)
+                                .getHolderOrThrow(WorldPresets.NORMAL).value().createWorldDimensions(), mc.screen);
                 stage = 1;
                 ticks = 0;
                 ArcaneArtifacts.LOGGER.info("ARCANE_SMOKE: models checked, creating world");
