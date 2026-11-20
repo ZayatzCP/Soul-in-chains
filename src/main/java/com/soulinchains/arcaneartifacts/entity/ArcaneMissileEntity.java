@@ -108,6 +108,19 @@ public class ArcaneMissileEntity extends EntityProjectileSpell {
     }
 
     @Override
+    /**
+     * A missile without a spell (summoned by a command, or loaded from a save: the resolver is not saved) has nothing to
+     * cast and Ars Nouveau's projectile would crash on hit: it simply fizzles.
+     */
+    @Override
+    public void tick() {
+        if (!level().isClientSide && spellResolver == null) {
+            discard();
+            return;
+        }
+        super.tick();
+    }
+
     public void tickNextPosition() {
         if (!level().isClientSide) {
             updateTarget();
