@@ -124,7 +124,11 @@ public class Jailer extends Monster {
         if (random.nextFloat() < 0.35F) {
             level.addFreshEntity(new ItemEntity(level, getX(), getY() + 1, getZ(), new ItemStack(ModItems.EXECUTIONER_AXE.get())));
         }
-        for (Player player : level.getEntitiesOfClass(Player.class, new AABB(blockPosition()).inflate(32))) {
+        java.util.Set<Player> witnesses = new java.util.LinkedHashSet<>(level.getEntitiesOfClass(Player.class, new AABB(blockPosition()).inflate(32)));
+        if (source.getEntity() instanceof Player killer) {
+            witnesses.add(killer);
+        }
+        for (Player player : witnesses) {
             if (Necro.rank(player) == Necro.OVERSEER) {
                 Necro.setRank(player, Necro.CHAINLORD);
                 player.sendSystemMessage(Component.translatable("arcane_artifacts.necro.chainlord"));

@@ -32,8 +32,11 @@ public class ShackleKeyItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
             int freed = 0;
-            for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(player.blockPosition()).inflate(4),
-                    e -> e == player || e.isAlliedTo(player) || player.isAlliedTo(e))) {
+            java.util.Set<LivingEntity> targets = new java.util.LinkedHashSet<>();
+            targets.add(player);
+            targets.addAll(level.getEntitiesOfClass(LivingEntity.class, new AABB(player.blockPosition()).inflate(4),
+                    e -> e.isAlliedTo(player) || player.isAlliedTo(e)));
+            for (LivingEntity living : targets) {
                 boolean any = living.removeEffect(ModEffects.SHACKLED) | living.removeEffect(ModEffects.ENTANGLED) | living.removeEffect(ModEffects.CURSED_CHAINS);
                 if (any) {
                     freed++;
