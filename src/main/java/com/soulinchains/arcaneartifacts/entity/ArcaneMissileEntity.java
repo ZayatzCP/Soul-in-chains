@@ -107,7 +107,6 @@ public class ArcaneMissileEntity extends EntityProjectileSpell {
         return lifetime;
     }
 
-    @Override
     /**
      * A missile without a spell (summoned by a command, or loaded from a save: the resolver is not saved) has nothing to
      * cast and Ars Nouveau's projectile would crash on hit: it simply fizzles.
@@ -121,6 +120,7 @@ public class ArcaneMissileEntity extends EntityProjectileSpell {
         super.tick();
     }
 
+    @Override
     public void tickNextPosition() {
         if (!level().isClientSide) {
             updateTarget();
