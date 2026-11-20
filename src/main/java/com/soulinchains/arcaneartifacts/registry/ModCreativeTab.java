@@ -47,6 +47,17 @@ public final class ModCreativeTab {
                 output.accept(ModItems.MOURNER_SPAWN_EGG.get());
                 output.accept(ModItems.CHAIN_GHOST_SPAWN_EGG.get());
                 output.accept(ModItems.JAILER_SPAWN_EGG.get());
+                output.accept(ModItems.IMPRISONED_KING_SPAWN_EGG.get());
+                output.accept(ModItems.SHACKLE_STONE.get());
+                output.accept(ModItems.CHAIN_PILLAR.get());
+                output.accept(ModItems.EMPTY_THRONE.get());
+                output.accept(ModItems.JAILER_NOTES.get());
+                output.accept(ModItems.SCYTHE_OF_THE_REAPER.get());
+                output.accept(ModItems.KINGS_CROWN.get());
+                output.accept(ModItems.TOOTH_NECKLACE.get());
+                output.accept(ModItems.EXECUTIONER_RING.get());
+                output.accept(ModItems.JAILER_EYE.get());
+                output.accept(ModItems.CAGED_HEART.get());
                 output.accept(ModItems.SHACKLE_KEY.get());
                 output.accept(ModItems.EXECUTIONER_AXE.get());
                 output.accept(ModItems.SOUL_VESSEL.get());
@@ -136,6 +147,11 @@ public final class ModCreativeTab {
                         .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.necro.EternalBindingRitual.ID));
                 if (eternal != null) {
                     output.accept(eternal);
+                }
+                var conversion = com.hollingsworth.arsnouveau.api.registry.RitualRegistry.getRitualItemMap()
+                        .get(com.soulinchains.arcaneartifacts.ArcaneArtifacts.id(com.soulinchains.arcaneartifacts.necro.ConversionRitual.ID));
+                if (conversion != null) {
+                    output.accept(conversion);
                 }
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
                     if (part.glyphItem != null) {

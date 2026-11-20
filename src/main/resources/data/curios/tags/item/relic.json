@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "arcane_artifacts:tooth_necklace",
+    "arcane_artifacts:executioner_ring",
+    "arcane_artifacts:jailer_eye",
+    "arcane_artifacts:caged_heart"
+  ]
+}

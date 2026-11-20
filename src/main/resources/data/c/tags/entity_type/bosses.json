@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:jailer"
+    "arcane_artifacts:jailer",
+    "arcane_artifacts:imprisoned_king"
   ]
 }

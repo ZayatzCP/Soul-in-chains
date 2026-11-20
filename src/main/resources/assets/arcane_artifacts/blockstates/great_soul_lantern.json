@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "arcane_artifacts:block/great_soul_lantern"
+    },
+    "hanging=true": {
+      "model": "arcane_artifacts:block/great_soul_lantern_hanging"
+    }
+  }
+}

@@ -114,6 +114,44 @@
           "weight": 1
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 7
+        },
+        {
+          "type": "minecraft:item",
+          "name": "arcane_artifacts:tooth_necklace",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "arcane_artifacts:executioner_ring",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "arcane_artifacts:jailer_eye",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "arcane_artifacts:caged_heart",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "arcane_artifacts:jailer_notes"
+        }
+      ]
     }
   ]
 }

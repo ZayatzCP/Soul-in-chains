@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "G G",
+    "BSB",
+    "B B"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:polished_blackstone"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "S": {
+      "item": "arcane_artifacts:shackle_stone"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:empty_throne"
+  }
+}

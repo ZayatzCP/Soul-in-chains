@@ -58,6 +58,23 @@ public final class ModItems {
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.SOUL_EATER, 0x14101A, 0x8E3FD0, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> MOURNER_SPAWN_EGG = REGISTER.register("mourner_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.MOURNER, 0x4A5060, 0xC8D8E8, new Item.Properties()));
+    public static final DeferredItem<BlockItem> SHACKLE_STONE = REGISTER.registerSimpleBlockItem(ModBlocks.SHACKLE_STONE);
+    public static final DeferredItem<BlockItem> CHAIN_PILLAR = REGISTER.registerSimpleBlockItem(ModBlocks.CHAIN_PILLAR);
+    public static final DeferredItem<BlockItem> EMPTY_THRONE = REGISTER.registerSimpleBlockItem(ModBlocks.EMPTY_THRONE);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ScytheOfTheReaperItem> SCYTHE_OF_THE_REAPER =
+            REGISTER.register("scythe_of_the_reaper", com.soulinchains.arcaneartifacts.necro.ScytheOfTheReaperItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.KingsCrownItem> KINGS_CROWN = REGISTER.register("kings_crown", com.soulinchains.arcaneartifacts.necro.KingsCrownItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.JailerNotesItem> JAILER_NOTES = REGISTER.register("jailer_notes", com.soulinchains.arcaneartifacts.necro.JailerNotesItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RelicItem> TOOTH_NECKLACE = REGISTER.register("tooth_necklace",
+            () -> new com.soulinchains.arcaneartifacts.necro.RelicItem(com.soulinchains.arcaneartifacts.necro.Relics.Kind.TOOTH_NECKLACE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RelicItem> EXECUTIONER_RING = REGISTER.register("executioner_ring",
+            () -> new com.soulinchains.arcaneartifacts.necro.RelicItem(com.soulinchains.arcaneartifacts.necro.Relics.Kind.EXECUTIONER_RING));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RelicItem> JAILER_EYE = REGISTER.register("jailer_eye",
+            () -> new com.soulinchains.arcaneartifacts.necro.RelicItem(com.soulinchains.arcaneartifacts.necro.Relics.Kind.JAILER_EYE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.RelicItem> CAGED_HEART = REGISTER.register("caged_heart",
+            () -> new com.soulinchains.arcaneartifacts.necro.RelicItem(com.soulinchains.arcaneartifacts.necro.Relics.Kind.CAGED_HEART));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> IMPRISONED_KING_SPAWN_EGG = REGISTER.register("imprisoned_king_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.IMPRISONED_KING, 0x1A1620, 0xD4A93A, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ShackleKeyItem> SHACKLE_KEY =
             REGISTER.register("shackle_key", com.soulinchains.arcaneartifacts.necro.ShackleKeyItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ExecutionerAxeItem> EXECUTIONER_AXE =

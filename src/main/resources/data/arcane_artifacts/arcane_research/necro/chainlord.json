@@ -48,7 +48,11 @@
   ],
   "notes": 2,
   "unlocks_items": [
-    "arcane_artifacts:ritual_eternal_binding"
+    "arcane_artifacts:ritual_eternal_binding",
+    "arcane_artifacts:shackle_stone",
+    "arcane_artifacts:chain_pillar",
+    "arcane_artifacts:empty_throne",
+    "arcane_artifacts:ritual_conversion"
   ],
   "unlocks": [
     "arcane_artifacts:glyph_curse_of_shackles",

@@ -16,6 +16,11 @@
     "arcane_artifacts:polished_spore_clay",
     "arcane_artifacts:spore_brick_stairs",
     "arcane_artifacts:spore_brick_slab",
-    "arcane_artifacts:spore_brick_wall"
+    "arcane_artifacts:spore_brick_wall",
+    "arcane_artifacts:shackle_stone",
+    "arcane_artifacts:chain_pillar",
+    "arcane_artifacts:empty_throne",
+    "arcane_artifacts:chain_lock",
+    "arcane_artifacts:great_soul_lantern"
   ]
 }

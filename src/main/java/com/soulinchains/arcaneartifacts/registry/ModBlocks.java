@@ -37,6 +37,15 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.GraveBlock> GRAVE = BLOCKS.register("grave",
             com.soulinchains.arcaneartifacts.necro.GraveBlock::new);
 
+    // ------------------------------------------------------------------ Shackled: Throne of Chains
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> SHACKLE_STONE = BLOCKS.register("shackle_stone",
+            () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
+                    .requiresCorrectToolForDrops().strength(2.5f, 9.0f).sound(SoundType.POLISHED_DEEPSLATE)));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.ChainPillarBlock> CHAIN_PILLAR = BLOCKS.register("chain_pillar", com.soulinchains.arcaneartifacts.necro.throne.ChainPillarBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.EmptyThroneBlock> EMPTY_THRONE = BLOCKS.register("empty_throne", com.soulinchains.arcaneartifacts.necro.throne.EmptyThroneBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.GreatSoulLanternBlock> GREAT_SOUL_LANTERN = BLOCKS.register("great_soul_lantern", com.soulinchains.arcaneartifacts.necro.throne.GreatSoulLanternBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.ChainLockBlock> CHAIN_LOCK = BLOCKS.register("chain_lock", com.soulinchains.arcaneartifacts.necro.throne.ChainLockBlock::new);
+
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)

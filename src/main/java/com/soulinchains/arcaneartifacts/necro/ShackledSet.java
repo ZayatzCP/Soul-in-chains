@@ -43,8 +43,13 @@ public final class ShackledSet {
         return ArcaneSets.has(entity, ModItems.SHROUD.get());
     }
 
+    /** The Bone Crown or the Imprisoned King's Crown, which does everything the Bone Crown does. */
     public static boolean wearsCrown(LivingEntity entity) {
-        return ArcaneSets.has(entity, ModItems.BONE_CROWN.get());
+        return ArcaneSets.has(entity, ModItems.BONE_CROWN.get()) || wearsKingsCrown(entity);
+    }
+
+    public static boolean wearsKingsCrown(LivingEntity entity) {
+        return ArcaneSets.has(entity, ModItems.KINGS_CROWN.get());
     }
 
     public static boolean wearsBoots(LivingEntity entity) {

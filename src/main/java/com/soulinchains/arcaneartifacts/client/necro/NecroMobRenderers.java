@@ -2,6 +2,7 @@ package com.soulinchains.arcaneartifacts.client.necro;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.soulinchains.arcaneartifacts.necro.mob.ChainGhost;
+import com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing;
 import com.soulinchains.arcaneartifacts.necro.mob.Jailer;
 import com.soulinchains.arcaneartifacts.necro.mob.Mourner;
 import com.soulinchains.arcaneartifacts.necro.mob.Restless;
@@ -146,6 +147,29 @@ public final class NecroMobRenderers {
         @Override
         protected void scale(Jailer mob, PoseStack pose, float partial) {
             pose.scale(1.5F, 1.5F, 1.5F);
+        }
+    }
+
+    /** The Imprisoned King: a giant wither skeleton in a golden crown, wrapped in violet soul light. */
+    public static class KingRenderer extends HumanoidMobRenderer<ImprisonedKing, HumanoidModel<ImprisonedKing>> {
+        private static final ResourceLocation TEXTURE = vanilla("skeleton/wither_skeleton");
+
+        public KingRenderer(EntityRendererProvider.Context context) {
+            super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.WITHER_SKELETON)), 1.2F);
+            addLayer(new net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer<>(this,
+                    new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
+                    new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), context.getModelManager()));
+            addLayer(new Overlay<>(this, TEXTURE, 0x667A3FB0));
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(ImprisonedKing mob) {
+            return TEXTURE;
+        }
+
+        @Override
+        protected void scale(ImprisonedKing mob, PoseStack pose, float partial) {
+            pose.scale(2.0F, 2.0F, 2.0F);
         }
     }
 }

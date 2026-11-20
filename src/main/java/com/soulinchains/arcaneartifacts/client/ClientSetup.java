@@ -44,6 +44,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.MournerRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_GHOST.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.ChainGhostRenderer::new);
         event.registerEntityRenderer(ModEntities.JAILER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.JailerRenderer::new);
+        event.registerEntityRenderer(ModEntities.IMPRISONED_KING.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.KingRenderer::new);
         event.registerEntityRenderer(ModEntities.BOND_LINK.get(), com.soulinchains.arcaneartifacts.client.necro.BondLinkRenderer::new);
         ModEntities.SERVANTS.forEach((kind, type) -> {
             switch (kind) {

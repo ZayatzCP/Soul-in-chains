@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "C",
+    "B",
+    "C"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:polished_basalt"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "count": 2,
+    "id": "arcane_artifacts:chain_pillar"
+  }
+}

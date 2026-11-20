@@ -549,4 +549,149 @@ public final class NecroGameTests {
                 .is(net.minecraft.world.level.block.Blocks.POLISHED_BLACKSTONE_BRICKS), "Storeys must be split by a slab");
         helper.succeed();
     }
+
+    private static BlockPos buildThrone(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos throne = helper.absolutePos(new BlockPos(4, 30, 4));
+        for (int x = -3; x <= 3; x++) {
+            for (int z = -3; z <= 3; z++) {
+                for (int y = -1; y <= 8; y++) {
+                    level.setBlock(throne.offset(x, y, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                }
+            }
+        }
+        for (int x = -2; x <= 2; x++) {
+            for (int z = -2; z <= 2; z++) {
+                level.setBlock(throne.offset(x, -1, z), com.soulinchains.arcaneartifacts.registry.ModBlocks.SHACKLE_STONE.get().defaultBlockState(), 3);
+            }
+        }
+        level.setBlock(throne, com.soulinchains.arcaneartifacts.registry.ModBlocks.EMPTY_THRONE.get().defaultBlockState(), 3);
+        for (int[] corner : com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.CORNERS) {
+            for (int y = 0; y < com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.PILLAR; y++) {
+                level.setBlock(throne.offset(corner[0], y, corner[1]), com.soulinchains.arcaneartifacts.registry.ModBlocks.CHAIN_PILLAR.get().defaultBlockState(), 3);
+            }
+        }
+        return throne;
+    }
+
+    @GameTest(template = ARENA, batch = "necro_throne")
+    public static void throneOfChainsWakesTheKing(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Player player = playerWithLantern(helper);
+        BlockPos throne = buildThrone(helper);
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.complete(level, throne), "The throne must be recognised");
+            fill(player, SoulType.GREAT, 4);
+            var wrong = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 1), player);
+            helper.assertTrue(wrong == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.WRONG_ORDER, "North-east first is the wrong order, got " + wrong);
+            helper.assertTrue(Souls.count(player, SoulType.GREAT) == 4, "A wrong order must not take the soul");
+            for (int corner = 0; corner < 4; corner++) {
+                var result = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, corner), player);
+                helper.assertTrue(result == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.HUNG, "Corner " + corner + " must take its lantern, got " + result);
+            }
+            helper.assertTrue(Souls.count(player, SoulType.GREAT) == 0, "Four lanterns cost four great souls");
+            var king = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.summon(level, throne);
+            helper.assertTrue(king != null, "A lit throne must wake the King");
+            helper.assertTrue(king.locksLeft() == 4, "The King must be chained to four locks, got " + king.locksLeft());
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.lit(level, throne) == 0, "The lanterns burn out in the summoning");
+            king.chainTo(java.util.List.of(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 0), com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 1),
+                    com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 2), com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 3)));
+            for (int i = 0; i < com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing.RISING_TICKS + 1; i++) {
+                king.aiStep();
+            }
+            float health = king.getHealth();
+            king.hurt(level.damageSources().playerAttack(player), 50F);
+            helper.assertTrue(king.getHealth() == health, "A chained King cannot be hurt");
+            for (int corner = 0; corner < 4; corner++) {
+                level.removeBlock(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, corner), false);
+            }
+            king.invulnerableTime = 0;
+            king.hurt(level.damageSources().playerAttack(player), 50F);
+            helper.assertTrue(king.getHealth() < health, "With the locks broken the King must bleed");
+            king.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void freeKingTearsServantChains(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var king = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.IMPRISONED_KING.get(), new BlockPos(3, 2, 3));
+        helper.assertTrue(king.phase() == 2, "A King with no locks walks free, phase " + king.phase());
+        king.setHealth(king.getMaxHealth() * 0.2F);
+        helper.assertTrue(king.phase() == 3, "Below 30% the King is free");
+        var servant = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.SERVANTS
+                .get(com.soulinchains.arcaneartifacts.necro.ServantKind.SKELETON).get(), new BlockPos(6, 2, 6));
+        helper.assertTrue(king.tearServants(level) == 1 && servant.isRemoved(), "The free King must tear a servant's chain");
+        king.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void scytheHarvestMarksForReaping(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 pos = helper.absoluteVec(new Vec3(2.5, 2, 2.5));
+        player.setPos(pos.x, pos.y, pos.z);
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(5, 2, 5));
+        int cut = com.soulinchains.arcaneartifacts.necro.ScytheOfTheReaperItem.harvest(helper.getLevel(), player);
+        helper.assertTrue(cut == 1, "Harvest must cut the zombie, cut " + cut);
+        helper.assertTrue(zombie.hasEffect(ModEffects.REAP_MARK), "Harvest must mark the zombie for reaping");
+        helper.assertTrue(zombie.getHealth() < zombie.getMaxHealth(), "Harvest must hurt");
+        helper.succeed();
+    }
+
+    private static void wearRelic(Player player, net.minecraft.world.item.Item relic) {
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.setEquippedCurio("relic", 0, new ItemStack(relic)));
+    }
+
+    @GameTest(template = ARENA, batch = "necro_necklace")
+    public static void toothNecklaceSparesEveryFifthSoul(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        wearRelic(player, ModItems.TOOTH_NECKLACE.get());
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 0F);
+            fill(player, SoulType.WANDERING, 5);
+            for (int i = 0; i < 5; i++) {
+                Souls.spend(player, SoulType.WANDERING);
+            }
+            float corruption = com.soulinchains.arcaneartifacts.necro.Corruption.get(player);
+            helper.assertTrue(Math.abs(corruption - 2F) < 1e-3, "Four of five spends count: 2.0 Corruption, got " + corruption);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, batch = "necro_heart")
+    public static void cagedHeartBeatsOnce(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        wearRelic(player, ModItems.CAGED_HEART.get());
+        helper.runAfterDelay(2, () -> {
+            player.hurt(helper.getLevel().damageSources().generic(), 1000F);
+            helper.assertTrue(player.isAlive() && Math.abs(player.getHealth() - 1F) < 1e-3, "The heart must leave 1 health, got " + player.getHealth());
+            helper.assertTrue(Souls.total(player) == 3, "The heart must put three souls in the lantern, got " + Souls.total(player));
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, batch = "necro_lich")
+    public static void conversionMakesALich(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        ItemStack amulet = new ItemStack(ModItems.PHYLACTERY_AMULET.get());
+        com.soulinchains.arcaneartifacts.necro.PhylacteryAmuletItem.bind(amulet,
+                net.minecraft.core.GlobalPos.of(helper.getLevel().dimension(), helper.absolutePos(new BlockPos(2, 2, 2))));
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.setEquippedCurio("necklace", 0, amulet));
+        helper.runAfterDelay(2, () -> {
+            com.soulinchains.arcaneartifacts.necro.Necro.setRank(player, com.soulinchains.arcaneartifacts.necro.Necro.CHAINLORD);
+            com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 50F);
+            fill(player, SoulType.GREAT, 1);
+            helper.assertTrue(!com.soulinchains.arcaneartifacts.necro.ConversionRitual.convert(player), "Corruption 50 is not enough");
+            com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 99F);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.ConversionRitual.convert(player), "A Chainlord at 99 with a bound phylactery converts");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Corruption.isLich(player), "The player must be a Lich");
+            com.soulinchains.arcaneartifacts.necro.Corruption.set(player, 10F);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Corruption.isLich(player), "A Lich stays a Lich");
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 100));
+            helper.assertTrue(!player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "Regeneration must not take on a Lich");
+            helper.succeed();
+        });
+    }
 }

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=south": {
+      "model": "arcane_artifacts:block/empty_throne",
+      "y": 0
+    },
+    "facing=west": {
+      "model": "arcane_artifacts:block/empty_throne",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "arcane_artifacts:block/empty_throne",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "arcane_artifacts:block/empty_throne",
+      "y": 270
+    }
+  }
+}

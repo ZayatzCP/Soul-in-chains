@@ -39,11 +39,15 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  *     <li>75-99 Unclean: necromancy glyphs much stronger, weak undead leave you alone; you burn in the sun without a
  *     helmet and villagers will not trade.</li>
  * </ul>
- * 100 (Lich) needs a ritual and a phylactery (a later version); until then Corruption stops at 99.
+ * 100 (Lich) is reached only through the Conversion ritual with a bound Phylactery; otherwise Corruption stops at 99.
+ * A Lich stays a Lich: Corruption no longer moves. Flight while the Phylactery Amulet is worn, no hunger, servants rise
+ * half again as strong; healing potions do not work and iron golems hunt you.
  */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
 public final class Corruption {
     public static final float MAX = 99.0F;
+    public static final float LICH = 100.0F;
+    public static final float LICH_SERVANT_HEALTH = 0.5F;
     public static final float TOUCHED = 25F;
     public static final float SHACKLED = 50F;
     public static final float UNCLEAN = 75F;
@@ -57,9 +61,26 @@ public final class Corruption {
         return player.getData(ModAttachments.CORRUPTION);
     }
 
+    public static boolean isLich(Player player) {
+        return get(player) >= LICH;
+    }
+
+    /** The Conversion ritual: Corruption 100, for good. */
+    public static void makeLich(Player player) {
+        player.setData(ModAttachments.CORRUPTION, LICH);
+        if (player instanceof ServerPlayer serverPlayer) {
+            sync(serverPlayer);
+            serverPlayer.displayClientMessage(Component.translatable("arcane_artifacts.corruption.stage_up",
+                    Component.translatable("arcane_artifacts.corruption.stage.4")), false);
+        }
+    }
+
     public static void set(Player player, float value) {
-        float clamped = Math.max(0F, Math.min(MAX, value));
         float old = get(player);
+        if (old >= LICH) {
+            return;
+        }
+        float clamped = Math.max(0F, Math.min(MAX, value));
         player.setData(ModAttachments.CORRUPTION, clamped);
         if (player instanceof ServerPlayer serverPlayer && (int) old != (int) clamped) {
             sync(serverPlayer);
@@ -73,6 +94,10 @@ public final class Corruption {
     }
 
     public static void add(Player player, float amount) {
+        if (amount > 0 && ShackledSet.wearsKingsCrown(player)) {
+            // The Imprisoned King's Crown: Corruption grows half as fast.
+            amount *= 0.5F;
+        }
         set(player, get(player) + amount);
     }
 
@@ -91,9 +116,9 @@ public final class Corruption {
         add(player, costOf(type));
     }
 
-    /** 0 Alive, 1 Touched, 2 Shackled, 3 Unclean. */
+    /** 0 Alive, 1 Touched, 2 Shackled, 3 Unclean, 4 Lich. */
     public static int stage(float corruption) {
-        return corruption >= UNCLEAN ? 3 : corruption >= SHACKLED ? 2 : corruption >= TOUCHED ? 1 : 0;
+        return corruption >= LICH ? 4 : corruption >= UNCLEAN ? 3 : corruption >= SHACKLED ? 2 : corruption >= TOUCHED ? 1 : 0;
     }
 
     public static int stage(Player player) {
@@ -113,7 +138,9 @@ public final class Corruption {
             return;
         }
         boolean sunlit = player.level().isDay() && player.level().canSeeSky(player.blockPosition().above());
-        if (sunlit) {
+        if (value >= LICH) {
+            lichTick(player);
+        } else if (sunlit) {
             set(player, value - DAYLIGHT_WASH);
         }
         int stage = stage(value);
@@ -174,6 +201,44 @@ public final class Corruption {
         boolean crowned = ShackledSet.wearsCrown(player) && strength < Necro.rank(player);
         if (crowned || stage(player) >= 3 && strength <= 1) {
             event.setCanceled(true);
+        }
+    }
+
+    // ------------------------------------------------------------------ Lich
+
+    /** Every 5 seconds: flight with the Phylactery Amulet, no hunger, iron golems hunt the Lich. */
+    private static void lichTick(Player player) {
+        boolean amulet = com.soulinchains.arcaneartifacts.util.CurioHelper.findEquipped(player,
+                com.soulinchains.arcaneartifacts.registry.ModItems.PHYLACTERY_AMULET.get()).isPresent();
+        if (!player.isCreative() && !player.isSpectator() && player.getAbilities().mayfly != amulet) {
+            player.getAbilities().mayfly = amulet;
+            if (!amulet) {
+                player.getAbilities().flying = false;
+            }
+            player.onUpdateAbilities();
+        }
+        player.getFoodData().setFoodLevel(20);
+        player.getFoodData().setSaturation(Math.max(player.getFoodData().getSaturationLevel(), 5F));
+        for (net.minecraft.world.entity.animal.IronGolem golem : player.level().getEntitiesOfClass(net.minecraft.world.entity.animal.IronGolem.class,
+                player.getBoundingBox().inflate(16))) {
+            if (golem.getTarget() == null && !player.isCreative()) {
+                golem.setTarget(player);
+            }
+        }
+    }
+
+    /** A Lich is not healed by potions or beacons of life: Instant Health and Regeneration do not take. Harming heals. */
+    @SubscribeEvent
+    public static void onEffect(net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable event) {
+        if (!(event.getEntity() instanceof Player player) || !isLich(player)) {
+            return;
+        }
+        var effect = event.getEffectInstance().getEffect();
+        if (effect.value() == MobEffects.HEAL.value() || effect.value() == MobEffects.REGENERATION.value()) {
+            event.setResult(net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+        } else if (effect.value() == MobEffects.HARM.value()) {
+            event.setResult(net.neoforged.neoforge.event.entity.living.MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+            player.heal(4F * (event.getEffectInstance().getAmplifier() + 1));
         }
     }
 

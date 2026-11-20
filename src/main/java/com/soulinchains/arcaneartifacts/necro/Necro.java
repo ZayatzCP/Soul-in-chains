@@ -47,7 +47,7 @@ public final class Necro {
         }
         List<? extends Integer> limits = Config.SERVANT_LIMITS.get();
         int base = limits.isEmpty() ? 0 : limits.get(Math.min(rank, limits.size()) - 1);
-        int bonus = (ShackledSet.wearsCrown(player) ? 1 : 0) + (Corruption.stage(player) >= 2 ? 1 : 0);
+        int bonus = (ShackledSet.wearsKingsCrown(player) ? 2 : ShackledSet.wearsCrown(player) ? 1 : 0) + (Corruption.stage(player) >= 2 ? 1 : 0);
         return Math.min(8, base + bonus);
     }
 

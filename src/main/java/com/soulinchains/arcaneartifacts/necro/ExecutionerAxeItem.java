@@ -33,7 +33,7 @@ public class ExecutionerAxeItem extends AxeItem {
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         boolean result = super.hurtEnemy(stack, target, attacker);
         if (attacker instanceof Player player && Necro.rank(player) >= Necro.CHAINLORD && target.isAlive()
-                && !target.getType().is(Tags.EntityTypes.BOSSES) && target.getHealth() <= target.getMaxHealth() * EXECUTE_SHARE
+                && !target.getType().is(Tags.EntityTypes.BOSSES) && target.getHealth() <= target.getMaxHealth() * Relics.executeShare(player)
                 && player.level() instanceof ServerLevel level) {
             target.addTag(EXECUTED_TAG);
             target.hurt(level.damageSources().playerAttack(player), Float.MAX_VALUE);

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "arcane_artifacts:item/scythe_of_the_reaper"
+  }
+}

@@ -168,6 +168,20 @@
           ]
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "arcane_artifacts:jailer_notes",
+          "weight": 1
+        }
+      ]
     }
   ]
 }

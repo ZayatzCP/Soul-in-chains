@@ -54,7 +54,7 @@ public final class ArcaneSets {
         public int worn(LivingEntity entity) {
             int count = 0;
             for (Supplier<? extends Item> piece : pieces) {
-                if (has(entity, piece.get())) {
+                if (has(entity, piece.get()) || piece.get() == ModItems.BONE_CROWN.get() && has(entity, ModItems.KINGS_CROWN.get())) {
                     count++;
                 }
             }

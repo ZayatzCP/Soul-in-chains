@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "arcane_artifacts:block/chain_pillar_side",
+    "end": "arcane_artifacts:block/chain_pillar_top"
+  }
+}

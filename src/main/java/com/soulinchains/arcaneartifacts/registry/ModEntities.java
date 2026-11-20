@@ -56,6 +56,10 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.Jailer::new, MobCategory.MONSTER)
                     .sized(0.9F, 3.0F).fireImmune().clientTrackingRange(12).build(ArcaneArtifacts.MODID + ":jailer"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing>> IMPRISONED_KING = REGISTER.register("imprisoned_king",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing::new, MobCategory.MONSTER)
+                    .sized(1.2F, 4.0F).fireImmune().clientTrackingRange(16).build(ArcaneArtifacts.MODID + ":imprisoned_king"));
+
     /** The Shackled's servants, one entity type per kind. */
     public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
             DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> SERVANTS = servants();

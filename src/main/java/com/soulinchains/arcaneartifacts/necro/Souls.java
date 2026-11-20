@@ -87,7 +87,9 @@ public final class Souls {
         if (!take(player, type)) {
             return false;
         }
-        Corruption.spend(player, type);
+        if (!Relics.toothNecklaceSpares(player)) {
+            Corruption.spend(player, type);
+        }
         return true;
     }
 
