@@ -26,6 +26,10 @@ neoForge {
         client {
             client()
             gameDirectory = project.file('runs/client')
+            // ./gradlew runClient -Psmoke : the client smoke test (see ClientSmokeTest), used by CI under a virtual display.
+            if (project.hasProperty('smoke')) {
+                systemProperty 'arcane_artifacts.smoke', 'true'
+            }
         }
         server {
             server()

@@ -24,6 +24,26 @@ jobs:
           ./gradlew runGameTestServer --stacktrace --no-daemon 2>&1 | tee gametest-output.log
           # The game test server can crash on start and still exit with 0: insist on the success line.
           grep -q "required tests passed" gametest-output.log
+      - name: Client smoke test (real client, software rendering, virtual display)
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libgl1 > /dev/null
+          set -o pipefail
+          timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" ./gradlew runClient -Psmoke --no-daemon 2>&1 | tee client-output.log || true
+          grep -E "ARCANE_SMOKE|Crash report|Exception" client-output.log | head -80 || true
+          grep -q "ARCANE_SMOKE_OK" client-output.log
+      - name: Upload client logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-smoke-logs
+          path: |
+            runs/client/logs/
+            runs/client/crash-reports/
+            client-output.log
+          if-no-files-found: ignore
       - name: Upload game test logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -32,6 +52,7 @@ jobs:
           path: runs/gametest/logs/
           if-no-files-found: ignore
       - name: Upload jar
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: arcane_artifacts-jar
