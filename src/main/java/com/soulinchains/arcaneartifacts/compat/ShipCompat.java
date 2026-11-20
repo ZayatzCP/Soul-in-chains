@@ -55,9 +55,71 @@ public final class ShipCompat {
             return null;
         }
         try {
-            return com.soulinchains.arcaneartifacts.compat.sable.SableShips.at(level, point);
+            ShipPoint found = com.soulinchains.arcaneartifacts.compat.sable.SableShips.at(level, point);
+            return found == null ? null : new Guarded(found);
         } catch (LinkageError | RuntimeException e) {
             return null;
+        }
+    }
+
+    /**
+     * Every call into Sable after the hook is guarded too: a newer Sable that changed its API, or a ship that went away
+     * mid-tick, makes the point invalid instead of crashing the server tick.
+     */
+    private static final class Guarded implements ShipPoint {
+        private final ShipPoint inner;
+        private boolean broken;
+        private Vec3 last = Vec3.ZERO;
+
+        Guarded(ShipPoint inner) {
+            this.inner = inner;
+        }
+
+        @Override
+        public boolean valid() {
+            if (broken) {
+                return false;
+            }
+            try {
+                return inner.valid();
+            } catch (LinkageError | RuntimeException e) {
+                broken = true;
+                return false;
+            }
+        }
+
+        @Override
+        public Vec3 world() {
+            if (!broken) {
+                try {
+                    last = inner.world();
+                } catch (LinkageError | RuntimeException e) {
+                    broken = true;
+                }
+            }
+            return last;
+        }
+
+        @Override
+        public void pull(Vec3 worldDirection, double accel) {
+            if (!broken) {
+                try {
+                    inner.pull(worldDirection, accel);
+                } catch (LinkageError | RuntimeException e) {
+                    broken = true;
+                }
+            }
+        }
+
+        @Override
+        public void brake(double strength) {
+            if (!broken) {
+                try {
+                    inner.brake(strength);
+                } catch (LinkageError | RuntimeException e) {
+                    broken = true;
+                }
+            }
         }
     }
 }

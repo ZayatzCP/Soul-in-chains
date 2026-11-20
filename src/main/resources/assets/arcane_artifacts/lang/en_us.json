@@ -1817,5 +1817,8 @@
   "arcane_artifacts.necro.ritual.need_great": "You need a great soul in your Soul Lantern.",
   "arcane_artifacts.necro.ritual.lich": "Your heart stops. You are a Lich.",
   "arcane_artifacts.corruption.stage.4": "Lich",
-  "arcane_artifacts.throne.start_north_west": "The first lantern goes on the north-west pillar."
+  "arcane_artifacts.throne.start_north_west": "The first lantern goes on the north-west pillar.",
+  "entity.arcane_artifacts.bullet": "Bullet",
+  "entity.arcane_artifacts.crystal_orb": "Crystal Ball",
+  "entity.arcane_artifacts.spore_cloud": "Spore Cloud"
 }
