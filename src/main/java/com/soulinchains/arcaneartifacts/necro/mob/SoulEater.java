@@ -150,7 +150,9 @@ public class SoulEater extends Monster {
         if (level() instanceof ServerLevel level) {
             for (SoulType type : stolen) {
                 Souls.spawnWisp(level, this, type);
-                Souls.spawnWisp(level, this, type);
+                if (type.strength < 3) {
+                    Souls.spawnWisp(level, this, type);
+                }
             }
             stolen.clear();
         }

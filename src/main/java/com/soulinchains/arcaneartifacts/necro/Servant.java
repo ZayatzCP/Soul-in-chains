@@ -271,6 +271,7 @@ public class Servant extends PathfinderMob implements OwnableEntity {
             // The master is away: servants wait where they stand.
             if (command() == Command.FOLLOW) {
                 guard(blockPosition());
+                waiting = true;
             }
             return;
         }

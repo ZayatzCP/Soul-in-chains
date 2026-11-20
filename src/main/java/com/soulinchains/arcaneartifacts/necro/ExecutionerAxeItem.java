@@ -37,6 +37,9 @@ public class ExecutionerAxeItem extends AxeItem {
                 && player.level() instanceof ServerLevel level) {
             target.addTag(EXECUTED_TAG);
             target.hurt(level.damageSources().playerAttack(player), Float.MAX_VALUE);
+            if (target.isAlive()) {
+                target.removeTag(EXECUTED_TAG);
+            }
             level.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + target.getBbHeight() * 0.8, target.getZ(), 1, 0, 0, 0, 0);
             level.playSound(null, target.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 0.6F, 0.5F);
         }

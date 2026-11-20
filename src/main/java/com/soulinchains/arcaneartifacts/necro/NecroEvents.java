@@ -50,6 +50,14 @@ public final class NecroEvents {
         }
     }
 
+    /** A phantom cannot cast either (the spell would hit while nothing can hit back). */
+    @SubscribeEvent
+    public static void onPhantomCast(com.hollingsworth.arsnouveau.api.event.SpellCastEvent event) {
+        if (event.getEntity() != null && event.getEntity().hasEffect(ModEffects.PHANTOM)) {
+            event.setCanceled(true);
+        }
+    }
+
     @SubscribeEvent
     public static void onPhantomTargeted(net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent event) {
         if (event.getNewAboutToBeSetTarget() != null && event.getNewAboutToBeSetTarget().hasEffect(ModEffects.PHANTOM)) {

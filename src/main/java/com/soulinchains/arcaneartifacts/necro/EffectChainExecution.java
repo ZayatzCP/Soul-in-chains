@@ -53,7 +53,7 @@ public class EffectChainExecution extends AreaEffect {
     /** Returns how many were struck. */
     public static int execute(ServerLevel level, LivingEntity caster, float damage) {
         List<LivingEntity> held = level.getEntitiesOfClass(LivingEntity.class, new AABB(caster.blockPosition()).inflate(RANGE),
-                        e -> e != caster && e.isAlive() && heldBy(e, caster)).stream()
+                        e -> e != caster && e.isAlive() && heldBy(e, caster) && !Necro.friendly(caster, e)).stream()
                 .sorted(Comparator.comparingDouble(e -> e.distanceToSqr(caster))).limit(MAX_TARGETS).toList();
         for (LivingEntity victim : held) {
             victim.invulnerableTime = 0;

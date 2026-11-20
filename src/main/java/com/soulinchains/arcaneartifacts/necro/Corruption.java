@@ -48,6 +48,7 @@ public final class Corruption {
     public static final float MAX = 99.0F;
     public static final float LICH = 100.0F;
     public static final float LICH_SERVANT_HEALTH = 0.5F;
+    private static final String LICH_FLIGHT = ArcaneArtifacts.MODID + ":lich_flight";
     public static final float TOUCHED = 25F;
     public static final float SHACKLED = 50F;
     public static final float UNCLEAN = 75F;
@@ -210,12 +211,18 @@ public final class Corruption {
     private static void lichTick(Player player) {
         boolean amulet = com.soulinchains.arcaneartifacts.util.CurioHelper.findEquipped(player,
                 com.soulinchains.arcaneartifacts.registry.ModItems.PHYLACTERY_AMULET.get()).isPresent();
-        if (!player.isCreative() && !player.isSpectator() && player.getAbilities().mayfly != amulet) {
-            player.getAbilities().mayfly = amulet;
-            if (!amulet) {
+        boolean granted = player.getPersistentData().getBoolean(LICH_FLIGHT);
+        if (!player.isCreative() && !player.isSpectator()) {
+            if (amulet && !player.getAbilities().mayfly) {
+                player.getAbilities().mayfly = true;
+                player.getPersistentData().putBoolean(LICH_FLIGHT, true);
+                player.onUpdateAbilities();
+            } else if (!amulet && granted) {
+                player.getAbilities().mayfly = false;
                 player.getAbilities().flying = false;
+                player.getPersistentData().remove(LICH_FLIGHT);
+                player.onUpdateAbilities();
             }
-            player.onUpdateAbilities();
         }
         player.getFoodData().setFoodLevel(20);
         player.getFoodData().setSaturation(Math.max(player.getFoodData().getSaturationLevel(), 5F));

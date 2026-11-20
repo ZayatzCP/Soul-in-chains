@@ -107,7 +107,7 @@ public final class ThroneOfChains {
         return true;
     }
 
-    public enum HangResult { NOT_A_THRONE, NO_SOUL, OCCUPIED, WRONG_ORDER, HUNG }
+    public enum HangResult { NOT_A_THRONE, NO_SOUL, OCCUPIED, START_NORTH_WEST, WRONG_ORDER, HUNG }
 
     /** A player hangs a lantern on the top of a pillar. Costs a great soul from the Soul Lantern. */
     public static HangResult hang(ServerLevel level, BlockPos pillarTop, Player player) {
@@ -121,12 +121,17 @@ public final class ThroneOfChains {
             return HangResult.OCCUPIED;
         }
         int lit = lit(level, throne);
+        if (lit == 0 && corner != 0) {
+            // Nothing lit yet: no punishment, just the first rule.
+            return HangResult.START_NORTH_WEST;
+        }
         if (corner != lit || !inOrder(level, throne, lit)) {
             putOut(level, throne);
             for (int i = 0; i < 3; i++) {
                 Restless ghost = ModEntities.RESTLESS.get().create(level);
                 if (ghost != null) {
                     ghost.moveTo(throne.getX() + 0.5, throne.getY() + 1, throne.getZ() + 0.5, level.random.nextFloat() * 360, 0);
+                    ghost.shortLived();
                     level.addFreshEntity(ghost);
                 }
             }

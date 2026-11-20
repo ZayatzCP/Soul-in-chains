@@ -118,7 +118,9 @@ public final class Souls {
             return;
         }
         SoulType type = SoulType.of(dead);
-        if (type == null) {
+        if (type == null || dead instanceof com.soulinchains.arcaneartifacts.necro.mob.Jailer
+                || dead instanceof com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing) {
+            // The Jailer and the King leave their great souls themselves (no extra roll, no doubling by Reap).
             return;
         }
         // Reap: straight into the reaper's lantern, whoever dealt the last blow.

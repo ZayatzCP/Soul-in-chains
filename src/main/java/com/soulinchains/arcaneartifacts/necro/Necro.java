@@ -7,6 +7,7 @@ import com.soulinchains.arcaneartifacts.research.ResearchService;
 import com.soulinchains.arcaneartifacts.research.ResearchState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
@@ -49,6 +50,17 @@ public final class Necro {
         int base = limits.isEmpty() ? 0 : limits.get(Math.min(rank, limits.size()) - 1);
         int bonus = (ShackledSet.wearsKingsCrown(player) ? 2 : ShackledSet.wearsCrown(player) ? 1 : 0) + (Corruption.stage(player) >= 2 ? 1 : 0);
         return Math.min(8, base + bonus);
+    }
+
+    /** One's own servants, tamed pets and team mates: area chains and executions leave them alone. */
+    public static boolean friendly(LivingEntity caster, LivingEntity other) {
+        if (other == caster || other.isAlliedTo(caster) || caster.isAlliedTo(other)) {
+            return true;
+        }
+        if (other instanceof Servant servant && caster.getUUID().equals(servant.getOwnerUUID())) {
+            return true;
+        }
+        return other instanceof net.minecraft.world.entity.OwnableEntity pet && caster.getUUID().equals(pet.getOwnerUUID());
     }
 
     /** Checks the rank; tells the player what is missing when it is too low. */

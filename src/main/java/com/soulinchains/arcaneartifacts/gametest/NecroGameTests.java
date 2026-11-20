@@ -581,10 +581,14 @@ public final class NecroGameTests {
         BlockPos throne = buildThrone(helper);
         helper.runAfterDelay(2, () -> {
             helper.assertTrue(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.complete(level, throne), "The throne must be recognised");
-            fill(player, SoulType.GREAT, 4);
-            var wrong = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 1), player);
-            helper.assertTrue(wrong == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.WRONG_ORDER, "North-east first is the wrong order, got " + wrong);
-            helper.assertTrue(Souls.count(player, SoulType.GREAT) == 4, "A wrong order must not take the soul");
+            fill(player, SoulType.GREAT, 5);
+            var first = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 1), player);
+            helper.assertTrue(first == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.START_NORTH_WEST, "The first lantern goes north-west, got " + first);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 0), player) == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.HUNG, "North-west takes the first lantern");
+            var wrong = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, 2), player);
+            helper.assertTrue(wrong == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.WRONG_ORDER, "South-east second is the wrong order, got " + wrong);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.lit(level, throne) == 0, "A wrong order puts every lantern out");
+            helper.assertTrue(Souls.count(player, SoulType.GREAT) == 4, "Only the hung lantern took a soul");
             for (int corner = 0; corner < 4; corner++) {
                 var result = com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.hang(level, com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.pillarTop(throne, corner), player);
                 helper.assertTrue(result == com.soulinchains.arcaneartifacts.necro.throne.ThroneOfChains.HangResult.HUNG, "Corner " + corner + " must take its lantern, got " + result);
@@ -693,5 +697,27 @@ public final class NecroGameTests {
             helper.assertTrue(!player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "Regeneration must not take on a Lich");
             helper.succeed();
         });
+    }
+
+    @GameTest(template = ARENA)
+    public static void jailerLeavesExactlyOneGreatSoul(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        var jailer = helper.spawnWithNoFreeWill(com.soulinchains.arcaneartifacts.registry.ModEntities.JAILER.get(), new BlockPos(4, 2, 4));
+        jailer.addEffect(new MobEffectInstance(ModEffects.REAP_MARK, 100), player);
+        Souls.markForReaping(jailer, player.getUUID(), false);
+        jailer.hurt(helper.getLevel().damageSources().playerAttack(player), 10000F);
+        long great = wisps(helper).stream().filter(w -> w.soul() == SoulType.GREAT).count();
+        helper.assertTrue(great == 1, "The Jailer must leave exactly one great soul, got " + great);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void areaShackleSparesOwnServants(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Zombie caster = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(2, 2, 2));
+        Pig pig = helper.spawnWithNoFreeWill(EntityType.PIG, new BlockPos(4, 2, 4));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Necro.friendly(caster, caster), "One is friendly to oneself");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.necro.Necro.friendly(caster, pig), "A stray pig is not a friend");
+        helper.succeed();
     }
 }

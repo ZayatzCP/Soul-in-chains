@@ -118,7 +118,10 @@ public final class ContraptionCompat {
     @SubscribeEvent
     public static void afterTick(EntityTickEvent.Post event) {
         Entity entity = event.getEntity();
-        if (!entity.level().isClientSide && entity.getPersistentData().contains(STALLED_UNTIL)) {
+        if (entity.level().isClientSide || !isContraption(entity)) {
+            return;
+        }
+        if (entity.getPersistentData().contains(STALLED_UNTIL)) {
             if (isFrozen(entity)) {
                 stall(entity);
             } else {

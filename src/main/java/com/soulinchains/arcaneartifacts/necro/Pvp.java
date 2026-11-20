@@ -44,6 +44,11 @@ public final class Pvp {
         return Config.PVP_CHAIN_PULLS_PLAYERS.get() ? Config.PVP_PULL_MULTIPLIER.get() : 0.0;
     }
 
+    /** Multiplier of a chain thrown by a monster (not a player): the PvP settings do not apply, the Shackled Boots do. */
+    public static double pullByMonster(Entity target) {
+        return target instanceof LivingEntity living && ShackledSet.wearsBoots(living) ? 0.0 : 1.0;
+    }
+
     /** Multiplier of a vortex (Tornado, Black Hole) on this entity. */
     public static double vortex(Entity target) {
         return target instanceof Player ? Config.PVP_VORTEX_MULTIPLIER.get() : 1.0;

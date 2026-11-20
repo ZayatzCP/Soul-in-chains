@@ -1816,5 +1816,6 @@
   "arcane_artifacts.necro.ritual.need_phylactery": "Наденьте привязанный Амулет-филактерию.",
   "arcane_artifacts.necro.ritual.need_great": "Нужна великая душа в Фонаре душ.",
   "arcane_artifacts.necro.ritual.lich": "Сердце остановилось. Вы — Лич.",
-  "arcane_artifacts.corruption.stage.4": "Лич"
+  "arcane_artifacts.corruption.stage.4": "Лич",
+  "arcane_artifacts.throne.start_north_west": "Первый фонарь — на северо-западный столп."
 }

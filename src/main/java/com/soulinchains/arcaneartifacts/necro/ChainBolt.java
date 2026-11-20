@@ -136,7 +136,7 @@ public class ChainBolt extends Projectile {
                 || contraption && com.soulinchains.arcaneartifacts.compat.ContraptionCompat.pullable(target) == null;
         // A creature already in shackles stays where the chains hold it.
         boolean held = target instanceof LivingEntity living && living.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.SHACKLED);
-        if ((heavy || held || Pvp.pull(target) <= 0) && !pullSelf) {
+        if ((heavy || held || pullFactor(target) <= 0) && !pullSelf) {
             discard();
             return;
         }
@@ -170,6 +170,10 @@ public class ChainBolt extends Projectile {
         }
     }
 
+    private double pullFactor(Entity target) {
+        return getOwner() instanceof net.minecraft.world.entity.player.Player ? Pvp.pull(target) : Pvp.pullByMonster(target);
+    }
+
     /** Pulls the hooked creature to the thrower, or the thrower to the creature or block. */
     private void reel(LivingEntity thrower) {
         if (ship != null) {
@@ -197,7 +201,7 @@ public class ChainBolt extends Projectile {
             discard();
             return;
         }
-        double speed = Math.min(1.4, 0.35 + distance * 0.18) * (pullSelf ? 1.0 : Pvp.pull(moving));
+        double speed = Math.min(1.4, 0.35 + distance * 0.18) * (pullSelf ? 1.0 : pullFactor(moving));
         Vec3 motion = to.normalize().scale(speed).add(0, moving.onGround() ? 0.15 : 0.04, 0);
         moving.setDeltaMovement(motion);
         moving.hurtMarked = true;

@@ -1816,5 +1816,6 @@
   "arcane_artifacts.necro.ritual.need_phylactery": "Wear a bound Phylactery Amulet.",
   "arcane_artifacts.necro.ritual.need_great": "You need a great soul in your Soul Lantern.",
   "arcane_artifacts.necro.ritual.lich": "Your heart stops. You are a Lich.",
-  "arcane_artifacts.corruption.stage.4": "Lich"
+  "arcane_artifacts.corruption.stage.4": "Lich",
+  "arcane_artifacts.throne.start_north_west": "The first lantern goes on the north-west pillar."
 }

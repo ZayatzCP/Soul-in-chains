@@ -68,6 +68,9 @@ public class EffectPhantomStep extends AreaEffect {
 
     /** A wall exactly one block thick in the facing direction, with room behind it: step through. */
     public static boolean stepThrough(Level level, LivingEntity who) {
+        if (who.hasEffect(ModEffects.SHACKLED) || who.hasEffect(ModEffects.CURSED_CHAINS)) {
+            return false;
+        }
         Direction facing = who.getDirection();
         BlockPos feet = who.blockPosition();
         BlockPos wall = feet.relative(facing);
@@ -75,7 +78,7 @@ public class EffectPhantomStep extends AreaEffect {
         if (!solid(level, wall) && !solid(level, wall.above())) {
             return false;
         }
-        if (solid(level, behind) || solid(level, behind.above())) {
+        if (solid(level, behind) || solid(level, behind.above()) || unbreakable(level, wall) || unbreakable(level, wall.above())) {
             return false;
         }
         who.teleportTo(behind.getX() + 0.5, behind.getY(), behind.getZ() + 0.5);
@@ -83,6 +86,11 @@ public class EffectPhantomStep extends AreaEffect {
             server.sendParticles(ParticleTypes.SOUL, behind.getX() + 0.5, behind.getY() + 1, behind.getZ() + 0.5, 20, 0.3, 0.6, 0.3, 0.03);
         }
         return true;
+    }
+
+    /** Bedrock, barriers, end portal frames: no stepping through those. */
+    private static boolean unbreakable(Level level, BlockPos pos) {
+        return level.getBlockState(pos).getDestroySpeed(level, pos) < 0;
     }
 
     private static boolean solid(Level level, BlockPos pos) {

@@ -77,7 +77,7 @@ public class EffectShackle extends AreaEffect {
         if (stats.getAoeMultiplier() > 0) {
             double radius = 1.5 + stats.getAoeMultiplier();
             for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(point, point).inflate(radius))) {
-                if (living != shooter && living != target) {
+                if (living != shooter && living != target && !Necro.friendly(shooter, living)) {
                     shackle(level, living, ticks, shooter);
                 }
             }

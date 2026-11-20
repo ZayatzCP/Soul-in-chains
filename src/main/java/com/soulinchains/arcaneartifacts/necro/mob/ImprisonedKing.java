@@ -2,7 +2,6 @@ package com.soulinchains.arcaneartifacts.necro.mob;
 
 import com.soulinchains.arcaneartifacts.necro.ChainBolt;
 import com.soulinchains.arcaneartifacts.necro.EffectShackle;
-import com.soulinchains.arcaneartifacts.necro.Pvp;
 import com.soulinchains.arcaneartifacts.necro.Relics;
 import com.soulinchains.arcaneartifacts.necro.Servant;
 import com.soulinchains.arcaneartifacts.necro.ShackledSet;
@@ -290,7 +289,7 @@ public class ImprisonedKing extends Monster {
         for (Player player : hit) {
             player.invulnerableTime = 0;
             player.hurt(damageSources().indirectMagic(this, this), EXECUTION_DAMAGE);
-            EffectShackle.shackle(level, player, Math.max(20, Pvp.holdTicks(player, 60)), this);
+            EffectShackle.shackle(level, player, 60, this);
             level.sendParticles(ParticleTypes.ELECTRIC_SPARK, player.getX(), player.getY() + 1, player.getZ(), 20, 0.3, 0.6, 0.3, 0.2);
         }
         level.playSound(null, blockPosition(), SoundEvents.WITHER_SHOOT, SoundSource.HOSTILE, 2.0F, 0.4F);
