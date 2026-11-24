@@ -37,6 +37,17 @@ public final class ModItems {
             REGISTER.register("spell_staff", com.soulinchains.arcaneartifacts.item.SpellStaffItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulLanternItem> SOUL_LANTERN =
             REGISTER.register("soul_lantern", com.soulinchains.arcaneartifacts.necro.SoulLanternItem::new);
+    public static final DeferredItem<BlockItem> RITUAL_SEAL = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_SEAL);
+    public static final DeferredItem<BlockItem> RITUAL_ANCHOR = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_ANCHOR);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.RitualKnifeItem> RITUAL_KNIFE = REGISTER.register("ritual_knife", com.soulinchains.arcaneartifacts.cult.RitualKnifeItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.OathShieldItem> OATH_SHIELD = REGISTER.register("oath_shield", com.soulinchains.arcaneartifacts.cult.OathShieldItem::new);
+    public static final DeferredItem<Item> RITUAL_ASH = REGISTER.registerSimpleItem("ritual_ash");
+    public static final DeferredItem<Item> BONE_SHARD = REGISTER.registerSimpleItem("bone_shard");
+    public static final DeferredItem<Item> VOW_DUST = REGISTER.registerSimpleItem("vow_dust", new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ASH_WITNESS_SPAWN_EGG = REGISTER.register("ash_witness_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ASH_WITNESS, 0x929292, 0xF0E7DE, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> TORN_ACOLYTE_SPAWN_EGG = REGISTER.register("torn_acolyte_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.TORN_ACOLYTE, 0x171416, 0xB9463D, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulFlailItem> SOUL_FLAIL =
             REGISTER.register("soul_flail", com.soulinchains.arcaneartifacts.necro.SoulFlailItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ChainSickleItem> CHAIN_SICKLE =

@@ -33,11 +33,11 @@ public final class NecroMobRenderers {
     }
 
     /** A translucent tinted copy of the model, slightly larger. */
-    static final class Overlay<T extends Mob, M extends EntityModel<T>> extends RenderLayer<T, M> {
+    public static final class Overlay<T extends Mob, M extends EntityModel<T>> extends RenderLayer<T, M> {
         private final ResourceLocation texture;
         private final int argb;
 
-        Overlay(RenderLayerParent<T, M> parent, ResourceLocation texture, int argb) {
+        public Overlay(RenderLayerParent<T, M> parent, ResourceLocation texture, int argb) {
             super(parent);
             this.texture = texture;
             this.argb = argb;

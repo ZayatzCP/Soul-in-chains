@@ -60,6 +60,13 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing::new, MobCategory.MONSTER)
                     .sized(1.2F, 4.0F).fireImmune().clientTrackingRange(16).build(ArcaneArtifacts.MODID + ":imprisoned_king"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.AshWitness>> ASH_WITNESS = REGISTER.register("ash_witness",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.AshWitness::new, MobCategory.MISC).sized(0.6F, 1.9F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":ash_witness"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.TornAcolyte>> TORN_ACOLYTE = REGISTER.register("torn_acolyte",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.TornAcolyte::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":torn_acolyte"));
+
     /** The Shackled's servants, one entity type per kind. */
     public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
             DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> SERVANTS = servants();

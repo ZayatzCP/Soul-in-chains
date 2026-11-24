@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 /** A thin Corruption bar over the health bar, coloured by stage, shown while the player has any Corruption. */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class CorruptionHud {
-    private static final int[] COLORS = {0xFF8E8EA8, 0xFF8E5BC8, 0xFF6A2FB0, 0xFF3E0E60};
+    private static final int[] COLORS = {0xFF8E8EA8, 0xFF8E5BC8, 0xFF6A2FB0, 0xFF3E0E60, 0xFF5ADB5A};
 
     private CorruptionHud() {
     }

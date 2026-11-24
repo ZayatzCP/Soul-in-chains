@@ -44,6 +44,8 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.MournerRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_GHOST.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.ChainGhostRenderer::new);
         event.registerEntityRenderer(ModEntities.JAILER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.JailerRenderer::new);
+        event.registerEntityRenderer(ModEntities.ASH_WITNESS.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.AshWitnessRenderer::new);
+        event.registerEntityRenderer(ModEntities.TORN_ACOLYTE.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.TornAcolyteRenderer::new);
         event.registerEntityRenderer(ModEntities.IMPRISONED_KING.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.KingRenderer::new);
         event.registerEntityRenderer(ModEntities.BOND_LINK.get(), com.soulinchains.arcaneartifacts.client.necro.BondLinkRenderer::new);
         ModEntities.SERVANTS.forEach((kind, type) -> {
@@ -105,7 +107,7 @@ public final class ClientSetup {
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.BANDOLIER.get(), ArcaneArtifacts.id("filled"),
                     (stack, level, entity, seed) -> (float) com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack)
                             / com.soulinchains.arcaneartifacts.pseudo.BandolierItem.CAPACITY);
-            for (var shield : java.util.List.of(ModItems.MIRROR_SHIELD.get(), ModItems.FOCUSING_SHIELD.get())) {
+            for (var shield : java.util.List.of(ModItems.MIRROR_SHIELD.get(), ModItems.FOCUSING_SHIELD.get(), ModItems.OATH_SHIELD.get())) {
                 net.minecraft.client.renderer.item.ItemProperties.register(shield, net.minecraft.resources.ResourceLocation.withDefaultNamespace("blocking"),
                         (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
             }

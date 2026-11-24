@@ -70,6 +70,7 @@ public final class ResearchNetwork {
         registrar.playToClient(com.soulinchains.arcaneartifacts.necro.Corruption.SyncPayload.TYPE,
                 com.soulinchains.arcaneartifacts.necro.Corruption.SyncPayload.STREAM_CODEC,
                 com.soulinchains.arcaneartifacts.necro.Corruption::handleSync);
+        registrar.playToClient(com.soulinchains.arcaneartifacts.cult.CultNetwork.RitualPayload.TYPE, com.soulinchains.arcaneartifacts.cult.CultNetwork.RitualPayload.STREAM_CODEC, com.soulinchains.arcaneartifacts.cult.CultNetwork::handle);
         registrar.playToServer(com.soulinchains.arcaneartifacts.catto.CattoDialog.CommandPayload.TYPE,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog.CommandPayload.STREAM_CODEC,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog::handleCommand);

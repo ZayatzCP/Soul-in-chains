@@ -46,6 +46,14 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.GreatSoulLanternBlock> GREAT_SOUL_LANTERN = BLOCKS.register("great_soul_lantern", com.soulinchains.arcaneartifacts.necro.throne.GreatSoulLanternBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.ChainLockBlock> CHAIN_LOCK = BLOCKS.register("chain_lock", com.soulinchains.arcaneartifacts.necro.throne.ChainLockBlock::new);
 
+    // ------------------------------------------------------------------ Cultist circle
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualSealBlock> RITUAL_SEAL = BLOCKS.register("ritual_seal", com.soulinchains.arcaneartifacts.cult.RitualSealBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlock> RITUAL_ANCHOR = BLOCKS.register("ritual_anchor", com.soulinchains.arcaneartifacts.cult.RitualAnchorBlock::new);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity>> RITUAL_SEAL_ENTITY =
+            BLOCK_ENTITIES.register("ritual_seal", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity::new, RITUAL_SEAL.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity>> RITUAL_ANCHOR_ENTITY =
+            BLOCK_ENTITIES.register("ritual_anchor", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity::new, RITUAL_ANCHOR.get()).build(null));
+
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)

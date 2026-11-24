@@ -1,0 +1,41 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:red_candle",
+  "sort": 600,
+  "subjects": [
+    "minecraft:red_candle",
+    "minecraft:bone_block",
+    "minecraft:polished_blackstone"
+  ],
+  "properties": [
+    "sworn",
+    "binding"
+  ],
+  "experiments": [
+    {
+      "id": "candle",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:red_candle"
+        }
+      ]
+    },
+    {
+      "id": "bone",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:bone_block"
+        }
+      ]
+    }
+  ],
+  "notes": 1,
+  "unlocks_items": [
+    "arcane_artifacts:ritual_seal",
+    "arcane_artifacts:ritual_anchor",
+    "arcane_artifacts:ritual_knife",
+    "arcane_artifacts:oath_shield"
+  ]
+}

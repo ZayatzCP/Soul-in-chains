@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "CGC",
+    "BOB",
+    "BBB"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:red_candle"
+    },
+    "G": {
+      "item": "ars_nouveau:source_gem"
+    },
+    "O": {
+      "item": "minecraft:bone_block"
+    },
+    "B": {
+      "item": "minecraft:polished_blackstone"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:ritual_seal"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "arcane_artifacts:block/ritual_anchor"
+    },
+    "lit=true": {
+      "model": "arcane_artifacts:block/ritual_anchor_lit"
+    }
+  }
+}
