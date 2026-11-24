@@ -57,6 +57,10 @@ public final class ModCreativeTab {
                 output.accept(ModItems.VOW_DUST.get());
                 output.accept(ModItems.ASH_WITNESS_SPAWN_EGG.get());
                 output.accept(ModItems.TORN_ACOLYTE_SPAWN_EGG.get());
+                output.accept(ModItems.RED_ACOLYTE_SPAWN_EGG.get());
+                output.accept(ModItems.BONE_GATEKEEPER_SPAWN_EGG.get());
+                output.accept(ModItems.PSALMIST_SPAWN_EGG.get());
+                output.accept(ModItems.VOTIVE_BEAST_SPAWN_EGG.get());
                 output.accept(ModItems.WARDEN_ROD.get());
                 output.accept(ModItems.SHACKLE_GLOVES.get());
                 output.accept(ModItems.SHROUD.get());

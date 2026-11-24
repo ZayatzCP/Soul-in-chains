@@ -7,6 +7,7 @@ import com.soulinchains.arcaneartifacts.cult.Cult;
 import com.soulinchains.arcaneartifacts.cult.CultRole;
 import com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity;
 import com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity;
+import com.soulinchains.arcaneartifacts.cult.RiteScheme;
 import com.soulinchains.arcaneartifacts.cult.RitualSummons;
 import com.soulinchains.arcaneartifacts.cult.TornAcolyte;
 import com.soulinchains.arcaneartifacts.registry.ModBlocks;
@@ -207,7 +208,7 @@ public final class CultGameTests {
         }
         AABB box = new AABB(helper.absolutePos(BlockPos.ZERO)).inflate(24);
         helper.getLevel().getEntitiesOfClass(TornAcolyte.class, box).forEach(TornAcolyte::discard);
-        helper.getLevel().getEntitiesOfClass(AshWitness.class, box).forEach(AshWitness::discard);
+        helper.getLevel().getEntitiesOfClass(com.soulinchains.arcaneartifacts.cult.RitualServant.class, box).forEach(e -> e.discard());
     }
 
     private static ItemStack knife(com.soulinchains.arcaneartifacts.cult.KnifeInlay inlay) {
@@ -355,5 +356,143 @@ public final class CultGameTests {
             helper.assertTrue(!com.soulinchains.arcaneartifacts.cult.CultGearEvents.takeTheBlow(confessor, warden), "Once a minute");
             helper.succeed();
         });
+    }
+
+    // ------------------------------------------------------------------ 1.35
+
+    /** Lays what {@code scheme} asks, lights its anchors with the Warden and starts it; then lets it run, the Confessor
+     *  striking only the closing window, the Warden confirming first when {@code synced}. */
+    private static RitualSealBlockEntity runScheme(GameTestHelper helper, Player confessor, Player warden, RiteScheme scheme, boolean synced) {
+        List<RitualAnchorBlockEntity> anchors = new ArrayList<>();
+        RitualSealBlockEntity seal = circle(helper, anchors);
+        seal.setScheme(scheme);
+        for (int i = 0; i < scheme.ash; i++) seal.offer(new ItemStack(ModItems.RITUAL_ASH.get()));
+        for (int i = 0; i < scheme.shards; i++) seal.offer(new ItemStack(ModItems.BONE_SHARD.get()));
+        for (int i = 0; i < scheme.candles; i++) seal.offer(new ItemStack(Items.RED_CANDLE));
+        for (int i = 0; i < scheme.dust; i++) seal.offer(new ItemStack(ModItems.VOW_DUST.get()));
+        helper.assertTrue(seal.reagentsReady(), scheme + ": reagents laid");
+        for (int i = 0; i < scheme.anchors; i++) {
+            seal.onShieldAtAnchor(warden, anchors.get(i));
+        }
+        seal.onKnife(confessor);
+        helper.assertTrue(seal.phase() == RitualSealBlockEntity.Phase.CHANNEL, scheme + " must start");
+        for (int i = 0; i < scheme.ticks + 5 && seal.phase() == RitualSealBlockEntity.Phase.CHANNEL; i++) {
+            seal.tick();
+            if (seal.phase() == RitualSealBlockEntity.Phase.CHANNEL && seal.finalWindow()) {
+                if (synced) {
+                    seal.onShieldAtAnchor(warden, anchors.get(0));
+                }
+                seal.onKnife(confessor);
+            }
+        }
+        return seal;
+    }
+
+    private static <T extends net.minecraft.world.entity.Entity> List<T> around(GameTestHelper helper, Class<T> kind) {
+        return helper.getLevel().getEntitiesOfClass(kind, new AABB(helper.absolutePos(BlockPos.ZERO)).inflate(24));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void schemesNeedTheirRank(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "rank_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "rank_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        List<RitualAnchorBlockEntity> anchors = new ArrayList<>();
+        RitualSealBlockEntity seal = circle(helper, anchors);
+        helper.assertTrue(seal.cycleScheme(1) == RiteScheme.ASH_WITNESS, "An Initiate's Book knows only the Ash Witness");
+        helper.assertTrue(seal.cycleScheme(2) == RiteScheme.THREE_VOICES, "A Servant of the Circle reaches the Three Voices");
+        seal.setScheme(RiteScheme.THREE_VOICES);
+        RiteScheme s = RiteScheme.THREE_VOICES;
+        for (int i = 0; i < s.ash; i++) seal.offer(new ItemStack(ModItems.RITUAL_ASH.get()));
+        for (int i = 0; i < s.shards; i++) seal.offer(new ItemStack(ModItems.BONE_SHARD.get()));
+        for (int i = 0; i < s.candles; i++) seal.offer(new ItemStack(Items.RED_CANDLE));
+        seal.offer(new ItemStack(ModItems.VOW_DUST.get()));
+        for (int i = 0; i < s.anchors; i++) seal.onShieldAtAnchor(warden, anchors.get(i));
+        seal.onKnife(confessor);
+        helper.assertTrue(seal.phase() == RitualSealBlockEntity.Phase.IDLE, "Rank I cannot start a rank II rite");
+        Cult.set(confessor, Cult.get(confessor).withRank(2));
+        seal.onKnife(confessor);
+        helper.assertTrue(seal.phase() == RitualSealBlockEntity.Phase.CHANNEL && seal.rite() == RiteScheme.THREE_VOICES, "Rank II starts it");
+        drain(helper, seal);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void riteSchemesRaiseTheirServants(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        FakePlayer confessor = player(helper, "raise_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "raise_warden", 1.5, 4.5);
+        BlockPos at = helper.absolutePos(new BlockPos(4, 2, 4));
+        int voices = RitualSummons.summon(level, at, RiteScheme.THREE_VOICES, com.soulinchains.arcaneartifacts.cult.RitualQuality.PERFECT,
+                confessor, warden, com.soulinchains.arcaneartifacts.cult.KnifeInlay.NONE, RiteScheme.ASH_WITNESS);
+        List<com.soulinchains.arcaneartifacts.cult.RedAcolyte> red = around(helper, com.soulinchains.arcaneartifacts.cult.RedAcolyte.class);
+        helper.assertTrue(voices == 4 && red.size() == 4, "A perfect Three Voices raises four Red Acolytes, got " + voices);
+        helper.assertTrue(red.stream().allMatch(r -> r.grade() == com.soulinchains.arcaneartifacts.cult.RitualServant.Grade.EMPOWERED
+                && RitualSummons.summoned(r)), "Empowered and marked as summoned");
+        red.forEach(e -> e.discard());
+        RitualSummons.summon(level, at, RiteScheme.RED_VEIL, com.soulinchains.arcaneartifacts.cult.RitualQuality.PERFECT,
+                confessor, warden, com.soulinchains.arcaneartifacts.cult.KnifeInlay.NONE, RiteScheme.ASH_WITNESS);
+        RitualSummons.summon(level, at, RiteScheme.RED_VEIL, com.soulinchains.arcaneartifacts.cult.RitualQuality.WEAK,
+                confessor, warden, com.soulinchains.arcaneartifacts.cult.KnifeInlay.NONE, RiteScheme.ASH_WITNESS);
+        List<Integer> lives = around(helper, com.soulinchains.arcaneartifacts.cult.BoneGatekeeper.class).stream()
+                .map(com.soulinchains.arcaneartifacts.cult.RitualServant::lifeLeft).sorted().toList();
+        helper.assertTrue(lives.equals(List.of(1200, 2100)), "The Gatekeeper lasts 60 s when weak, 105 s when perfect, got " + lives);
+        around(helper, com.soulinchains.arcaneartifacts.cult.RitualServant.class).forEach(e -> e.discard());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void psalmistSweetensTheLoot(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        AshWitness witness = helper.spawnWithNoFreeWill(ModEntities.ASH_WITNESS.get(), new BlockPos(4, 2, 4));
+        helper.spawnWithNoFreeWill(ModEntities.PSALMIST.get(), new BlockPos(6, 2, 4));
+        RitualSummons.mark(witness, 1.5F);
+        List<ItemEntity> drops = new ArrayList<>();
+        drops.add(new ItemEntity(level, witness.getX(), witness.getY(), witness.getZ(), new ItemStack(ModItems.RITUAL_ASH.get(), 4)));
+        NeoForge.EVENT_BUS.post(new LivingDropsEvent(witness, level.damageSources().generic(), drops, false));
+        int ash = drops.stream().filter(d -> d.getItem().is(ModItems.RITUAL_ASH.get())).mapToInt(d -> d.getItem().getCount()).sum();
+        helper.assertTrue(ash == 7, "×1.5 and the Psalmist's +0.25: 4 ash become 7, got " + ash);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void secondComingWantsOneBreath(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "second_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "second_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        Cult.set(confessor, Cult.get(confessor).withRank(3).withLastRite(RiteScheme.ASH_WITNESS.name()));
+        float synced = runScheme(helper, confessor, warden, RiteScheme.SECOND_COMING, true).quality();
+        drain(helper, (RitualSealBlockEntity) helper.getBlockEntity(new BlockPos(4, 2, 4)));
+        float apart = runScheme(helper, confessor, warden, RiteScheme.SECOND_COMING, false).quality();
+        drain(helper, (RitualSealBlockEntity) helper.getBlockEntity(new BlockPos(4, 2, 4)));
+        helper.assertTrue(synced - apart >= 15F, "Closing without the Warden's seal costs 15%: " + synced + " vs " + apart);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void perfectRiteMakesVoicesOfDogma(GameTestHelper helper) {
+        com.soulinchains.arcaneartifacts.cult.CultData data = com.soulinchains.arcaneartifacts.cult.CultData.EMPTY.withRank(2).withSteady(3);
+        com.soulinchains.arcaneartifacts.cult.CultData flawless = RitualSealBlockEntity.advance(data, RiteScheme.THREE_VOICES, 90,
+                com.soulinchains.arcaneartifacts.cult.RitualQuality.FLAWLESS, false);
+        helper.assertTrue(flawless.rank() == 2 && flawless.best() == 90 && flawless.lastRite().equals("THREE_VOICES"), "Flawless is not enough");
+        com.soulinchains.arcaneartifacts.cult.CultData perfect = RitualSealBlockEntity.advance(flawless, RiteScheme.SECOND_COMING, 97,
+                com.soulinchains.arcaneartifacts.cult.RitualQuality.PERFECT, false);
+        helper.assertTrue(perfect.rank() == 3 && perfect.best() == 97, "A perfect rite at rank II gives rank III");
+        helper.assertTrue(perfect.lastRite().equals("THREE_VOICES"), "The Second Coming is never the rite it repeats");
+        com.soulinchains.arcaneartifacts.cult.CultData initiate = RitualSealBlockEntity.advance(com.soulinchains.arcaneartifacts.cult.CultData.EMPTY,
+                RiteScheme.ASH_WITNESS, 98, com.soulinchains.arcaneartifacts.cult.RitualQuality.PERFECT, false);
+        helper.assertTrue(initiate.rank() < 3, "Rank III needs rank II first");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void gatekeeperDrawsTheBlows(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "gate_confessor", 4.5, 3.0);
+        com.soulinchains.arcaneartifacts.cult.BoneGatekeeper gate = helper.spawnWithNoFreeWill(ModEntities.BONE_GATEKEEPER.get(), new BlockPos(4, 2, 5));
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(6, 2, 3));
+        zombie.setTarget(confessor);
+        helper.assertTrue(gate.guard(confessor) == 1 && zombie.getTarget() == gate, "The Gatekeeper pulls the zombie off the Confessor");
+        gate.discard();
+        helper.succeed();
     }
 }

@@ -35,7 +35,7 @@ public class FormulaBookItem extends Item {
             return InteractionResult.PASS;
         }
         if (!context.getLevel().isClientSide) {
-            RiteScheme scheme = seal.cycleScheme();
+            RiteScheme scheme = seal.cycleScheme(player.isCreative() ? 3 : Math.max(1, Cult.get(player).rank()));
             player.displayClientMessage(Component.translatable("arcane_artifacts.cult.scheme_set", scheme.displayName()), true);
         }
         return InteractionResult.sidedSuccess(context.getLevel().isClientSide);

@@ -67,6 +67,19 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.TornAcolyte::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(10)
                     .build(ArcaneArtifacts.MODID + ":torn_acolyte"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.RedAcolyte>> RED_ACOLYTE = REGISTER.register("red_acolyte",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RedAcolyte::new, MobCategory.MISC).sized(0.6F, 1.9F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":red_acolyte"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.BoneGatekeeper>> BONE_GATEKEEPER = REGISTER.register("bone_gatekeeper",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.BoneGatekeeper::new, MobCategory.MISC).sized(0.9F, 2.4F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":bone_gatekeeper"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.Psalmist>> PSALMIST = REGISTER.register("psalmist",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.Psalmist::new, MobCategory.MISC).sized(0.6F, 1.9F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":psalmist"));
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.VotiveBeast>> VOTIVE_BEAST = REGISTER.register("votive_beast",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.VotiveBeast::new, MobCategory.MISC).sized(1.3F, 1.4F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":votive_beast"));
+
     /** The Shackled's servants, one entity type per kind. */
     public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
             DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> SERVANTS = servants();

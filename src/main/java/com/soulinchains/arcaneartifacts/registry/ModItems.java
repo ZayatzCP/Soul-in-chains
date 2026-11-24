@@ -69,6 +69,14 @@ public final class ModItems {
     public static final DeferredItem<Item> VOW_DUST = REGISTER.registerSimpleItem("vow_dust", new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ASH_WITNESS_SPAWN_EGG = REGISTER.register("ash_witness_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ASH_WITNESS, 0x929292, 0xF0E7DE, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RED_ACOLYTE_SPAWN_EGG = REGISTER.register("red_acolyte_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RED_ACOLYTE, 0xB9463D, 0x171416, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> BONE_GATEKEEPER_SPAWN_EGG = REGISTER.register("bone_gatekeeper_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.BONE_GATEKEEPER, 0xF0E7DE, 0x6F2927, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> PSALMIST_SPAWN_EGG = REGISTER.register("psalmist_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.PSALMIST, 0xD6B2A5, 0x171416, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> VOTIVE_BEAST_SPAWN_EGG = REGISTER.register("votive_beast_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.VOTIVE_BEAST, 0xF0E7DE, 0xB9463D, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> TORN_ACOLYTE_SPAWN_EGG = REGISTER.register("torn_acolyte_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.TORN_ACOLYTE, 0x171416, 0xB9463D, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulFlailItem> SOUL_FLAIL =

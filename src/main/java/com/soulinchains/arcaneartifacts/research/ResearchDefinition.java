@@ -115,10 +115,10 @@ public record ResearchDefinition(NoteCategory category, Item icon, int sort, Lis
         return id.getPath().startsWith("pseudo/");
     }
 
-    /** The school (Research Table tab) of a research: 0 Arcane Mage, 1 Pseudomage ({@code pseudo/}), 2 Druid ({@code druid/}). */
+    /** The school (Research Table tab): 0 Arcane Mage, 1 Pseudomage ({@code pseudo/}), 2 Druid ({@code druid/}), 3 Cultist ({@code cult/}). */
     public static int school(ResourceLocation id) {
         String path = id.getPath();
-        return path.startsWith("pseudo/") ? 1 : path.startsWith("druid/") ? 2 : 0;
+        return path.startsWith("pseudo/") ? 1 : path.startsWith("druid/") ? 2 : path.startsWith("cult/") ? 3 : 0;
     }
 
     public static String langPrefix(ResourceLocation id) {

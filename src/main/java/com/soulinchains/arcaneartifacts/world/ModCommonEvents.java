@@ -28,6 +28,10 @@ public final class ModCommonEvents {
         event.put(ModEntities.CHAIN_GHOST.get(), com.soulinchains.arcaneartifacts.necro.mob.ChainGhost.createAttributes().build());
         event.put(ModEntities.JAILER.get(), com.soulinchains.arcaneartifacts.necro.mob.Jailer.createAttributes().build());
         event.put(ModEntities.ASH_WITNESS.get(), com.soulinchains.arcaneartifacts.cult.AshWitness.createAttributes().build());
+        event.put(ModEntities.RED_ACOLYTE.get(), com.soulinchains.arcaneartifacts.cult.RedAcolyte.createAttributes().build());
+        event.put(ModEntities.BONE_GATEKEEPER.get(), com.soulinchains.arcaneartifacts.cult.BoneGatekeeper.createAttributes().build());
+        event.put(ModEntities.PSALMIST.get(), com.soulinchains.arcaneartifacts.cult.Psalmist.createAttributes().build());
+        event.put(ModEntities.VOTIVE_BEAST.get(), com.soulinchains.arcaneartifacts.cult.VotiveBeast.createAttributes().build());
         event.put(ModEntities.TORN_ACOLYTE.get(), com.soulinchains.arcaneartifacts.cult.TornAcolyte.createAttributes().build());
         event.put(ModEntities.IMPRISONED_KING.get(), com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing.createAttributes().build());
         ModEntities.SERVANTS.forEach((kind, type) -> event.put(type.get(), com.soulinchains.arcaneartifacts.necro.Servant.createAttributes(kind).build()));

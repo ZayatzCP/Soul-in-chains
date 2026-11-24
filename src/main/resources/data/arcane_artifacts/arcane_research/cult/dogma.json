@@ -1,0 +1,39 @@
+{
+  "category": "arcane",
+  "icon": "minecraft:red_candle",
+  "sort": 620,
+  "subjects": [
+    "arcane_artifacts:vow_dust",
+    "minecraft:bone_block",
+    "minecraft:red_candle"
+  ],
+  "properties": [
+    "sworn",
+    "binding"
+  ],
+  "requires": [
+    "arcane_artifacts:cult/servants"
+  ],
+  "experiments": [
+    {
+      "id": "candle",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:red_candle"
+        }
+      ]
+    },
+    {
+      "id": "dust",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "arcane_artifacts:vow_dust"
+        }
+      ]
+    }
+  ],
+  "notes": 2,
+  "unlocks_items": []
+}

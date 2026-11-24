@@ -73,6 +73,12 @@ public class RitualSealBlockEntity extends BlockEntity {
     private int timer;
     private float quality;
     private int ash;
+    private int dust;
+    /** The rite running now (the scheme may be changed for the next one meanwhile). */
+    private RiteScheme rite = RiteScheme.ASH_WITNESS;
+    private boolean extraWindow;
+    private int closeTick = -1;
+    private int sealTick = -1;
     private int shards;
     private int candles;
     @Nullable
@@ -186,17 +192,33 @@ public class RitualSealBlockEntity extends BlockEntity {
         return duration;
     }
 
+    public RiteScheme rite() {
+        return rite;
+    }
+
     public RiteScheme scheme() {
         return scheme;
     }
 
     /** The Book of Formulas: the next rite this seal knows. */
     public RiteScheme cycleScheme() {
+        return cycleScheme(3);
+    }
+
+    /** The next rite this seal knows that a Cultist of {@code rank} may draw. */
+    public RiteScheme cycleScheme(int rank) {
         if (phase != Phase.CHANNEL) {
-            scheme = scheme.next();
+            scheme = scheme.nextFor(rank);
             setChanged();
         }
         return scheme;
+    }
+
+    public void setScheme(RiteScheme value) {
+        if (phase != Phase.CHANNEL) {
+            scheme = value;
+            setChanged();
+        }
     }
 
     /** A Ritual Censer within 3 blocks of the seal. */
@@ -251,7 +273,7 @@ public class RitualSealBlockEntity extends BlockEntity {
     // ------------------------------------------------------------------ reagents
 
     public static boolean isReagent(ItemStack stack) {
-        return stack.is(ModItems.RITUAL_ASH.get()) || stack.is(ModItems.BONE_SHARD.get()) || stack.is(Items.RED_CANDLE);
+        return stack.is(ModItems.RITUAL_ASH.get()) || stack.is(ModItems.BONE_SHARD.get()) || stack.is(Items.RED_CANDLE) || stack.is(ModItems.VOW_DUST.get());
     }
 
     /** Lays one reagent on the seal; returns false when no more of it is needed. */
@@ -260,12 +282,14 @@ public class RitualSealBlockEntity extends BlockEntity {
             return false;
         }
         Item item = stack.getItem();
-        if (item == ModItems.RITUAL_ASH.get() && ash < ASH_NEEDED) {
+        if (item == ModItems.RITUAL_ASH.get() && ash < scheme.ash) {
             ash++;
-        } else if (item == ModItems.BONE_SHARD.get() && shards < SHARDS_NEEDED) {
+        } else if (item == ModItems.BONE_SHARD.get() && shards < scheme.shards) {
             shards++;
-        } else if (item == Items.RED_CANDLE && candles < CANDLES_NEEDED) {
+        } else if (item == Items.RED_CANDLE && candles < scheme.candles) {
             candles++;
+        } else if (item == ModItems.VOW_DUST.get() && dust < scheme.dust) {
+            dust++;
         } else {
             return false;
         }
@@ -274,11 +298,12 @@ public class RitualSealBlockEntity extends BlockEntity {
     }
 
     public boolean reagentsReady() {
-        return ash >= ASH_NEEDED && shards >= SHARDS_NEEDED && candles >= CANDLES_NEEDED;
+        return ash >= scheme.ash && shards >= scheme.shards && candles >= scheme.candles && dust >= scheme.dust;
     }
 
     public Component reagentsLine() {
-        return Component.translatable("arcane_artifacts.cult.reagents", ash, ASH_NEEDED, shards, SHARDS_NEEDED, candles, CANDLES_NEEDED);
+        return Component.translatable("arcane_artifacts.cult.reagents_scheme", scheme.displayName(), ash, scheme.ash, shards, scheme.shards,
+                candles, scheme.candles, dust, scheme.dust);
     }
 
     // ------------------------------------------------------------------ knife & shield
@@ -318,6 +343,7 @@ public class RitualSealBlockEntity extends BlockEntity {
             case CHANNEL -> {
                 if (finalWindow() && player == warden && !wardenSealed) {
                     wardenSealed = true;
+                    sealTick = timer;
                     quality += 3F;
                     burst(anchor.getBlockPos(), 0xB9463D);
                 }
@@ -381,8 +407,12 @@ public class RitualSealBlockEntity extends BlockEntity {
             return;
         }
         List<RitualAnchorBlockEntity> lit = anchorsAround().stream().filter(RitualAnchorBlockEntity::active).toList();
-        if (lit.size() < ANCHORS_NEEDED) {
-            say(player, "need_anchors", ANCHORS_NEEDED);
+        if (Cult.get(player).rank() < scheme.rank && !(player.isCreative() && Config.CULT_CREATIVE_SOLO.get())) {
+            say(player, "need_rank", Component.translatable("arcane_artifacts.cult.rank." + scheme.rank));
+            return;
+        }
+        if (lit.size() < scheme.anchors) {
+            say(player, "need_anchors", scheme.anchors);
             return;
         }
         UUID partner = Cult.get(player).partner().orElse(null);
@@ -401,9 +431,13 @@ public class RitualSealBlockEntity extends BlockEntity {
         boolean creativeAlone = player.isCreative() && Config.CULT_CREATIVE_SOLO.get();
         solo = (warden == null || Cult.role(warden) != CultRole.WARDEN) && !creativeAlone;
         confessor = player;
-        ash -= ASH_NEEDED;
-        shards -= SHARDS_NEEDED;
-        candles -= CANDLES_NEEDED;
+        ash -= scheme.ash;
+        shards -= scheme.shards;
+        candles -= scheme.candles;
+        dust -= scheme.dust;
+        rite = scheme;
+        extraWindow = false;
+        closeTick = sealTick = -1;
         anchors.clear();
         for (RitualAnchorBlockEntity anchor : lit) {
             anchors.add(anchor.getBlockPos());
@@ -413,7 +447,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         quality = START_QUALITY + Math.min(10, Cult.get(player).debt()) + CultGear.pairBonus(confessor, warden);
         inlay = KnifeInlay.of(player.getMainHandItem());
         censer = censerNear();
-        duration = inlay == KnifeInlay.IRON ? Math.round(ASH_TICKS * 0.8F) : ASH_TICKS;
+        duration = inlay == KnifeInlay.IRON ? Math.round(scheme.ticks * 0.8F) : scheme.ticks;
         windowEvery = inlay == KnifeInlay.IRON ? Math.round(WINDOW_EVERY * 0.8F) : WINDOW_EVERY;
         nextWindow = windowEvery / 2;
         windowOpenUntil = -1;
@@ -426,9 +460,9 @@ public class RitualSealBlockEntity extends BlockEntity {
             BY_WARDEN.put(warden.getUUID(), this);
         }
         voiceGiven = 0F;
-        say(player, solo ? "rite_started_solo" : "rite_started");
+        say(player, solo ? "rite_started_solo" : "rite_started", rite.displayName());
         if (warden != null && !solo) {
-            say(warden, "rite_started");
+            say(warden, "rite_started", rite.displayName());
         }
         sound(worldPosition, SoundEvents.EVOKER_PREPARE_SUMMON, 1.0F, 0.6F);
         setChanged();
@@ -439,6 +473,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         if (finalWindow()) {
             if (!closed) {
                 closed = true;
+                closeTick = timer;
                 quality += CultGear.strikeBonus(player, true);
                 burst(worldPosition, 0xFAF7F3);
                 sound(worldPosition, SoundEvents.AMETHYST_BLOCK_CHIME, 1.2F, 0.7F);
@@ -519,6 +554,10 @@ public class RitualSealBlockEntity extends BlockEntity {
             return;
         }
         // inscription windows
+        if (rite == RiteScheme.ABUNDANCE && !extraWindow && timer >= duration / 2 && !windowOpen()) {
+            extraWindow = true;
+            nextWindow = timer;
+        }
         if (timer >= nextWindow && timer < duration - FINAL_WINDOW) {
             if (windowOpenUntil >= 0 && !windowUsed) {
                 quality -= 2F;
@@ -535,7 +574,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         if (timer % 20 == 0) {
             // the Confessor reads from the inner zone; the Warden holds the outer ring; the pair stays bound
             if (distance(confessor) > INNER + 1) {
-                quality -= 1F;
+                quality -= rite == RiteScheme.RED_VEIL ? 2F : 1F;
             }
             if (warden != null && !solo) {
                 double d = distance(warden);
@@ -562,11 +601,11 @@ public class RitualSealBlockEntity extends BlockEntity {
         // waves of Torn Acolytes
         if (!wave1 && timer >= duration / 4) {
             wave1 = true;
-            wave(server, censer ? 1 : 2);
+            wave(server, (censer ? 1 : 2) + (rite == RiteScheme.RED_VEIL ? 1 : 0));
         }
         if (!wave2 && timer >= duration * 3 / 5) {
             wave2 = true;
-            wave(server, censer ? 2 : 3);
+            wave(server, (censer ? 2 : 3) + (rite == RiteScheme.RED_VEIL ? 1 : 0));
         }
         if (timer == duration - FINAL_WINDOW) {
             sound(worldPosition, SoundEvents.BELL_BLOCK, 1.2F, 0.5F);
@@ -618,12 +657,24 @@ public class RitualSealBlockEntity extends BlockEntity {
             }
         }
         quality -= broken * 5F;
+        if (rite == RiteScheme.THREE_VOICES) {
+            for (BlockPos pos : anchors) {
+                if (!(server.getBlockEntity(pos) instanceof RitualAnchorBlockEntity anchor) || anchor.stability() < 50) {
+                    quality -= 10F;
+                    break;
+                }
+            }
+        }
+        if (rite == RiteScheme.SECOND_COMING && (closeTick < 0 || sealTick < 0 || Math.abs(closeTick - sealTick) > 20)) {
+            quality -= 15F;
+        }
         if (solo) {
             quality = Math.min(quality, Config.CULT_SOLO_CAP.get().floatValue() * 100F);
         }
         quality = Mth.clamp(quality, 0F, 100F);
         RitualQuality tier = RitualQuality.of(quality);
-        int risen = RitualSummons.summonAshWitness(server, worldPosition.above(), tier, confessor, warden, inlay);
+        RiteScheme last = confessor == null ? RiteScheme.ASH_WITNESS : RiteScheme.byName(Cult.get(confessor).lastRite());
+        int risen = RitualSummons.summon(server, worldPosition.above(), rite, tier, confessor, warden, inlay, last);
         int dust = tier.ordinal() >= RitualQuality.STEADY.ordinal() ? tier.ordinal() - 1 : 0;
         if (dust > 0) {
             net.minecraft.world.Containers.dropItemStack(server, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5,
@@ -643,17 +694,33 @@ public class RitualSealBlockEntity extends BlockEntity {
     }
 
     private void record(Player player, RitualQuality tier) {
-        CultData data = Cult.get(player);
-        if (tier.ordinal() >= RitualQuality.STEADY.ordinal()) {
-            CultData next = data.withSteady(data.steady() + 1).withDebt(0);
-            if (next.steady() >= RANK_TWO_STEADY && next.rank() < 2) {
-                next = new CultData(next.role(), next.partner(), 2, next.steady(), next.debt());
-                player.displayClientMessage(Component.translatable("arcane_artifacts.cult.rank_up", Component.translatable("arcane_artifacts.cult.rank.2")), false);
-            }
-            Cult.set(player, next);
-        } else if (tier == RitualQuality.BROKEN) {
-            Cult.set(player, data.withDebt(Math.min(10, data.debt() + (CultGear.keepsDebt(player) ? 1 : 0))));
+        CultData before = Cult.get(player);
+        CultData after = advance(before, rite, Math.round(quality), tier, CultGear.keepsDebt(player));
+        if (after.rank() > before.rank()) {
+            player.displayClientMessage(Component.translatable("arcane_artifacts.cult.rank_up",
+                    Component.translatable("arcane_artifacts.cult.rank." + after.rank())), false);
         }
+        Cult.set(player, after);
+    }
+
+    /** What one finished rite writes into a Cultist's trail: best quality, last rite, steady count, debt and rank. */
+    public static CultData advance(CultData data, RiteScheme rite, int quality, RitualQuality tier, boolean keepsDebt) {
+        data = data.withBest(quality);
+        if (rite != RiteScheme.SECOND_COMING) {
+            data = data.withLastRite(rite.name());
+        }
+        if (tier == RitualQuality.PERFECT && data.rank() == 2) {
+            data = data.withRank(3);
+        }
+        if (tier.ordinal() >= RitualQuality.STEADY.ordinal()) {
+            data = data.withSteady(data.steady() + 1).withDebt(0);
+            if (data.steady() >= RANK_TWO_STEADY && data.rank() < 2) {
+                data = data.withRank(2);
+            }
+        } else if (tier == RitualQuality.BROKEN) {
+            data = data.withDebt(Math.min(10, data.debt() + (keepsDebt ? 1 : 0)));
+        }
+        return data;
     }
 
     private void fail(String reason) {
@@ -753,6 +820,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         tag.putInt("Ash", ash);
         tag.putInt("Shards", shards);
         tag.putInt("Candles", candles);
+        tag.putInt("Dust", dust);
         tag.putString("Scheme", scheme.name());
     }
 
@@ -762,6 +830,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         ash = tag.getInt("Ash");
         shards = tag.getInt("Shards");
         candles = tag.getInt("Candles");
+        dust = tag.getInt("Dust");
         scheme = RiteScheme.byName(tag.getString("Scheme"));
     }
 

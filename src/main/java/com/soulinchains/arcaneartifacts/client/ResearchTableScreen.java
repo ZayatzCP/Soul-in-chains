@@ -49,8 +49,8 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
     /** Which school is shown: 0 Arcane Mage, 1 Pseudomage, 2 Druid. */
     private int school;
     private static final String[] TABS = {"arcane_artifacts.research_table.tab_arcane", "arcane_artifacts.research_table.tab_pseudo",
-            "arcane_artifacts.research_table.tab_druid"};
-    private final TabButton[] tabs = new TabButton[3];
+            "arcane_artifacts.research_table.tab_druid", "arcane_artifacts.research_table.tab_cult"};
+    private final TabButton[] tabs = new TabButton[4];
     private static final int TAB_WIDTH = 28, TAB_HEIGHT = 24;
     private Item lastSample;
     private PageButton observe, formulate, previous, next;
@@ -77,7 +77,8 @@ public class ResearchTableScreen extends AbstractContainerScreen<ResearchTableMe
                 }));
         // The school tabs are bookmarks sticking out of the book's left edge, one icon each.
         net.minecraft.world.level.ItemLike[] icons = {com.soulinchains.arcaneartifacts.registry.ModItems.RESEARCHER_NOTEBOOK.get(),
-                com.soulinchains.arcaneartifacts.registry.ModItems.REVOLVER.get(), com.soulinchains.arcaneartifacts.registry.ModItems.DRUID_HERBARIUM.get()};
+                com.soulinchains.arcaneartifacts.registry.ModItems.REVOLVER.get(), com.soulinchains.arcaneartifacts.registry.ModItems.DRUID_HERBARIUM.get(),
+                com.soulinchains.arcaneartifacts.registry.ModItems.RITUAL_KNIFE.get()};
         for (int i = 0; i < tabs.length; i++) {
             final int tab = i;
             tabs[i] = addRenderableWidget(new TabButton(leftPos - TAB_WIDTH + 3, topPos + 14 + i * (TAB_HEIGHT + 4),
