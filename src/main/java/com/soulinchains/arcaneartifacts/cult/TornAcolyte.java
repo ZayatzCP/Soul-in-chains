@@ -152,7 +152,7 @@ public class TornAcolyte extends Monster {
                 acolyte.getNavigation().stop();
                 acolyte.swing(InteractionHand.MAIN_HAND);
                 RitualSealBlockEntity circle = acolyte.circle();
-                anchor.damage(circle == null ? ANCHOR_DAMAGE : circle.anchorDamage(ANCHOR_DAMAGE));
+                anchor.damage(circle == null ? ANCHOR_DAMAGE : circle.anchorDamage(ANCHOR_DAMAGE, anchor.getBlockPos()));
                 acolyte.level().playSound(null, anchor.getBlockPos(), SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, SoundSource.HOSTILE, 0.8F, 1.2F);
                 cooldown = 30;
             }

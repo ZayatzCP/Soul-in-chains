@@ -3,6 +3,8 @@
   "values": [
     "arcane_artifacts:druid_gloves",
     "arcane_artifacts:pseudomage_gloves",
-    "arcane_artifacts:shackle_gloves"
+    "arcane_artifacts:shackle_gloves",
+    "arcane_artifacts:seal_gauntlets",
+    "arcane_artifacts:inscriber_hands"
   ]
 }

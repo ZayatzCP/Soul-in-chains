@@ -301,4 +301,59 @@ public final class CultGameTests {
         drain(helper, seal);
         helper.succeed();
     }
+
+    // ------------------------------------------------------------------ 1.34
+
+    private static void wear(Player player, String slot, net.minecraft.world.item.Item item) {
+        top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.setEquippedCurio(slot, 0, new ItemStack(item)));
+    }
+
+    @GameTest(template = ARENA)
+    public static void cultGearBendsTheRite(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "gear_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "gear_warden", 4.5, 6.0);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.strikeBonus(confessor, false) == 5F
+                && com.soulinchains.arcaneartifacts.cult.CultGear.missPenalty(confessor) == 3F, "Bare hands: +5 / -3");
+        wear(confessor, "hands", ModItems.INSCRIBER_HANDS.get());
+        wear(confessor, "head", ModItems.FACE_OF_DOGMA.get());
+        wear(confessor, "body", ModItems.COMMUNION_MANTLE.get());
+        wear(warden, "hands", ModItems.SEAL_GAUNTLETS.get());
+        wear(warden, "body", ModItems.OUTER_CIRCLE_CUIRASS.get());
+        wear(warden, "head", ModItems.SEAL_KEEPER_HELM.get());
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.strikeBonus(confessor, false) == 6F, "Hands of the Inscriber: +6");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.missPenalty(confessor) == 1F, "Hands of the Inscriber: a miss costs 1");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.windowTicks(confessor) == RitualSealBlockEntity.WINDOW_TICKS + 6, "Face of Dogma: wider window");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.hurtPenalty(confessor) == 1F, "Mantle of Communion: a blow costs half");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.repairAmount(warden) == 37, "Gauntlets: shield mends 1.5x");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.hammerRepair(warden) == 55, "Gauntlets: hammer +15");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.interceptShare(warden, 0.3F) == 0.4F
+                    && com.soulinchains.arcaneartifacts.cult.CultGear.interceptShare(warden, 0.15F) == 0.15F, "Cuirass: 40% of creatures' blows, PvP untouched");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.anchorDamage(20, warden, warden.position().add(2, 0, 0)) == 12,
+                    "Helm: anchors near the Warden take 40% less");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void keeperOfTheCircleTakesTheBlow(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "keeper_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "keeper_warden", 4.5, 6.0);
+        Cult.pair(confessor, warden);
+        wear(warden, "head", ModItems.SEAL_KEEPER_HELM.get());
+        wear(warden, "body", ModItems.OUTER_CIRCLE_CUIRASS.get());
+        wear(warden, "belt", ModItems.ANCHOR_BELT.get());
+        wear(warden, "hands", ModItems.SEAL_GAUNTLETS.get());
+        wear(warden, "feet", ModItems.SENTRY_BOOTS.get());
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.wardenSet(warden), "The Keeper of the Circle set is complete");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGearEvents.useAnchorCharge(warden) == com.soulinchains.arcaneartifacts.cult.CultGear.BELT_CHARGE_REPAIR
+                    && com.soulinchains.arcaneartifacts.cult.CultGearEvents.charges(warden) == 3, "The belt spends a charge for +35");
+            confessor.setHealth(1F);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGearEvents.takeTheBlow(confessor, warden), "The Warden takes the killing blow");
+            helper.assertTrue(confessor.getHealth() == 2F && warden.getHealth() == 10F, "The Confessor keeps a heart; the Warden pays 5 hearts");
+            helper.assertTrue(!com.soulinchains.arcaneartifacts.cult.CultGearEvents.takeTheBlow(confessor, warden), "Once a minute");
+            helper.succeed();
+        });
+    }
 }

@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:bandolier"
+    "arcane_artifacts:bandolier",
+    "arcane_artifacts:outer_circle_cuirass",
+    "arcane_artifacts:communion_mantle"
   ]
 }

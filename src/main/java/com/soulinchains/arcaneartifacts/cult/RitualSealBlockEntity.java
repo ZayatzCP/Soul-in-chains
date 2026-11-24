@@ -64,7 +64,10 @@ public class RitualSealBlockEntity extends BlockEntity {
     public static final int CANDLES_NEEDED = 1;
     public static final int ANCHORS_NEEDED = 2;
     public static final float START_QUALITY = 50F;
+    public static final int RANK_TWO_STEADY = 3;
     private static final Map<UUID, RitualSealBlockEntity> BY_CONFESSOR = new HashMap<>();
+    private static final Map<UUID, RitualSealBlockEntity> BY_WARDEN = new HashMap<>();
+    private float voiceGiven;
 
     private Phase phase = Phase.IDLE;
     private int timer;
@@ -123,6 +126,28 @@ public class RitualSealBlockEntity extends BlockEntity {
             return null;
         }
         return seal;
+    }
+
+    /** The rite this player is the Warden of, if one runs. */
+    @Nullable
+    public static RitualSealBlockEntity ofWarden(Player player) {
+        RitualSealBlockEntity seal = BY_WARDEN.get(player.getUUID());
+        if (seal != null && (seal.isRemoved() || seal.phase != Phase.CHANNEL)) {
+            BY_WARDEN.remove(player.getUUID());
+            return null;
+        }
+        return seal;
+    }
+
+    /** Takes the missing reagents from the player's inventory. */
+    public void pullReagents(Player player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize() && !reagentsReady(); slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            while (!stack.isEmpty() && isReagent(stack) && offer(stack)) {
+                stack.shrink(1);
+            }
+        }
     }
 
     public List<RitualAnchorBlockEntity> anchorsAround() {
@@ -192,13 +217,18 @@ public class RitualSealBlockEntity extends BlockEntity {
         return inlay == KnifeInlay.BONE ? Math.round(base * 0.75F) : base;
     }
 
+    /** ... and the Seal-Keeper's Helm on a Warden standing near that anchor. */
+    public int anchorDamage(int base, BlockPos anchor) {
+        return CultGear.anchorDamage(anchorDamage(base), solo ? null : warden, Vec3.atCenterOf(anchor));
+    }
+
     /** The Seal-Wright's Hammer on an anchor during the rite: a bigger mend. */
     public boolean onHammerAtAnchor(Player player, RitualAnchorBlockEntity anchor) {
         if (phase != Phase.CHANNEL) {
             say(player, "hammer_rite_only");
             return false;
         }
-        int gained = anchor.repair(CultTools.HAMMER_REPAIR);
+        int gained = anchor.repair(CultGear.hammerRepair(player));
         if (gained > 0) {
             burst(anchor.getBlockPos(), 0xD6B2A5);
             sound(anchor.getBlockPos(), SoundEvents.ANVIL_PLACE, 0.5F, 1.6F);
@@ -291,7 +321,7 @@ public class RitualSealBlockEntity extends BlockEntity {
                     quality += 3F;
                     burst(anchor.getBlockPos(), 0xB9463D);
                 }
-                int gained = anchor.repair(CultGear.repairAmount(player));
+                int gained = anchor.repair(CultGear.repairAmount(player) + CultGearEvents.useAnchorCharge(player));
                 if (gained > 0) {
                     sound(anchor.getBlockPos(), SoundEvents.ANVIL_USE, 0.6F, 1.4F);
                 }
@@ -342,6 +372,10 @@ public class RitualSealBlockEntity extends BlockEntity {
     // ------------------------------------------------------------------ the rite
 
     public void tryStart(Player player) {
+        if (!reagentsReady() && CultGear.keepsDebt(player)) {
+            // the Book of Arrears: the seal takes what is missing from the Confessor's pack
+            pullReagents(player);
+        }
         if (!reagentsReady()) {
             player.displayClientMessage(reagentsLine(), true);
             return;
@@ -388,6 +422,10 @@ public class RitualSealBlockEntity extends BlockEntity {
         wave1 = wave2 = closed = wardenSealed = false;
         perfectStrikes = 0;
         BY_CONFESSOR.put(player.getUUID(), this);
+        if (warden != null && !solo) {
+            BY_WARDEN.put(warden.getUUID(), this);
+        }
+        voiceGiven = 0F;
         say(player, solo ? "rite_started_solo" : "rite_started");
         if (warden != null && !solo) {
             say(warden, "rite_started");
@@ -412,6 +450,9 @@ public class RitualSealBlockEntity extends BlockEntity {
             windowUsed = true;
             perfectStrikes++;
             quality += CultGear.strikeBonus(player, false);
+            float voice = CultGear.voiceBonus(player, voiceGiven);
+            voiceGiven += voice;
+            quality += voice;
             burst(worldPosition, 0xB9463D);
             sound(worldPosition, SoundEvents.AMETHYST_BLOCK_HIT, 1.2F, 1.2F);
         } else {
@@ -604,7 +645,12 @@ public class RitualSealBlockEntity extends BlockEntity {
     private void record(Player player, RitualQuality tier) {
         CultData data = Cult.get(player);
         if (tier.ordinal() >= RitualQuality.STEADY.ordinal()) {
-            Cult.set(player, data.withSteady(data.steady() + 1).withDebt(0));
+            CultData next = data.withSteady(data.steady() + 1).withDebt(0);
+            if (next.steady() >= RANK_TWO_STEADY && next.rank() < 2) {
+                next = new CultData(next.role(), next.partner(), 2, next.steady(), next.debt());
+                player.displayClientMessage(Component.translatable("arcane_artifacts.cult.rank_up", Component.translatable("arcane_artifacts.cult.rank.2")), false);
+            }
+            Cult.set(player, next);
         } else if (tier == RitualQuality.BROKEN) {
             Cult.set(player, data.withDebt(Math.min(10, data.debt() + (CultGear.keepsDebt(player) ? 1 : 0))));
         }
@@ -626,6 +672,9 @@ public class RitualSealBlockEntity extends BlockEntity {
     private void reset() {
         if (confessor != null) {
             BY_CONFESSOR.remove(confessor.getUUID());
+        }
+        if (warden != null) {
+            BY_WARDEN.remove(warden.getUUID());
         }
         if (level != null) {
             for (BlockPos pos : anchors) {

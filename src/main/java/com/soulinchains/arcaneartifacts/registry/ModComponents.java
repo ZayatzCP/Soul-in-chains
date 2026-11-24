@@ -51,6 +51,10 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SOUL_SHARDS =
             REGISTER.registerComponentType("soul_shards", b -> b.persistent(com.mojang.serialization.Codec.INT)
                     .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+    /** Charges of instant mending in the Belt of Anchors. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ANCHOR_CHARGES =
+            REGISTER.registerComponentType("anchor_charges", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
     /** The inlay in a Ritual Knife's handle (see KnifeInlay). */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> KNIFE_INLAY =
             REGISTER.registerComponentType("knife_inlay", b -> b.persistent(com.mojang.serialization.Codec.INT)

@@ -108,7 +108,7 @@ public final class CultTools {
         if (intercepting || !covering(warden, confessor)) {
             return amount;
         }
-        float taken = amount * interceptShare(source);
+        float taken = amount * CultGear.interceptShare(warden, interceptShare(source));
         if (taken <= 0) {
             return amount;
         }

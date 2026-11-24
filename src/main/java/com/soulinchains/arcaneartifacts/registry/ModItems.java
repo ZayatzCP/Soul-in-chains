@@ -44,6 +44,26 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> RITUAL_CENSER = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_CENSER);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.SealHammerItem> SEAL_HAMMER = REGISTER.register("seal_hammer", com.soulinchains.arcaneartifacts.cult.SealHammerItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.FormulaBookItem> FORMULA_BOOK = REGISTER.register("formula_book", com.soulinchains.arcaneartifacts.cult.FormulaBookItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> SEAL_KEEPER_HELM = REGISTER.register("seal_keeper_helm",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.HELM));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> OUTER_CIRCLE_CUIRASS = REGISTER.register("outer_circle_cuirass",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.CUIRASS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> ANCHOR_BELT = REGISTER.register("anchor_belt",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.ANCHOR_BELT));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> SEAL_GAUNTLETS = REGISTER.register("seal_gauntlets",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.GAUNTLETS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> SENTRY_BOOTS = REGISTER.register("sentry_boots",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.SENTRY_BOOTS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> FACE_OF_DOGMA = REGISTER.register("face_of_dogma",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.FACE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> COMMUNION_MANTLE = REGISTER.register("communion_mantle",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.MANTLE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> BOOK_OF_ARREARS = REGISTER.register("book_of_arrears",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.ARREARS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> INSCRIBER_HANDS = REGISTER.register("inscriber_hands",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.INSCRIBER_HANDS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> QUIET_SHOES = REGISTER.register("quiet_shoes",
+            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.QUIET_SHOES));
     public static final DeferredItem<Item> RITUAL_ASH = REGISTER.registerSimpleItem("ritual_ash");
     public static final DeferredItem<Item> BONE_SHARD = REGISTER.registerSimpleItem("bone_shard");
     public static final DeferredItem<Item> VOW_DUST = REGISTER.registerSimpleItem("vow_dust", new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));

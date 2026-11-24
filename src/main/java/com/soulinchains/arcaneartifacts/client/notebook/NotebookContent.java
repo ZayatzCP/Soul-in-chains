@@ -124,7 +124,7 @@ final class NotebookContent {
 
         List<Paragraph> effects = new ArrayList<>();
         effects.add(new Paragraph(Component.translatable("arcane_artifacts.page1.status_effects"), ArcaneNotebookScreen.INK_COLOR));
-        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus", "spore_infection", "entangled", "shackled", "reap_mark", "phantom", "cursed_chains", "warded"}) {
+        for (String effect : new String[]{"battle_rush", "rush_exhaustion", "silenced", "arcane_mark", "parasite_host", "parasitic_bond", "parasitic_recovery", "well_fed", "pity", "bonk", "magic_absorption", "fear", "duel_focus", "spore_infection", "entangled", "shackled", "reap_mark", "phantom", "cursed_chains", "warded", "inscribed"}) {
             effects.add(new Paragraph(Component.translatable("effect.arcane_artifacts." + effect).withStyle(ChatFormatting.BOLD), ArcaneNotebookScreen.TITLE_COLOR));
             effects.add(new Paragraph(Component.translatable("arcane_artifacts.effect_doc." + effect), ArcaneNotebookScreen.INK_COLOR));
         }

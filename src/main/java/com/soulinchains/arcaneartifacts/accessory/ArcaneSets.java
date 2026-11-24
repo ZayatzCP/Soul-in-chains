@@ -40,6 +40,10 @@ public final class ArcaneSets {
         POOR_MAGIC("poor_magic", List.of(ModItems.PONCHO, ModItems.SOMBRERO, ModItems.PSEUDOMAGE_BOOTS, ModItems.PSEUDOMAGE_GLOVES, ModItems.BANDOLIER)),
         AMANITOID("amanitoid", List.of(ModItems.MUSHROOM_SHIELD, ModItems.MUSHROOM_CLUB)),
         DRUID("druid", List.of(ModItems.DRUID_MANTLE, ModItems.DRUID_HAT, ModItems.DRUID_GLOVES, ModItems.DRUID_BOOTS)),
+        CIRCLE_KEEPER("circle_keeper", List.of(ModItems.SEAL_KEEPER_HELM, ModItems.OUTER_CIRCLE_CUIRASS, ModItems.ANCHOR_BELT,
+                ModItems.SEAL_GAUNTLETS, ModItems.SENTRY_BOOTS)),
+        VOICE_OF_RITE("voice_of_rite", List.of(ModItems.FACE_OF_DOGMA, ModItems.COMMUNION_MANTLE, ModItems.BOOK_OF_ARREARS,
+                ModItems.INSCRIBER_HANDS, ModItems.QUIET_SHOES)),
         SHACKLED("shackled", List.of(ModItems.SOUL_LANTERN, ModItems.SHACKLE_GLOVES, ModItems.SHROUD, ModItems.BONE_CROWN,
                 ModItems.PHYLACTERY_AMULET, ModItems.SHACKLED_BOOTS));
 

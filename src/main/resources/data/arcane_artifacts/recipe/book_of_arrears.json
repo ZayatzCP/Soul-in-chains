@@ -1,0 +1,38 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "arcane_artifacts:vow_dust"
+    },
+    {
+      "item": "arcane_artifacts:vow_dust"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "arcane_artifacts:bone_shard"
+    },
+    {
+      "item": "arcane_artifacts:ritual_ash"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:writable_book"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:book_of_arrears"
+  },
+  "sourceCost": 3000
+}

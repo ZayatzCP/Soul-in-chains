@@ -42,6 +42,16 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SEAL_HAMMER.get());
                 output.accept(ModItems.FORMULA_BOOK.get());
                 output.accept(ModItems.RITUAL_CENSER.get());
+                output.accept(ModItems.SEAL_KEEPER_HELM.get());
+                output.accept(ModItems.OUTER_CIRCLE_CUIRASS.get());
+                output.accept(ModItems.ANCHOR_BELT.get());
+                output.accept(ModItems.SEAL_GAUNTLETS.get());
+                output.accept(ModItems.SENTRY_BOOTS.get());
+                output.accept(ModItems.FACE_OF_DOGMA.get());
+                output.accept(ModItems.COMMUNION_MANTLE.get());
+                output.accept(ModItems.BOOK_OF_ARREARS.get());
+                output.accept(ModItems.INSCRIBER_HANDS.get());
+                output.accept(ModItems.QUIET_SHOES.get());
                 output.accept(ModItems.RITUAL_ASH.get());
                 output.accept(ModItems.BONE_SHARD.get());
                 output.accept(ModItems.VOW_DUST.get());

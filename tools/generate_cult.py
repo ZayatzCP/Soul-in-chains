@@ -203,6 +203,46 @@ def cap(lit):
     return img
 
 
+GEAR = {
+    'seal_keeper_helm': ['................', '....cccccccc....', '...cAAAAAAAAc...', '..cAAAAAAAAAAc..', '..cAAbbbbbbAAc..', '..cAbbrbbrbbAc..',
+                         '..cAbbbbbbbbAc..', '..cAAbbbbbbAAc..', '..cAAAbbbbAAAc..', '..cAAAAAAAAAAc..', '...cAAccccAAc...', '....cc....cc....',
+                         '................', '................', '................', '................'],
+    'outer_circle_cuirass': ['................', '.cccc......cccc.', 'cAAAAc....cAAAAc', 'cAAAAAccccAAAAAc', '.cAAAAAAAAAAAAc.', '..cAAArrrrAAAc..',
+                             '..cAAAArrAAAAc..', '..cAAAArrAAAAc..', '..cAAAAAAAAAAc..', '..cAAAArrAAAAc..', '..cAAAAAAAAAAc..', '...cAAAAAAAAc...',
+                             '....cccccccc....', '................', '................', '................'],
+    'anchor_belt': ['................', '................', '................', '................', '................', 'cccccccccccccccc',
+                    'AAAAAAArrAAAAAAA', 'AAAAAAArrAAAAAAA', 'cccccccccccccccc', '..r...r...r...r.', '..b...b...b...b.', '..b...b...b...b.',
+                    '................', '................', '................', '................'],
+    'seal_gauntlets': ['................', '................', '...cc......cc...', '..cAAc....cAAc..', '..cAAc....cAAc..', '.cAAAAc..cAAAAc.',
+                       '.cArAAc..cAArAc.', '.cAAAAc..cAAAAc.', '.cAAAAc..cAAAAc.', '.cccccc..cccccc.', '.cAAAAc..cAAAAc.', '.cccccc..cccccc.',
+                       '................', '................', '................', '................'],
+    'sentry_boots': ['................', '................', '................', '..cccc....cccc..', '..cAAc....cAAc..', '..cAAc....cAAc..',
+                     '..cAAc....cAAc..', '..cArc....cArc..', '..cAAc....cAAc..', '..cAAAcc..cAAAcc', '..cAAAAc..cAAAAc', '..cccccc..cccccc',
+                     '................', '................', '................', '................'],
+    'face_of_dogma': ['......b..b......', '.....bb.bbb.....', '....bbbbbbbb....', '...bbBBBBBBbb...', '...bBBbBBbBBb...', '..bBBBBBBBBBBb..',
+                      '..bBrBBBBBBrBb..', '..bBBBBBBBBBBb..', '...bBBBBBBBBb...', '...bBBBBBBBBb...', '....bBBBBBBb....', '....bbrrrrbb....',
+                      '.....brrrrb.....', '......bbbb......', '................', '................'],
+    'communion_mantle': ['................', '.....cccccc.....', '....cAAAAAAc....', '...cAArrrrAAc...', '...cAAArrAAAc...', '..cAAAArrAAAAc..',
+                         '..cAAAArrAAAAc..', '.cAAAAArrAAAAAc.', '.cAAAAArrAAAAAc.', '.cAAAAAAAAAAAAc.', 'cAAAAAAAAAAAAAAc', 'cAAAAAAAAAAAAAAc',
+                         'crrrrrrrrrrrrrrc', '................', '................', '................'],
+    'book_of_arrears': ['................', '..cccccccccc....', '..cRRRRRRRRcb...', '..cRbbbbbbRcb...', '..cRbrrrrbRcb...', '..cRbbbbbbRcb...',
+                        '..cRbrrbbbRcb...', '..cRbbbbbbRcb...', '..cRbrrrrbRcb...', '..cRRRRRRRRcb...', '..cRRRRRRRRcb...', '..ccccccccccb...',
+                        '...bbbbbbbbbb...', '....c.........c.', '................', '................'],
+    'inscriber_hands': ['................', '..t.t......t.t..', '..b.b......b.b..', '..bbbt....tbbb..', '..bbbb....bbbb..', '..bbbb....bbbb..',
+                        '..bbbb....bbbb..', '..bbbb....bbbb..', '...bb......bb...', '...rr......rr...', '...cc......cc...', '................',
+                        '................', '................', '................', '................'],
+    'quiet_shoes': ['................', '................', '................', '................', '................', '................',
+                    '..cccc....cccc..', '..cAAc....cAAc..', '..cAAc....cAAc..', '..cAAAcc..cAAAcc', '..cAAAAc..cAAAAc', '..crrrrc..crrrrc',
+                    '................', '................', '................', '................'],
+}
+
+
+def gear_icons():
+    pal = {'c': CHARCOAL, 'A': '#2A2428', 'b': BONE, 'B': '#E0D4C4', 'r': CINNABAR, 'R': BORDEAUX, 't': '#5FA8A8'}
+    for name, rows in GEAR.items():
+        save(sprite(rows, pal), 'item', name + '.png')
+
+
 if __name__ == '__main__':
     save(seal_top(), 'block', 'ritual_seal_top.png')
     save(seal_side(), 'block', 'ritual_seal_side.png')
@@ -220,4 +260,5 @@ if __name__ == '__main__':
         censer.putpixel((x, 3), hexc(CINNABAR))
         censer.putpixel((x, 12), hexc(BORDEAUX))
     save(censer, 'block', 'ritual_censer.png')
+    gear_icons()
     save(sprite(DUST, {'c': BORDEAUX, 'R': CINNABAR, 'b': ROSE, 'B': BONE, 'r': CINNABAR}), 'item', 'vow_dust.png')
