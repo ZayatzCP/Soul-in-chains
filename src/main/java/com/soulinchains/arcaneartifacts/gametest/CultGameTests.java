@@ -325,7 +325,7 @@ public final class CultGameTests {
             helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.missPenalty(confessor) == 1F, "Hands of the Inscriber: a miss costs 1");
             helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.windowTicks(confessor) == RitualSealBlockEntity.WINDOW_TICKS + 6, "Face of Dogma: wider window");
             helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.hurtPenalty(confessor) == 1F, "Mantle of Communion: a blow costs half");
-            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.repairAmount(warden) == 37, "Gauntlets: shield mends 1.5x");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.repairAmount(warden) == 38, "Gauntlets: shield mends 1.5x (37.5 rounds to 38)");
             helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.hammerRepair(warden) == 55, "Gauntlets: hammer +15");
             helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultGear.interceptShare(warden, 0.3F) == 0.4F
                     && com.soulinchains.arcaneartifacts.cult.CultGear.interceptShare(warden, 0.15F) == 0.15F, "Cuirass: 40% of creatures' blows, PvP untouched");
