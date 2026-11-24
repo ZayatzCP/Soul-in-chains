@@ -114,12 +114,24 @@ public class ChainBolt extends Projectile {
 
     @Override
     protected boolean canHitEntity(Entity target) {
+        if (target instanceof SoulWisp wisp) {
+            // Only a player's chain catches souls (arrows and other spells pass through them).
+            return wisp.isAlive() && getOwner() instanceof net.minecraft.world.entity.player.Player;
+        }
         return super.canHitEntity(target) && target != getOwner()
                 && (target instanceof LivingEntity || com.soulinchains.arcaneartifacts.compat.ContraptionCompat.isContraption(target));
     }
 
     @Override
     protected void onHitEntity(EntityHitResult hit) {
+        if (hit.getEntity() instanceof SoulWisp wisp) {
+            // A chain through a soul: caught, straight into the thrower's lantern.
+            if (getOwner() instanceof LivingEntity thrower) {
+                wisp.capture(thrower);
+            }
+            discard();
+            return;
+        }
         if (resolver != null) {
             resolver.onResolveEffect(level(), hit);
         }

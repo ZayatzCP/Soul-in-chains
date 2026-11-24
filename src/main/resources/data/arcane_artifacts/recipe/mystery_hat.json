@@ -1,0 +1,38 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "arcane_artifacts:rose_gold_ingot"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    },
+    {
+      "item": "ars_nouveau:magebloom_fiber"
+    },
+    {
+      "item": "ars_nouveau:manipulation_essence"
+    },
+    {
+      "item": "ars_nouveau:source_gem"
+    },
+    {
+      "item": "ars_nouveau:spell_parchment"
+    },
+    {
+      "item": "minecraft:amethyst_shard"
+    }
+  ],
+  "reagent": {
+    "item": "minecraft:leather_helmet"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:mystery_hat"
+  },
+  "sourceCost": 4000
+}

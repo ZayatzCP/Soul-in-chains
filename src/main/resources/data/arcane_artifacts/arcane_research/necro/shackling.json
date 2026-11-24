@@ -48,7 +48,8 @@
     "arcane_artifacts:chain_sickle",
     "arcane_artifacts:ritual_dagger",
     "arcane_artifacts:soul_vessel",
-    "arcane_artifacts:gravedigger_shovel"
+    "arcane_artifacts:gravedigger_shovel",
+    "arcane_artifacts:soul_flail"
   ],
   "unlocks": [
     "arcane_artifacts:glyph_chain",

@@ -47,6 +47,14 @@ public final class ModComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CARTRIDGES =
             REGISTER.registerComponentType("cartridges", b -> b.persistent(com.mojang.serialization.Codec.INT)
                     .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+    /** Soul shards chipped together by the Soul Flail (10 make a soul). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SOUL_SHARDS =
+            REGISTER.registerComponentType("soul_shards", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
+    /** The circle a Staff of the Five Circles is set to. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DRUID_CIRCLE =
+            REGISTER.registerComponentType("druid_circle", b -> b.persistent(com.mojang.serialization.Codec.INT)
+                    .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT));
     /** Rounds left in a firearm's magazine. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> GUN_ROUNDS =
             REGISTER.registerComponentType("gun_rounds", b -> b.persistent(com.mojang.serialization.Codec.INT)

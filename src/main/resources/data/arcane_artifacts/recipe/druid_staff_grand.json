@@ -1,0 +1,38 @@
+{
+  "type": "ars_nouveau:enchanting_apparatus",
+  "keepNbtOfReagent": false,
+  "pedestalItems": [
+    {
+      "item": "arcane_artifacts:druid_staff_roots"
+    },
+    {
+      "item": "arcane_artifacts:druid_staff_grove"
+    },
+    {
+      "item": "arcane_artifacts:druid_staff_hive"
+    },
+    {
+      "item": "arcane_artifacts:druid_staff_sap"
+    },
+    {
+      "item": "arcane_artifacts:druid_staff_thorns"
+    },
+    {
+      "item": "ars_nouveau:magebloom_block"
+    },
+    {
+      "item": "ars_nouveau:earth_essence"
+    },
+    {
+      "item": "minecraft:emerald_block"
+    }
+  ],
+  "reagent": {
+    "item": "ars_nouveau:source_gem_block"
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:druid_staff_grand"
+  },
+  "sourceCost": 5000
+}

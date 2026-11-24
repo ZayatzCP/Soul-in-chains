@@ -139,5 +139,6 @@ public final class ClientSetup {
         event.register(BeltKey.KEY);
         event.register(BeltKey.AMULET_KEY);
         event.register(BeltKey.BANDOLIER_KEY);
+        event.register(BeltKey.CIRCLE_KEY);
     }
 }

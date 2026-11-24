@@ -26,6 +26,7 @@ import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -719,5 +720,109 @@ public final class NecroGameTests {
         helper.assertTrue(com.soulinchains.arcaneartifacts.necro.Necro.friendly(caster, caster), "One is friendly to oneself");
         helper.assertTrue(!com.soulinchains.arcaneartifacts.necro.Necro.friendly(caster, pig), "A stray pig is not a friend");
         helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ 1.31
+
+    @GameTest(template = ARENA, batch = "necro_wisp")
+    public static void soulWispMustBeCaught(GameTestHelper helper) {
+        Player player = playerWithLantern(helper);
+        SoulWisp wisp = new SoulWisp(com.soulinchains.arcaneartifacts.registry.ModEntities.SOUL_WISP.get(), helper.getLevel());
+        wisp.setSoul(SoulType.WANDERING);
+        wisp.setPos(player.getX(), player.getY() + 0.8, player.getZ());
+        helper.getLevel().addFreshEntity(wisp);
+        helper.runAfterDelay(20, () -> {
+            helper.assertTrue(wisp.isAlive() && Souls.total(player) == 0, "A soul must not fly into the lantern by itself");
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+            wisp.skipAttackInteraction(player);
+            helper.assertTrue(wisp.isAlive(), "A sword passes through a soul");
+            player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(ModItems.SOUL_FLAIL.get()));
+            wisp.skipAttackInteraction(player);
+            helper.assertTrue(wisp.isRemoved() && Souls.count(player, SoulType.WANDERING) == 1, "The Soul Flail must catch the soul");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, batch = "arcane_hat")
+    public static void mysteryHatEchoes(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> inv.setEquippedCurio("head", 0, new ItemStack(ModItems.MYSTERY_HAT.get())));
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.wears(player), "The hat must be worn");
+            var mana = com.hollingsworth.arsnouveau.setup.registry.CapabilityRegistry.getMana(player);
+            mana.setMaxMana(100);
+            mana.setMana(90);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.chance(player) == com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.ECHO_CHANCE,
+                    "With most of the mana the Echo chance is 20%");
+            mana.setMana(30);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.chance(player) == com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.LOW_MANA_ECHO_CHANCE,
+                    "Below half the mana the Echo chance is 40%");
+            helper.assertTrue(!com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.echoing(player), "No echo before it rings");
+            com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.echo(player);
+            helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.MysteryHatItem.echoing(player), "An echo makes this tick's cast free");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.ArcaneSets.Set.FOCUSING.pieces.size() == 4, "The hat belongs to the Focusing set");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void staffOfFiveCirclesTurns(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack staff = new ItemStack(ModItems.DRUID_STAFF_GRAND.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, staff);
+        var item = (com.soulinchains.arcaneartifacts.druid.DruidStaffItem) staff.getItem();
+        helper.assertTrue(item.circle(staff) == com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.ROOTS, "It starts on Roots");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.switchCircle(player), "The circle key turns the staff in hand");
+        helper.assertTrue(item.circle(staff) == com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.GROVE, "Roots → Grove");
+        for (int i = 0; i < 4; i++) {
+            com.soulinchains.arcaneartifacts.druid.DruidStaffItem.switchCircle(player);
+        }
+        helper.assertTrue(item.circle(staff) == com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.ROOTS, "Five turns come round to Roots");
+        ItemStack single = new ItemStack(ModItems.DRUID_STAFF_HIVE.get());
+        helper.assertTrue(((com.soulinchains.arcaneartifacts.druid.DruidStaffItem) single.getItem()).circle(single)
+                == com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.HIVE, "A single staff keeps its own circle");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void thornsGrowAWall(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.CREATIVE);
+        Vec3 pos = helper.absoluteVec(new Vec3(4.5, 2, 1.5));
+        player.moveTo(pos.x, pos.y, pos.z, 0F, 0F);
+        for (int x = 1; x <= 7; x++) {
+            for (int z = 3; z <= 5; z++) {
+                helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
+            }
+        }
+        helper.assertTrue(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.thorns(helper.getLevel(), player), "Thorns must grow on grass");
+        int bushes = 0;
+        for (int x = 1; x <= 7; x++) {
+            if (helper.getBlockState(new BlockPos(x, 2, 4)).is(net.minecraft.world.level.block.Blocks.SWEET_BERRY_BUSH)) {
+                bushes++;
+            }
+        }
+        helper.assertTrue(bushes == com.soulinchains.arcaneartifacts.druid.DruidStaffItem.THORNS_WIDTH, "A wall of five bushes, got " + bushes);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, batch = "druid_roots")
+    public static void rootsSetSavesOnLivingGround(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        helper.setBlock(new BlockPos(4, 1, 4), net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
+        Vec3 pos = helper.absoluteVec(new Vec3(4.5, 2, 4.5));
+        player.setPos(pos.x, pos.y, pos.z);
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
+            inv.setEquippedCurio("back", 0, new ItemStack(ModItems.DRUID_MANTLE.get()));
+            inv.setEquippedCurio("head", 0, new ItemStack(ModItems.DRUID_HAT.get()));
+            inv.setEquippedCurio("hands", 0, new ItemStack(ModItems.DRUID_GLOVES.get()));
+            inv.setEquippedCurio("feet", 0, new ItemStack(ModItems.DRUID_BOOTS.get()));
+        });
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(com.soulinchains.arcaneartifacts.druid.RootMagic.fullSet(player), "All four pieces are worn");
+            helper.assertTrue(com.soulinchains.arcaneartifacts.druid.RootMagic.onLivingGround(player), "Grass is living ground");
+            player.hurt(helper.getLevel().damageSources().generic(), 1000F);
+            helper.assertTrue(player.isAlive() && Math.abs(player.getHealth() - 12F) < 1e-3, "The roots must hold: 6 hearts, got " + player.getHealth());
+            helper.succeed();
+        });
     }
 }

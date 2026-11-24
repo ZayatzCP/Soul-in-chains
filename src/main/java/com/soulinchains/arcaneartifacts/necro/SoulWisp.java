@@ -10,17 +10,20 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 /**
- * The wisp a soul leaves over the body for a few seconds. It drifts up slowly; a player wearing a Soul Lantern with
- * room in it draws it in from {@link #PULL_RANGE} blocks. Nothing else can catch it. Not saved with the world.
+ * The wisp a soul leaves over the body: a clot of soul-sand sparks around an invisible core. It shies away from
+ * players and fades after {@code soul_wisp_seconds}. It has to be caught: a blow of the Soul Flail, or a chain (Chain
+ * Sickle, a spell with the Chain form). Reap sends the soul straight to the lantern instead. Not saved with the world.
  */
 public class SoulWisp extends Entity {
-    public static final double PULL_RANGE = 4.0;
+    /** It shies away from players this close. */
+    public static final double SHY_RANGE = 5.0;
     private static final EntityDataAccessor<Byte> SOUL = SynchedEntityData.defineId(SoulWisp.class, EntityDataSerializers.BYTE);
 
     public SoulWisp(EntityType<? extends SoulWisp> type, Level level) {
@@ -55,40 +58,97 @@ public class SoulWisp extends Entity {
             discard();
             return;
         }
-        Player catcher = null;
-        double best = PULL_RANGE * PULL_RANGE;
+        // Skittish: it drifts away from whoever comes close; stronger souls are quicker.
+        Player near = null;
+        double best = SHY_RANGE * SHY_RANGE;
         for (Player player : level().players()) {
             double d = player.distanceToSqr(this);
-            if (d < best && !player.isSpectator() && Souls.canStore(player)) {
+            if (d < best && !player.isSpectator()) {
                 best = d;
-                catcher = player;
+                near = player;
             }
         }
         Vec3 motion;
-        if (catcher != null) {
-            Vec3 to = catcher.position().add(0, catcher.getBbHeight() * 0.5, 0).subtract(position());
-            if (to.lengthSqr() < 1.2 * 1.2) {
-                if (Souls.catchSoul(catcher, soul())) {
-                    burst((ServerLevel) level(), position(), soul());
-                    discard();
-                    return;
-                }
-            }
-            motion = to.normalize().scale(0.35);
+        if (near != null) {
+            Vec3 away = position().subtract(near.getEyePosition()).multiply(1, 0.3, 1);
+            motion = away.lengthSqr() < 1.0E-4 ? new Vec3(0, 0.02, 0) : away.normalize().scale(0.03 + 0.015 * soul().strength);
         } else {
-            motion = new Vec3(Math.sin(tickCount * 0.2) * 0.02, 0.01, Math.cos(tickCount * 0.2) * 0.02);
+            motion = new Vec3(Math.sin(tickCount * 0.2) * 0.02, 0.005, Math.cos(tickCount * 0.2) * 0.02);
         }
         setDeltaMovement(motion);
         setPos(position().add(motion));
     }
 
+    /**
+     * Caught: by a blow of the Soul Flail, or by a chain (Chain Sickle, Chain form). The soul goes into the catcher's
+     * lantern; with no room it stays where it is.
+     */
+    public boolean capture(LivingEntity catcher) {
+        if (isRemoved() || !(level() instanceof ServerLevel level)) {
+            return false;
+        }
+        if (!Souls.catchSoul(catcher, soul())) {
+            if (catcher instanceof Player player) {
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                        Souls.lantern(player).isPresent() ? "arcane_artifacts.soul_wisp.full" : "arcane_artifacts.soul_wisp.no_lantern"), true);
+            }
+            return false;
+        }
+        burst(level, position(), soul());
+        level.playSound(null, getX(), getY(), getZ(), net.minecraft.sounds.SoundEvents.SOUL_ESCAPE.value(),
+                net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.4F);
+        discard();
+        return true;
+    }
+
+    /** Players can swing at it: the Soul Flail catches it, anything else passes through it. */
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
+
+    /** Arrows and spell projectiles fly through; only chains catch it (see ChainBolt). */
+    @Override
+    public boolean canBeHitByProjectile() {
+        return false;
+    }
+
+    @Override
+    public boolean isAttackable() {
+        return true;
+    }
+
+    @Override
+    public boolean skipAttackInteraction(Entity attacker) {
+        if (attacker instanceof Player player && !level().isClientSide) {
+            if (player.getMainHandItem().getItem() instanceof SoulFlailItem) {
+                capture(player);
+            } else {
+                player.displayClientMessage(net.minecraft.network.chat.Component.translatable("arcane_artifacts.soul_wisp.slips"), true);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean hurt(net.minecraft.world.damagesource.DamageSource source, float amount) {
+        return false;
+    }
+
+    /** A clot of soul-sand sparks: coloured dust around the core, soul flames, now and then a rising soul. */
     private void particles() {
         int c = soul().color;
         Vector3f color = new Vector3f(((c >> 16) & 255) / 255F, ((c >> 8) & 255) / 255F, (c & 255) / 255F);
-        level().addParticle(new DustParticleOptions(color, 1.2F), getX() + (random.nextDouble() - 0.5) * 0.25,
-                getY() + (random.nextDouble() - 0.5) * 0.25, getZ() + (random.nextDouble() - 0.5) * 0.25, 0, 0.01, 0);
-        if (tickCount % 4 == 0) {
-            level().addParticle(ParticleTypes.SOUL, getX(), getY(), getZ(), 0, 0.02, 0);
+        for (int i = 0; i < 3; i++) {
+            level().addParticle(new DustParticleOptions(color, 0.9F + random.nextFloat() * 0.6F), getX() + (random.nextDouble() - 0.5) * 0.35,
+                    getY() + 0.2 + (random.nextDouble() - 0.5) * 0.35, getZ() + (random.nextDouble() - 0.5) * 0.35, 0, 0.005, 0);
+        }
+        if (tickCount % 3 == 0) {
+            level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, getX() + (random.nextDouble() - 0.5) * 0.2, getY() + 0.2,
+                    getZ() + (random.nextDouble() - 0.5) * 0.2, 0, 0.01, 0);
+        }
+        if (tickCount % 10 == 0) {
+            level().addParticle(ParticleTypes.SOUL, getX(), getY() + 0.3, getZ(), 0, 0.03, 0);
         }
     }
 
@@ -98,11 +158,6 @@ public class SoulWisp extends Entity {
         Vector3f color = new Vector3f(((c >> 16) & 255) / 255F, ((c >> 8) & 255) / 255F, (c & 255) / 255F);
         level.sendParticles(new DustParticleOptions(color, 1.5F), at.x, at.y, at.z, 12, 0.2, 0.2, 0.2, 0.02);
         level.sendParticles(ParticleTypes.SOUL, at.x, at.y, at.z, 4, 0.1, 0.1, 0.1, 0.02);
-    }
-
-    @Override
-    public boolean isPickable() {
-        return false;
     }
 
     @Override

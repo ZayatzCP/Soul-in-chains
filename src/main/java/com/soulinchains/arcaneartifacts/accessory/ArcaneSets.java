@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
 public final class ArcaneSets {
     public enum Set {
-        FOCUSING("focusing", List.of(ModItems.FOCUSING_BOOTS, ModItems.FOCUSING_GLOVES, ModItems.FOCUSING_SHIELD)),
+        FOCUSING("focusing", List.of(ModItems.MYSTERY_HAT, ModItems.FOCUSING_BOOTS, ModItems.FOCUSING_GLOVES, ModItems.FOCUSING_SHIELD)),
         REFLECTION("reflection", List.of(ModItems.MANTLE_OF_REFLECTION, ModItems.RING_OF_REVERSAL, ModItems.MIRROR_SHIELD)),
         POOR_MAGIC("poor_magic", List.of(ModItems.PONCHO, ModItems.SOMBRERO, ModItems.PSEUDOMAGE_BOOTS, ModItems.PSEUDOMAGE_GLOVES, ModItems.BANDOLIER)),
         AMANITOID("amanitoid", List.of(ModItems.MUSHROOM_SHIELD, ModItems.MUSHROOM_CLUB)),
@@ -108,11 +108,6 @@ public final class ArcaneSets {
 
     public static int discounted(LivingEntity caster, int cost) {
         return Set.FOCUSING.complete(caster) ? Math.round(cost * (1F - FOCUS_DISCOUNT)) : cost;
-    }
-
-    @SubscribeEvent
-    public static void onCostPre(SpellCostCalcEvent.Pre event) {
-        event.currentCost = discounted(event.context.getUnwrappedCaster(), event.currentCost);
     }
 
     @SubscribeEvent

@@ -79,6 +79,9 @@ public final class ResearchNetwork {
         registrar.playToServer(com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBandolierPayload.TYPE,
                 com.soulinchains.arcaneartifacts.belt.BeltRegistry.OpenBandolierPayload.STREAM_CODEC,
                 (payload, context) -> com.soulinchains.arcaneartifacts.belt.BeltRegistry.handleOpenBandolier(context));
+        registrar.playToServer(com.soulinchains.arcaneartifacts.druid.DruidNetwork.SwitchCirclePayload.TYPE,
+                com.soulinchains.arcaneartifacts.druid.DruidNetwork.SwitchCirclePayload.STREAM_CODEC,
+                (payload, context) -> com.soulinchains.arcaneartifacts.druid.DruidNetwork.handleSwitch(context));
         registrar.playToServer(com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.TogglePayload.TYPE,
                 com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.TogglePayload.STREAM_CODEC,
                 (payload, context) -> com.soulinchains.arcaneartifacts.accessory.AmuletOfOppositesItem.handleToggle(context));

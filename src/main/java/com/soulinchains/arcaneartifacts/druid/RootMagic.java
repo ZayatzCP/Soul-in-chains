@@ -141,4 +141,94 @@ public final class RootMagic {
             event.setCanceled(true);
         }
     }
+
+    // ------------------------------------------------------------------ the Roots set (1.31)
+
+    /** The Root Magic spell parts: Entangle, Grove, Bee Swarm. */
+    public static boolean isRootPart(com.hollingsworth.arsnouveau.api.spell.AbstractSpellPart part) {
+        return part == com.soulinchains.arcaneartifacts.glyph.EffectEntangle.INSTANCE || part == com.soulinchains.arcaneartifacts.glyph.EffectGrove.INSTANCE
+                || part == com.soulinchains.arcaneartifacts.glyph.EffectBeeSwarm.INSTANCE;
+    }
+
+    /** A Root Magic spell: it carries one of the Root glyphs, or it is cast from a druid staff. */
+    public static boolean isRootSpell(com.hollingsworth.arsnouveau.api.spell.SpellContext context) {
+        if (context.getCasterTool().getItem() instanceof DruidStaffItem) {
+            return true;
+        }
+        return context.getSpell().unsafeList().stream().anyMatch(RootMagic::isRootPart);
+    }
+
+    /** The mantle on living ground: mana from the roots and a little life. */
+    public static void drawFromRoots(Player player) {
+        var mana = com.hollingsworth.arsnouveau.setup.registry.CapabilityRegistry.getMana(player);
+        if (mana != null && mana.getCurrentMana() < mana.getMaxMana()) {
+            mana.addMana(DruidGearItem.MANTLE_MANA_PER_SECOND);
+        }
+        if (player.tickCount % 120 == 0) {
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 130, 0, true, false, true));
+        }
+    }
+
+    /** Hat: one Extend Time more for Root glyphs. Gloves: one Amplify more. */
+    @SubscribeEvent
+    public static void onSpellStats(com.hollingsworth.arsnouveau.api.event.SpellModifierEvent event) {
+        if (!(event.caster instanceof LivingEntity caster) || event.spellPart == null || !isRootPart(event.spellPart)) {
+            return;
+        }
+        if (wears(caster, ModItems.DRUID_HAT.get())) {
+            event.builder.addDurationModifier(1.0);
+        }
+        if (wears(caster, ModItems.DRUID_GLOVES.get())) {
+            event.builder.addAmplification(1.0);
+        }
+    }
+
+    /** Hat: Root Magic spells cost 20% less. The Staff of the Five Circles: 15% less on top. */
+    @SubscribeEvent
+    public static void onCost(com.hollingsworth.arsnouveau.api.event.SpellCostCalcEvent.Post event) {
+        LivingEntity caster = event.context.getUnwrappedCaster();
+        if (caster == null || !isRootSpell(event.context)) {
+            return;
+        }
+        float cost = event.currentCost;
+        if (wears(caster, ModItems.DRUID_HAT.get())) {
+            cost *= 1F - DruidGearItem.HAT_DISCOUNT;
+        }
+        if (event.context.getCasterTool().getItem() instanceof DruidStaffItem staff && staff.grand()) {
+            cost *= 1F - DruidStaffItem.GRAND_DISCOUNT;
+        }
+        event.currentCost = Math.round(cost);
+    }
+
+    /** Gloves: your own blows hit entangled creatures twice as hard. */
+    @SubscribeEvent
+    public static void onEntangledHit(net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent event) {
+        if (event.getSource().getEntity() instanceof LivingEntity attacker && event.getSource().getDirectEntity() == attacker
+                && event.getEntity().hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.ENTANGLED) && wears(attacker, ModItems.DRUID_GLOVES.get())) {
+            event.setAmount(event.getAmount() * DruidGearItem.GLOVES_ENTANGLED_BONUS);
+        }
+    }
+
+    private static final String ROOTS_READY = ArcaneArtifacts.MODID + ":roots_ready";
+
+    /** The full set, Roots: a killing blow on living ground roots you instead (once every 5 minutes). */
+    @SubscribeEvent(priority = net.neoforged.bus.api.EventPriority.HIGH)
+    public static void onDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Player player) || !(player.level() instanceof ServerLevel level)
+                || event.getSource().is(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL) || !fullSet(player) || !onLivingGround(player)) {
+            return;
+        }
+        long now = level.getGameTime();
+        if (player.getPersistentData().getLong(ROOTS_READY) > now) {
+            return;
+        }
+        event.setCanceled(true);
+        player.getPersistentData().putLong(ROOTS_READY, now + DruidGearItem.ROOTS_COOLDOWN_TICKS);
+        player.setHealth(Math.min(player.getMaxHealth(), DruidGearItem.ROOTS_HEAL));
+        player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 60, 4));
+        player.addEffect(new MobEffectInstance(com.soulinchains.arcaneartifacts.registry.ModEffects.ENTANGLED, 60, 0));
+        level.sendParticles(ParticleTypes.COMPOSTER, player.getX(), player.getY() + 0.5, player.getZ(), 40, 0.5, 0.6, 0.5, 0.05);
+        level.playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.ROOTED_DIRT_PLACE, net.minecraft.sounds.SoundSource.PLAYERS, 1.5F, 0.6F);
+        player.displayClientMessage(net.minecraft.network.chat.Component.translatable("arcane_artifacts.druid.rooted"), true);
+    }
 }

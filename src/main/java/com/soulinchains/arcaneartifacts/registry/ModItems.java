@@ -27,6 +27,8 @@ public final class ModItems {
 
     public static final DeferredItem<WreathOfManipulationItem> WREATH_OF_MANIPULATION = REGISTER.register("wreath_of_manipulation", WreathOfManipulationItem::new);
     public static final DeferredItem<FocusingBootsItem> FOCUSING_BOOTS = REGISTER.register("focusing_boots", FocusingBootsItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.accessory.MysteryHatItem> MYSTERY_HAT =
+            REGISTER.register("mystery_hat", com.soulinchains.arcaneartifacts.accessory.MysteryHatItem::new);
     public static final DeferredItem<FocusingGlovesItem> FOCUSING_GLOVES = REGISTER.register("focusing_gloves", FocusingGlovesItem::new);
     public static final DeferredItem<RingOfReversalItem> RING_OF_REVERSAL = REGISTER.register("ring_of_reversal", RingOfReversalItem::new);
     public static final DeferredItem<MantleOfReflectionItem> MANTLE_OF_REFLECTION = REGISTER.register("mantle_of_reflection", MantleOfReflectionItem::new);
@@ -35,6 +37,8 @@ public final class ModItems {
             REGISTER.register("spell_staff", com.soulinchains.arcaneartifacts.item.SpellStaffItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulLanternItem> SOUL_LANTERN =
             REGISTER.register("soul_lantern", com.soulinchains.arcaneartifacts.necro.SoulLanternItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulFlailItem> SOUL_FLAIL =
+            REGISTER.register("soul_flail", com.soulinchains.arcaneartifacts.necro.SoulFlailItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ChainSickleItem> CHAIN_SICKLE =
             REGISTER.register("chain_sickle", com.soulinchains.arcaneartifacts.necro.ChainSickleItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.WardenRodItem> WARDEN_ROD =
@@ -205,6 +209,17 @@ public final class ModItems {
             () -> new com.soulinchains.arcaneartifacts.mount.MountItem(new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE), ModEntities.IRON_HORSE, 3));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem> PSEUDOMAGE_GLOVES = REGISTER.register("pseudomage_gloves",
             com.soulinchains.arcaneartifacts.pseudo.PseudomageGlovesItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidStaffItem> DRUID_STAFF_ROOTS = REGISTER.register("druid_staff_roots",
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidStaffItem(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.ROOTS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidStaffItem> DRUID_STAFF_GROVE = REGISTER.register("druid_staff_grove",
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidStaffItem(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.GROVE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidStaffItem> DRUID_STAFF_HIVE = REGISTER.register("druid_staff_hive",
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidStaffItem(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.HIVE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidStaffItem> DRUID_STAFF_SAP = REGISTER.register("druid_staff_sap",
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidStaffItem(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.SAP));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidStaffItem> DRUID_STAFF_THORNS = REGISTER.register("druid_staff_thorns",
+            () -> new com.soulinchains.arcaneartifacts.druid.DruidStaffItem(com.soulinchains.arcaneartifacts.druid.DruidStaffItem.Circle.THORNS));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidStaffItem> DRUID_STAFF_GRAND = REGISTER.register("druid_staff_grand", () -> new com.soulinchains.arcaneartifacts.druid.DruidStaffItem(null));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_MANTLE = REGISTER.register("druid_mantle",
             () -> new com.soulinchains.arcaneartifacts.druid.DruidGearItem(com.soulinchains.arcaneartifacts.druid.DruidGearItem.Piece.MANTLE));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.druid.DruidGearItem> DRUID_HAT = REGISTER.register("druid_hat",

@@ -23,6 +23,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.ROSE_GOLD_NUGGET.get());
                 output.accept(ModItems.ROSE_GOLD_BLOCK.get());
                 output.accept(ModItems.WREATH_OF_MANIPULATION.get());
+                output.accept(ModItems.MYSTERY_HAT.get());
                 output.accept(ModItems.FOCUSING_BOOTS.get());
                 output.accept(ModItems.FOCUSING_GLOVES.get());
                 output.accept(ModItems.RING_OF_REVERSAL.get());
@@ -33,6 +34,7 @@ public final class ModCreativeTab {
                 output.accept(ModItems.BOTTOMLESS_BELT.get());
                 output.accept(ModItems.SOUL_LANTERN.get());
                 output.accept(ModItems.CHAIN_SICKLE.get());
+                output.accept(ModItems.SOUL_FLAIL.get());
                 output.accept(ModItems.WARDEN_ROD.get());
                 output.accept(ModItems.SHACKLE_GLOVES.get());
                 output.accept(ModItems.SHROUD.get());
@@ -120,6 +122,12 @@ public final class ModCreativeTab {
                 output.accept(ModItems.PSEUDOMAGE_BOOTS.get());
                 output.accept(ModItems.DRUID_HERBARIUM.get());
                 output.accept(ModItems.MOSS_ELK_CALL.get());
+                output.accept(ModItems.DRUID_STAFF_ROOTS.get());
+                output.accept(ModItems.DRUID_STAFF_GROVE.get());
+                output.accept(ModItems.DRUID_STAFF_HIVE.get());
+                output.accept(ModItems.DRUID_STAFF_SAP.get());
+                output.accept(ModItems.DRUID_STAFF_THORNS.get());
+                output.accept(ModItems.DRUID_STAFF_GRAND.get());
                 output.accept(ModItems.DRUID_MANTLE.get());
                 output.accept(ModItems.DRUID_HAT.get());
                 output.accept(ModItems.DRUID_GLOVES.get());

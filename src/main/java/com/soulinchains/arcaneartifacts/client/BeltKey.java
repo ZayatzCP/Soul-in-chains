@@ -16,8 +16,35 @@ import org.lwjgl.glfw.GLFW;
 /** The keys of worn accessories: the Belt of Bottomless Pouches (B), the bandolier (G), the amulet (N); all rebindable. */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID, value = Dist.CLIENT)
 public final class BeltKey {
-    public static final KeyMapping KEY = new KeyMapping("key.arcane_artifacts.open_belt", KeyConflictContext.IN_GAME,
+    public static final KeyMapping KEY = new KeyMapping("key.arcane_artifacts.open_belt", StaffContext.NOT_HOLDING,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.categories.arcane_artifacts");
+
+    /**
+     * Turns the Staff of the Five Circles to its next circle (B by default, rebindable). It shares B with the belt: the
+     * key does this while the staff is in a hand and opens the belt otherwise.
+     */
+    public static final KeyMapping CIRCLE_KEY = new KeyMapping("key.arcane_artifacts.druid_circle", StaffContext.HOLDING,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, "key.categories.arcane_artifacts");
+
+    /** In game, with or without the Staff of the Five Circles in a hand: the two never clash with each other. */
+    public enum StaffContext implements net.neoforged.neoforge.client.settings.IKeyConflictContext {
+        HOLDING, NOT_HOLDING;
+
+        @Override
+        public boolean isActive() {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (!KeyConflictContext.IN_GAME.isActive() || minecraft.player == null) {
+                return false;
+            }
+            boolean holding = com.soulinchains.arcaneartifacts.druid.DruidStaffItem.holdsGrandStaff(minecraft.player);
+            return this == HOLDING ? holding : !holding;
+        }
+
+        @Override
+        public boolean conflicts(net.neoforged.neoforge.client.settings.IKeyConflictContext other) {
+            return other == this || other == KeyConflictContext.IN_GAME;
+        }
+    }
 
     /** Flips the polarity of the worn Amulet of Opposites (N by default, rebindable). */
     public static final KeyMapping AMULET_KEY = new KeyMapping("key.arcane_artifacts.toggle_amulet", KeyConflictContext.IN_GAME,
@@ -36,6 +63,12 @@ public final class BeltKey {
         while (KEY.consumeClick()) {
             if (minecraft.player != null && minecraft.screen == null) {
                 PacketDistributor.sendToServer(new BeltRegistry.OpenBeltPayload());
+            }
+        }
+        while (CIRCLE_KEY.consumeClick()) {
+            if (minecraft.player != null && minecraft.screen == null
+                    && com.soulinchains.arcaneartifacts.druid.DruidStaffItem.holdsGrandStaff(minecraft.player)) {
+                PacketDistributor.sendToServer(new com.soulinchains.arcaneartifacts.druid.DruidNetwork.SwitchCirclePayload());
             }
         }
         while (BANDOLIER_KEY.consumeClick()) {

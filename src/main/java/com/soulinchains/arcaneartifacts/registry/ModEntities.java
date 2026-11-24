@@ -23,7 +23,7 @@ public final class ModEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.SoulWisp>> SOUL_WISP = REGISTER.register("soul_wisp",
             () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.necro.SoulWisp>of(com.soulinchains.arcaneartifacts.necro.SoulWisp::new, MobCategory.MISC)
-                    .sized(0.4F, 0.4F).noSave().fireImmune().clientTrackingRange(8).updateInterval(2)
+                    .sized(0.5F, 0.5F).noSave().fireImmune().clientTrackingRange(8).updateInterval(2)
                     .build(ArcaneArtifacts.MODID + ":soul_wisp"));
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.ChainBolt>> CHAIN_BOLT = REGISTER.register("chain_bolt",
             () -> EntityType.Builder.<com.soulinchains.arcaneartifacts.necro.ChainBolt>of(com.soulinchains.arcaneartifacts.necro.ChainBolt::new, MobCategory.MISC)
