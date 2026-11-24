@@ -1004,6 +1004,7 @@ public final class ArcaneGameTests {
         var swift = player.getEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED);
         helper.assertTrue(lengthened == 1 && swift != null && swift.getDuration() >= 4600, "The Druid's mantle must make a potion last 30% longer");
         equip(helper, player, "feet", ModItems.FOCUSING_BOOTS.get());
+        equip(helper, player, "head", ModItems.MYSTERY_HAT.get());
         afterEquip(helper, player, ModItems.FOCUSING_BOOTS.get(), () -> {
             helper.assertTrue(com.soulinchains.arcaneartifacts.accessory.ArcaneSets.discounted(player, 100) == 75, "The full Focusing set must make spells 25% cheaper");
             helper.succeed();
