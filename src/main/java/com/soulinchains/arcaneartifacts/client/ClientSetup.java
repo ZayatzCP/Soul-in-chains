@@ -50,6 +50,9 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.BONE_GATEKEEPER.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.GatekeeperRenderer::new);
         event.registerEntityRenderer(ModEntities.PSALMIST.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.PsalmistRenderer::new);
         event.registerEntityRenderer(ModEntities.VOTIVE_BEAST.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.VotiveBeastRenderer::new);
+        event.registerEntityRenderer(ModEntities.RENEGADE_SEALER.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.RenegadeSealerRenderer::new);
+        event.registerEntityRenderer(ModEntities.FACELESS_SENTRY.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.FacelessSentryRenderer::new);
+        event.registerEntityRenderer(ModEntities.ARCHDEACON.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.ArchdeaconRenderer::new);
         event.registerEntityRenderer(ModEntities.IMPRISONED_KING.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.KingRenderer::new);
         event.registerEntityRenderer(ModEntities.BOND_LINK.get(), com.soulinchains.arcaneartifacts.client.necro.BondLinkRenderer::new);
         ModEntities.SERVANTS.forEach((kind, type) -> {

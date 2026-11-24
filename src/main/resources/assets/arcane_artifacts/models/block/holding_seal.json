@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "arcane_artifacts:block/holding_seal",
+    "bottom": "arcane_artifacts:block/ritual_seal_side",
+    "side": "arcane_artifacts:block/ritual_seal_side"
+  }
+}

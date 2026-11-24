@@ -8,6 +8,7 @@ import com.soulinchains.arcaneartifacts.cult.CultRole;
 import com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity;
 import com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity;
 import com.soulinchains.arcaneartifacts.cult.RiteScheme;
+import com.soulinchains.arcaneartifacts.cult.RenegadeSealer;
 import com.soulinchains.arcaneartifacts.cult.RitualSummons;
 import com.soulinchains.arcaneartifacts.cult.TornAcolyte;
 import com.soulinchains.arcaneartifacts.registry.ModBlocks;
@@ -471,7 +472,7 @@ public final class CultGameTests {
 
     @GameTest(template = ARENA)
     public static void perfectRiteMakesVoicesOfDogma(GameTestHelper helper) {
-        com.soulinchains.arcaneartifacts.cult.CultData data = com.soulinchains.arcaneartifacts.cult.CultData.EMPTY.withRank(2).withSteady(3);
+        com.soulinchains.arcaneartifacts.cult.CultData data = com.soulinchains.arcaneartifacts.cult.CultData.EMPTY.withRank(2).withSteady(3).withArchdeacon();
         com.soulinchains.arcaneartifacts.cult.CultData flawless = RitualSealBlockEntity.advance(data, RiteScheme.THREE_VOICES, 90,
                 com.soulinchains.arcaneartifacts.cult.RitualQuality.FLAWLESS, false);
         helper.assertTrue(flawless.rank() == 2 && flawless.best() == 90 && flawless.lastRite().equals("THREE_VOICES"), "Flawless is not enough");
@@ -583,6 +584,121 @@ public final class CultGameTests {
         helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.hold(confessor, 2) > 0, "Hold the Circle mends the anchors from inside");
         helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.hold(confessor, 2) == 0, "Once in 2 s");
         drain(helper, seal);
+        helper.succeed();
+    }
+
+    // ------------------------------------------------------------------ 1.37
+
+    private static com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity lock(GameTestHelper helper,
+            com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity.Mode mode, BlockPos first, BlockPos second) {
+        helper.setBlock(new BlockPos(4, 5, 8), ModBlocks.ARCHIVE_LOCK.get());
+        helper.setBlock(new BlockPos(4, 2, 8), net.minecraft.world.level.block.Blocks.IRON_BARS);
+        helper.setBlock(new BlockPos(4, 3, 8), net.minecraft.world.level.block.Blocks.IRON_BARS);
+        var lock = (com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity) helper.getBlockEntity(new BlockPos(4, 5, 8));
+        lock.configure(mode, helper.absolutePos(first), helper.absolutePos(second), helper.absolutePos(new BlockPos(4, 2, 8)), helper.absolutePos(new BlockPos(4, 3, 8)));
+        return lock;
+    }
+
+    @GameTest(template = ARENA)
+    public static void vowPlatesWantTwoAtOnce(GameTestHelper helper) {
+        BlockPos a = new BlockPos(1, 2, 2);
+        BlockPos b = new BlockPos(7, 2, 2);
+        var lock = lock(helper, com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity.Mode.PLATES, a, b);
+        helper.assertTrue(!lock.press(helper.absolutePos(a), 100) && !lock.press(helper.absolutePos(b), 130), "1.5 s apart is not together");
+        helper.assertTrue(helper.getBlockState(new BlockPos(4, 2, 8)).is(net.minecraft.world.level.block.Blocks.IRON_BARS), "The bars stay");
+        helper.assertTrue(lock.press(helper.absolutePos(a), 140) && lock.opened(), "Within a second: the door opens");
+        helper.assertTrue(helper.getBlockState(new BlockPos(4, 2, 8)).isAir() && helper.getBlockState(new BlockPos(4, 3, 8)).isAir(), "The bars are gone");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void holdingSealWantsAPartner(GameTestHelper helper) {
+        BlockPos seal = new BlockPos(1, 2, 1);
+        BlockPos candle = new BlockPos(7, 2, 7);
+        var lock = lock(helper, com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity.Mode.SEAL, seal, candle);
+        FakePlayer holder = player(helper, "archive_holder", 1.5, 2.5);
+        FakePlayer lighter = player(helper, "archive_lighter", 7.5, 6.5);
+        helper.assertTrue(!lock.lightCandle(lighter), "No one holds the seal yet");
+        helper.assertTrue(lock.beginHold(holder) && lock.holding(), "The seal is held");
+        helper.assertTrue(!lock.lightCandle(holder), "The holder cannot light the candle too");
+        RenegadeSealer renegade = helper.spawnWithNoFreeWill(ModEntities.RENEGADE_SEALER.get(), new BlockPos(2, 2, 1));
+        helper.assertTrue(!lock.lightCandle(lighter), "A renegade at the seal breaks the hold");
+        renegade.discard();
+        helper.assertTrue(lock.lightCandle(lighter) && helper.getBlockState(new BlockPos(4, 2, 8)).isAir(), "Held by one, lit by the other: open");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void archiveFoesDoTheirWork(GameTestHelper helper) {
+        FakePlayer warden = player(helper, "foe_warden", 4.5, 2.0);
+        helper.setBlock(new BlockPos(1, 2, 7), ModBlocks.RITUAL_ANCHOR.get());
+        RitualAnchorBlockEntity anchor = (RitualAnchorBlockEntity) helper.getBlockEntity(new BlockPos(1, 2, 7));
+        anchor.activate(warden, 60);
+        RenegadeSealer renegade = helper.spawnWithNoFreeWill(ModEntities.RENEGADE_SEALER.get(), new BlockPos(6, 2, 6));
+        helper.assertTrue(renegade.nearestAnchor() == anchor, "The renegade finds any lit anchor nearby");
+        com.soulinchains.arcaneartifacts.cult.FacelessSentry sentry = helper.spawnWithNoFreeWill(ModEntities.FACELESS_SENTRY.get(), new BlockPos(4, 2, 3));
+        helper.assertTrue(sentry.shove(warden), "The sentry shuts its passage");
+        sentry.provoke();
+        helper.assertTrue(!sentry.shove(warden), "Provoked by the Warden, it shoves no one");
+        renegade.discard();
+        sentry.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void archdeaconTestsThePair(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "arch_confessor", 2.5, 2.5);
+        FakePlayer warden = player(helper, "arch_warden", 2.5, 5.5);
+        FakePlayer away = player(helper, "arch_away", 30, 30);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.Archdeacon.coverFactor(confessor, warden) == com.soulinchains.arcaneartifacts.cult.Archdeacon.COVER_FACTOR,
+                "The Warden near: a fifth of the blow");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.Archdeacon.coverFactor(confessor, away) == 1F, "Alone: the full blow");
+        com.soulinchains.arcaneartifacts.cult.Archdeacon arch = helper.spawnWithNoFreeWill(ModEntities.ARCHDEACON.get(), new BlockPos(4, 2, 4));
+        arch.setHome(helper.absolutePos(new BlockPos(4, 2, 4)));
+        arch.beginUnison();
+        Vec3[] points = arch.unisonPoints();
+        helper.assertTrue(points != null, "Two points flare");
+        confessor.setPos(points[0].x, points[0].y, points[0].z);
+        helper.assertTrue(!arch.checkUnison(List.of(confessor)), "One player is not a unison");
+        warden.setPos(points[1].x, points[1].y, points[1].z);
+        float before = arch.getHealth();
+        helper.assertTrue(arch.checkUnison(List.of(confessor, warden)) && arch.unisonPoints() == null, "Both on their points: passed");
+        helper.assertTrue(arch.getHealth() <= before - 19F, "Passing costs him 20, got " + (before - arch.getHealth()));
+        arch.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void voicesOfDogmaNeedTheArchdeacon(GameTestHelper helper) {
+        com.soulinchains.arcaneartifacts.cult.CultData servant = com.soulinchains.arcaneartifacts.cult.CultData.EMPTY.withRank(2).withSteady(3);
+        helper.assertTrue(RitualSealBlockEntity.advance(servant, RiteScheme.THREE_VOICES, 98, com.soulinchains.arcaneartifacts.cult.RitualQuality.PERFECT, false).rank() == 2,
+                "A perfect rite alone is not enough now");
+        FakePlayer player = player(helper, "dogma_player", 4.5, 4.5);
+        Cult.set(player, servant.withBest(96));
+        helper.assertTrue(Cult.reward(player) && Cult.get(player).rank() == 3 && Cult.get(player).archdeacon(), "The Archdeacon's fall after a perfect rite: rank III");
+        FakePlayer early = player(helper, "dogma_early", 4.5, 4.5);
+        Cult.set(early, com.soulinchains.arcaneartifacts.cult.CultData.EMPTY.withRank(3));
+        helper.assertTrue(Cult.migrate(early) && Cult.get(early).rank() == 2, "Rank III without the Archdeacon goes back to II");
+        helper.assertTrue(!Cult.migrate(player), "A rightful Voice keeps the rank");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void cultStructuresBuild(GameTestHelper helper) {
+        BlockPos house = helper.absolutePos(new BlockPos(4, 1, 4));
+        com.soulinchains.arcaneartifacts.world.cult.ConfessionHousePiece.build(helper.getLevel(),
+                new net.minecraft.world.level.levelgen.structure.BoundingBox(house.getX() - 1, house.getY() - 1, house.getZ() - 1,
+                        house.getX() + 1, house.getY() + 2, house.getZ() + 1), helper.getLevel().random, house);
+        helper.assertTrue(helper.getLevel().getBlockState(house.above()).is(ModBlocks.RITUAL_SEAL.get()), "The house keeps a training seal");
+        helper.getLevel().setBlock(house.above(), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+        BlockPos archive = helper.absolutePos(new BlockPos(4, 1, -8));
+        com.soulinchains.arcaneartifacts.world.cult.ArchivePiece.build(helper.getLevel(),
+                new net.minecraft.world.level.levelgen.structure.BoundingBox(archive.getX() - 1, archive.getY(), archive.getZ() + 11,
+                        archive.getX() + 1, archive.getY() + 5, archive.getZ() + 12), helper.getLevel().random, archive, archive.getY() + 20, false);
+        var lock = helper.getLevel().getBlockEntity(archive.offset(com.soulinchains.arcaneartifacts.world.cult.ArchivePiece.LOCK_ONE));
+        helper.assertTrue(lock instanceof com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity l
+                && l.owns(archive.offset(com.soulinchains.arcaneartifacts.world.cult.ArchivePiece.PLATE_A)), "The first door's lock knows its plates");
+        helper.assertTrue(helper.getLevel().getBlockState(archive.offset(0, 2, 12)).is(net.minecraft.world.level.block.Blocks.IRON_BARS), "The first door is barred");
         helper.succeed();
     }
 }

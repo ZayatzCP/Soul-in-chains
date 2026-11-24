@@ -113,4 +113,62 @@ public final class CultRenderers {
             return TEXTURE;
         }
     }
+
+    /** Renegade Sealer: a husk in bordeaux. */
+    public static class RenegadeSealerRenderer extends HumanoidMobRenderer<com.soulinchains.arcaneartifacts.cult.RenegadeSealer,
+            HumanoidModel<com.soulinchains.arcaneartifacts.cult.RenegadeSealer>> {
+        private static final ResourceLocation TEXTURE = vanilla("zombie/husk");
+
+        public RenegadeSealerRenderer(EntityRendererProvider.Context context) {
+            super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.HUSK)), 0.5F);
+            addLayer(new NecroMobRenderers.Overlay<>(this, TEXTURE, 0x996F2927));
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(com.soulinchains.arcaneartifacts.cult.RenegadeSealer mob) {
+            return TEXTURE;
+        }
+    }
+
+    /** Faceless Sentry: a tall charcoal wither skeleton. */
+    public static class FacelessSentryRenderer extends HumanoidMobRenderer<com.soulinchains.arcaneartifacts.cult.FacelessSentry,
+            HumanoidModel<com.soulinchains.arcaneartifacts.cult.FacelessSentry>> {
+        private static final ResourceLocation TEXTURE = vanilla("skeleton/wither_skeleton");
+
+        public FacelessSentryRenderer(EntityRendererProvider.Context context) {
+            super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.WITHER_SKELETON)), 0.7F);
+            addLayer(new NecroMobRenderers.Overlay<>(this, TEXTURE, 0x66171416));
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(com.soulinchains.arcaneartifacts.cult.FacelessSentry mob) {
+            return TEXTURE;
+        }
+
+        @Override
+        protected void scale(com.soulinchains.arcaneartifacts.cult.FacelessSentry mob, com.mojang.blaze3d.vertex.PoseStack pose, float partial) {
+            pose.scale(1.1F, 1.1F, 1.1F);
+        }
+    }
+
+    /** The Archdeacon: a tall stray robed in cinnabar. */
+    public static class ArchdeaconRenderer extends HumanoidMobRenderer<com.soulinchains.arcaneartifacts.cult.Archdeacon,
+            HumanoidModel<com.soulinchains.arcaneartifacts.cult.Archdeacon>> {
+        private static final ResourceLocation TEXTURE = vanilla("skeleton/stray");
+
+        public ArchdeaconRenderer(EntityRendererProvider.Context context) {
+            super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.STRAY)), 0.6F);
+            addLayer(new NecroMobRenderers.Overlay<>(this, TEXTURE, 0xAAB9463D));
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(com.soulinchains.arcaneartifacts.cult.Archdeacon mob) {
+            return TEXTURE;
+        }
+
+        @Override
+        protected void scale(com.soulinchains.arcaneartifacts.cult.Archdeacon mob, com.mojang.blaze3d.vertex.PoseStack pose, float partial) {
+            pose.scale(1.25F, 1.25F, 1.25F);
+        }
+    }
 }

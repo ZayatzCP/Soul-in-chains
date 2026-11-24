@@ -1,0 +1,7 @@
+{
+  "type": "arcane_artifacts:confession_house",
+  "biomes": "#arcane_artifacts:has_structure/confession_house",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin"
+}

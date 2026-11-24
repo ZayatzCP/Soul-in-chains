@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "arcane_artifacts:confession_house",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 40,
+    "separation": 14,
+    "salt": 731002511
+  }
+}

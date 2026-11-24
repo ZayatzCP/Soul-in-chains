@@ -62,4 +62,31 @@ public final class Cult {
         }
         return false;
     }
+
+    public static final int ARCHDEACON_BEST = 95;
+
+    /** Voices of Dogma needs the Archdeacon's fall: a rank III won before 1.37 without it goes back to II. */
+    public static boolean migrate(Player player) {
+        CultData data = get(player);
+        if (data.rank() >= 3 && !data.archdeacon()) {
+            set(player, data.withRank(2));
+            player.displayClientMessage(Component.translatable("arcane_artifacts.cult.rank_needs_archdeacon"), false);
+            return true;
+        }
+        return false;
+    }
+
+    /** The Archdeacon fell with this Cultist in the fight: the mark is kept; a Servant of the Circle with a perfect rite rises. */
+    public static boolean reward(Player player) {
+        CultData data = get(player).withArchdeacon();
+        boolean risen = data.rank() == 2 && data.best() >= ARCHDEACON_BEST;
+        if (risen) {
+            data = data.withRank(3);
+            player.displayClientMessage(Component.translatable("arcane_artifacts.cult.rank_up", Component.translatable("arcane_artifacts.cult.rank.3")), false);
+        } else {
+            player.displayClientMessage(Component.translatable("arcane_artifacts.cult.archdeacon_fell"), false);
+        }
+        set(player, data);
+        return risen;
+    }
 }

@@ -29,6 +29,15 @@ public final class ModStructures {
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SOUL_DUNGEON_PIECE =
             PIECES.register("soul_dungeon", () -> com.soulinchains.arcaneartifacts.world.crypt.SoulDungeonPiece::new);
 
+    public static final DeferredHolder<StructureType<?>, StructureType<com.soulinchains.arcaneartifacts.world.cult.ConfessionHouseStructure>> CONFESSION_HOUSE =
+            TYPES.register("confession_house", () -> () -> com.soulinchains.arcaneartifacts.world.cult.ConfessionHouseStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> CONFESSION_HOUSE_PIECE =
+            PIECES.register("confession_house", () -> com.soulinchains.arcaneartifacts.world.cult.ConfessionHousePiece::new);
+    public static final DeferredHolder<StructureType<?>, StructureType<com.soulinchains.arcaneartifacts.world.cult.ArchiveStructure>> ARCHIVE =
+            TYPES.register("archive", () -> () -> com.soulinchains.arcaneartifacts.world.cult.ArchiveStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> ARCHIVE_PIECE =
+            PIECES.register("archive", () -> com.soulinchains.arcaneartifacts.world.cult.ArchivePiece::new);
+
     private ModStructures() {
     }
 }

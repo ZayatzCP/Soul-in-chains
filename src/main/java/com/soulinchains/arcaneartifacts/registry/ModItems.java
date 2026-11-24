@@ -75,6 +75,18 @@ public final class ModItems {
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.BONE_GATEKEEPER, 0xF0E7DE, 0x6F2927, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> PSALMIST_SPAWN_EGG = REGISTER.register("psalmist_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.PSALMIST, 0xD6B2A5, 0x171416, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RENEGADE_SEALER_SPAWN_EGG = REGISTER.register("renegade_sealer_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RENEGADE_SEALER, 0x6F2927, 0xD6B2A5, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> FACELESS_SENTRY_SPAWN_EGG = REGISTER.register("faceless_sentry_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.FACELESS_SENTRY, 0x171416, 0x929292, new Item.Properties()));
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ARCHDEACON_SPAWN_EGG = REGISTER.register("archdeacon_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ARCHDEACON, 0xB9463D, 0xFAF7F3, new Item.Properties()));
+    public static final DeferredItem<BlockItem> ARCHIVE_LOCK = REGISTER.registerSimpleBlockItem(ModBlocks.ARCHIVE_LOCK);
+    public static final DeferredItem<BlockItem> VOW_PLATE = REGISTER.registerSimpleBlockItem(ModBlocks.VOW_PLATE);
+    public static final DeferredItem<BlockItem> HOLDING_SEAL = REGISTER.registerSimpleBlockItem(ModBlocks.HOLDING_SEAL);
+    public static final DeferredItem<BlockItem> VOW_CANDLE = REGISTER.registerSimpleBlockItem(ModBlocks.VOW_CANDLE);
+    public static final DeferredItem<Item> ARCHDEACON_SEAL = REGISTER.register("archdeacon_seal",
+            () -> new com.soulinchains.arcaneartifacts.item.LoreItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.RARE)));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> VOTIVE_BEAST_SPAWN_EGG = REGISTER.register("votive_beast_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.VOTIVE_BEAST, 0xF0E7DE, 0xB9463D, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> TORN_ACOLYTE_SPAWN_EGG = REGISTER.register("torn_acolyte_spawn_egg",

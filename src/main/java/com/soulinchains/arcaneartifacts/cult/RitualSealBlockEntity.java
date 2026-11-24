@@ -760,7 +760,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         if (rite != RiteScheme.SECOND_COMING) {
             data = data.withLastRite(rite.name());
         }
-        if (tier == RitualQuality.PERFECT && data.rank() == 2) {
+        if (tier == RitualQuality.PERFECT && data.rank() == 2 && data.archdeacon()) {
             data = data.withRank(3);
         }
         if (tier.ordinal() >= RitualQuality.STEADY.ordinal()) {

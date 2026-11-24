@@ -45,6 +45,7 @@ public final class CultEvents {
     @SubscribeEvent
     public static void onLogin(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
+        Cult.migrate(player);
         Cult.get(player).partner().ifPresent(id -> {
             Player partner = player.level().getServer() == null ? null : player.level().getServer().getPlayerList().getPlayer(id);
             if (partner != null) {

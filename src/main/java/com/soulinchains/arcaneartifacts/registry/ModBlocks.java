@@ -55,6 +55,14 @@ public final class ModBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity>> RITUAL_ANCHOR_ENTITY =
             BLOCK_ENTITIES.register("ritual_anchor", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity::new, RITUAL_ANCHOR.get()).build(null));
 
+    // ------------------------------------------------------------------ Archive of Unkept Promises
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlock> ARCHIVE_LOCK = BLOCKS.register("archive_lock", com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.VowPlateBlock> VOW_PLATE = BLOCKS.register("vow_plate", com.soulinchains.arcaneartifacts.cult.archive.VowPlateBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.HoldingSealBlock> HOLDING_SEAL = BLOCKS.register("holding_seal", com.soulinchains.arcaneartifacts.cult.archive.HoldingSealBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.VowCandleBlock> VOW_CANDLE = BLOCKS.register("vow_candle", com.soulinchains.arcaneartifacts.cult.archive.VowCandleBlock::new);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity>> ARCHIVE_LOCK_ENTITY =
+            BLOCK_ENTITIES.register("archive_lock", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity::new, ARCHIVE_LOCK.get()).build(null));
+
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",
             () -> new net.minecraft.world.level.block.Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE)

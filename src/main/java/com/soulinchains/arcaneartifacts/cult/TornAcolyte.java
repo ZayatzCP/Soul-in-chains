@@ -87,10 +87,15 @@ public class TornAcolyte extends Monster {
         return best;
     }
 
+    /** Whether it crumbles after {@link #LIFE_TICKS}. */
+    protected boolean fades() {
+        return true;
+    }
+
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && --lifeLeft <= 0) {
+        if (!level().isClientSide && fades() && --lifeLeft <= 0) {
             discard();
         }
     }

@@ -61,6 +61,14 @@ public final class ModCreativeTab {
                 output.accept(ModItems.BONE_GATEKEEPER_SPAWN_EGG.get());
                 output.accept(ModItems.PSALMIST_SPAWN_EGG.get());
                 output.accept(ModItems.VOTIVE_BEAST_SPAWN_EGG.get());
+                output.accept(ModItems.RENEGADE_SEALER_SPAWN_EGG.get());
+                output.accept(ModItems.FACELESS_SENTRY_SPAWN_EGG.get());
+                output.accept(ModItems.ARCHDEACON_SPAWN_EGG.get());
+                output.accept(ModItems.ARCHDEACON_SEAL.get());
+                output.accept(ModItems.VOW_PLATE.get());
+                output.accept(ModItems.HOLDING_SEAL.get());
+                output.accept(ModItems.VOW_CANDLE.get());
+                output.accept(ModItems.ARCHIVE_LOCK.get());
                 output.accept(ModItems.WARDEN_ROD.get());
                 output.accept(ModItems.SHACKLE_GLOVES.get());
                 output.accept(ModItems.SHROUD.get());
