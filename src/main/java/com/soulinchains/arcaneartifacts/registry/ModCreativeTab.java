@@ -39,6 +39,9 @@ public final class ModCreativeTab {
                 output.accept(ModItems.RITUAL_ANCHOR.get());
                 output.accept(ModItems.RITUAL_KNIFE.get());
                 output.accept(ModItems.OATH_SHIELD.get());
+                output.accept(ModItems.SEAL_HAMMER.get());
+                output.accept(ModItems.FORMULA_BOOK.get());
+                output.accept(ModItems.RITUAL_CENSER.get());
                 output.accept(ModItems.RITUAL_ASH.get());
                 output.accept(ModItems.BONE_SHARD.get());
                 output.accept(ModItems.VOW_DUST.get());

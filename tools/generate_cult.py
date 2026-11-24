@@ -103,6 +103,63 @@ DUST = [
     '................',
 ]
 
+HAMMER = [
+    '................',
+    '....bbbbbbbb....',
+    '...bBBBBBBBBb...',
+    '...bBrrBBrrBb...',
+    '...bBBBBBBBBb...',
+    '....bbbBBbbb....',
+    '.......hh.......',
+    '.......hh.......',
+    '.......hh.......',
+    '.......rr.......',
+    '.......hh.......',
+    '.......hh.......',
+    '.......hh.......',
+    '.......cc.......',
+    '................',
+    '................',
+]
+BOOK = [
+    '................',
+    '..cccccccccc....',
+    '..cRRRRRRRRcb...',
+    '..cRbbbbbbRcb...',
+    '..cRbRRRRbRcb...',
+    '..cRbRwwRbRcb...',
+    '..cRbRwwRbRcb...',
+    '..cRbRRRRbRcb...',
+    '..cRbbbbbbRcb...',
+    '..cRRRRRRRRcb...',
+    '..cRRRRRRRRcb...',
+    '..ccccccccccb...',
+    '...bbbbbbbbbb...',
+    '................',
+    '................',
+    '................',
+]
+WARD = [
+    '..................',
+    '.......rrrr.......',
+    '.....rr....rr.....',
+    '....r..bbbb..r....',
+    '...r..b....b..r...',
+    '...r.b..rr..b.r...',
+    '..r..b.rRRr.b..r..',
+    '..r..b.rRRr.b..r..',
+    '..r..b..rr..b..r..',
+    '...r..b....b..r...',
+    '...r...bbbb...r...',
+    '....r........r....',
+    '.....rr....rr.....',
+    '.......rrrr.......',
+    '..................',
+    '..................',
+    '..................',
+    '..................',
+]
+
 
 def stone(seed, base, specks, size=16):
     rnd = random.Random(seed)
@@ -155,4 +212,12 @@ if __name__ == '__main__':
     save(sprite(SHIELD, {'c': CHARCOAL, 'C': '#2A2428', 'r': CINNABAR, 'b': BONE, 'R': BORDEAUX}), 'item', 'oath_shield.png')
     save(sprite(ASH_PILE, {'a': '#6E6E6E', 'A': ASH, 'g': '#C8C8C8'}), 'item', 'ritual_ash.png')
     save(sprite(SHARD, {'b': '#B8B09A', 'B': BONE}), 'item', 'bone_shard.png')
+    save(sprite(HAMMER, {'b': CHARCOAL, 'B': ASH, 'r': CINNABAR, 'h': '#3B2A20', 'c': BONE}), 'item', 'seal_hammer.png')
+    save(sprite(BOOK, {'c': CHARCOAL, 'R': BORDEAUX, 'b': BONE, 'w': CINNABAR}), 'item', 'formula_book.png')
+    save(sprite(WARD, {'r': CINNABAR, 'b': BONE, 'R': MILK}), 'mob_effect', 'warded.png')
+    censer = stone(51, ['#3A3438', '#2A2428', '#4A4448'], ['#929292'])
+    for x in range(16):
+        censer.putpixel((x, 3), hexc(CINNABAR))
+        censer.putpixel((x, 12), hexc(BORDEAUX))
+    save(censer, 'block', 'ritual_censer.png')
     save(sprite(DUST, {'c': BORDEAUX, 'R': CINNABAR, 'b': ROSE, 'B': BONE, 'r': CINNABAR}), 'item', 'vow_dust.png')

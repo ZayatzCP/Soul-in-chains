@@ -45,7 +45,8 @@ public final class RitualSummons {
     }
 
     /** Rite of the Ash Witness: how many rise and how strong, by the grade. Returns how many rose. */
-    public static int summonAshWitness(ServerLevel level, BlockPos at, RitualQuality tier, @Nullable Player confessor, @Nullable Player warden) {
+    public static int summonAshWitness(ServerLevel level, BlockPos at, RitualQuality tier, @Nullable Player confessor, @Nullable Player warden,
+                                       KnifeInlay inlay) {
         int count;
         AshWitness.Grade grade;
         switch (tier) {
@@ -66,11 +67,12 @@ public final class RitualSummons {
                 grade = AshWitness.Grade.EMPOWERED;
             }
             case FLAWLESS -> {
-                count = 2;
+                // the red-glass inlay sometimes calls a third
+                count = inlay == KnifeInlay.RED_GLASS && level.random.nextFloat() < 0.15F ? 3 : 2;
                 grade = AshWitness.Grade.COMMON;
             }
             default -> {
-                boolean elite = level.random.nextFloat() < 0.3F;
+                boolean elite = level.random.nextFloat() < (inlay == KnifeInlay.RED_GLASS ? 0.5F : 0.3F);
                 count = elite ? 1 : 3;
                 grade = elite ? AshWitness.Grade.ELITE : AshWitness.Grade.COMMON;
             }

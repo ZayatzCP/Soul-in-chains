@@ -63,6 +63,15 @@ public class RitualAnchorBlock extends BaseEntityBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                               BlockHitResult hit) {
+        if (stack.getItem() instanceof SealHammerItem) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof RitualAnchorBlockEntity anchor) {
+                RitualSealBlockEntity seal = RitualSealBlockEntity.near(level, pos);
+                if (seal != null && !player.getCooldowns().isOnCooldown(stack.getItem()) && seal.onHammerAtAnchor(player, anchor)) {
+                    player.getCooldowns().addCooldown(stack.getItem(), 20);
+                }
+            }
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        }
         if (!(stack.getItem() instanceof OathShieldItem)) {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof RitualAnchorBlockEntity anchor && stack.isEmpty()) {
                 player.displayClientMessage(Component.translatable("arcane_artifacts.cult.anchor_state", anchor.stability(),

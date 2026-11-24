@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "arcane_artifacts:bone_shard"
+    },
+    {
+      "item": "arcane_artifacts:ritual_ash"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:formula_book"
+  }
+}

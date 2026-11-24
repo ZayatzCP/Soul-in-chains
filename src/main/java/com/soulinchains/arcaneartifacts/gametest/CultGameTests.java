@@ -182,4 +182,123 @@ public final class CultGameTests {
         helper.assertTrue(witness.markAround() >= 1 && zombie.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING), "The witness marks hostiles around");
         helper.succeed();
     }
+
+    // ------------------------------------------------------------------ 1.33
+
+    /** Lays the reagents, lights two anchors with the warden's shield and starts the rite with the confessor's knife. */
+    private static RitualSealBlockEntity startRite(GameTestHelper helper, Player confessor, Player warden, List<RitualAnchorBlockEntity> anchors) {
+        RitualSealBlockEntity seal = circle(helper, anchors);
+        for (int i = 0; i < 4; i++) {
+            seal.offer(new ItemStack(ModItems.RITUAL_ASH.get()));
+        }
+        seal.offer(new ItemStack(ModItems.BONE_SHARD.get()));
+        seal.offer(new ItemStack(ModItems.BONE_SHARD.get()));
+        seal.offer(new ItemStack(Items.RED_CANDLE));
+        seal.onShieldAtAnchor(warden, anchors.get(0));
+        seal.onShieldAtAnchor(warden, anchors.get(1));
+        seal.onKnife(confessor);
+        return seal;
+    }
+
+    /** Lets a rite run out and clears what it brought. */
+    private static void drain(GameTestHelper helper, RitualSealBlockEntity seal) {
+        for (int i = 0; i < 700 && seal.phase() != RitualSealBlockEntity.Phase.IDLE; i++) {
+            seal.tick();
+        }
+        AABB box = new AABB(helper.absolutePos(BlockPos.ZERO)).inflate(24);
+        helper.getLevel().getEntitiesOfClass(TornAcolyte.class, box).forEach(TornAcolyte::discard);
+        helper.getLevel().getEntitiesOfClass(AshWitness.class, box).forEach(AshWitness::discard);
+    }
+
+    private static ItemStack knife(com.soulinchains.arcaneartifacts.cult.KnifeInlay inlay) {
+        ItemStack knife = new ItemStack(ModItems.RITUAL_KNIFE.get());
+        knife.set(com.soulinchains.arcaneartifacts.registry.ModComponents.KNIFE_INLAY, inlay.ordinal());
+        return knife;
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void hammerMendsAnchorsAndSoundsTheCall(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "hammer_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "hammer_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        List<RitualAnchorBlockEntity> anchors = new ArrayList<>();
+        RitualSealBlockEntity seal = startRite(helper, confessor, warden, anchors);
+        helper.assertTrue(seal.phase() == RitualSealBlockEntity.Phase.CHANNEL, "The rite must run");
+        RitualAnchorBlockEntity anchor = anchors.get(0);
+        anchor.damage(60);
+        helper.assertTrue(seal.onHammerAtAnchor(warden, anchor) && anchor.stability() == 80, "The hammer mends +40, got " + anchor.stability());
+        drain(helper, seal);
+        helper.assertTrue(!seal.onHammerAtAnchor(warden, anchor), "Outside a rite the hammer does not mend");
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(3, 2, 3));
+        Zombie summoned = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(5, 2, 5));
+        RitualSummons.mark(summoned, 1F);
+        int called = com.soulinchains.arcaneartifacts.cult.CultTools.call(warden);
+        helper.assertTrue(called == 1 && zombie.getTarget() == warden && summoned.getTarget() == null,
+                "The Call turns ordinary hostiles on the Warden and leaves the summoned alone, called " + called);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultTools.call(warden) == 0, "The Call has a cooldown");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void wardenInterceptsAndWards(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        FakePlayer confessor = player(helper, "cover_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "cover_warden", 4.5, 6.0);
+        FakePlayer stranger = player(helper, "cover_stranger", 2.0, 2.0);
+        Cult.pair(confessor, warden);
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(6, 2, 3));
+        var mobBlow = level.damageSources().mobAttack(zombie);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultTools.intercept(confessor, warden, mobBlow, 10F) == 10F,
+                "An unarmed Warden does not cover");
+        warden.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, new ItemStack(ModItems.OATH_SHIELD.get()));
+        float kept = com.soulinchains.arcaneartifacts.cult.CultTools.intercept(confessor, warden, mobBlow, 10F);
+        helper.assertTrue(Math.abs(kept - 7F) < 1e-3, "A covering Warden takes 30% of a creature's blow, the Confessor keeps " + kept);
+        float pvp = com.soulinchains.arcaneartifacts.cult.CultTools.intercept(confessor, warden, level.damageSources().playerAttack(stranger), 10F);
+        helper.assertTrue(Math.abs(pvp - 8.5F) < 1e-3, "Of a player's blow only 15%, the Confessor keeps " + pvp);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.CultTools.ward(warden, confessor)
+                && confessor.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.WARDED), "The Seal of Shelter wards the Confessor");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.cult.CultTools.ward(warden, confessor), "The Seal of Shelter has a cooldown");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void censerAndIronInlayShapeTheRite(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "iron_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "iron_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        confessor.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, knife(com.soulinchains.arcaneartifacts.cult.KnifeInlay.IRON));
+        helper.setBlock(new BlockPos(5, 2, 5), ModBlocks.RITUAL_CENSER.get());
+        List<RitualAnchorBlockEntity> anchors = new ArrayList<>();
+        RitualSealBlockEntity seal = startRite(helper, confessor, warden, anchors);
+        helper.assertTrue(seal.censerNear(), "The censer stands by the seal");
+        helper.assertTrue(seal.duration() == Math.round(RitualSealBlockEntity.ASH_TICKS * 0.8F), "The iron inlay makes the rite a fifth shorter");
+        int open = 0;
+        boolean seen = false;
+        for (int i = 0; i < 200; i++) {
+            seal.tick();
+            if (seal.windowOpen()) {
+                seen = true;
+                open++;
+            } else if (seen) {
+                break;
+            }
+        }
+        helper.assertTrue(open >= RitualSealBlockEntity.WINDOW_TICKS + RitualSealBlockEntity.CENSER_WINDOW_BONUS,
+                "The censer widens the window, open " + open + " ticks");
+        drain(helper, seal);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void boneInlaySoftensBlowsOnAnchors(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "bone_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "bone_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        confessor.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, knife(com.soulinchains.arcaneartifacts.cult.KnifeInlay.BONE));
+        List<RitualAnchorBlockEntity> anchors = new ArrayList<>();
+        RitualSealBlockEntity seal = startRite(helper, confessor, warden, anchors);
+        helper.assertTrue(seal.anchorDamage(TornAcolyte.ANCHOR_DAMAGE * 4) == TornAcolyte.ANCHOR_DAMAGE * 3, "Bone takes a quarter off each blow");
+        drain(helper, seal);
+        helper.succeed();
+    }
 }

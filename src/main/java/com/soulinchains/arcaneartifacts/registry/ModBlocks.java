@@ -49,6 +49,7 @@ public final class ModBlocks {
     // ------------------------------------------------------------------ Cultist circle
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualSealBlock> RITUAL_SEAL = BLOCKS.register("ritual_seal", com.soulinchains.arcaneartifacts.cult.RitualSealBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlock> RITUAL_ANCHOR = BLOCKS.register("ritual_anchor", com.soulinchains.arcaneartifacts.cult.RitualAnchorBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualCenserBlock> RITUAL_CENSER = BLOCKS.register("ritual_censer", com.soulinchains.arcaneartifacts.cult.RitualCenserBlock::new);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity>> RITUAL_SEAL_ENTITY =
             BLOCK_ENTITIES.register("ritual_seal", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity::new, RITUAL_SEAL.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity>> RITUAL_ANCHOR_ENTITY =

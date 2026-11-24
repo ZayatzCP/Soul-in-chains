@@ -63,6 +63,11 @@ public class TornAcolyte extends Monster {
     }
 
     @Nullable
+    RitualSealBlockEntity circle() {
+        return seal != null && level().getBlockEntity(seal) instanceof RitualSealBlockEntity circle ? circle : null;
+    }
+
+    @Nullable
     RitualAnchorBlockEntity nearestAnchor() {
         if (seal == null || !(level().getBlockEntity(seal) instanceof RitualSealBlockEntity circle)) {
             return null;
@@ -146,7 +151,8 @@ public class TornAcolyte extends Monster {
             } else if (--cooldown <= 0) {
                 acolyte.getNavigation().stop();
                 acolyte.swing(InteractionHand.MAIN_HAND);
-                anchor.damage(ANCHOR_DAMAGE);
+                RitualSealBlockEntity circle = acolyte.circle();
+                anchor.damage(circle == null ? ANCHOR_DAMAGE : circle.anchorDamage(ANCHOR_DAMAGE));
                 acolyte.level().playSound(null, anchor.getBlockPos(), SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, SoundSource.HOSTILE, 0.8F, 1.2F);
                 cooldown = 30;
             }

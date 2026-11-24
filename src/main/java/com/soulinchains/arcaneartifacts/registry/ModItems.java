@@ -41,6 +41,9 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> RITUAL_ANCHOR = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_ANCHOR);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.RitualKnifeItem> RITUAL_KNIFE = REGISTER.register("ritual_knife", com.soulinchains.arcaneartifacts.cult.RitualKnifeItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.OathShieldItem> OATH_SHIELD = REGISTER.register("oath_shield", com.soulinchains.arcaneartifacts.cult.OathShieldItem::new);
+    public static final DeferredItem<BlockItem> RITUAL_CENSER = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_CENSER);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.SealHammerItem> SEAL_HAMMER = REGISTER.register("seal_hammer", com.soulinchains.arcaneartifacts.cult.SealHammerItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.FormulaBookItem> FORMULA_BOOK = REGISTER.register("formula_book", com.soulinchains.arcaneartifacts.cult.FormulaBookItem::new);
     public static final DeferredItem<Item> RITUAL_ASH = REGISTER.registerSimpleItem("ritual_ash");
     public static final DeferredItem<Item> BONE_SHARD = REGISTER.registerSimpleItem("bone_shard");
     public static final DeferredItem<Item> VOW_DUST = REGISTER.registerSimpleItem("vow_dust", new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));

@@ -23,6 +23,7 @@
     "arcane_artifacts:chain_lock",
     "arcane_artifacts:great_soul_lantern",
     "arcane_artifacts:ritual_seal",
-    "arcane_artifacts:ritual_anchor"
+    "arcane_artifacts:ritual_anchor",
+    "arcane_artifacts:ritual_censer"
   ]
 }

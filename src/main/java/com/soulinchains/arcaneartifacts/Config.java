@@ -70,6 +70,7 @@ public final class Config {
     public static final ModConfigSpec.DoubleValue CULT_SOLO_CAP;
     public static final ModConfigSpec.BooleanValue CULT_CREATIVE_SOLO;
     public static final ModConfigSpec.IntValue CULT_LINK_RANGE;
+    public static final ModConfigSpec.DoubleValue CULT_INTERCEPT_PVP;
     public static final ModConfigSpec.IntValue SOUL_WISP_SECONDS;
     public static final ModConfigSpec.IntValue SOUL_LANTERN_CAPACITY;
     public static final ModConfigSpec.DoubleValue CHAIN_RANGE;
@@ -259,6 +260,8 @@ public final class Config {
         CULT_SOLO_CAP = b.comment("Highest quality (0-1) a Cultist rite can reach without a paired Warden.").defineInRange("solo_cap", 0.4, 0.0, 1.0);
         CULT_CREATIVE_SOLO = b.comment("A player in creative mode can hold a full rite alone (for admins testing the class).").define("creative_solo", true);
         CULT_LINK_RANGE = b.comment("How far the pair may be apart during a rite before its quality starts to drop (blocks).").defineInRange("link_range", 16, 4, 64);
+        CULT_INTERCEPT_PVP = b.comment("Share of a player's blow on a Confessor that the covering Warden takes over (creatures: 0.3).")
+                .defineInRange("intercept_pvp", 0.15, 0.0, 0.5);
         b.pop();
 
         b.push("research");

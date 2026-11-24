@@ -89,6 +89,14 @@ public class RitualSealBlockEntity extends BlockEntity {
     private boolean wardenSealed;
     private int perfectStrikes;
     private final List<BlockPos> anchors = new ArrayList<>();
+    /** The rite drawn on the seal (Book of Formulas). */
+    private RiteScheme scheme = RiteScheme.ASH_WITNESS;
+    private KnifeInlay inlay = KnifeInlay.NONE;
+    private boolean censer;
+    private int duration = ASH_TICKS;
+    private int windowEvery = WINDOW_EVERY;
+    public static final int CENSER_RADIUS = 3;
+    public static final int CENSER_WINDOW_BONUS = 6;
 
     public RitualSealBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.RITUAL_SEAL_ENTITY.get(), pos, state);
@@ -146,7 +154,56 @@ public class RitualSealBlockEntity extends BlockEntity {
     }
 
     public boolean finalWindow() {
-        return phase == Phase.CHANNEL && timer >= ASH_TICKS - FINAL_WINDOW;
+        return phase == Phase.CHANNEL && timer >= duration - FINAL_WINDOW;
+    }
+
+    public int duration() {
+        return duration;
+    }
+
+    public RiteScheme scheme() {
+        return scheme;
+    }
+
+    /** The Book of Formulas: the next rite this seal knows. */
+    public RiteScheme cycleScheme() {
+        if (phase != Phase.CHANNEL) {
+            scheme = scheme.next();
+            setChanged();
+        }
+        return scheme;
+    }
+
+    /** A Ritual Censer within 3 blocks of the seal. */
+    public boolean censerNear() {
+        if (level == null) {
+            return false;
+        }
+        for (BlockPos p : BlockPos.betweenClosed(worldPosition.offset(-CENSER_RADIUS, -1, -CENSER_RADIUS), worldPosition.offset(CENSER_RADIUS, 1, CENSER_RADIUS))) {
+            if (level.getBlockState(p).is(ModBlocks.RITUAL_CENSER.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** How hard a Torn Acolyte's blow lands on an anchor of this circle (the bone inlay softens it). */
+    public int anchorDamage(int base) {
+        return inlay == KnifeInlay.BONE ? Math.round(base * 0.75F) : base;
+    }
+
+    /** The Seal-Wright's Hammer on an anchor during the rite: a bigger mend. */
+    public boolean onHammerAtAnchor(Player player, RitualAnchorBlockEntity anchor) {
+        if (phase != Phase.CHANNEL) {
+            say(player, "hammer_rite_only");
+            return false;
+        }
+        int gained = anchor.repair(CultTools.HAMMER_REPAIR);
+        if (gained > 0) {
+            burst(anchor.getBlockPos(), 0xD6B2A5);
+            sound(anchor.getBlockPos(), SoundEvents.ANVIL_PLACE, 0.5F, 1.6F);
+        }
+        return gained > 0;
     }
 
     public boolean solo() {
@@ -320,7 +377,11 @@ public class RitualSealBlockEntity extends BlockEntity {
         phase = Phase.CHANNEL;
         timer = 0;
         quality = START_QUALITY + Math.min(10, Cult.get(player).debt()) + CultGear.pairBonus(confessor, warden);
-        nextWindow = WINDOW_EVERY / 2;
+        inlay = KnifeInlay.of(player.getMainHandItem());
+        censer = censerNear();
+        duration = inlay == KnifeInlay.IRON ? Math.round(ASH_TICKS * 0.8F) : ASH_TICKS;
+        windowEvery = inlay == KnifeInlay.IRON ? Math.round(WINDOW_EVERY * 0.8F) : WINDOW_EVERY;
+        nextWindow = windowEvery / 2;
         windowOpenUntil = -1;
         windowUsed = false;
         wardenOut = partnerFar = confessorOut = 0;
@@ -417,13 +478,13 @@ public class RitualSealBlockEntity extends BlockEntity {
             return;
         }
         // inscription windows
-        if (timer >= nextWindow && timer < ASH_TICKS - FINAL_WINDOW) {
+        if (timer >= nextWindow && timer < duration - FINAL_WINDOW) {
             if (windowOpenUntil >= 0 && !windowUsed) {
                 quality -= 2F;
             }
-            windowOpenUntil = timer + CultGear.windowTicks(confessor);
+            windowOpenUntil = timer + CultGear.windowTicks(confessor) + (censer ? CENSER_WINDOW_BONUS : 0);
             windowUsed = false;
-            nextWindow = timer + WINDOW_EVERY;
+            nextWindow = timer + windowEvery;
             sound(worldPosition, SoundEvents.NOTE_BLOCK_BELL.value(), 1.0F, 1.6F);
         }
         if (windowOpen()) {
@@ -458,15 +519,15 @@ public class RitualSealBlockEntity extends BlockEntity {
             }
         }
         // waves of Torn Acolytes
-        if (!wave1 && timer >= ASH_TICKS / 4) {
+        if (!wave1 && timer >= duration / 4) {
             wave1 = true;
-            wave(server, 2);
+            wave(server, censer ? 1 : 2);
         }
-        if (!wave2 && timer >= ASH_TICKS * 3 / 5) {
+        if (!wave2 && timer >= duration * 3 / 5) {
             wave2 = true;
-            wave(server, 3);
+            wave(server, censer ? 2 : 3);
         }
-        if (timer == ASH_TICKS - FINAL_WINDOW) {
+        if (timer == duration - FINAL_WINDOW) {
             sound(worldPosition, SoundEvents.BELL_BLOCK, 1.2F, 0.5F);
             say(confessor, "close_now");
             if (warden != null && !solo) {
@@ -477,7 +538,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         if (timer % 5 == 0) {
             sync();
         }
-        if (timer >= ASH_TICKS) {
+        if (timer >= duration) {
             quality -= 10F;
             finish();
         }
@@ -521,7 +582,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         }
         quality = Mth.clamp(quality, 0F, 100F);
         RitualQuality tier = RitualQuality.of(quality);
-        int risen = RitualSummons.summonAshWitness(server, worldPosition.above(), tier, confessor, warden);
+        int risen = RitualSummons.summonAshWitness(server, worldPosition.above(), tier, confessor, warden, inlay);
         int dust = tier.ordinal() >= RitualQuality.STEADY.ordinal() ? tier.ordinal() - 1 : 0;
         if (dust > 0) {
             net.minecraft.world.Containers.dropItemStack(server, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5,
@@ -601,7 +662,7 @@ public class RitualSealBlockEntity extends BlockEntity {
             stabilities[i] = server.getBlockEntity(anchors.get(i)) instanceof RitualAnchorBlockEntity a ? (a.broken() ? -1 : a.stability()) : -1;
         }
         CultNetwork.RitualPayload payload = new CultNetwork.RitualPayload(phase == Phase.CHANNEL, Math.round(quality),
-                Math.max(0, ASH_TICKS - timer), windowOpen() || finalWindow() && !closed, finalWindow(), solo, stabilities);
+                Math.max(0, duration - timer), windowOpen() || finalWindow() && !closed, finalWindow(), solo, stabilities);
         for (Player player : new Player[]{confessor, warden}) {
             if (player instanceof ServerPlayer sp && !(player instanceof net.neoforged.neoforge.common.util.FakePlayer) && sp.connection != null) {
                 PacketDistributor.sendToPlayer(sp, payload);
@@ -643,6 +704,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         tag.putInt("Ash", ash);
         tag.putInt("Shards", shards);
         tag.putInt("Candles", candles);
+        tag.putString("Scheme", scheme.name());
     }
 
     @Override
@@ -651,6 +713,7 @@ public class RitualSealBlockEntity extends BlockEntity {
         ash = tag.getInt("Ash");
         shards = tag.getInt("Shards");
         candles = tag.getInt("Candles");
+        scheme = RiteScheme.byName(tag.getString("Scheme"));
     }
 
 }

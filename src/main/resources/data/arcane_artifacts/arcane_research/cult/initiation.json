@@ -36,6 +36,9 @@
     "arcane_artifacts:ritual_seal",
     "arcane_artifacts:ritual_anchor",
     "arcane_artifacts:ritual_knife",
-    "arcane_artifacts:oath_shield"
+    "arcane_artifacts:oath_shield",
+    "arcane_artifacts:seal_hammer",
+    "arcane_artifacts:ritual_censer",
+    "arcane_artifacts:formula_book"
   ]
 }
