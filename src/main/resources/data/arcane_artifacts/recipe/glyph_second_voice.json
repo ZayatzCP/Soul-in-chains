@@ -1,0 +1,28 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 160,
+  "inputs": [
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "arcane_artifacts:vow_dust"
+    },
+    {
+      "item": "arcane_artifacts:vow_dust"
+    },
+    {
+      "item": "minecraft:bell"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    },
+    {
+      "item": "minecraft:red_candle"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_second_voice"
+  }
+}

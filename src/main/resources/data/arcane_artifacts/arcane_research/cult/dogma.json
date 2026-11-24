@@ -35,5 +35,9 @@
     }
   ],
   "notes": 2,
-  "unlocks_items": []
+  "unlocks_items": [],
+  "unlocks": [
+    "arcane_artifacts:glyph_rite_abundance",
+    "arcane_artifacts:glyph_second_voice"
+  ]
 }

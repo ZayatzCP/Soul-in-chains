@@ -1,0 +1,25 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 55,
+  "inputs": [
+    {
+      "item": "ars_nouveau:conjuration_essence"
+    },
+    {
+      "item": "minecraft:iron_sword"
+    },
+    {
+      "item": "arcane_artifacts:vow_dust"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "arcane_artifacts:bone_shard"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_retribution"
+  }
+}

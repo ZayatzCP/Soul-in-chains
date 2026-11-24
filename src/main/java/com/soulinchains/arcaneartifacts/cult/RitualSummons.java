@@ -40,6 +40,24 @@ public final class RitualSummons {
         entity.getPersistentData().put(RITUAL_TAG, tag);
     }
 
+    /** Abundance: raises a summoned creature's loot multiplier once per source, up to {@code cap}. */
+    public static boolean addLoot(LivingEntity entity, String source, float amount, float cap) {
+        if (!summoned(entity)) {
+            return false;
+        }
+        CompoundTag tag = entity.getPersistentData().getCompound(RITUAL_TAG);
+        if (tag.getBoolean("paid") || tag.getBoolean("by_" + source)) {
+            return false;
+        }
+        tag.putBoolean("by_" + source, true);
+        tag.putFloat("loot", Math.min(cap, tag.getFloat("loot") + amount));
+        return true;
+    }
+
+    public static float loot(LivingEntity entity) {
+        return entity.getPersistentData().getCompound(RITUAL_TAG).getFloat("loot");
+    }
+
     public static boolean summoned(LivingEntity entity) {
         return entity.getPersistentData().contains(RITUAL_TAG);
     }

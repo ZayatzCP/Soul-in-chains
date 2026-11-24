@@ -495,4 +495,94 @@ public final class CultGameTests {
         gate.discard();
         helper.succeed();
     }
+
+    // ------------------------------------------------------------------ 1.36
+
+    @GameTest(template = ARENA)
+    public static void inscribeAndRetribution(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        FakePlayer confessor = player(helper, "glyph_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "glyph_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(7, 2, 7));
+        com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.inscribe(zombie, confessor);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.inscribedBy(zombie, confessor.getUUID())
+                && !com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.inscribedBy(zombie, warden.getUUID()), "Inscribed for the caster");
+        com.soulinchains.arcaneartifacts.cult.RedAcolyte red = helper.spawnWithNoFreeWill(ModEntities.RED_ACOLYTE.get(), new BlockPos(2, 2, 2));
+        red.setup(com.soulinchains.arcaneartifacts.cult.RitualServant.Grade.COMMON, confessor, warden);
+        RitualSummons.mark(red, 1.0F);
+        Zombie stranger = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(1, 2, 7));
+        int obeyed = com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.command(level, warden, zombie, 1, 1);
+        helper.assertTrue(obeyed == 1 && red.getTarget() == zombie, "The pair's acolyte turns on the target, got " + obeyed);
+        helper.assertTrue(red.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST)
+                && red.getEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST).getAmplifier() == 1, "Strength II against the Inscribed with one Amplify");
+        helper.assertTrue(Math.abs(RitualSummons.loot(red) - 1.1F) < 0.001F, "Abundance: +0.1 loot");
+        com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.command(level, confessor, stranger, 0, 1);
+        helper.assertTrue(red.getTarget() == stranger && Math.abs(RitualSummons.loot(red) - 1.1F) < 0.001F, "Abundance from Retribution is paid once");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.command(level, confessor, red, 0, 0) == 0, "Never against your own summons");
+        red.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void wardingSealCoversOnlyThePair(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        FakePlayer confessor = player(helper, "seal_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "seal_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.clearZones();
+        com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.clearCooldowns(confessor);
+        com.soulinchains.arcaneartifacts.cult.RedAcolyte red = helper.spawnWithNoFreeWill(ModEntities.RED_ACOLYTE.get(), new BlockPos(4, 2, 5));
+        red.setup(com.soulinchains.arcaneartifacts.cult.RitualServant.Grade.COMMON, null, warden);
+        Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(5, 2, 4));
+        Vec3 at = helper.absoluteVec(new Vec3(4.5, 2, 4.5));
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.lay(level, at, confessor, 0, 0), "The seal is laid");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.lay(level, at, confessor, 0, 0), "Once in 8 s");
+        helper.assertTrue(red.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.WARDED), "The partner's summon inside is Warded");
+        helper.assertTrue(!zombie.hasEffect(com.soulinchains.arcaneartifacts.registry.ModEffects.WARDED), "A stranger is not");
+        com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.clearZones();
+        red.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void witnessCallAnswersThePair(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        FakePlayer confessor = player(helper, "call_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "call_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        Vec3 at = helper.absoluteVec(new Vec3(4.5, 2, 6.5));
+        var one = com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.call(level, at, confessor, warden, 1, 0, 2, 0);
+        helper.assertTrue(one.size() == 1 && one.get(0).grade() == com.soulinchains.arcaneartifacts.cult.RitualServant.Grade.COMMON
+                && one.get(0).lifeLeft() == com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.CALL_LIFE, "Amplify: one common witness for 30 s");
+        helper.assertTrue(Math.abs(RitualSummons.loot(one.get(0)) - 1.5F) < 0.001F, "Two Abundance: x1.5 loot");
+        var census = com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.call(level, at, confessor, warden, 1, 2, 0, 1);
+        helper.assertTrue(census.size() == 3 && census.stream().allMatch(w -> w.grade() == com.soulinchains.arcaneartifacts.cult.RitualServant.Grade.FAINT),
+                "Census: three faint witnesses instead of one strong");
+        long alive = around(helper, AshWitness.class).stream().filter(w -> w.isAlive() && !w.isRemoved()).count();
+        helper.assertTrue(alive == com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.CALL_CAP, "No more than three called witnesses, got " + alive);
+        around(helper, AshWitness.class).forEach(e -> e.discard());
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void secondVoiceAndHoldTheCircle(GameTestHelper helper) {
+        FakePlayer confessor = player(helper, "voice_confessor", 4.5, 3.0);
+        FakePlayer warden = player(helper, "voice_warden", 1.5, 4.5);
+        Cult.pair(confessor, warden);
+        List<RitualAnchorBlockEntity> anchors = new ArrayList<>();
+        RitualSealBlockEntity seal = startRite(helper, confessor, warden, anchors);
+        helper.assertTrue(seal.phase() == RitualSealBlockEntity.Phase.CHANNEL, "The rite runs");
+        float before = seal.quality();
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.cult.glyph.EffectSecondVoice.voice(confessor, 0), "One voice is not a chord");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.EffectSecondVoice.voice(warden, 0), "The Warden answers in time");
+        helper.assertTrue(Math.abs(seal.quality() - before - RitualSealBlockEntity.VOICE_QUALITY) < 0.001F, "+8% quality, got " + (seal.quality() - before));
+        helper.assertTrue(!seal.secondVoice(confessor), "Once per rite");
+        anchors.get(0).damage(40);
+        com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.clearCooldowns(confessor);
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.hold(confessor, 2) > 0, "Hold the Circle mends the anchors from inside");
+        helper.assertTrue(com.soulinchains.arcaneartifacts.cult.glyph.CultGlyphs.hold(confessor, 2) == 0, "Once in 2 s");
+        drain(helper, seal);
+        helper.succeed();
+    }
 }

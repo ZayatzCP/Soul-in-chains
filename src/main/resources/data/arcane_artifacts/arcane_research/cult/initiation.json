@@ -40,5 +40,9 @@
     "arcane_artifacts:seal_hammer",
     "arcane_artifacts:ritual_censer",
     "arcane_artifacts:formula_book"
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_inscribe",
+    "arcane_artifacts:glyph_warding_seal"
   ]
 }

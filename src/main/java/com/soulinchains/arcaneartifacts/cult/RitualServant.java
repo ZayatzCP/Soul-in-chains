@@ -85,6 +85,11 @@ public abstract class RitualServant extends PathfinderMob {
         return lifeLeft;
     }
 
+    /** Whether this was raised by (or for) the player with this id. */
+    public boolean servesPair(UUID player) {
+        return player.equals(confessorId) || player.equals(wardenId);
+    }
+
     @Nullable
     public Player confessor() {
         return confessorId == null ? null : level().getPlayerByUUID(confessorId);

@@ -78,6 +78,9 @@ public class RitualSealBlockEntity extends BlockEntity {
     private RiteScheme rite = RiteScheme.ASH_WITNESS;
     private boolean extraWindow;
     private int closeTick = -1;
+    private int voiceConfessor = -1000;
+    private int voiceWarden = -1000;
+    private boolean voiceDone;
     private int sealTick = -1;
     private int shards;
     private int candles;
@@ -438,6 +441,8 @@ public class RitualSealBlockEntity extends BlockEntity {
         rite = scheme;
         extraWindow = false;
         closeTick = sealTick = -1;
+        voiceConfessor = voiceWarden = -1000;
+        voiceDone = false;
         anchors.clear();
         for (RitualAnchorBlockEntity anchor : lit) {
             anchors.add(anchor.getBlockPos());
@@ -494,6 +499,52 @@ public class RitualSealBlockEntity extends BlockEntity {
             quality -= CultGear.missPenalty(player);
             sound(worldPosition, SoundEvents.CHAIN_HIT, 0.8F, 0.6F);
         }
+    }
+
+    public static final int VOICE_SYNC = 40;
+    public static final float VOICE_QUALITY = 8F;
+    public static final int VOICE_STABILITY = 20;
+
+    /** Second Voice: the Confessor and the Warden of this rite each cast it; within 2 s of each other it lifts the rite once. */
+    public boolean secondVoice(Player player) {
+        if (phase != Phase.CHANNEL || voiceDone) {
+            return false;
+        }
+        if (confessor != null && player.getUUID().equals(confessor.getUUID())) {
+            voiceConfessor = timer;
+        } else if (warden != null && !solo && player.getUUID().equals(warden.getUUID())) {
+            voiceWarden = timer;
+        } else {
+            return false;
+        }
+        if (Math.abs(voiceConfessor - voiceWarden) > VOICE_SYNC) {
+            return false;
+        }
+        voiceDone = true;
+        quality = Mth.clamp(quality + VOICE_QUALITY, 0F, 100F);
+        mendAnchors(VOICE_STABILITY);
+        burst(worldPosition, 0xFAF7F3);
+        sound(worldPosition, SoundEvents.BELL_RESONATE, 1.2F, 0.8F);
+        sync();
+        return true;
+    }
+
+    /** Adds stability to every anchor of the running rite; returns how much was added in total. */
+    public int mendAnchors(int amount) {
+        int gained = 0;
+        if (level != null) {
+            for (BlockPos pos : anchors) {
+                if (level.getBlockEntity(pos) instanceof RitualAnchorBlockEntity anchor && anchor.active()) {
+                    gained += anchor.repair(amount);
+                }
+            }
+        }
+        return gained;
+    }
+
+    /** Whether the player stands inside this circle. */
+    public boolean inside(Player player) {
+        return distance(player) <= RADIUS + 0.5;
     }
 
     /** The Confessor was hurt while reading. */

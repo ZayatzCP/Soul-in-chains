@@ -1,0 +1,22 @@
+{
+  "type": "ars_nouveau:glyph",
+  "exp": 27,
+  "inputs": [
+    {
+      "item": "ars_nouveau:abjuration_essence"
+    },
+    {
+      "item": "minecraft:shield"
+    },
+    {
+      "item": "arcane_artifacts:bone_shard"
+    },
+    {
+      "item": "minecraft:red_candle"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "arcane_artifacts:glyph_warding_seal"
+  }
+}

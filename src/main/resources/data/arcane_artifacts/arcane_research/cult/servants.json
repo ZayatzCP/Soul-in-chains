@@ -46,5 +46,11 @@
     "arcane_artifacts:book_of_arrears",
     "arcane_artifacts:inscriber_hands",
     "arcane_artifacts:quiet_shoes"
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_witness_call",
+    "arcane_artifacts:glyph_hold_circle",
+    "arcane_artifacts:glyph_retribution",
+    "arcane_artifacts:glyph_census"
   ]
 }
