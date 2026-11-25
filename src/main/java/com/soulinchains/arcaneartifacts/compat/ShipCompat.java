@@ -27,6 +27,9 @@ public final class ShipCompat {
 
         /** Brakes the whole ship: a force against its velocity, {@code strength} times its momentum per second. */
         void brake(double strength);
+
+        /** Holds the ship still: this point is drawn back to {@code anchor} and the ship stops turning (overrides its engines). */
+        void hold(Vec3 anchor);
     }
 
     public static boolean loaded() {
@@ -116,6 +119,17 @@ public final class ShipCompat {
             if (!broken) {
                 try {
                     inner.brake(strength);
+                } catch (LinkageError | RuntimeException e) {
+                    broken = true;
+                }
+            }
+        }
+
+        @Override
+        public void hold(Vec3 anchor) {
+            if (!broken) {
+                try {
+                    inner.hold(anchor);
                 } catch (LinkageError | RuntimeException e) {
                     broken = true;
                 }

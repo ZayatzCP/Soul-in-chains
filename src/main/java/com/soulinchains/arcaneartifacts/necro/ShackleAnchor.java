@@ -22,7 +22,7 @@ import org.joml.Vector3f;
  * <ul>
  *     <li>A creature: kept on the spot (knockback cannot carry it away) while it is Shackled.</li>
  *     <li>A Create contraption: kept stalled (its bearing, piston, minecart or train stops).</li>
- *     <li>A Create Aeronautics ship: the chains brake it hard, like an anchor.</li>
+ *     <li>A Create Aeronautics ship: held still where the chains caught it, whatever its engines do.</li>
  * </ul>
  * Disappears when the hold ends. Not saved.
  */
@@ -33,6 +33,8 @@ public class ShackleAnchor extends Entity {
     private int ticksLeft;
     @Nullable
     private ShipCompat.ShipPoint ship;
+    /** Where the hooked point of the ship was when the chains caught it: the ship is held there. */
+    private Vec3 shipAnchor = Vec3.ZERO;
 
     public ShackleAnchor(EntityType<? extends ShackleAnchor> type, Level level) {
         super(type, level);
@@ -52,6 +54,7 @@ public class ShackleAnchor extends Entity {
         ship = point;
         ticksLeft = ticks;
         Vec3 top = point.world();
+        shipAnchor = top;
         var hit = level().clip(new ClipContext(top.subtract(0, 1.5, 0), top.subtract(0, 24, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
         setPos(hit.getType() == HitResult.Type.MISS ? top.subtract(0, 6, 0) : hit.getLocation());
         entityData.set(TOP, top.toVector3f());
@@ -95,7 +98,7 @@ public class ShackleAnchor extends Entity {
                 discard();
                 return;
             }
-            ship.brake(Config.SHIP_BRAKE.get());
+            ship.hold(shipAnchor);
             entityData.set(TOP, ship.world().toVector3f());
             return;
         }

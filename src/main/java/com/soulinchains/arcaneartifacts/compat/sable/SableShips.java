@@ -17,6 +17,10 @@ import org.joml.Vector3dc;
 
 /** The Sable side of {@link ShipCompat}. Loaded only when Sable is installed. */
 public final class SableShips {
+    /** How fast a held ship returns to its anchor: the gap closes in about a tenth of a second. */
+    private static final double HOLD_RETURN = 10.0;
+    private static final double HOLD_MAX_SPEED = 8.0;
+
     private SableShips() {
     }
 
@@ -79,6 +83,23 @@ public final class SableShips {
             if (group != null) {
                 ship.getOrCreateQueuedForceGroup(group).applyAndRecordPointForce(new Vector3d(local), localForce);
             }
+        }
+
+        /** Sets the velocity outright (no force cap, before the engines' forces): back to the anchor point, no turning. */
+        @Override
+        public void hold(Vec3 anchor) {
+            RigidBodyHandle handle = RigidBodyHandle.of(ship);
+            if (handle == null || !handle.isValid()) {
+                return;
+            }
+            Vec3 now = world();
+            Vector3d target = new Vector3d(anchor.x - now.x, anchor.y - now.y, anchor.z - now.z).mul(HOLD_RETURN);
+            if (target.length() > HOLD_MAX_SPEED) {
+                target.normalize(HOLD_MAX_SPEED);
+            }
+            Vector3d linear = handle.getLinearVelocity(new Vector3d());
+            Vector3d angular = handle.getAngularVelocity(new Vector3d());
+            handle.addLinearAndAngularVelocity(target.sub(linear), angular.negate());
         }
 
         @Override

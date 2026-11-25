@@ -236,7 +236,7 @@ public final class Config {
                 .defineInRange("ship_pull_acceleration", 6.0, 0.0, 100.0);
         SHIP_MAX_FORCE = b.comment("Create Aeronautics: the strongest pull of one chain; heavy ships move slower. A shackle brakes with up to 3x this.")
                 .defineInRange("ship_max_force", 2500.0, 0.0, 1.0E7);
-        SHIP_BRAKE = b.comment("Create Aeronautics: how hard a shackle brakes a ship (share of its momentum removed per second).")
+        SHIP_BRAKE = b.comment("Not used since 1.37.1: a shackled Create Aeronautics ship is now held still. Kept so old config files still load.")
                 .defineInRange("ship_brake", 4.0, 0.0, 100.0);
         PHYLACTERY_COOLDOWN_DAYS = b.comment("Phylactery Amulet: in-game days before it can save its wearer again.")
                 .defineInRange("phylactery_cooldown_days", 3, 0, 365);
