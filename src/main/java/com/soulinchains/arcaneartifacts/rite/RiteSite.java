@@ -116,7 +116,8 @@ public final class RiteSite {
                 if ((dx != 0 || dz != 0) && !level.getBlockState(floor).is(FLOOR)) {
                     floorOk = false;
                 }
-                if (level.canSeeSky(floor.above())) {
+                // something solid above head height (two blocks over the chalk layer) closes the sky over this column
+                if (level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, floor.getX(), floor.getZ()) <= floor.getY() + 3) {
                     roofOk = false;
                 }
             }
