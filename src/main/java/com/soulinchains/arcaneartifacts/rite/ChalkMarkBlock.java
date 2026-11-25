@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A chalk mark on top of a floor block. Its lines to the four neighbours are drawn one stroke at a time with a chalk
  * (see {@link ChalkItem}), so a figure keeps exactly the lines its author drew. Rain on open sky washes it away, a
- * creature walking over it smudges it, water and pistons wipe it.
+ * creature walking over it smudges it, water and pistons wipe it. An offering pedestal set on a mark keeps it underneath.
  */
 public class ChalkMarkBlock extends Block {
     public static final EnumProperty<ChalkColor> COLOR = EnumProperty.create("color", ChalkColor.class);
@@ -61,10 +61,16 @@ public class ChalkMarkBlock extends Block {
         };
     }
 
+    /** Whether this block carries chalk: a mark, or an offering pedestal standing on one. */
+    public static boolean holdsChalk(BlockState state) {
+        return state.getBlock() instanceof ChalkMarkBlock
+                || state.getBlock() instanceof OfferingPedestalBlock && state.getValue(OfferingPedestalBlock.CHALKED);
+    }
+
     @Nullable
     public static ChalkColor color(BlockGetter level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        return state.getBlock() instanceof ChalkMarkBlock ? state.getValue(COLOR) : null;
+        return holdsChalk(state) ? state.getValue(COLOR) : null;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class ChalkMarkBlock extends Block {
         if (direction == Direction.DOWN && !canSurvive(state, level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        if (direction.getAxis().isHorizontal() && state.getValue(side(direction)) && !(neighbor.getBlock() instanceof ChalkMarkBlock)) {
+        if (direction.getAxis().isHorizontal() && state.getValue(side(direction)) && !holdsChalk(neighbor)) {
             return state.setValue(side(direction), false);
         }
         return state;
@@ -110,7 +116,7 @@ public class ChalkMarkBlock extends Block {
         }
         BlockState sa = level.getBlockState(a);
         BlockState sb = level.getBlockState(b);
-        if (!(sa.getBlock() instanceof ChalkMarkBlock) || !(sb.getBlock() instanceof ChalkMarkBlock) || sa.getValue(COLOR) != sb.getValue(COLOR)) {
+        if (!holdsChalk(sa) || !holdsChalk(sb) || sa.getValue(COLOR) != sb.getValue(COLOR)) {
             return false;
         }
         Direction toB = Direction.getNearest(b.getX() - a.getX(), 0, b.getZ() - a.getZ());
@@ -126,7 +132,6 @@ public class ChalkMarkBlock extends Block {
     public static boolean linked(BlockGetter level, BlockPos pos, Direction direction) {
         BlockState a = level.getBlockState(pos);
         BlockState b = level.getBlockState(pos.relative(direction));
-        return a.getBlock() instanceof ChalkMarkBlock && b.getBlock() instanceof ChalkMarkBlock
-                && a.getValue(side(direction)) && b.getValue(side(direction.getOpposite()));
+        return holdsChalk(a) && holdsChalk(b) && a.getValue(side(direction)) && b.getValue(side(direction.getOpposite()));
     }
 }

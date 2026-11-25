@@ -68,6 +68,7 @@ public final class ClientSetup {
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_ENTITY.get(), ResearchTableRenderer::new);
         event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.OFFERING_PEDESTAL_ENTITY.get(), com.soulinchains.arcaneartifacts.client.rite.RiteRenderers.PedestalRenderer::new);
+        event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.RITE_CAGE_ENTITY.get(), com.soulinchains.arcaneartifacts.client.rite.RiteRenderers.CageRenderer::new);
         event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.MANA_TANK_ENTITY.get(), ManaTankRenderer::new);
     }
 

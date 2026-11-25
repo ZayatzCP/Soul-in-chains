@@ -96,7 +96,7 @@ public class RiteCageItem extends Item {
         }
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos().relative(context.getClickedFace());
-        if (!level.getBlockState(pos).canBeReplaced()) {
+        if (!level.getBlockState(pos).canBeReplaced() || !level.getBlockState(pos.above()).canBeReplaced()) {
             return InteractionResult.FAIL;
         }
         if (level.isClientSide) {
@@ -104,6 +104,7 @@ public class RiteCageItem extends Item {
         }
         BlockState state = ModBlocks.RITE_CAGE.get().defaultBlockState();
         level.setBlock(pos, state, 3);
+        level.setBlock(pos.above(), state.setValue(RiteCageBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), 3);
         if (level.getBlockEntity(pos) instanceof RiteCageBlockEntity cage) {
             cage.fill(data(stack));
         }

@@ -27,15 +27,54 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Offering Pedestal: stands on the Heart of the Circle. Use with an item to lay the stack on it, with an empty hand to take it
- * back. During a rite it takes only the offering the Heart is asking for.
+ * back. During a rite it takes only the offering the Heart is asking for. Set on a chalk mark it keeps the mark under
+ * itself (the mark still counts in its sigil), and chalk can be drawn on it directly.
  */
 public class OfferingPedestalBlock extends BaseEntityBlock {
     public static final MapCodec<OfferingPedestalBlock> CODEC = simpleCodec(p -> new OfferingPedestalBlock());
+    /** Chalk under the pedestal: set when it is placed on a chalk mark (or chalk is drawn on it), with the mark's colour and lines. */
+    public static final net.minecraft.world.level.block.state.properties.BooleanProperty CHALKED =
+            net.minecraft.world.level.block.state.properties.BooleanProperty.create("chalked");
     private static final VoxelShape SHAPE = Block.box(3, 0, 3, 13, 12, 13);
 
     public OfferingPedestalBlock() {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(3.0F, 6.0F).sound(SoundType.POLISHED_DEEPSLATE)
                 .requiresCorrectToolForDrops().noOcclusion());
+        registerDefaultState(stateDefinition.any().setValue(CHALKED, false).setValue(ChalkMarkBlock.COLOR, ChalkColor.WHITE)
+                .setValue(ChalkMarkBlock.NORTH, false).setValue(ChalkMarkBlock.EAST, false)
+                .setValue(ChalkMarkBlock.SOUTH, false).setValue(ChalkMarkBlock.WEST, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+        builder.add(CHALKED, ChalkMarkBlock.COLOR, ChalkMarkBlock.NORTH, ChalkMarkBlock.EAST, ChalkMarkBlock.SOUTH, ChalkMarkBlock.WEST);
+    }
+
+    /** The pedestal without its chalk. */
+    public static BlockState clean(BlockState state) {
+        return state.setValue(CHALKED, false).setValue(ChalkMarkBlock.NORTH, false).setValue(ChalkMarkBlock.EAST, false)
+                .setValue(ChalkMarkBlock.SOUTH, false).setValue(ChalkMarkBlock.WEST, false);
+    }
+
+    /** Set down on a chalk mark, the pedestal keeps the mark (its colour and lines) underneath. */
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState old, boolean moved) {
+        super.onPlace(state, level, pos, old, moved);
+        if (old.getBlock() instanceof ChalkMarkBlock && !state.getValue(CHALKED)) {
+            level.setBlock(pos, state.setValue(CHALKED, true).setValue(ChalkMarkBlock.COLOR, old.getValue(ChalkMarkBlock.COLOR))
+                    .setValue(ChalkMarkBlock.NORTH, old.getValue(ChalkMarkBlock.NORTH)).setValue(ChalkMarkBlock.EAST, old.getValue(ChalkMarkBlock.EAST))
+                    .setValue(ChalkMarkBlock.SOUTH, old.getValue(ChalkMarkBlock.SOUTH)).setValue(ChalkMarkBlock.WEST, old.getValue(ChalkMarkBlock.WEST)), 3);
+        }
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.core.Direction direction, BlockState neighbor,
+                                     net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(CHALKED) && direction.getAxis().isHorizontal() && state.getValue(ChalkMarkBlock.side(direction))
+                && !ChalkMarkBlock.holdsChalk(neighbor)) {
+            return state.setValue(ChalkMarkBlock.side(direction), false);
+        }
+        return state;
     }
 
     @Override

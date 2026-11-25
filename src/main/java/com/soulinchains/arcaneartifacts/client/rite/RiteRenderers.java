@@ -57,4 +57,41 @@ public final class RiteRenderers {
             return TEXTURE;
         }
     }
+
+    /** The creature shut in a ritual cage, drawn small inside it. */
+    public static class CageRenderer implements BlockEntityRenderer<com.soulinchains.arcaneartifacts.rite.RiteCageBlockEntity> {
+        public CageRenderer(BlockEntityRendererProvider.Context context) {
+        }
+
+        @Override
+        public void render(com.soulinchains.arcaneartifacts.rite.RiteCageBlockEntity cage, float partial, PoseStack pose, MultiBufferSource buffers,
+                           int light, int overlay) {
+            if (!cage.occupied() || cage.shownFailed || cage.getLevel() == null) {
+                return;
+            }
+            try {
+                if (cage.shown == null) {
+                    cage.shown = net.minecraft.world.entity.EntityType.loadEntityRecursive(cage.creature().copy(), cage.getLevel(), e -> e);
+                    if (cage.shown == null) {
+                        cage.shownFailed = true;
+                        return;
+                    }
+                }
+                net.minecraft.world.entity.Entity entity = cage.shown;
+                float scale = Math.min(1F, Math.min(0.8F / Math.max(0.1F, entity.getBbWidth()), 1.8F / Math.max(0.1F, entity.getBbHeight())));
+                pose.pushPose();
+                pose.translate(0.5, 0.06, 0.5);
+                pose.scale(scale, scale, scale);
+                Minecraft.getInstance().getEntityRenderDispatcher().render(entity, 0, 0, 0, 0F, partial, pose, buffers, light);
+                pose.popPose();
+            } catch (RuntimeException e) {
+                cage.shownFailed = true;
+            }
+        }
+
+        @Override
+        public net.minecraft.world.phys.AABB getRenderBoundingBox(com.soulinchains.arcaneartifacts.rite.RiteCageBlockEntity cage) {
+            return new net.minecraft.world.phys.AABB(cage.getBlockPos()).expandTowards(0, 1, 0);
+        }
+    }
 }

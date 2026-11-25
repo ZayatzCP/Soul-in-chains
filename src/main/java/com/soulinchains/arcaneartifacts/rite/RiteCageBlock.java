@@ -27,13 +27,38 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-/** A set-down ritual cage with its creature. Breaking it gives back the full cage; sneak-use lets the creature out. */
+/** A set-down ritual cage, two blocks tall, with its creature. Breaking it gives back the full cage; sneak-use lets the creature out. */
 public class RiteCageBlock extends BaseEntityBlock {
     public static final MapCodec<RiteCageBlock> CODEC = simpleCodec(p -> new RiteCageBlock());
-    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 15, 15);
+    public static final net.minecraft.world.level.block.state.properties.EnumProperty<net.minecraft.world.level.block.state.properties.DoubleBlockHalf> HALF =
+            net.minecraft.world.level.block.state.properties.BlockStateProperties.DOUBLE_BLOCK_HALF;
+    private static final VoxelShape LOWER = Block.box(1, 0, 1, 15, 16, 15);
+    private static final VoxelShape UPPER = Block.box(1, 0, 1, 15, 15, 15);
 
     public RiteCageBlock() {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5F).sound(SoundType.CHAIN).noOcclusion());
+        registerDefaultState(stateDefinition.any().setValue(HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(HALF);
+    }
+
+    public static boolean lower(BlockState state) {
+        return state.getValue(HALF) == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER;
+    }
+
+    /** The two halves stand and fall together. */
+    @Override
+    protected BlockState updateShape(BlockState state, net.minecraft.core.Direction direction, BlockState neighbor,
+                                     net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        boolean lower = lower(state);
+        if (direction == (lower ? net.minecraft.core.Direction.UP : net.minecraft.core.Direction.DOWN)
+                && !(neighbor.is(this) && lower(neighbor) != lower)) {
+            return net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        }
+        return state;
     }
 
     @Override
@@ -48,17 +73,20 @@ public class RiteCageBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return lower(state) ? LOWER : UPPER;
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new RiteCageBlockEntity(pos, state);
+        return lower(state) ? new RiteCageBlockEntity(pos, state) : null;
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!lower(state)) {
+            pos = pos.below();
+        }
         if (!(level.getBlockEntity(pos) instanceof RiteCageBlockEntity cage)) {
             return InteractionResult.PASS;
         }

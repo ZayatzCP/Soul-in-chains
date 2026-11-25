@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
-      "model": "arcane_artifacts:block/rite_cage"
+    "half=lower": {
+      "model": "arcane_artifacts:block/rite_cage_lower"
+    },
+    "half=upper": {
+      "model": "arcane_artifacts:block/rite_cage_upper"
     }
   }
 }

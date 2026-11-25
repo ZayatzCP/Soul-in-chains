@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "hanging=false": {
       "model": "arcane_artifacts:block/ritual_censer"
+    },
+    "hanging=true": {
+      "model": "arcane_artifacts:block/ritual_censer_hanging"
     }
   }
 }

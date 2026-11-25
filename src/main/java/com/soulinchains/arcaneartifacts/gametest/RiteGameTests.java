@@ -305,4 +305,45 @@ public final class RiteGameTests {
         helper.assertTrue(!after.is(ModBlocks.CORRUPTED_SOIL.get()), "No corrupted soil is left");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void chalkStaysUnderThePedestal(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        for (int x = 2; x <= 4; x++) {
+            for (int z = 2; z <= 4; z++) {
+                helper.setBlock(new BlockPos(x, 1, z), Blocks.DEEPSLATE_TILES);
+                helper.setBlock(new BlockPos(x, 2, z), Blocks.AIR);
+            }
+        }
+        BlockPos nw = helper.absolutePos(new BlockPos(2, 2, 2));
+        draw(level, nw, Sigil.OKO, ChalkColor.WHITE);
+        level.setBlock(nw.offset(1, 0, 1), ModBlocks.OFFERING_PEDESTAL.get().defaultBlockState(), 3);
+        BlockState pedestal = level.getBlockState(nw.offset(1, 0, 1));
+        helper.assertTrue(ChalkMarkBlock.holdsChalk(pedestal) && ChalkMarkBlock.color(level, nw.offset(1, 0, 1)) == ChalkColor.WHITE,
+                "The pedestal keeps the chalk it was set on");
+        helper.assertTrue(SigilReading.read(level, nw).is(Sigil.OKO), "The Eye still reads with the pedestal in its middle");
+        FakePlayer player = player(helper, "pedestal_chalker", 3, 2, 1);
+        player.setShiftKeyDown(true);
+        helper.assertTrue(ChalkItem.draw(level, player, null, nw.offset(1, 0, 1), ChalkColor.WHITE) == 3
+                && !ChalkMarkBlock.holdsChalk(level.getBlockState(nw.offset(1, 0, 1))), "Sneaking rubs the chalk off the pedestal, it stays");
+        helper.assertTrue(level.getBlockState(nw.offset(1, 0, 1)).is(ModBlocks.OFFERING_PEDESTAL.get()), "The pedestal itself stays");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void cageStandsTwoHigh(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos at = helper.absolutePos(new BlockPos(4, 2, 4));
+        BlockState lower = ModBlocks.RITE_CAGE.get().defaultBlockState();
+        level.setBlock(at, lower, 3);
+        level.setBlock(at.above(), lower.setValue(com.soulinchains.arcaneartifacts.rite.RiteCageBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), 3);
+        helper.assertTrue(level.getBlockEntity(at) instanceof com.soulinchains.arcaneartifacts.rite.RiteCageBlockEntity
+                && level.getBlockEntity(at.above()) == null, "The creature lives in the lower half");
+        level.setBlock(at.above(), Blocks.AIR.defaultBlockState(), 3);
+        helper.assertTrue(level.getBlockState(at).isAir(), "Break the top, the whole cage goes");
+        helper.assertTrue(!level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(at).inflate(2),
+                e -> e.getItem().is(com.soulinchains.arcaneartifacts.registry.ModItems.RITE_CAGE.get())).isEmpty(), "The cage drops back as an item");
+        helper.succeed();
+    }
 }

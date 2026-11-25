@@ -52,7 +52,7 @@ public class ChalkItem extends Item {
         BlockPos clicked = context.getClickedPos();
         BlockState state = level.getBlockState(clicked);
         BlockPos mark;
-        if (state.getBlock() instanceof ChalkMarkBlock) {
+        if (state.getBlock() instanceof ChalkMarkBlock || state.getBlock() instanceof OfferingPedestalBlock) {
             mark = clicked;
         } else if (context.getClickedFace() == Direction.UP) {
             mark = clicked.above();
@@ -69,9 +69,14 @@ public class ChalkItem extends Item {
     /** One touch of the chalk at {@code mark}. Returns what happened, for tests: 0 nothing, 1 mark, 2 line, 3 erased, 4 traced. */
     public static int draw(Level level, Player player, @Nullable ItemStack chalk, BlockPos mark, ChalkColor color) {
         BlockState state = level.getBlockState(mark);
-        boolean existing = state.getBlock() instanceof ChalkMarkBlock;
+        boolean pedestal = state.getBlock() instanceof OfferingPedestalBlock;
+        boolean existing = ChalkMarkBlock.holdsChalk(state);
         if (existing && player.isShiftKeyDown()) {
-            level.removeBlock(mark, false);
+            if (pedestal) {
+                level.setBlock(mark, OfferingPedestalBlock.clean(state), 3);
+            } else {
+                level.removeBlock(mark, false);
+            }
             level.playSound(null, mark, SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 0.5F, 1.4F);
             STROKES.remove(player.getUUID());
             return 3;
@@ -81,7 +86,14 @@ public class ChalkItem extends Item {
             return 4;
         }
         int result = 0;
-        if (!existing) {
+        if (!existing && pedestal) {
+            if (player.isShiftKeyDown()) {
+                return 0;
+            }
+            level.setBlock(mark, state.setValue(OfferingPedestalBlock.CHALKED, true).setValue(ChalkMarkBlock.COLOR, color), 3);
+            spend(player, chalk);
+            result = 1;
+        } else if (!existing) {
             if (!level.getBlockState(mark).canBeReplaced() || !ModBlocks.CHALK_MARK.get().defaultBlockState().canSurvive(level, mark)) {
                 return 0;
             }

@@ -39,11 +39,39 @@ public class RiteCageBlockEntity extends BlockEntity {
     }
 
     public void fill(CompoundTag data) {
+        apply(data);
+        changed();
+    }
+
+    private void apply(CompoundTag data) {
         creature = data.getCompound(RiteCageItem.CREATURE).copy();
         kind = data.getString(RiteCageItem.KIND);
         value = data.getInt(RiteCageItem.VALUE);
         otherworldly = data.getBoolean(RiteCageItem.OTHERWORLDLY);
+        shown = null;
+        shownFailed = false;
+    }
+
+    /** Client side: the creature drawn inside (made from the saved data on first render). */
+    @org.jetbrains.annotations.Nullable
+    public net.minecraft.world.entity.Entity shown;
+    public boolean shownFailed;
+
+    private void changed() {
         setChanged();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
     }
 
     /** The data the cage item carries for this creature. */
@@ -62,7 +90,8 @@ public class RiteCageBlockEntity extends BlockEntity {
         kind = "";
         value = 0;
         otherworldly = false;
-        setChanged();
+        shown = null;
+        changed();
     }
 
     @Override
@@ -74,6 +103,6 @@ public class RiteCageBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        fill(tag.getCompound("Cage"));
+        apply(tag.getCompound("Cage"));
     }
 }
