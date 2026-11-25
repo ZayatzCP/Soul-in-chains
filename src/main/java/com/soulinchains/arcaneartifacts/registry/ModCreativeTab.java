@@ -182,6 +182,12 @@ public final class ModCreativeTab {
                 output.accept(ModItems.BONE_CHALK.get());
                 output.accept(ModItems.AMETHYST_DUST.get());
                 output.accept(ModItems.SIGIL_BOOK.get());
+                output.accept(ModItems.SIGIL_CODEX.get());
+                output.accept(ModItems.CULT_MASK.get());
+                output.accept(ModItems.CULT_ROBE.get());
+                output.accept(ModItems.OFFERING_BELT.get());
+                output.accept(ModItems.INSCRIBER_GLOVES.get());
+                output.accept(ModItems.SILENT_SANDALS.get());
                 output.accept(ModItems.RITE_HEART.get());
                 output.accept(ModItems.OFFERING_PEDESTAL.get());
                 output.accept(ModItems.RITUAL_CENSER.get());

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "arcane_artifacts:white_chalk"
+    },
+    {
+      "item": "arcane_artifacts:cinnabar_chalk"
+    },
+    {
+      "item": "arcane_artifacts:coal_chalk"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:sigil_codex"
+  }
+}

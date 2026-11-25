@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LLL",
+    "LAL"
+  ],
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "item": "arcane_artifacts:amethyst_dust"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:offering_belt"
+  }
+}

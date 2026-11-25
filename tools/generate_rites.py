@@ -118,3 +118,43 @@ if __name__ == '__main__':
     save(heart_side(), 'block', 'rite_heart_side.png')
     save(soil_top(), 'block', 'corrupted_soil_top.png')
     save(soil_side(), 'block', 'corrupted_soil_side.png')
+
+# ---------------------------------------------------------------- 1.39: the Treatise and the vestments
+CODEX = [
+    '................', '.kkkkkkkkkkkkk..', '.kRRRRRRRRRRRkb.', '.kRRaaRRRaaRRkb.', '.kRaRRaRaRRaRkb.', '.kRRaaRRRaaRRkb.',
+    '.kRRRRRRRRRRRkb.', '.kRRaaaaaaaRRkb.', '.kRRaRRRRRaRRkb.', '.kRRaaaaaaaRRkb.', '.kRRRRRRRRRRRkb.', '.kkkkkkkkkkkkkb.',
+    '..bbbbbbbbbbbbb.', '................', '................', '................',
+]
+MASK = [
+    '................', '.....bbbbbb.....', '....bBBBBBBb....', '...bBBBBBBBBb...', '..bBBkkBBkkBBb..', '..bBBkkBBkkBBb..',
+    '..bBBBBBBBBBBb..', '..bBBBBrrBBBBb..', '...bBBBrrBBBb...', '...bBBrrrrBBb...', '....bBBBBBBb....', '.....bBBBBb.....',
+    '......bbbb......', '................', '................', '................',
+]
+ROBE = [
+    '................', '.....kk..kk.....', '....kKKrrKKk....', '...kKKKrrKKKk...', '..kKKKKrrKKKKk..', '..kKKKKrrKKKKk..',
+    '..kKKKrrrrKKKk..', '...kKKKrrKKKk...', '...kKKKrrKKKk...', '...kKKKrrKKKk...', '..kKKKKrrKKKKk..', '..kKKKKrrKKKKk..',
+    '..kkkkkkkkkkkk..', '................', '................', '................',
+]
+BELT = [
+    '................', '................', '................', '................', '................', 'kkkkkkkkkkkkkkkk',
+    'rrrrrrbbbbrrrrrr', 'rrrrrrbaabrrrrrr', 'rrrrrrbbbbrrrrrr', 'kkkkkkkkkkkkkkkk', '..........k.....', '.........kak....',
+    '..........k.....', '................', '................', '................',
+]
+GLOVES = [
+    '................', '..k.k.k.........', '..kakak.k.......', '..kakakaka......', '..kKKKKKKk......', '..kKKKKKKk......',
+    '..kKKKKKKKk.....', '..kKKKKKKKKk....', '...kKKKKKKk.....', '...kKKKKKk......', '...krrrrrk......', '...kkkkkkk......',
+    '................', '................', '................', '................',
+]
+SANDALS = [
+    '................', '................', '................', '................', '...kk.......kk..', '..kKKk.....kKKk.',
+    '..kKKk.....kKKk.', '..kKKk.....kKKk.', '..kKKk.....kKKk.', '..kKKk.....kKKk.', '.krrrrk...krrrrk', '.kKKKKk...kKKKKk',
+    '..kkkk.....kkkk.', '................', '................', '................',
+]
+
+if __name__ == '__main__':
+    save(sprite(CODEX, {'k': '#171416', 'R': '#6F2927', 'a': '#B48CF0', 'b': '#E6D9C3'}), 'item', 'sigil_codex.png')
+    save(sprite(MASK, {'b': '#8D8270', 'B': '#F0E7DE', 'k': '#171416', 'r': '#B9463D'}), 'item', 'cult_mask.png')
+    save(sprite(ROBE, {'k': '#0E0C0F', 'K': '#2A2428', 'r': '#B9463D'}), 'item', 'cult_robe.png')
+    save(sprite(BELT, {'k': '#3B2A20', 'r': '#B9463D', 'b': '#8D8270', 'a': '#B48CF0'}), 'item', 'offering_belt.png')
+    save(sprite(GLOVES, {'k': '#171416', 'K': '#2A2428', 'a': '#4FD6D0', 'r': '#B9463D'}), 'item', 'inscriber_gloves.png')
+    save(sprite(SANDALS, {'k': '#171416', 'K': '#3B3A40', 'r': '#B9463D'}), 'item', 'silent_sandals.png')

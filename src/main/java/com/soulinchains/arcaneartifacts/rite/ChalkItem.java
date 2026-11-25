@@ -121,7 +121,8 @@ public class ChalkItem extends Item {
     }
 
     private static void spend(Player player, @Nullable ItemStack chalk) {
-        if (chalk != null && !chalk.isEmpty() && !player.getAbilities().instabuild) {
+        if (chalk != null && !chalk.isEmpty() && !player.getAbilities().instabuild
+                && !(CultGearItem.wears(player, CultGearItem.Piece.GLOVES) && player.getRandom().nextBoolean())) {
             chalk.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }
     }

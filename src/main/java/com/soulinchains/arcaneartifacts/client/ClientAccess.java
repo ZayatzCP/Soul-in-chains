@@ -18,6 +18,11 @@ public final class ClientAccess {
         Minecraft.getInstance().setScreen(new com.soulinchains.arcaneartifacts.client.notebook.ArcaneNotebookScreen(book));
     }
 
+    /** Opens the Treatise of Sigils (every sigil and every rite the server knows). */
+    public static void openCodex() {
+        Minecraft.getInstance().setScreen(new com.soulinchains.arcaneartifacts.client.rite.RiteCodexScreen());
+    }
+
     /** Opens the Researcher's Secret Notebook, the addon's own book. */
     public static void openNotebook() {
         Minecraft.getInstance().setScreen(new com.soulinchains.arcaneartifacts.client.notebook.ArcaneNotebookScreen());

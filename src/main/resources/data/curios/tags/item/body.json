@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcane_artifacts:bandolier"
+    "arcane_artifacts:bandolier",
+    "arcane_artifacts:cult_robe"
   ]
 }

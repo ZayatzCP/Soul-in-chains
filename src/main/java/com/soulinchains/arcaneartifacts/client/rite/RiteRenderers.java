@@ -78,6 +78,17 @@ public final class RiteRenderers {
                     }
                 }
                 net.minecraft.world.entity.Entity entity = cage.shown;
+                // the creature is never ticked: pin every rotation (old and new alike) so nothing is interpolated between frames
+                entity.setYRot(0F);
+                entity.yRotO = 0F;
+                entity.setXRot(0F);
+                entity.xRotO = 0F;
+                if (entity instanceof net.minecraft.world.entity.LivingEntity living) {
+                    living.yBodyRot = 0F;
+                    living.yBodyRotO = 0F;
+                    living.yHeadRot = 0F;
+                    living.yHeadRotO = 0F;
+                }
                 float scale = Math.min(1F, Math.min(0.8F / Math.max(0.1F, entity.getBbWidth()), 1.8F / Math.max(0.1F, entity.getBbHeight())));
                 pose.pushPose();
                 pose.translate(0.5, 0.06, 0.5);

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "BAB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bone_block"
+    },
+    "A": {
+      "item": "arcane_artifacts:amethyst_dust"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:cult_mask"
+  }
+}

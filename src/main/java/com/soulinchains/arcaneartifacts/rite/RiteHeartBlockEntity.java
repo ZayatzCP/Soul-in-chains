@@ -440,7 +440,7 @@ public class RiteHeartBlockEntity extends BlockEntity {
         for (int i = 0; i < participants.size(); i++) {
             roles.put(participants.get(i).getUUID(), assigned.get(i));
         }
-        quality = RiteQuality.start(scanned, m);
+        quality = RiteQuality.start(scanned, m) + gearBonus(players);
         int seconds = called.channelSeconds() > 0 ? called.channelSeconds() : Config.RITE_CHANNEL_SECONDS.get();
         duration = seconds * 20 + m.extraChannelTicks();
         timer = 0;
@@ -472,7 +472,7 @@ public class RiteHeartBlockEntity extends BlockEntity {
         float blood = m.bloodPrice();
         for (Player p : participants) {
             if (blood > 0) {
-                p.hurt(server.damageSources().magic(), blood);
+                p.hurt(server.damageSources().magic(), CultGearItem.wears(p, CultGearItem.Piece.ROBE) ? blood / 2 : blood);
             }
             p.displayClientMessage(Component.translatable("arcane_artifacts.rite.started", called.displayName(), roleLine(p)), false);
         }
@@ -481,6 +481,17 @@ public class RiteHeartBlockEntity extends BlockEntity {
         server.playSound(null, worldPosition, SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.BLOCKS, 1.2F, 0.6F);
         burst(worldPosition.above(), 0xB48CF0);
         setChanged();
+    }
+
+    /** The Cultist's vestments: +3% for every participant in the full set, up to +15%. */
+    public static float gearBonus(List<Player> players) {
+        int full = 0;
+        for (Player p : players) {
+            if (CultGearItem.fullSet(p)) {
+                full++;
+            }
+        }
+        return Math.min(15F, CultGearItem.SET_QUALITY * full);
     }
 
     Component roleLine(Player player) {
@@ -534,6 +545,9 @@ public class RiteHeartBlockEntity extends BlockEntity {
         if (reader != null && reader.isUsingItem() && reader.getUseItem().getItem() instanceof SigilBookItem
                 && reader.distanceToSqr(Vec3.atCenterOf(worldPosition)) <= 25) {
             readProgress++;
+            if (timer % 2 == 0 && CultGearItem.wears(reader, CultGearItem.Piece.MASK)) {
+                readProgress++;
+            }
         }
         // fading sigils
         if (fading != null && timer > fadingUntil) {
@@ -553,8 +567,8 @@ public class RiteHeartBlockEntity extends BlockEntity {
             });
             if (!drawn.isEmpty()) {
                 fading = drawn.get(server.random.nextInt(drawn.size()));
-                fadingUntil = timer + FADE_WINDOW;
                 Player tracer = holder(RiteRole.TRACER);
+                fadingUntil = timer + FADE_WINDOW + (CultGearItem.wears(tracer, CultGearItem.Piece.GLOVES) ? CultGearItem.GLOVES_EXTRA : 0);
                 if (tracer != null) {
                     tracer.displayClientMessage(Component.translatable("arcane_artifacts.rite.trace_now", placeName(fading)), true);
                 }
@@ -567,7 +581,8 @@ public class RiteHeartBlockEntity extends BlockEntity {
                     6, 1.0, 0.05, 1.0, 0);
         }
         // wind and candles
-        if (timer % WIND_EVERY == 0 && !candles.isEmpty()) {
+        boolean calm = CultGearItem.wears(holder(RiteRole.KEEPER), CultGearItem.Piece.SANDALS) && (timer / WIND_EVERY) % 2 == 1;
+        if (timer % WIND_EVERY == 0 && !candles.isEmpty() && !calm) {
             BlockPos pick = candles.get(server.random.nextInt(candles.size()));
             BlockState state = server.getBlockState(pick);
             if (state.getBlock() instanceof CandleBlock && state.getValue(CandleBlock.LIT)) {
@@ -597,8 +612,8 @@ public class RiteHeartBlockEntity extends BlockEntity {
         int extras = rite.extraOfferings().size();
         if (offerIndex < extras && awaiting == null && timer >= duration * (offerIndex + 1) / (extras + 1)) {
             awaiting = rite.extraOfferings().get(offerIndex++);
-            awaitingUntil = timer + OFFER_WINDOW;
             Player sacrificer = holder(RiteRole.SACRIFICER);
+            awaitingUntil = timer + OFFER_WINDOW + (CultGearItem.wears(sacrificer, CultGearItem.Piece.BELT) ? CultGearItem.BELT_EXTRA : 0);
             if (sacrificer != null) {
                 sacrificer.displayClientMessage(Component.translatable("arcane_artifacts.rite.offer_now", awaiting.count(), awaiting.item().getDescription()), false);
             }
@@ -611,8 +626,8 @@ public class RiteHeartBlockEntity extends BlockEntity {
         // the caged creature, half way through
         if (rite.needsCage() && !cageAsked && timer >= duration / 2) {
             cageAsked = true;
-            cageUntil = timer + OFFER_WINDOW;
             Player sacrificer = holder(RiteRole.SACRIFICER);
+            cageUntil = timer + OFFER_WINDOW + (CultGearItem.wears(sacrificer, CultGearItem.Piece.BELT) ? CultGearItem.BELT_EXTRA : 0);
             if (sacrificer != null) {
                 sacrificer.displayClientMessage(Component.translatable("arcane_artifacts.rite.cage_now"), false);
             }

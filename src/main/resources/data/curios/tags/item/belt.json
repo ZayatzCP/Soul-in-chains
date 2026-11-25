@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "arcane_artifacts:bottomless_belt",
-    "arcane_artifacts:soul_lantern"
+    "arcane_artifacts:soul_lantern",
+    "arcane_artifacts:offering_belt"
   ]
 }

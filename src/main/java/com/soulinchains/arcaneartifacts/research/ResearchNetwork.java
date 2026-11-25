@@ -54,6 +54,7 @@ public final class ResearchNetwork {
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToClient(com.soulinchains.arcaneartifacts.rite.RiteCatalog.Payload.TYPE, com.soulinchains.arcaneartifacts.rite.RiteCatalog.Payload.STREAM_CODEC, com.soulinchains.arcaneartifacts.rite.RiteCatalog::handle);
         registrar.playToClient(com.soulinchains.arcaneartifacts.rite.RiteNetwork.RitePayload.TYPE, com.soulinchains.arcaneartifacts.rite.RiteNetwork.RitePayload.STREAM_CODEC, com.soulinchains.arcaneartifacts.rite.RiteNetwork::handle);
         registrar.playToClient(DefinitionsPayload.TYPE, DefinitionsPayload.STREAM_CODEC,
                 (payload, context) -> ClientResearch.acceptDefinitions(payload.definitions()));

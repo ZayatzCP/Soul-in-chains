@@ -64,6 +64,12 @@ public final class ModItems {
     public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.ChalkItem> BONE_CHALK = REGISTER.register("bone_chalk", () -> new com.soulinchains.arcaneartifacts.rite.ChalkItem(com.soulinchains.arcaneartifacts.rite.ChalkColor.BONE));
     public static final DeferredItem<Item> AMETHYST_DUST = REGISTER.registerSimpleItem("amethyst_dust");
     public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.SigilBookItem> SIGIL_BOOK = REGISTER.register("sigil_book", com.soulinchains.arcaneartifacts.rite.SigilBookItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.SigilCodexItem> SIGIL_CODEX = REGISTER.register("sigil_codex", com.soulinchains.arcaneartifacts.rite.SigilCodexItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.CultGearItem> CULT_MASK = REGISTER.register("cult_mask", com.soulinchains.arcaneartifacts.rite.CultGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.CultGearItem> CULT_ROBE = REGISTER.register("cult_robe", com.soulinchains.arcaneartifacts.rite.CultGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.CultGearItem> OFFERING_BELT = REGISTER.register("offering_belt", com.soulinchains.arcaneartifacts.rite.CultGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.CultGearItem> INSCRIBER_GLOVES = REGISTER.register("inscriber_gloves", com.soulinchains.arcaneartifacts.rite.CultGearItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.CultGearItem> SILENT_SANDALS = REGISTER.register("silent_sandals", com.soulinchains.arcaneartifacts.rite.CultGearItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.RiteCageItem> RITE_CAGE = REGISTER.register("rite_cage", com.soulinchains.arcaneartifacts.rite.RiteCageItem::new);
     public static final DeferredItem<BlockItem> RITE_HEART = REGISTER.registerSimpleBlockItem(ModBlocks.RITE_HEART);
     public static final DeferredItem<BlockItem> OFFERING_PEDESTAL = REGISTER.registerSimpleBlockItem(ModBlocks.OFFERING_PEDESTAL);

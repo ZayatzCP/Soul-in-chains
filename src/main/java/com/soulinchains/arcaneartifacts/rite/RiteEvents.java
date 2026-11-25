@@ -15,6 +15,9 @@ public final class RiteEvents {
     @SubscribeEvent
     public static void onHurt(LivingIncomingDamageEvent event) {
         if (event.getAmount() > 0 && event.getEntity() instanceof Player player && !player.level().isClientSide) {
+            if (event.getSource().getEntity() instanceof Echo && CultGearItem.wears(player, CultGearItem.Piece.ROBE)) {
+                event.setAmount(event.getAmount() / 2);
+            }
             RiteHeartBlockEntity.readerHurt(player);
         }
     }

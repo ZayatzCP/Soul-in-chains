@@ -361,4 +361,20 @@ public final class RiteGameTests {
                 && line.getShape(helper.getLevel(), BlockPos.ZERO).bounds().getZsize() > 0.99, "A chalk mark's hitbox is only what is drawn");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void treatiseKnowsEveryRite(GameTestHelper helper) {
+        var catalog = com.soulinchains.arcaneartifacts.rite.RiteCatalog.build().entries();
+        helper.assertTrue(catalog.size() == Rites.all().size() && catalog.size() >= 8, "Every rite goes into the Treatise, " + catalog.size());
+        var pack = catalog.stream().filter(e -> e.id().equals("summon_pack")).findFirst().orElseThrow();
+        helper.assertTrue(pack.main().equals("vrata") && pack.south().equals("ograda") && pack.offeringCount() == 8 && pack.minField() == 9,
+                "The Summoning of the Pack is written down right");
+        var flame = catalog.stream().filter(e -> e.id().equals("summon_flame")).findFirst().orElseThrow();
+        helper.assertTrue(flame.cage() == 3 && flame.otherworldly() && flame.extra().length == 2, "Cage, corruption and the later offering are noted");
+        FakePlayer bare = player(helper, "bare_cultist", 4, 2, 4);
+        helper.assertTrue(RiteHeartBlockEntity.gearBonus(List.of(bare)) == 0F, "No vestments, no bonus");
+        helper.assertTrue(!com.soulinchains.arcaneartifacts.rite.CultGearItem.wears(bare, com.soulinchains.arcaneartifacts.rite.CultGearItem.Piece.MASK),
+                "Nothing is worn");
+        helper.succeed();
+    }
 }
