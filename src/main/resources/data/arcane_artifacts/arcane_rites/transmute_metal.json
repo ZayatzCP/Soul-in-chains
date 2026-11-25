@@ -1,0 +1,19 @@
+{
+  "kind": "transmute",
+  "main": "zhatva",
+  "south": "plamya",
+  "west": "oko",
+  "east": "oko",
+  "min_field": 15,
+  "offering": {
+    "item": "minecraft:iron_ingot",
+    "count": 1
+  },
+  "transmute": {
+    "items": {
+      "minecraft:iron_ingot": "minecraft:gold_ingot",
+      "minecraft:copper_ingot": "minecraft:iron_ingot",
+      "minecraft:coal": "minecraft:redstone"
+    }
+  }
+}

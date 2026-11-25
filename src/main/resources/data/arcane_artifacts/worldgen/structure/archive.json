@@ -1,7 +1,0 @@
-{
-  "type": "arcane_artifacts:archive",
-  "biomes": "#arcane_artifacts:has_structure/archive",
-  "step": "underground_structures",
-  "spawn_overrides": {},
-  "terrain_adaptation": "none"
-}

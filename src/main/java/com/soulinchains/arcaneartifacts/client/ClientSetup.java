@@ -44,15 +44,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.MournerRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_GHOST.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.ChainGhostRenderer::new);
         event.registerEntityRenderer(ModEntities.JAILER.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.JailerRenderer::new);
-        event.registerEntityRenderer(ModEntities.ASH_WITNESS.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.AshWitnessRenderer::new);
-        event.registerEntityRenderer(ModEntities.TORN_ACOLYTE.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.TornAcolyteRenderer::new);
-        event.registerEntityRenderer(ModEntities.RED_ACOLYTE.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.RedAcolyteRenderer::new);
-        event.registerEntityRenderer(ModEntities.BONE_GATEKEEPER.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.GatekeeperRenderer::new);
-        event.registerEntityRenderer(ModEntities.PSALMIST.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.PsalmistRenderer::new);
-        event.registerEntityRenderer(ModEntities.VOTIVE_BEAST.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.VotiveBeastRenderer::new);
-        event.registerEntityRenderer(ModEntities.RENEGADE_SEALER.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.RenegadeSealerRenderer::new);
-        event.registerEntityRenderer(ModEntities.FACELESS_SENTRY.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.FacelessSentryRenderer::new);
-        event.registerEntityRenderer(ModEntities.ARCHDEACON.get(), com.soulinchains.arcaneartifacts.client.cult.CultRenderers.ArchdeaconRenderer::new);
+        event.registerEntityRenderer(ModEntities.ECHO.get(), com.soulinchains.arcaneartifacts.client.rite.RiteRenderers.EchoRenderer::new);
         event.registerEntityRenderer(ModEntities.IMPRISONED_KING.get(), com.soulinchains.arcaneartifacts.client.necro.NecroMobRenderers.KingRenderer::new);
         event.registerEntityRenderer(ModEntities.BOND_LINK.get(), com.soulinchains.arcaneartifacts.client.necro.BondLinkRenderer::new);
         ModEntities.SERVANTS.forEach((kind, type) -> {
@@ -75,6 +67,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.RESEARCH_TABLE_ENTITY.get(), ResearchTableRenderer::new);
+        event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.OFFERING_PEDESTAL_ENTITY.get(), com.soulinchains.arcaneartifacts.client.rite.RiteRenderers.PedestalRenderer::new);
         event.registerBlockEntityRenderer(com.soulinchains.arcaneartifacts.registry.ModBlocks.MANA_TANK_ENTITY.get(), ManaTankRenderer::new);
     }
 
@@ -114,7 +107,7 @@ public final class ClientSetup {
             net.minecraft.client.renderer.item.ItemProperties.register(ModItems.BANDOLIER.get(), ArcaneArtifacts.id("filled"),
                     (stack, level, entity, seed) -> (float) com.soulinchains.arcaneartifacts.pseudo.BandolierItem.cartridges(stack)
                             / com.soulinchains.arcaneartifacts.pseudo.BandolierItem.CAPACITY);
-            for (var shield : java.util.List.of(ModItems.MIRROR_SHIELD.get(), ModItems.FOCUSING_SHIELD.get(), ModItems.OATH_SHIELD.get())) {
+            for (var shield : java.util.List.of(ModItems.MIRROR_SHIELD.get(), ModItems.FOCUSING_SHIELD.get())) {
                 net.minecraft.client.renderer.item.ItemProperties.register(shield, net.minecraft.resources.ResourceLocation.withDefaultNamespace("blocking"),
                         (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
             }

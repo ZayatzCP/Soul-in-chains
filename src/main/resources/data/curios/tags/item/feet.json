@@ -5,8 +5,6 @@
     "arcane_artifacts:hop_slippers",
     "arcane_artifacts:pseudomage_boots",
     "arcane_artifacts:druid_boots",
-    "arcane_artifacts:shackled_boots",
-    "arcane_artifacts:sentry_boots",
-    "arcane_artifacts:quiet_shoes"
+    "arcane_artifacts:shackled_boots"
   ]
 }

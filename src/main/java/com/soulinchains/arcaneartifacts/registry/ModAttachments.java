@@ -27,11 +27,6 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<Integer>> NECRO_RANK = REGISTER.register("necro_rank",
             () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
 
-    /** Corruption of a Shackled (0-100): grows with every soul spent; kept through death. */
-    /** The Cultist's role, partner and rank. */
-    public static final Supplier<AttachmentType<com.soulinchains.arcaneartifacts.cult.CultData>> CULT = REGISTER.register("cult",
-            () -> AttachmentType.builder(() -> com.soulinchains.arcaneartifacts.cult.CultData.EMPTY)
-                    .serialize(com.soulinchains.arcaneartifacts.cult.CultData.CODEC).copyOnDeath().build());
     public static final Supplier<AttachmentType<Float>> CORRUPTION = REGISTER.register("corruption",
             () -> AttachmentType.builder(() -> 0F).serialize(Codec.FLOAT).copyOnDeath().build());
 

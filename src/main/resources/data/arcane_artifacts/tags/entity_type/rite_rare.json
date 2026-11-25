@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:witch",
+    "minecraft:pillager",
+    "minecraft:vindicator",
+    "minecraft:evoker",
+    "minecraft:illusioner",
+    "minecraft:ravager",
+    "minecraft:guardian",
+    "minecraft:breeze",
+    "minecraft:bogged",
+    "minecraft:slime",
+    "minecraft:cave_spider",
+    "minecraft:polar_bear",
+    "minecraft:panda",
+    "minecraft:mooshroom",
+    "minecraft:allay",
+    "minecraft:axolotl",
+    "minecraft:fox",
+    "minecraft:ocelot",
+    "arcane_artifacts:mudzya"
+  ]
+}

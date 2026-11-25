@@ -39,15 +39,7 @@ public final class ArcaneGlyphs {
             com.soulinchains.arcaneartifacts.necro.EffectBond.INSTANCE,
             com.soulinchains.arcaneartifacts.necro.EffectPhantomStep.INSTANCE,
             com.soulinchains.arcaneartifacts.necro.EffectCurseOfShackles.INSTANCE,
-            com.soulinchains.arcaneartifacts.necro.EffectChainExecution.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.MethodInscribe.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.EffectWardingSeal.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.MethodWitnessCall.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.AugmentHoldCircle.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.EffectRetribution.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.AugmentCensus.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.AugmentRiteAbundance.INSTANCE,
-            com.soulinchains.arcaneartifacts.cult.glyph.EffectSecondVoice.INSTANCE
+            com.soulinchains.arcaneartifacts.necro.EffectChainExecution.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */

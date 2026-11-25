@@ -1,0 +1,28 @@
+{
+  "kind": "create",
+  "main": "plamya",
+  "south": "ograda",
+  "west": "oko",
+  "east": "oko",
+  "min_field": 9,
+  "offering": {
+    "item": "minecraft:calcite",
+    "count": 4
+  },
+  "extra_offerings": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 2
+    }
+  ],
+  "create": [
+    {
+      "item": "arcane_artifacts:bone_chalk",
+      "count": 1
+    },
+    {
+      "item": "arcane_artifacts:amethyst_dust",
+      "count": 4
+    }
+  ]
+}

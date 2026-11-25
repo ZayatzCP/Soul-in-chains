@@ -1,0 +1,29 @@
+{
+  "kind": "transmute",
+  "main": "zhatva",
+  "south": "oko",
+  "west": "uzy",
+  "east": "uzy",
+  "min_field": 9,
+  "offering": {
+    "item": "minecraft:rotten_flesh",
+    "count": 4
+  },
+  "cage": {
+    "min_value": 1
+  },
+  "transmute": {
+    "entities": {
+      "minecraft:zombie_villager": "minecraft:villager",
+      "minecraft:zombie": "minecraft:husk",
+      "minecraft:husk": "minecraft:drowned",
+      "minecraft:skeleton": "minecraft:stray",
+      "minecraft:stray": "minecraft:bogged",
+      "minecraft:cow": "minecraft:mooshroom",
+      "minecraft:pig": "minecraft:hoglin",
+      "minecraft:villager": "minecraft:witch",
+      "minecraft:spider": "minecraft:cave_spider",
+      "minecraft:piglin": "minecraft:zombified_piglin"
+    }
+  }
+}

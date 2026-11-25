@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DAD",
+    "ACA",
+    "DAD"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "item": "minecraft:amethyst_block"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:rite_heart"
+  }
+}

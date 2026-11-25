@@ -4,6 +4,7 @@
     "arcane_artifacts:spore_clay",
     "arcane_artifacts:consecrated_soil",
     "arcane_artifacts:desecrated_soil",
-    "arcane_artifacts:grave"
+    "arcane_artifacts:grave",
+    "arcane_artifacts:corrupted_soil"
   ]
 }

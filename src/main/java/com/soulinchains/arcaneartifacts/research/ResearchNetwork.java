@@ -54,6 +54,7 @@ public final class ResearchNetwork {
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToClient(com.soulinchains.arcaneartifacts.rite.RiteNetwork.RitePayload.TYPE, com.soulinchains.arcaneartifacts.rite.RiteNetwork.RitePayload.STREAM_CODEC, com.soulinchains.arcaneartifacts.rite.RiteNetwork::handle);
         registrar.playToClient(DefinitionsPayload.TYPE, DefinitionsPayload.STREAM_CODEC,
                 (payload, context) -> ClientResearch.acceptDefinitions(payload.definitions()));
         registrar.playToClient(ProgressPayload.TYPE, ProgressPayload.STREAM_CODEC,
@@ -70,7 +71,6 @@ public final class ResearchNetwork {
         registrar.playToClient(com.soulinchains.arcaneartifacts.necro.Corruption.SyncPayload.TYPE,
                 com.soulinchains.arcaneartifacts.necro.Corruption.SyncPayload.STREAM_CODEC,
                 com.soulinchains.arcaneartifacts.necro.Corruption::handleSync);
-        registrar.playToClient(com.soulinchains.arcaneartifacts.cult.CultNetwork.RitualPayload.TYPE, com.soulinchains.arcaneartifacts.cult.CultNetwork.RitualPayload.STREAM_CODEC, com.soulinchains.arcaneartifacts.cult.CultNetwork::handle);
         registrar.playToServer(com.soulinchains.arcaneartifacts.catto.CattoDialog.CommandPayload.TYPE,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog.CommandPayload.STREAM_CODEC,
                 com.soulinchains.arcaneartifacts.catto.CattoDialog::handleCommand);

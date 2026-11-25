@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "arcane_artifacts:block/rite_heart_top",
+    "bottom": "minecraft:block/deepslate_tiles",
+    "side": "arcane_artifacts:block/rite_heart_side"
+  }
+}

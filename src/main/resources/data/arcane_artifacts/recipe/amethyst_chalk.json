@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "arcane_artifacts:white_chalk"
+    },
+    {
+      "item": "arcane_artifacts:amethyst_dust"
+    },
+    {
+      "item": "arcane_artifacts:amethyst_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:amethyst_chalk"
+  }
+}

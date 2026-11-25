@@ -22,8 +22,8 @@
     "arcane_artifacts:empty_throne",
     "arcane_artifacts:chain_lock",
     "arcane_artifacts:great_soul_lantern",
-    "arcane_artifacts:ritual_seal",
-    "arcane_artifacts:ritual_anchor",
-    "arcane_artifacts:ritual_censer"
+    "arcane_artifacts:ritual_censer",
+    "arcane_artifacts:rite_heart",
+    "arcane_artifacts:offering_pedestal"
   ]
 }

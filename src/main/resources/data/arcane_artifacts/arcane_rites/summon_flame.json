@@ -1,0 +1,31 @@
+{
+  "kind": "summon",
+  "main": "vrata",
+  "south": "plamya",
+  "west": "uzy",
+  "east": "uzy",
+  "min_field": 15,
+  "offering": {
+    "item": "minecraft:blaze_rod",
+    "count": 2
+  },
+  "extra_offerings": [
+    {
+      "item": "minecraft:magma_cream",
+      "count": 2
+    }
+  ],
+  "cage": {
+    "min_value": 3
+  },
+  "summon": {
+    "entities": [
+      {
+        "type": "minecraft:blaze",
+        "count": 2
+      }
+    ],
+    "otherworldly": true,
+    "life_seconds": 120
+  }
+}

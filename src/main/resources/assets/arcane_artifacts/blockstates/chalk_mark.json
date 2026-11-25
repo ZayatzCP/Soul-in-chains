@@ -1,0 +1,239 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "color": "white"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_dot_white"
+      }
+    },
+    {
+      "when": {
+        "color": "white",
+        "north": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_white"
+      }
+    },
+    {
+      "when": {
+        "color": "white",
+        "east": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_white",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "color": "white",
+        "south": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_white",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "color": "white",
+        "west": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_white",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "color": "cinnabar"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_dot_cinnabar"
+      }
+    },
+    {
+      "when": {
+        "color": "cinnabar",
+        "north": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_cinnabar"
+      }
+    },
+    {
+      "when": {
+        "color": "cinnabar",
+        "east": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_cinnabar",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "color": "cinnabar",
+        "south": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_cinnabar",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "color": "cinnabar",
+        "west": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_cinnabar",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "color": "coal"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_dot_coal"
+      }
+    },
+    {
+      "when": {
+        "color": "coal",
+        "north": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_coal"
+      }
+    },
+    {
+      "when": {
+        "color": "coal",
+        "east": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_coal",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "color": "coal",
+        "south": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_coal",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "color": "coal",
+        "west": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_coal",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "color": "amethyst"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_dot_amethyst"
+      }
+    },
+    {
+      "when": {
+        "color": "amethyst",
+        "north": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_amethyst"
+      }
+    },
+    {
+      "when": {
+        "color": "amethyst",
+        "east": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_amethyst",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "color": "amethyst",
+        "south": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_amethyst",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "color": "amethyst",
+        "west": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_amethyst",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "color": "bone"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_dot_bone"
+      }
+    },
+    {
+      "when": {
+        "color": "bone",
+        "north": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_bone"
+      }
+    },
+    {
+      "when": {
+        "color": "bone",
+        "east": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_bone",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "color": "bone",
+        "south": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_bone",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "color": "bone",
+        "west": "true"
+      },
+      "apply": {
+        "model": "arcane_artifacts:block/chalk_mark_side_bone",
+        "y": 270
+      }
+    }
+  ]
+}

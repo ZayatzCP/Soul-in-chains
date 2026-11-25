@@ -37,60 +37,6 @@ public final class ModItems {
             REGISTER.register("spell_staff", com.soulinchains.arcaneartifacts.item.SpellStaffItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulLanternItem> SOUL_LANTERN =
             REGISTER.register("soul_lantern", com.soulinchains.arcaneartifacts.necro.SoulLanternItem::new);
-    public static final DeferredItem<BlockItem> RITUAL_SEAL = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_SEAL);
-    public static final DeferredItem<BlockItem> RITUAL_ANCHOR = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_ANCHOR);
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.RitualKnifeItem> RITUAL_KNIFE = REGISTER.register("ritual_knife", com.soulinchains.arcaneartifacts.cult.RitualKnifeItem::new);
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.OathShieldItem> OATH_SHIELD = REGISTER.register("oath_shield", com.soulinchains.arcaneartifacts.cult.OathShieldItem::new);
-    public static final DeferredItem<BlockItem> RITUAL_CENSER = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_CENSER);
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.SealHammerItem> SEAL_HAMMER = REGISTER.register("seal_hammer", com.soulinchains.arcaneartifacts.cult.SealHammerItem::new);
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.FormulaBookItem> FORMULA_BOOK = REGISTER.register("formula_book", com.soulinchains.arcaneartifacts.cult.FormulaBookItem::new);
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> SEAL_KEEPER_HELM = REGISTER.register("seal_keeper_helm",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.HELM));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> OUTER_CIRCLE_CUIRASS = REGISTER.register("outer_circle_cuirass",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.CUIRASS));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> ANCHOR_BELT = REGISTER.register("anchor_belt",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.ANCHOR_BELT));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> SEAL_GAUNTLETS = REGISTER.register("seal_gauntlets",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.GAUNTLETS));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> SENTRY_BOOTS = REGISTER.register("sentry_boots",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.SENTRY_BOOTS));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> FACE_OF_DOGMA = REGISTER.register("face_of_dogma",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.FACE));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> COMMUNION_MANTLE = REGISTER.register("communion_mantle",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.MANTLE));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> BOOK_OF_ARREARS = REGISTER.register("book_of_arrears",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.ARREARS));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> INSCRIBER_HANDS = REGISTER.register("inscriber_hands",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.INSCRIBER_HANDS));
-    public static final DeferredItem<com.soulinchains.arcaneartifacts.cult.CultGearItem> QUIET_SHOES = REGISTER.register("quiet_shoes",
-            () -> new com.soulinchains.arcaneartifacts.cult.CultGearItem(com.soulinchains.arcaneartifacts.cult.CultGearItem.Piece.QUIET_SHOES));
-    public static final DeferredItem<Item> RITUAL_ASH = REGISTER.registerSimpleItem("ritual_ash");
-    public static final DeferredItem<Item> BONE_SHARD = REGISTER.registerSimpleItem("bone_shard");
-    public static final DeferredItem<Item> VOW_DUST = REGISTER.registerSimpleItem("vow_dust", new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ASH_WITNESS_SPAWN_EGG = REGISTER.register("ash_witness_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ASH_WITNESS, 0x929292, 0xF0E7DE, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RED_ACOLYTE_SPAWN_EGG = REGISTER.register("red_acolyte_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RED_ACOLYTE, 0xB9463D, 0x171416, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> BONE_GATEKEEPER_SPAWN_EGG = REGISTER.register("bone_gatekeeper_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.BONE_GATEKEEPER, 0xF0E7DE, 0x6F2927, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> PSALMIST_SPAWN_EGG = REGISTER.register("psalmist_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.PSALMIST, 0xD6B2A5, 0x171416, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RENEGADE_SEALER_SPAWN_EGG = REGISTER.register("renegade_sealer_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RENEGADE_SEALER, 0x6F2927, 0xD6B2A5, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> FACELESS_SENTRY_SPAWN_EGG = REGISTER.register("faceless_sentry_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.FACELESS_SENTRY, 0x171416, 0x929292, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ARCHDEACON_SPAWN_EGG = REGISTER.register("archdeacon_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ARCHDEACON, 0xB9463D, 0xFAF7F3, new Item.Properties()));
-    public static final DeferredItem<BlockItem> ARCHIVE_LOCK = REGISTER.registerSimpleBlockItem(ModBlocks.ARCHIVE_LOCK);
-    public static final DeferredItem<BlockItem> VOW_PLATE = REGISTER.registerSimpleBlockItem(ModBlocks.VOW_PLATE);
-    public static final DeferredItem<BlockItem> HOLDING_SEAL = REGISTER.registerSimpleBlockItem(ModBlocks.HOLDING_SEAL);
-    public static final DeferredItem<BlockItem> VOW_CANDLE = REGISTER.registerSimpleBlockItem(ModBlocks.VOW_CANDLE);
-    public static final DeferredItem<Item> ARCHDEACON_SEAL = REGISTER.register("archdeacon_seal",
-            () -> new com.soulinchains.arcaneartifacts.item.LoreItem(new Item.Properties().stacksTo(1).rarity(net.minecraft.world.item.Rarity.RARE)));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> VOTIVE_BEAST_SPAWN_EGG = REGISTER.register("votive_beast_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.VOTIVE_BEAST, 0xF0E7DE, 0xB9463D, new Item.Properties()));
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> TORN_ACOLYTE_SPAWN_EGG = REGISTER.register("torn_acolyte_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.TORN_ACOLYTE, 0x171416, 0xB9463D, new Item.Properties()));
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.SoulFlailItem> SOUL_FLAIL =
             REGISTER.register("soul_flail", com.soulinchains.arcaneartifacts.necro.SoulFlailItem::new);
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.ChainSickleItem> CHAIN_SICKLE =
@@ -110,6 +56,21 @@ public final class ModItems {
     public static final DeferredItem<com.soulinchains.arcaneartifacts.necro.GravediggerShovelItem> GRAVEDIGGER_SHOVEL =
             REGISTER.register("gravedigger_shovel", com.soulinchains.arcaneartifacts.necro.GravediggerShovelItem::new);
     public static final DeferredItem<BlockItem> GRAVE = REGISTER.registerSimpleBlockItem(ModBlocks.GRAVE);
+    // ------------------------------------------------------------------ Chalk rites (the Cultist)
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.ChalkItem> WHITE_CHALK = REGISTER.register("white_chalk", () -> new com.soulinchains.arcaneartifacts.rite.ChalkItem(com.soulinchains.arcaneartifacts.rite.ChalkColor.WHITE));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.ChalkItem> CINNABAR_CHALK = REGISTER.register("cinnabar_chalk", () -> new com.soulinchains.arcaneartifacts.rite.ChalkItem(com.soulinchains.arcaneartifacts.rite.ChalkColor.CINNABAR));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.ChalkItem> COAL_CHALK = REGISTER.register("coal_chalk", () -> new com.soulinchains.arcaneartifacts.rite.ChalkItem(com.soulinchains.arcaneartifacts.rite.ChalkColor.COAL));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.ChalkItem> AMETHYST_CHALK = REGISTER.register("amethyst_chalk", () -> new com.soulinchains.arcaneartifacts.rite.ChalkItem(com.soulinchains.arcaneartifacts.rite.ChalkColor.AMETHYST));
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.ChalkItem> BONE_CHALK = REGISTER.register("bone_chalk", () -> new com.soulinchains.arcaneartifacts.rite.ChalkItem(com.soulinchains.arcaneartifacts.rite.ChalkColor.BONE));
+    public static final DeferredItem<Item> AMETHYST_DUST = REGISTER.registerSimpleItem("amethyst_dust");
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.SigilBookItem> SIGIL_BOOK = REGISTER.register("sigil_book", com.soulinchains.arcaneartifacts.rite.SigilBookItem::new);
+    public static final DeferredItem<com.soulinchains.arcaneartifacts.rite.RiteCageItem> RITE_CAGE = REGISTER.register("rite_cage", com.soulinchains.arcaneartifacts.rite.RiteCageItem::new);
+    public static final DeferredItem<BlockItem> RITE_HEART = REGISTER.registerSimpleBlockItem(ModBlocks.RITE_HEART);
+    public static final DeferredItem<BlockItem> OFFERING_PEDESTAL = REGISTER.registerSimpleBlockItem(ModBlocks.OFFERING_PEDESTAL);
+    public static final DeferredItem<BlockItem> RITUAL_CENSER = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_CENSER);
+    public static final DeferredItem<BlockItem> CORRUPTED_SOIL = REGISTER.registerSimpleBlockItem(ModBlocks.CORRUPTED_SOIL);
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ECHO_SPAWN_EGG = REGISTER.register("echo_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ECHO, 0x2A1F3D, 0xB48CF0, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RESTLESS_SPAWN_EGG = REGISTER.register("restless_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RESTLESS, 0x9FE8FF, 0x2A6B78, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> SOUL_EATER_SPAWN_EGG = REGISTER.register("soul_eater_spawn_egg",

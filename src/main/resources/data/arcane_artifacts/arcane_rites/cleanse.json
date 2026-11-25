@@ -1,0 +1,13 @@
+{
+  "kind": "cleanse",
+  "main": "ograda",
+  "south": "pechat",
+  "west": "oko",
+  "east": "oko",
+  "min_field": 9,
+  "offering": {
+    "item": "minecraft:golden_carrot",
+    "count": 4
+  },
+  "cleanse": 2
+}

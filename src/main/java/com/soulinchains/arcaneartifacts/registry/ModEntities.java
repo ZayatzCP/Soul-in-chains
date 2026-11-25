@@ -60,35 +60,12 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.necro.mob.ImprisonedKing::new, MobCategory.MONSTER)
                     .sized(1.2F, 4.0F).fireImmune().clientTrackingRange(16).build(ArcaneArtifacts.MODID + ":imprisoned_king"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.AshWitness>> ASH_WITNESS = REGISTER.register("ash_witness",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.AshWitness::new, MobCategory.MISC).sized(0.6F, 1.9F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":ash_witness"));
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.TornAcolyte>> TORN_ACOLYTE = REGISTER.register("torn_acolyte",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.TornAcolyte::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":torn_acolyte"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.RedAcolyte>> RED_ACOLYTE = REGISTER.register("red_acolyte",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RedAcolyte::new, MobCategory.MISC).sized(0.6F, 1.9F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":red_acolyte"));
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.BoneGatekeeper>> BONE_GATEKEEPER = REGISTER.register("bone_gatekeeper",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.BoneGatekeeper::new, MobCategory.MISC).sized(0.9F, 2.4F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":bone_gatekeeper"));
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.Psalmist>> PSALMIST = REGISTER.register("psalmist",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.Psalmist::new, MobCategory.MISC).sized(0.6F, 1.9F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":psalmist"));
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.VotiveBeast>> VOTIVE_BEAST = REGISTER.register("votive_beast",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.VotiveBeast::new, MobCategory.MISC).sized(1.3F, 1.4F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":votive_beast"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.RenegadeSealer>> RENEGADE_SEALER = REGISTER.register("renegade_sealer",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RenegadeSealer::new, MobCategory.MONSTER).sized(0.6F, 1.95F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":renegade_sealer"));
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.FacelessSentry>> FACELESS_SENTRY = REGISTER.register("faceless_sentry",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.FacelessSentry::new, MobCategory.MONSTER).sized(0.9F, 2.6F).clientTrackingRange(10)
-                    .build(ArcaneArtifacts.MODID + ":faceless_sentry"));
-    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.cult.Archdeacon>> ARCHDEACON = REGISTER.register("archdeacon",
-            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.Archdeacon::new, MobCategory.MONSTER).sized(0.8F, 2.4F).clientTrackingRange(16)
-                    .build(ArcaneArtifacts.MODID + ":archdeacon"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.rite.Echo>> ECHO = REGISTER.register("echo",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.Echo::new, MobCategory.MONSTER).sized(0.6F, 1.9F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":echo"));
 
     /** The Shackled's servants, one entity type per kind. */
     public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,

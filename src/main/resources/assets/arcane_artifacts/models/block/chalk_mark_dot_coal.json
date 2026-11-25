@@ -1,0 +1,42 @@
+{
+  "render_type": "minecraft:cutout",
+  "ambientocclusion": false,
+  "textures": {
+    "t": "arcane_artifacts:block/chalk_mark_coal",
+    "particle": "arcane_artifacts:block/chalk_mark_coal"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        0.1,
+        5.5
+      ],
+      "to": [
+        10.5,
+        0.35,
+        10.5
+      ],
+      "faces": {
+        "up": {
+          "texture": "#t",
+          "uv": [
+            5.5,
+            5.5,
+            10.5,
+            10.5
+          ]
+        },
+        "down": {
+          "texture": "#t",
+          "uv": [
+            5.5,
+            5.5,
+            10.5,
+            10.5
+          ]
+        }
+      }
+    }
+  ]
+}

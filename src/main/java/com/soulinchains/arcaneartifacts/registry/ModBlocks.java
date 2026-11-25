@@ -46,22 +46,21 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.GreatSoulLanternBlock> GREAT_SOUL_LANTERN = BLOCKS.register("great_soul_lantern", com.soulinchains.arcaneartifacts.necro.throne.GreatSoulLanternBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.necro.throne.ChainLockBlock> CHAIN_LOCK = BLOCKS.register("chain_lock", com.soulinchains.arcaneartifacts.necro.throne.ChainLockBlock::new);
 
-    // ------------------------------------------------------------------ Cultist circle
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualSealBlock> RITUAL_SEAL = BLOCKS.register("ritual_seal", com.soulinchains.arcaneartifacts.cult.RitualSealBlock::new);
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlock> RITUAL_ANCHOR = BLOCKS.register("ritual_anchor", com.soulinchains.arcaneartifacts.cult.RitualAnchorBlock::new);
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.RitualCenserBlock> RITUAL_CENSER = BLOCKS.register("ritual_censer", com.soulinchains.arcaneartifacts.cult.RitualCenserBlock::new);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity>> RITUAL_SEAL_ENTITY =
-            BLOCK_ENTITIES.register("ritual_seal", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RitualSealBlockEntity::new, RITUAL_SEAL.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity>> RITUAL_ANCHOR_ENTITY =
-            BLOCK_ENTITIES.register("ritual_anchor", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.RitualAnchorBlockEntity::new, RITUAL_ANCHOR.get()).build(null));
+    // ------------------------------------------------------------------ Chalk rites (the Cultist)
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.ChalkMarkBlock> CHALK_MARK = BLOCKS.register("chalk_mark", com.soulinchains.arcaneartifacts.rite.ChalkMarkBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.RiteHeartBlock> RITE_HEART = BLOCKS.register("rite_heart", com.soulinchains.arcaneartifacts.rite.RiteHeartBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.OfferingPedestalBlock> OFFERING_PEDESTAL = BLOCKS.register("offering_pedestal", com.soulinchains.arcaneartifacts.rite.OfferingPedestalBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.RitualCenserBlock> RITUAL_CENSER = BLOCKS.register("ritual_censer", com.soulinchains.arcaneartifacts.rite.RitualCenserBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.RiteCageBlock> RITE_CAGE = BLOCKS.register("rite_cage", com.soulinchains.arcaneartifacts.rite.RiteCageBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock> CORRUPTED_SOIL = BLOCKS.register("corrupted_soil", com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock::new);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.rite.RiteHeartBlockEntity>> RITE_HEART_ENTITY =
+            BLOCK_ENTITIES.register("rite_heart", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.RiteHeartBlockEntity::new, RITE_HEART.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.rite.OfferingPedestalBlockEntity>> OFFERING_PEDESTAL_ENTITY =
+            BLOCK_ENTITIES.register("offering_pedestal", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.OfferingPedestalBlockEntity::new, OFFERING_PEDESTAL.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.rite.RiteCageBlockEntity>> RITE_CAGE_ENTITY =
+            BLOCK_ENTITIES.register("rite_cage", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.RiteCageBlockEntity::new, RITE_CAGE.get()).build(null));
 
     // ------------------------------------------------------------------ Archive of Unkept Promises
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlock> ARCHIVE_LOCK = BLOCKS.register("archive_lock", com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlock::new);
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.VowPlateBlock> VOW_PLATE = BLOCKS.register("vow_plate", com.soulinchains.arcaneartifacts.cult.archive.VowPlateBlock::new);
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.HoldingSealBlock> HOLDING_SEAL = BLOCKS.register("holding_seal", com.soulinchains.arcaneartifacts.cult.archive.HoldingSealBlock::new);
-    public static final DeferredBlock<com.soulinchains.arcaneartifacts.cult.archive.VowCandleBlock> VOW_CANDLE = BLOCKS.register("vow_candle", com.soulinchains.arcaneartifacts.cult.archive.VowCandleBlock::new);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity>> ARCHIVE_LOCK_ENTITY =
-            BLOCK_ENTITIES.register("archive_lock", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.cult.archive.ArchiveLockBlockEntity::new, ARCHIVE_LOCK.get()).build(null));
 
     // ------------------------------------------------------------------ Mushroom Caves
     public static final DeferredBlock<net.minecraft.world.level.block.Block> MUSHROOM_MOSS = BLOCKS.register("mushroom_moss",

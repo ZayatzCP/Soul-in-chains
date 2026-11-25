@@ -67,9 +67,6 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> PHANTOM = REGISTER.register("phantom",
             () -> new MobEffect(net.minecraft.world.effect.MobEffectCategory.BENEFICIAL, 0x9FE8FF) {
             });
-    public static final DeferredHolder<MobEffect, MobEffect> INSCRIBED = REGISTER.register("inscribed",
-            () -> new net.minecraft.world.effect.MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0xB9463D) { });
-    public static final DeferredHolder<MobEffect, MobEffect> WARDED = REGISTER.register("warded", com.soulinchains.arcaneartifacts.cult.WardedEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> CURSED_CHAINS = REGISTER.register("cursed_chains",
             com.soulinchains.arcaneartifacts.necro.CursedChainsEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> ENTANGLED = REGISTER.register("entangled",

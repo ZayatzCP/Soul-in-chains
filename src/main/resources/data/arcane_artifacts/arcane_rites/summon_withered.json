@@ -1,0 +1,35 @@
+{
+  "kind": "summon",
+  "main": "vrata",
+  "south": "pechat",
+  "west": "uzy",
+  "east": "uzy",
+  "min_field": 21,
+  "offering": {
+    "item": "minecraft:wither_rose",
+    "count": 1
+  },
+  "extra_offerings": [
+    {
+      "item": "minecraft:soul_sand",
+      "count": 4
+    },
+    {
+      "item": "minecraft:coal_block",
+      "count": 1
+    }
+  ],
+  "cage": {
+    "min_value": 6
+  },
+  "summon": {
+    "entities": [
+      {
+        "type": "minecraft:wither_skeleton",
+        "count": 2
+      }
+    ],
+    "otherworldly": true,
+    "life_seconds": 150
+  }
+}

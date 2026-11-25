@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TTT",
+    " P ",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:deepslate_tile_slab"
+    },
+    "P": {
+      "item": "minecraft:polished_deepslate"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "arcane_artifacts:offering_pedestal"
+  }
+}
