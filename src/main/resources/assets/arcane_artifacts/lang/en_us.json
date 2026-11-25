@@ -2091,5 +2091,6 @@
   "arcane_artifacts.cult.archdeacon_unison": "Two points flare - stand on them together, at once!",
   "arcane_artifacts.cult.archive_holding": "You hold the seal. Stay by it: your partner must light the candle.",
   "arcane_artifacts.cult.archive_renegade": "A renegade at the seal - the hold is broken.",
-  "arcane_artifacts.cult.archive_need_holder": "The candle will not burn while no one else holds the Holding Seal."
+  "arcane_artifacts.cult.archive_need_holder": "The candle will not burn while no one else holds the Holding Seal.",
+  "itemGroup.arcane_artifacts.cult": "Arcane Artifacts: Cultist (in development)"
 }

@@ -35,40 +35,6 @@ public final class ModCreativeTab {
                 output.accept(ModItems.SOUL_LANTERN.get());
                 output.accept(ModItems.CHAIN_SICKLE.get());
                 output.accept(ModItems.SOUL_FLAIL.get());
-                output.accept(ModItems.RITUAL_SEAL.get());
-                output.accept(ModItems.RITUAL_ANCHOR.get());
-                output.accept(ModItems.RITUAL_KNIFE.get());
-                output.accept(ModItems.OATH_SHIELD.get());
-                output.accept(ModItems.SEAL_HAMMER.get());
-                output.accept(ModItems.FORMULA_BOOK.get());
-                output.accept(ModItems.RITUAL_CENSER.get());
-                output.accept(ModItems.SEAL_KEEPER_HELM.get());
-                output.accept(ModItems.OUTER_CIRCLE_CUIRASS.get());
-                output.accept(ModItems.ANCHOR_BELT.get());
-                output.accept(ModItems.SEAL_GAUNTLETS.get());
-                output.accept(ModItems.SENTRY_BOOTS.get());
-                output.accept(ModItems.FACE_OF_DOGMA.get());
-                output.accept(ModItems.COMMUNION_MANTLE.get());
-                output.accept(ModItems.BOOK_OF_ARREARS.get());
-                output.accept(ModItems.INSCRIBER_HANDS.get());
-                output.accept(ModItems.QUIET_SHOES.get());
-                output.accept(ModItems.RITUAL_ASH.get());
-                output.accept(ModItems.BONE_SHARD.get());
-                output.accept(ModItems.VOW_DUST.get());
-                output.accept(ModItems.ASH_WITNESS_SPAWN_EGG.get());
-                output.accept(ModItems.TORN_ACOLYTE_SPAWN_EGG.get());
-                output.accept(ModItems.RED_ACOLYTE_SPAWN_EGG.get());
-                output.accept(ModItems.BONE_GATEKEEPER_SPAWN_EGG.get());
-                output.accept(ModItems.PSALMIST_SPAWN_EGG.get());
-                output.accept(ModItems.VOTIVE_BEAST_SPAWN_EGG.get());
-                output.accept(ModItems.RENEGADE_SEALER_SPAWN_EGG.get());
-                output.accept(ModItems.FACELESS_SENTRY_SPAWN_EGG.get());
-                output.accept(ModItems.ARCHDEACON_SPAWN_EGG.get());
-                output.accept(ModItems.ARCHDEACON_SEAL.get());
-                output.accept(ModItems.VOW_PLATE.get());
-                output.accept(ModItems.HOLDING_SEAL.get());
-                output.accept(ModItems.VOW_CANDLE.get());
-                output.accept(ModItems.ARCHIVE_LOCK.get());
                 output.accept(ModItems.WARDEN_ROD.get());
                 output.accept(ModItems.SHACKLE_GLOVES.get());
                 output.accept(ModItems.SHROUD.get());
@@ -196,12 +162,67 @@ public final class ModCreativeTab {
                     output.accept(conversion);
                 }
                 for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
-                    if (part.glyphItem != null) {
+                    if (part.glyphItem != null && !cultist(part)) {
                         output.accept(part.glyphItem);
                     }
                 }
             })
             .build());
+
+    /**
+     * The Cultist, set aside: its items, blocks, eggs and glyphs have no recipes for now (the rites are to be reworked
+     * around sigils) and live in their own tab.
+     */
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CULT_TAB = REGISTER.register("cult", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.arcane_artifacts.cult"))
+            .icon(() -> ModItems.RITUAL_KNIFE.get().getDefaultInstance())
+            .withTabsBefore(TAB.getKey())
+            .displayItems((params, output) -> {
+                output.accept(ModItems.RITUAL_SEAL.get());
+                output.accept(ModItems.RITUAL_ANCHOR.get());
+                output.accept(ModItems.RITUAL_KNIFE.get());
+                output.accept(ModItems.OATH_SHIELD.get());
+                output.accept(ModItems.SEAL_HAMMER.get());
+                output.accept(ModItems.FORMULA_BOOK.get());
+                output.accept(ModItems.RITUAL_CENSER.get());
+                output.accept(ModItems.SEAL_KEEPER_HELM.get());
+                output.accept(ModItems.OUTER_CIRCLE_CUIRASS.get());
+                output.accept(ModItems.ANCHOR_BELT.get());
+                output.accept(ModItems.SEAL_GAUNTLETS.get());
+                output.accept(ModItems.SENTRY_BOOTS.get());
+                output.accept(ModItems.FACE_OF_DOGMA.get());
+                output.accept(ModItems.COMMUNION_MANTLE.get());
+                output.accept(ModItems.BOOK_OF_ARREARS.get());
+                output.accept(ModItems.INSCRIBER_HANDS.get());
+                output.accept(ModItems.QUIET_SHOES.get());
+                output.accept(ModItems.RITUAL_ASH.get());
+                output.accept(ModItems.BONE_SHARD.get());
+                output.accept(ModItems.VOW_DUST.get());
+                output.accept(ModItems.ASH_WITNESS_SPAWN_EGG.get());
+                output.accept(ModItems.TORN_ACOLYTE_SPAWN_EGG.get());
+                output.accept(ModItems.RED_ACOLYTE_SPAWN_EGG.get());
+                output.accept(ModItems.BONE_GATEKEEPER_SPAWN_EGG.get());
+                output.accept(ModItems.PSALMIST_SPAWN_EGG.get());
+                output.accept(ModItems.VOTIVE_BEAST_SPAWN_EGG.get());
+                output.accept(ModItems.RENEGADE_SEALER_SPAWN_EGG.get());
+                output.accept(ModItems.FACELESS_SENTRY_SPAWN_EGG.get());
+                output.accept(ModItems.ARCHDEACON_SPAWN_EGG.get());
+                output.accept(ModItems.ARCHDEACON_SEAL.get());
+                output.accept(ModItems.VOW_PLATE.get());
+                output.accept(ModItems.HOLDING_SEAL.get());
+                output.accept(ModItems.VOW_CANDLE.get());
+                output.accept(ModItems.ARCHIVE_LOCK.get());
+                for (AbstractSpellPart part : ArcaneGlyphs.ALL) {
+                    if (part.glyphItem != null && cultist(part)) {
+                        output.accept(part.glyphItem);
+                    }
+                }
+            })
+            .build());
+
+    private static boolean cultist(AbstractSpellPart part) {
+        return part.getClass().getPackageName().startsWith("com.soulinchains.arcaneartifacts.cult");
+    }
 
     private ModCreativeTab() {
     }

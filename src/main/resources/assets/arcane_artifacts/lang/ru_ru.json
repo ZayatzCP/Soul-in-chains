@@ -2091,5 +2091,6 @@
   "arcane_artifacts.cult.archdeacon_unison": "Вспыхнули две точки — встаньте на них вдвоём, разом!",
   "arcane_artifacts.cult.archive_holding": "Вы держите печать. Не отходите: напарник должен зажечь свечу.",
   "arcane_artifacts.cult.archive_renegade": "Отступник у печати — удержание сорвано.",
-  "arcane_artifacts.cult.archive_need_holder": "Свеча не горит, пока никто другой не держит Печать удержания."
+  "arcane_artifacts.cult.archive_need_holder": "Свеча не горит, пока никто другой не держит Печать удержания.",
+  "itemGroup.arcane_artifacts.cult": "Тайные артефакты: Сектант (в разработке)"
 }
