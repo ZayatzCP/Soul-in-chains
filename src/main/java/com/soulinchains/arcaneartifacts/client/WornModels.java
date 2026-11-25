@@ -101,6 +101,9 @@ public final class WornModels {
         ATTACHMENTS.put(ModItems.DRUID_GLOVES, List.of(
                 worn(BodyPart.RIGHT_ARM, "druid_glove_right"),
                 worn(BodyPart.LEFT_ARM, "druid_glove_left")));
+        ATTACHMENTS.put(ModItems.DRUID_BOOTS, List.of(
+                worn(BodyPart.RIGHT_LEG, "druid_boots_right"),
+                worn(BodyPart.LEFT_LEG, "druid_boots_left")));
         ATTACHMENTS.put(ModItems.PSEUDOMAGE_GLOVES, List.of(
                 worn(BodyPart.RIGHT_ARM, "pseudomage_glove_right"),
                 worn(BodyPart.LEFT_ARM, "pseudomage_glove_left")));

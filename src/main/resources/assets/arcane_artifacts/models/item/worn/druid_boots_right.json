@@ -1,0 +1,144 @@
+{
+  "textures": {
+    "t": "arcane_artifacts:item/worn/druid_boots",
+    "particle": "arcane_artifacts:item/worn/druid_boots"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        -4.5,
+        5.5
+      ],
+      "to": [
+        10.5,
+        8.5,
+        10.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            2,
+            4,
+            8
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            0,
+            2,
+            2,
+            8
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            6,
+            2,
+            8,
+            8
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            4,
+            2,
+            6,
+            8
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            4,
+            2,
+            2,
+            0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            6,
+            0,
+            4,
+            2
+          ],
+          "texture": "#t"
+        }
+      }
+    },
+    {
+      "from": [
+        7.6,
+        -4.5,
+        2.0
+      ],
+      "to": [
+        8.8,
+        1.35,
+        7.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10,
+            13.51539,
+            10.5,
+            16
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            12,
+            13.51539,
+            10,
+            16
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            12,
+            13.41539,
+            12,
+            16
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            10,
+            13.51539,
+            12,
+            16
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            10,
+            11.5,
+            10.5,
+            9.5
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            10,
+            11,
+            10.5,
+            13
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ]
+}
