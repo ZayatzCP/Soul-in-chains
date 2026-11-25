@@ -36,7 +36,13 @@ public class ChalkMarkBlock extends Block {
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
     public static final BooleanProperty WEST = BlockStateProperties.WEST;
-    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 1, 16);
+    private static final VoxelShape DOT = Block.box(5.5, 0, 5.5, 10.5, 1, 10.5);
+    private static final java.util.Map<Direction, VoxelShape> ARMS = java.util.Map.of(
+            Direction.NORTH, Block.box(6.5, 0, 0, 9.5, 1, 6),
+            Direction.SOUTH, Block.box(6.5, 0, 10, 9.5, 1, 16),
+            Direction.WEST, Block.box(0, 0, 6.5, 6, 1, 9.5),
+            Direction.EAST, Block.box(10, 0, 6.5, 16, 1, 9.5));
+    private static final java.util.Map<BlockState, VoxelShape> SHAPES = new java.util.concurrent.ConcurrentHashMap<>();
     /** Chance per tick that a creature standing on a mark smudges it. */
     public static final float SMUDGE_CHANCE = 0.02F;
 
@@ -75,7 +81,15 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return SHAPES.computeIfAbsent(state, s -> {
+            VoxelShape shape = DOT;
+            for (Direction d : Direction.Plane.HORIZONTAL) {
+                if (s.getValue(side(d))) {
+                    shape = net.minecraft.world.phys.shapes.Shapes.or(shape, ARMS.get(d));
+                }
+            }
+            return shape;
+        });
     }
 
     @Override

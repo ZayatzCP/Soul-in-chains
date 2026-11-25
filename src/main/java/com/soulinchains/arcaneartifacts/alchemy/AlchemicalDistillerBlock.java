@@ -64,7 +64,7 @@ public class AlchemicalDistillerBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(PART).ordinal() >= 2 ? TOP : BOTTOM;
+        return com.soulinchains.arcaneartifacts.util.ModelShapes.of(state, state.getValue(PART).ordinal() >= 2 ? TOP : BOTTOM);
     }
 
     public static BlockPos mainPos(BlockState state, BlockPos pos) {

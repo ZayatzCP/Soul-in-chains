@@ -29,6 +29,13 @@ public class RitualCenserBlock extends LanternBlock {
         return (MapCodec<LanternBlock>) (MapCodec<?>) CODEC;
     }
 
+    /** The outline follows the censer's model, standing or hanging. */
+    @Override
+    protected net.minecraft.world.phys.shapes.VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos,
+                                                                  net.minecraft.world.phys.shapes.CollisionContext context) {
+        return com.soulinchains.arcaneartifacts.util.ModelShapes.of(state, super.getShape(state, level, pos, context));
+    }
+
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         double y = pos.getY() + (state.getValue(HANGING) ? 0.35 : 0.7);

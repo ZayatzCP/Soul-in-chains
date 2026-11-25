@@ -346,4 +346,19 @@ public final class RiteGameTests {
                 e -> e.getItem().is(com.soulinchains.arcaneartifacts.registry.ModItems.RITE_CAGE.get())).isEmpty(), "The cage drops back as an item");
         helper.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void hitboxesFollowTheModels(GameTestHelper helper) {
+        var grave = com.soulinchains.arcaneartifacts.registry.ModBlocks.GRAVE.get().defaultBlockState();
+        var north = grave.setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.NORTH);
+        var east = grave.setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, Direction.EAST);
+        var shapeN = north.getShape(helper.getLevel(), BlockPos.ZERO);
+        var shapeE = east.getShape(helper.getLevel(), BlockPos.ZERO);
+        helper.assertTrue(!shapeN.toAabbs().equals(shapeE.toAabbs()), "A turned grave turns its hitbox too");
+        var mark = ModBlocks.CHALK_MARK.get().defaultBlockState();
+        var line = mark.setValue(ChalkMarkBlock.NORTH, true).setValue(ChalkMarkBlock.SOUTH, true);
+        helper.assertTrue(mark.getShape(helper.getLevel(), BlockPos.ZERO).bounds().getXsize() < 0.4
+                && line.getShape(helper.getLevel(), BlockPos.ZERO).bounds().getZsize() > 0.99, "A chalk mark's hitbox is only what is drawn");
+        helper.succeed();
+    }
 }

@@ -53,7 +53,7 @@ public class ResearchTableBlock extends BaseEntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return com.soulinchains.arcaneartifacts.util.ModelShapes.of(state, SHAPE);
     }
 
     @Override
