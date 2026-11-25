@@ -53,7 +53,7 @@ public class SigilBookItem extends Item {
         tooltip.add(Component.translatable("item.arcane_artifacts.sigil_book.lore").withStyle(ChatFormatting.GRAY));
         for (Sigil sigil : Sigil.values()) {
             tooltip.add(Component.literal(" ").append(sigil.displayName()).append(Component.literal(" - "))
-                    .append(Component.translatable("arcane_artifacts.rite.chalk." + sigil.color.id)).withStyle(sigil.modifier ? ChatFormatting.DARK_AQUA : ChatFormatting.DARK_PURPLE));
+                    .append(Component.translatable("arcane_artifacts.rite.chalk." + sigil.color.id)).withStyle(sigil.modifier ? ChatFormatting.RED : ChatFormatting.DARK_RED));
         }
     }
 

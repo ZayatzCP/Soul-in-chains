@@ -49,7 +49,7 @@ public final class RiteRenderers {
 
         public EchoRenderer(EntityRendererProvider.Context context) {
             super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.HUSK)), 0.4F);
-            addLayer(new NecroMobRenderers.Overlay<>(this, TEXTURE, 0xCC2A1F3D));
+            addLayer(new NecroMobRenderers.Overlay<>(this, TEXTURE, 0xCC3A0A0A));
         }
 
         @Override

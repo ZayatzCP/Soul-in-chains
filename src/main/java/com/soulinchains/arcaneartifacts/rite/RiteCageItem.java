@@ -145,7 +145,7 @@ public class RiteCageItem extends Item {
             CompoundTag data = data(stack);
             tooltip.add(Component.translatable("arcane_artifacts.rite.cage_value", data.getInt(VALUE)).withStyle(ChatFormatting.GOLD));
             if (data.getBoolean(OTHERWORLDLY)) {
-                tooltip.add(Component.translatable("arcane_artifacts.rite.cage_otherworldly").withStyle(ChatFormatting.DARK_PURPLE));
+                tooltip.add(Component.translatable("arcane_artifacts.rite.cage_otherworldly").withStyle(ChatFormatting.DARK_RED));
             }
         } else {
             tooltip.add(Component.translatable("item.arcane_artifacts.rite_cage.lore").withStyle(ChatFormatting.GRAY));

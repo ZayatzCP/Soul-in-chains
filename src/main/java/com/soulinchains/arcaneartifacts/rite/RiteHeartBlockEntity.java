@@ -479,7 +479,7 @@ public class RiteHeartBlockEntity extends BlockEntity {
         phase = Phase.CHANNEL;
         ACTIVE.add(this);
         server.playSound(null, worldPosition, SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.BLOCKS, 1.2F, 0.6F);
-        burst(worldPosition.above(), 0xB48CF0);
+        burst(worldPosition.above(), 0x8E1212);
         setChanged();
     }
 
@@ -742,14 +742,50 @@ public class RiteHeartBlockEntity extends BlockEntity {
             }
             case CLEANSE -> cleanse(server, rite.cleanse());
         }
+        giveReward(server, rite, tier, at);
         if (otherworldly) {
             taint++;
             spreadTaint(server, 24);
         }
         broadcast(Component.translatable("arcane_artifacts.rite.done", rite.displayName(), Math.round(quality), tier.displayName()));
+        // every participant is paid in experience: 10 / 20 / 35 / 60 by the tier
+        int xp = switch (tier) {
+            case WEAK -> 10;
+            case STEADY -> 20;
+            case FLAWLESS -> 35;
+            case PERFECT -> 60;
+            default -> 0;
+        };
+        for (Player p : participants) {
+            if (xp > 0) {
+                net.minecraft.world.entity.ExperienceOrb.award(server, p.position(), xp);
+            }
+        }
         server.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 1.5F, 0.7F);
         burst(at, 0xFAF7F3);
         reset();
+    }
+
+    /**
+     * The rite's gift on the altar: its loot table ({@code <namespace>:rites/<rite>}) rolled once for a Weak rite, twice for
+     * a Steady one, three times Flawless, four times Perfect, and once more for each Vein. Returns how many stacks fell.
+     */
+    public int giveReward(ServerLevel server, RiteDefinition done, RiteTier tier, BlockPos at) {
+        var key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+                ResourceLocation.fromNamespaceAndPath(done.id().getNamespace(), "rites/" + done.id().getPath()));
+        var table = server.getServer().reloadableRegistries().getLootTable(key);
+        var params = new net.minecraft.world.level.storage.loot.LootParams.Builder(server)
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, Vec3.atCenterOf(at))
+                .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
+        int rolls = tier.ordinal() + mods.count(Sigil.ZHILA);
+        int dropped = 0;
+        for (int i = 0; i < rolls; i++) {
+            for (ItemStack stack : table.getRandomItems(params)) {
+                Containers.dropItemStack(server, at.getX() + 0.5, at.getY() + 1.2, at.getZ() + 0.5, stack);
+                dropped++;
+            }
+        }
+        return dropped;
     }
 
     static CompoundTag wrap(CompoundTag creature) {

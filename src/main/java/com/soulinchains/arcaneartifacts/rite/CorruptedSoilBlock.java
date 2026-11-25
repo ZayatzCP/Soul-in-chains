@@ -23,7 +23,7 @@ import net.minecraft.world.phys.AABB;
  */
 public class CorruptedSoilBlock extends Block {
     public CorruptedSoilBlock() {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.6F).sound(SoundType.ROOTED_DIRT).randomTicks());
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.CRIMSON_NYLIUM).strength(0.6F).sound(SoundType.ROOTED_DIRT).randomTicks());
     }
 
     /** Whether corruption can take this block. */
@@ -54,7 +54,7 @@ public class CorruptedSoilBlock extends Block {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(8) == 0) {
-            level.addParticle(ParticleTypes.MYCELIUM, pos.getX() + random.nextDouble(), pos.getY() + 1.05, pos.getZ() + random.nextDouble(), 0, 0, 0);
+            level.addParticle(ParticleTypes.CRIMSON_SPORE, pos.getX() + random.nextDouble(), pos.getY() + 1.05, pos.getZ() + random.nextDouble(), 0, 0, 0);
         }
     }
 }

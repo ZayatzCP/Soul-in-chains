@@ -26,7 +26,7 @@ public final class RiteHud {
     private static final int RED = 0xFFD0473B;
     private static final int DARK = 0xFF171416;
     private static final int CHALK = 0xFFF1EEE6;
-    private static final int AMETHYST = 0xFFB48CF0;
+    private static final int AMETHYST = 0xFFB3261E;
 
     private RiteHud() {
     }

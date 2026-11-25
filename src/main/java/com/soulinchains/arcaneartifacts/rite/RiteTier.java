@@ -6,9 +6,9 @@ import net.minecraft.network.chat.Component;
 public enum RiteTier {
     BROKEN("broken", 0, 0F, 1.0F),
     WEAK("weak", 20, 0.5F, 1.0F),
-    STEADY("steady", 45, 1.0F, 1.15F),
-    FLAWLESS("flawless", 70, 1.5F, 1.3F),
-    PERFECT("perfect", 90, 2.0F, 1.5F);
+    STEADY("steady", 45, 1.0F, 1.5F),
+    FLAWLESS("flawless", 70, 1.5F, 2.0F),
+    PERFECT("perfect", 90, 2.0F, 3.0F);
 
     public final String id;
     public final int from;

@@ -76,7 +76,7 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> RITUAL_CENSER = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_CENSER);
     public static final DeferredItem<BlockItem> CORRUPTED_SOIL = REGISTER.registerSimpleBlockItem(ModBlocks.CORRUPTED_SOIL);
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ECHO_SPAWN_EGG = REGISTER.register("echo_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ECHO, 0x2A1F3D, 0xB48CF0, new Item.Properties()));
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ECHO, 0x1A0606, 0x8E1212, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RESTLESS_SPAWN_EGG = REGISTER.register("restless_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.RESTLESS, 0x9FE8FF, 0x2A6B78, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> SOUL_EATER_SPAWN_EGG = REGISTER.register("soul_eater_spawn_egg",

@@ -77,9 +77,9 @@ def heart_top():
         for x in range(16):
             d = abs(x - 7.5) + abs(y - 7.5)
             if d < 3.2:
-                img.putpixel((x, y), hexc('#D8B8FF' if d < 1.6 else '#B48CF0'))
+                img.putpixel((x, y), hexc('#E0402F' if d < 1.6 else '#B3261E'))
             elif d < 4.4:
-                img.putpixel((x, y), hexc('#7E5BB8'))
+                img.putpixel((x, y), hexc('#5E0A0A'))
     return img
 
 
@@ -90,12 +90,12 @@ def heart_side():
         img.putpixel((x, 15), hexc('#26252A'))
     for x in (5, 6, 9, 10):
         for y in (6, 7, 8, 9):
-            img.putpixel((x, y), hexc('#B48CF0' if (x + y) % 2 else '#7E5BB8'))
+            img.putpixel((x, y), hexc('#B3261E' if (x + y) % 2 else '#5E0A0A'))
     return img
 
 
 def soil_top():
-    return noise(91, ['#3A2A3E', '#33243A', '#412F47'], ['#6D4F86', '#5A3D6E', '#8A6AA8'], 0.18)
+    return noise(91, ['#2A0F0D', '#33110E', '#3D1612'], ['#7A0C0C', '#5E0A0A', '#9C1B12'], 0.2)
 
 
 def soil_side():
@@ -112,7 +112,7 @@ if __name__ == '__main__':
         save(sprite(CHALK, {'k': '#2A2428', 'L': light, 'D': dark}), 'item', name + '_chalk.png')
         save(chalk_mark(name, light, dark), 'block', 'chalk_mark_' + name + '.png')
     save(sprite(DUST, {'l': '#D8B8FF', 'L': '#B48CF0', 'D': '#7E5BB8'}), 'item', 'amethyst_dust.png')
-    save(sprite(BOOK, {'k': '#171416', 'P': '#2E2A33', 'a': '#B48CF0', 'b': '#E6D9C3'}), 'item', 'sigil_book.png')
+    save(sprite(BOOK, {'k': '#171416', 'P': '#2E1A16', 'a': '#9C1B12', 'b': '#E6D9C3'}), 'item', 'sigil_book.png')
     save(sprite(CAGE, {'k': '#4A4650', 'g': '#8E8A96'}), 'item', 'rite_cage.png')
     save(heart_top(), 'block', 'rite_heart_top.png')
     save(heart_side(), 'block', 'rite_heart_side.png')
@@ -152,7 +152,7 @@ SANDALS = [
 ]
 
 if __name__ == '__main__':
-    save(sprite(CODEX, {'k': '#171416', 'R': '#6F2927', 'a': '#B48CF0', 'b': '#E6D9C3'}), 'item', 'sigil_codex.png')
+    save(sprite(CODEX, {'k': '#171416', 'R': '#CDB892', 'a': '#7A0C0C', 'b': '#3A1A10'}), 'item', 'sigil_codex.png')
     save(sprite(MASK, {'b': '#8D8270', 'B': '#F0E7DE', 'k': '#171416', 'r': '#B9463D'}), 'item', 'cult_mask.png')
     save(sprite(ROBE, {'k': '#0E0C0F', 'K': '#2A2428', 'r': '#B9463D'}), 'item', 'cult_robe.png')
     save(sprite(BELT, {'k': '#3B2A20', 'r': '#B9463D', 'b': '#8D8270', 'a': '#B48CF0'}), 'item', 'offering_belt.png')

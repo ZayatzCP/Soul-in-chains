@@ -2041,5 +2041,11 @@
   "arcane_artifacts.codex.result.create_chalk": "Brings: bone chalk and amethyst dust, more at high quality.",
   "arcane_artifacts.codex.result.transmute_flesh": "Brings: the caged creature changes: zombie villager -> villager, zombie -> husk, skeleton -> stray, cow -> mooshroom and more.",
   "arcane_artifacts.codex.result.transmute_metal": "Brings: the ingots on the pedestal: iron -> gold, copper -> iron, coal -> redstone; one to one when Perfect.",
-  "arcane_artifacts.codex.result.cleanse": "Brings: the corruption around the site goes, corrupted soil turns back into dirt."
+  "arcane_artifacts.codex.result.cleanse": "Brings: the corruption around the site goes, corrupted soil turns back into dirt.",
+  "arcane_artifacts.codex.chalk": "Drawn in: %s chalk",
+  "arcane_artifacts.codex.epigraph": "\"What is drawn in blood is done. What is left undrawn comes by itself, and not in peace.\"",
+  "arcane_artifacts.codex.picture.title": "The site",
+  "arcane_artifacts.codex.picture.text": "A finished 9x9 site: the wall, soul lanterns at the corners, candles, the amethyst boundary, four sigils around the altar and the censer over the pedestal.",
+  "arcane_artifacts.codex.reward.title": "The reward",
+  "arcane_artifacts.codex.reward.text": "A rite is generous to those who see it through. A gift falls on the altar, the richer the higher the quality (Weak - one roll, Perfect - four, each Vein one more). Every participant gets experience. Whatever the summons kill counts as yours: full loot and experience, times the rite's multiplier (up to x3). And when a summon's time is up, it leaves its own loot as tribute."
 }

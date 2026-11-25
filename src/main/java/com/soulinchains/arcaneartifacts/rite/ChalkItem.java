@@ -130,6 +130,6 @@ public class ChalkItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("item.arcane_artifacts.chalk.lore").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
+        tooltip.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.DARK_RED, ChatFormatting.ITALIC));
     }
 }

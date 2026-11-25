@@ -266,6 +266,7 @@ public final class RiteGameTests {
         AABB box = new AABB(heartPos).inflate(12);
         List<net.minecraft.world.entity.animal.Wolf> wolves = level.getEntitiesOfClass(net.minecraft.world.entity.animal.Wolf.class, box, RiteSummons::allied);
         helper.assertTrue(wolves.size() >= 1 && wolves.stream().allMatch(w -> w.isTame()), "Tame wolves answer the rite, " + wolves.size());
+        helper.assertTrue(!level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, box).isEmpty(), "The rite leaves its gift on the altar");
         wolves.forEach(w -> w.discard());
         level.getEntitiesOfClass(com.soulinchains.arcaneartifacts.rite.Echo.class, box.inflate(8)).forEach(e -> e.discard());
         helper.succeed();
@@ -375,6 +376,21 @@ public final class RiteGameTests {
         helper.assertTrue(RiteHeartBlockEntity.gearBonus(List.of(bare)) == 0F, "No vestments, no bonus");
         helper.assertTrue(!com.soulinchains.arcaneartifacts.rite.CultGearItem.wears(bare, com.soulinchains.arcaneartifacts.rite.CultGearItem.Piece.MASK),
                 "Nothing is worn");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void riteGiftsGrowWithQuality(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos heartPos = helper.absolutePos(new BlockPos(4, 1, 4));
+        level.setBlock(heartPos, ModBlocks.RITE_HEART.get().defaultBlockState(), 3);
+        RiteHeartBlockEntity heart = (RiteHeartBlockEntity) level.getBlockEntity(heartPos);
+        RiteDefinition pack = Rites.get(ArcaneArtifacts.id("summon_pack"));
+        helper.assertTrue(pack != null, "The Summoning of the Pack is loaded");
+        int weak = heart.giveReward(level, pack, com.soulinchains.arcaneartifacts.rite.RiteTier.WEAK, heartPos.above());
+        int perfect = heart.giveReward(level, pack, com.soulinchains.arcaneartifacts.rite.RiteTier.PERFECT, heartPos.above());
+        helper.assertTrue(weak >= 1 && perfect >= 4 && perfect > weak, "A perfect rite gives more than a weak one: " + weak + " vs " + perfect);
+        level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(heartPos).inflate(4)).forEach(e -> e.discard());
         helper.succeed();
     }
 }
