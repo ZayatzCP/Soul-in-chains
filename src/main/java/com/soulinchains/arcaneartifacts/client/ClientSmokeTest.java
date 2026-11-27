@@ -330,14 +330,14 @@ public final class ClientSmokeTest {
     private static final List<Scene> SCENES = List.of(
             new Scene("hoard_rings", 12, l -> { fill(32); wings(false, false); }, new Vec3(3.5, 2.6, 6.5), BODY),
             new Scene("hoard_rings_close", 8, null, new Vec3(1.8, 1.9, 3.2), BODY),
-            new Scene("wings_open_front", 16, l -> wings(true, false), new Vec3(0, 4, 24), new Vec3(0, 3, 0)),
-            new Scene("wings_flying_back_1", 12, l -> wings(true, true), new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
-            new Scene("wings_flying_back_2", 10, null, new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
-            new Scene("wings_flying_back_3", 10, null, new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
-            new Scene("wings_flying_back_4", 10, null, new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
-            new Scene("wings_side", 6, null, new Vec3(26, 5, 2), new Vec3(0, 3, 0)),
-            new Scene("wings_three_quarter", 6, null, new Vec3(-16, 6, 18), new Vec3(0, 3, 0)),
-            new Scene("wings_top", 6, null, new Vec3(0.2, 32, -6), new Vec3(0, 1, 0)),
+            new Scene("wings_open_front", 16, l -> wings(true, false), new Vec3(0, 5, 17), new Vec3(0, 2.2, 0)),
+            new Scene("wings_flying_back_1", 12, l -> wings(true, true), new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
+            new Scene("wings_flying_back_2", 10, null, new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
+            new Scene("wings_flying_back_3", 10, null, new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
+            new Scene("wings_flying_back_4", 10, null, new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
+            new Scene("wings_side", 6, null, new Vec3(18, 6, -3), new Vec3(0, 2, 0)),
+            new Scene("wings_three_quarter", 6, null, new Vec3(-12, 8, -13), new Vec3(0, 2, 0)),
+            new Scene("wings_top", 6, null, new Vec3(0.2, 24, -5), new Vec3(0, 1, 0)),
             new Scene("wings_close_back", 6, null, new Vec3(2, 3.2, -6), new Vec3(0, 2.2, 0)),
             new Scene("earthen_surge", 7, l -> {
                 wings(false, false);

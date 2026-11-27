@@ -55,6 +55,25 @@ public final class StonePhenomena {
         return entity;
     }
 
+    /** A wing feather: a flat stone plate hanging back from its root (the display's position is the root). */
+    @Nullable
+    static Display.BlockDisplay feather(ServerLevel level, BlockState state, Vector3f scale, Vec3 at) {
+        Display.BlockDisplay entity = EntityType.BLOCK_DISPLAY.create(level);
+        if (entity == null) {
+            return null;
+        }
+        CompoundTag tag = new CompoundTag();
+        tag.put("block_state", NbtUtils.writeBlockState(state));
+        Vector3f offset = new Vector3f(-scale.x / 2, -scale.y / 2, 0);
+        tag.put("transformation", Transformation.EXTENDED_CODEC.encodeStart(NbtOps.INSTANCE, new Transformation(offset, null, scale, null)).getOrThrow());
+        tag.putInt("teleport_duration", 2);
+        entity.load(tag);
+        entity.addTag(HoardVisuals.TAG);
+        entity.setPos(at.x, at.y, at.z);
+        level.addFreshEntity(entity);
+        return entity;
+    }
+
     /** Stone hits a creature: the caster's thrown-block damage, no invulnerability pause between blocks. */
     static boolean strike(ServerLevel level, @Nullable Entity caster, LivingEntity target, float damage) {
         if (damage <= 0 || target == caster || caster != null && Allies.areAllied(caster, target)) {

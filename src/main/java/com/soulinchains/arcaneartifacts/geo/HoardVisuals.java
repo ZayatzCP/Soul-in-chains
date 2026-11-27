@@ -39,9 +39,10 @@ public final class HoardVisuals {
     /** At most this many blocks are drawn around a player. */
     static final int SHOWN = 32;
     static final float SCALE = 0.62F;
-    /** The wings: feathers per side, each a long, flat block. */
-    public static final int FEATHERS = 9;
-    static final org.joml.Vector3f FEATHER = new org.joml.Vector3f(0.85F, 0.32F, 2.6F);
+    /** The wings: feathers per side and layer (long flight feathers below, short coverts over them). */
+    public static final int FEATHERS = 12;
+    static final int LAYERS = 2;
+    static final float SPACING = 0.95F;
     /** Flight with the wings is faster than walking flight. */
     static final float WING_SPEED = 0.09F;
     static final float NORMAL_SPEED = 0.05F;
@@ -185,9 +186,11 @@ public final class HoardVisuals {
         if (feathers == null) {
             feathers = new ArrayList<>();
             List<BlockState> hoard = StoneHoard.of(player);
-            for (int i = 0; i < FEATHERS * 2; i++) {
+            for (int i = 0; i < FEATHERS * 2 * LAYERS; i++) {
+                int k = (i / 2) % FEATHERS;
+                int layer = i / (2 * FEATHERS);
                 BlockState state = hoard.get((i / 2) % hoard.size());
-                Display.BlockDisplay feather = StonePhenomena.display(level, state, FEATHER, false, player.position());
+                Display.BlockDisplay feather = StonePhenomena.feather(level, state, size(k, layer), player.position());
                 if (feather != null) {
                     feathers.add(feather);
                 }
@@ -195,7 +198,7 @@ public final class HoardVisuals {
             WINGS_BY.put(player.getUUID(), feathers);
         }
         for (int i = 0; i < feathers.size(); i++) {
-            Feather f = feather(player, i / 2, i % 2 == 0 ? 1 : -1);
+            Feather f = feather(player, (i / 2) % FEATHERS, i % 2 == 0 ? 1 : -1, i / (2 * FEATHERS));
             Display.BlockDisplay d = feathers.get(i);
             d.setPos(f.pos.x, f.pos.y, f.pos.z);
             d.setYRot(f.yaw);
@@ -203,24 +206,39 @@ public final class HoardVisuals {
         }
     }
 
+    /** A feather's size: as wide as the spacing (they touch), long flight feathers shortening towards the tip, short coverts. */
+    public static org.joml.Vector3f size(int k, int layer) {
+        float length = layer == 0 ? 4.4F - 0.2F * k : 2.1F - 0.07F * k;
+        return new org.joml.Vector3f(SPACING * 1.15F, layer == 0 ? 0.22F : 0.3F, length);
+    }
+
     public record Feather(Vec3 pos, float yaw, float pitch) {
     }
 
-    /**
-     * Feather {@code k} (0 at the shoulder) of one wing ({@code side} +1 right, -1 left): the wing rises and falls slowly, the
-     * feathers lie further back and higher the further out they are, each pointing back and a little outwards.
-     */
+    /** The flight feather {@code k} of one wing (see {@link #feather(Player, int, int, int)}). */
     public static Feather feather(Player player, int k, int side) {
+        return feather(player, k, side, 0);
+    }
+
+    /**
+     * Feather {@code k} (0 at the shoulder) of one wing ({@code side} +1 right, -1 left), in a layer (0 the long flight
+     * feathers, 1 the coverts lying over them): the wing bone runs out from the shoulder, swept back towards the tip, and
+     * rises and falls slowly; each feather hangs from the bone and points back, a little outwards.
+     */
+    public static Feather feather(Player player, int k, int side, int layer) {
         double time = player.level().getGameTime();
         double yaw = Math.toRadians(player.yBodyRot);
         Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
         Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
-        double beat = Math.sin(time * 0.16) * (player.getAbilities().flying ? 0.35 : 0.2);
-        double lift = 0.15 + beat * (0.4 + 0.07 * k);
+        double beat = Math.sin(time * 0.16) * (player.getAbilities().flying ? 0.4 : 0.22);
+        double lift = 0.18 + beat * (0.5 + 0.05 * k);
         Vec3 span = right.scale(side * Math.cos(lift)).add(0, Math.sin(lift), 0);
-        Vec3 pos = player.position().add(0, 1.35, 0).add(back.scale(0.45 + 0.22 * k)).add(span.scale(0.9 + 1.45 * k));
-        float featherYaw = (float) (player.yBodyRot + 180 + side * (8 + 5 * k));
-        float pitch = (float) (-Math.toDegrees(lift) * 0.5 - 4);
+        double out = 0.55 + SPACING * k;
+        Vec3 pos = player.position().add(0, 1.4 + (layer == 1 ? 0.2 : 0), 0)
+                .add(back.scale(0.3 + 0.1 * k + (layer == 1 ? -0.1 : 0)))
+                .add(span.scale(out));
+        float featherYaw = (float) (player.yBodyRot + 180 + side * (4 + 2.2 * k));
+        float pitch = (float) (-Math.toDegrees(lift) * 0.35 + 6);
         return new Feather(pos, featherYaw, pitch);
     }
 
