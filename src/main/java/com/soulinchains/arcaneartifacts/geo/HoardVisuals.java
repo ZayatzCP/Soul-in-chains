@@ -39,10 +39,7 @@ public final class HoardVisuals {
     /** At most this many blocks are drawn around a player. */
     static final int SHOWN = 32;
     static final float SCALE = 0.62F;
-    /** The wings: feathers per side and layer (long flight feathers below, short coverts over them). */
-    public static final int FEATHERS = 12;
-    static final int LAYERS = 2;
-    static final float SPACING = 0.95F;
+    /** The wings: built like a bird's (see {@link BirdWing}). */
     /** Flight with the wings is faster than walking flight. */
     static final float WING_SPEED = 0.09F;
     static final float NORMAL_SPEED = 0.05F;
@@ -171,7 +168,7 @@ public final class HoardVisuals {
 
     // ------------------------------------------------------------------ the wings
 
-    /** Spreads (or folds) the great wings of a player: long feathers of hoard stone, slowly beating. */
+    /** Spreads (or folds) the great wings of a player: bird wings of hoard stone, slowly beating. */
     public static void updateWings(ServerLevel level, Player player) {
         boolean open = wings(player) && StoneHoard.count(player) >= WING_BLOCKS && player.isAlive() && !player.isSpectator();
         List<Display.BlockDisplay> feathers = WINGS_BY.get(player.getUUID());
@@ -183,63 +180,46 @@ public final class HoardVisuals {
         if (!open) {
             return;
         }
+        Vec3 anchor = player.position();
         if (feathers == null) {
             feathers = new ArrayList<>();
             List<BlockState> hoard = StoneHoard.of(player);
-            for (int i = 0; i < FEATHERS * 2 * LAYERS; i++) {
-                int k = (i / 2) % FEATHERS;
-                int layer = i / (2 * FEATHERS);
+            for (int i = 0; i < BirdWing.COUNT * 2; i++) {
                 BlockState state = hoard.get((i / 2) % hoard.size());
-                Display.BlockDisplay feather = StonePhenomena.feather(level, state, size(k, layer), player.position());
+                Display.BlockDisplay feather = StonePhenomena.display(level, state, new org.joml.Vector3f(1, 1, 1), false, anchor);
                 if (feather != null) {
                     feathers.add(feather);
                 }
             }
             WINGS_BY.put(player.getUUID(), feathers);
         }
+        boolean turn = player.level().getGameTime() % 2 == 0;
+        List<BirdWing.Feather> right = BirdWing.wing(player, 1);
+        List<BirdWing.Feather> left = BirdWing.wing(player, -1);
         for (int i = 0; i < feathers.size(); i++) {
-            Feather f = feather(player, (i / 2) % FEATHERS, i % 2 == 0 ? 1 : -1, i / (2 * FEATHERS));
             Display.BlockDisplay d = feathers.get(i);
-            d.setPos(f.pos.x, f.pos.y, f.pos.z);
-            d.setYRot(f.yaw);
-            d.setXRot(f.pitch);
+            d.setPos(anchor.x, anchor.y, anchor.z);
+            if (turn) {
+                BirdWing.Feather f = (i % 2 == 0 ? right : left).get(i / 2);
+                pose(d, f, anchor);
+            }
         }
     }
 
-    /** A feather's size: as wide as the spacing (they touch), long flight feathers shortening towards the tip, short coverts. */
-    public static org.joml.Vector3f size(int k, int layer) {
-        float length = layer == 0 ? 4.4F - 0.2F * k : 2.1F - 0.07F * k;
-        return new org.joml.Vector3f(SPACING * 1.15F, layer == 0 ? 0.22F : 0.3F, length);
-    }
-
-    public record Feather(Vec3 pos, float yaw, float pitch) {
-    }
-
-    /** The flight feather {@code k} of one wing (see {@link #feather(Player, int, int, int)}). */
-    public static Feather feather(Player player, int k, int side) {
-        return feather(player, k, side, 0);
-    }
-
-    /**
-     * Feather {@code k} (0 at the shoulder) of one wing ({@code side} +1 right, -1 left), in a layer (0 the long flight
-     * feathers, 1 the coverts lying over them): the wing bone runs out from the shoulder, swept back towards the tip, and
-     * rises and falls slowly; each feather hangs from the bone and points back, a little outwards.
-     */
-    public static Feather feather(Player player, int k, int side, int layer) {
-        double time = player.level().getGameTime();
-        double yaw = Math.toRadians(player.yBodyRot);
-        Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
-        Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
-        double beat = Math.sin(time * 0.16) * (player.getAbilities().flying ? 0.4 : 0.22);
-        double lift = 0.18 + beat * (0.5 + 0.05 * k);
-        Vec3 span = right.scale(side * Math.cos(lift)).add(0, Math.sin(lift), 0);
-        double out = 0.55 + SPACING * k;
-        Vec3 pos = player.position().add(0, 1.4 + (layer == 1 ? 0.2 : 0), 0)
-                .add(back.scale(0.3 + 0.1 * k + (layer == 1 ? -0.1 : 0)))
-                .add(span.scale(out));
-        float featherYaw = (float) (player.yBodyRot + 180 + side * (4 + 2.2 * k));
-        float pitch = (float) (-Math.toDegrees(lift) * 0.35 + 6);
-        return new Feather(pos, featherYaw, pitch);
+    /** Turns a display into a feather: a thin stone plate with its root at the feather's root, pointing along it. */
+    static void pose(Display.BlockDisplay display, BirdWing.Feather f, Vec3 anchor) {
+        org.joml.Vector3f z = new org.joml.Vector3f((float) f.dir().x, (float) f.dir().y, (float) f.dir().z);
+        org.joml.Vector3f y = new org.joml.Vector3f((float) f.normal().x, (float) f.normal().y, (float) f.normal().z);
+        org.joml.Vector3f x = new org.joml.Vector3f(y).cross(z).normalize();
+        org.joml.Quaternionf q = new org.joml.Quaternionf().setFromNormalized(new org.joml.Matrix3f(x, y, z));
+        // the plate's corner, so that its root edge (middle of the width) sits at the feather's root
+        org.joml.Vector3f corner = new org.joml.Vector3f(-f.width() / 2, -f.thick() / 2, 0).rotate(q);
+        org.joml.Vector3f translation = new org.joml.Vector3f((float) (f.root().x - anchor.x), (float) (f.root().y - anchor.y), (float) (f.root().z - anchor.z)).add(corner);
+        com.soulinchains.arcaneartifacts.mixin.DisplayAccessor accessor = (com.soulinchains.arcaneartifacts.mixin.DisplayAccessor) display;
+        accessor.arcaneArtifacts$setTransformation(new com.mojang.math.Transformation(translation, q,
+                new org.joml.Vector3f(f.width(), f.thick(), f.length()), null));
+        accessor.arcaneArtifacts$setInterpolationDuration(2);
+        accessor.arcaneArtifacts$setInterpolationDelay(0);
     }
 
     /** Where block {@code i} of {@code n} floats: a place on one of two slow rings around the player. */

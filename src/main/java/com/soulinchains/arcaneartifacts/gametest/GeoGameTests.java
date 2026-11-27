@@ -187,10 +187,17 @@ public final class GeoGameTests {
         }
         HoardVisuals.wingFlight(player);
         helper.assertTrue(player.getAbilities().mayfly, "Twelve blocks become wings");
-        HoardVisuals.Feather tip = HoardVisuals.feather(player, HoardVisuals.FEATHERS - 1, 1);
-        HoardVisuals.Feather root = HoardVisuals.feather(player, 0, -1);
-        helper.assertTrue(tip.pos().distanceTo(player.position()) > 10 && root.pos().distanceTo(player.position()) < 3,
-                "Great wings: the tip far out, the root at the shoulder");
+        List<com.soulinchains.arcaneartifacts.geo.BirdWing.Feather> right = com.soulinchains.arcaneartifacts.geo.BirdWing.wing(player, 1);
+        List<com.soulinchains.arcaneartifacts.geo.BirdWing.Feather> left = com.soulinchains.arcaneartifacts.geo.BirdWing.wing(player, -1);
+        helper.assertTrue(right.size() == com.soulinchains.arcaneartifacts.geo.BirdWing.COUNT && left.size() == right.size(), "Two whole wings");
+        double span = right.stream().mapToDouble(f -> f.root().add(f.dir().scale(f.length())).distanceTo(player.position())).max().orElse(0);
+        helper.assertTrue(span > 7, "Great wings: the primaries reach far out, " + span);
+        helper.assertTrue(right.get(0).root().distanceTo(player.position().add(0, 1.4, 0)) < 1.5, "The tertials grow at the shoulder");
+        for (com.soulinchains.arcaneartifacts.geo.BirdWing.Feather f : right) {
+            helper.assertTrue(Math.abs(f.dir().length() - 1) < 1e-6 && Math.abs(f.normal().dot(f.dir())) < 1e-6, "Each feather has a true direction and face");
+        }
+        double mirror = right.get(10).root().subtract(player.position()).x + left.get(10).root().subtract(player.position()).x;
+        helper.assertTrue(Math.abs(mirror) < 1e-6, "The wings mirror each other");
         helper.assertTrue(player.getAbilities().getFlyingSpeed() > 0.08F, "Wing flight is fast");
         StoneHoard.takeReal(player, 1);
         HoardVisuals.wingFlight(player);

@@ -335,6 +335,8 @@ public final class ClientSmokeTest {
             new Scene("wings_flying_back_2", 10, null, new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
             new Scene("wings_flying_back_3", 10, null, new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
             new Scene("wings_flying_back_4", 10, null, new Vec3(0, 9, -17), new Vec3(0, 1.8, 0)),
+            new Scene("wings_above_up", 10, null, new Vec3(0.2, 14, -7), new Vec3(0, 1.5, 1)),
+            new Scene("wings_above_down", 20, null, new Vec3(0.2, 14, -7), new Vec3(0, 1.5, 1)),
             new Scene("wings_side", 6, null, new Vec3(18, 6, -3), new Vec3(0, 2, 0)),
             new Scene("wings_three_quarter", 6, null, new Vec3(-12, 8, -13), new Vec3(0, 2, 0)),
             new Scene("wings_top", 6, null, new Vec3(0.2, 24, -5), new Vec3(0, 1, 0)),
