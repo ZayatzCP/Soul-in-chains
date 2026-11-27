@@ -116,7 +116,7 @@ public class AstralMonolithFeature extends Feature<NoneFeatureConfiguration> {
         return placed;
     }
 
-    static void build(WorldGenLevel level, Plan plan, int top) {
+    public static void build(WorldGenLevel level, Plan plan, int top) {
         BlockState stone = ModBlocks.ASTRAL_MONOLITH.get().defaultBlockState();
         BlockState vein = ModBlocks.ASTRAL_VEIN.get().defaultBlockState();
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();

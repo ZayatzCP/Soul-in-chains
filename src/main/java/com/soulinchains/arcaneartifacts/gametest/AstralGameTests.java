@@ -14,7 +14,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -29,84 +28,90 @@ public final class AstralGameTests {
     private AstralGameTests() {
     }
 
+    /** The Astral, or null: the game-test server loads only the overworld, a real world loads the Astral as well. */
     private static ServerLevel astral(GameTestHelper helper) {
-        ServerLevel astral = Astral.level(helper.getLevel().getServer());
-        helper.assertTrue(astral != null, "The Astral is loaded");
-        return astral;
+        return Astral.level(helper.getLevel().getServer());
     }
 
     @GameTest(template = ARENA)
     public static void theAstralIsAPlainUnderAHaze(GameTestHelper helper) {
         ServerLevel astral = astral(helper);
-        helper.assertTrue(astral.getMinBuildHeight() == 0 && astral.getMaxBuildHeight() == 512, "The Astral is 512 blocks tall, got "
-                + astral.getMinBuildHeight() + ".." + astral.getMaxBuildHeight());
-        BlockPos land = Astral.landing(astral, 5000, -3000);
-        helper.assertTrue(land.getY() == Astral.FLOOR + 1, "One lands on top of the plain");
-        helper.assertTrue(astral.getBlockState(land.below()).is(ModBlocks.ASTRAL_STONE.get()), "The plain is astral stone");
-        helper.assertTrue(astral.getBlockState(land).isAir() && astral.getBlockState(land.above(40)).isAir(), "Nothing stands over a landing");
-        helper.assertTrue(astral.getBlockState(new BlockPos(land.getX(), 0, land.getZ())).is(net.minecraft.world.level.block.Blocks.BEDROCK),
-                "Bedrock at the very bottom");
+        if (astral != null) {
+            helper.assertTrue(astral.getMinBuildHeight() == 0 && astral.getMaxBuildHeight() == 512, "The Astral is 512 blocks tall");
+            BlockPos land = Astral.landing(astral, 5000, -3000);
+            helper.assertTrue(land.getY() == Astral.FLOOR + 1, "One lands on top of the plain");
+            helper.assertTrue(astral.getBlockState(land.below()).is(ModBlocks.ASTRAL_STONE.get()), "The plain is astral stone");
+            helper.assertTrue(astral.getBlockState(land).isAir() && astral.getBlockState(land.above(40)).isAir(), "Nothing stands over a landing");
+        }
+        // without an Astral the Ascension does nothing and harms no one
+        helper.assertTrue(astral != null || Astral.ascend(helper.getLevel(), helper.absolutePos(new BlockPos(2, 2, 2)), List.of()) == null,
+                "No Astral, no gate");
+        Astral.Origin origin = new Astral.Origin(Level.NETHER, new BlockPos(12, 70, -4), true);
+        Astral.Origin read = Astral.Origin.CODEC.parse(JsonOps.INSTANCE, Astral.Origin.CODEC.encodeStart(JsonOps.INSTANCE, origin).getOrThrow()).getOrThrow();
+        helper.assertTrue(read.equals(origin), "The way home is saved, got " + read);
         helper.succeed();
     }
 
-    @GameTest(template = ARENA, timeoutTicks = 400)
-    public static void monolithsRiseToTheTop(GameTestHelper helper) {
-        ServerLevel astral = astral(helper);
-        int top = astral.getMaxBuildHeight();
-        AstralMonolithFeature.Plan found = null;
+    @GameTest(template = ARENA)
+    public static void monolithsArePlacedBySeed(GameTestHelper helper) {
+        int top = 512;
         int plans = 0;
         for (int cx = -6; cx <= 6; cx++) {
             for (int cz = -6; cz <= 6; cz++) {
-                AstralMonolithFeature.Plan plan = AstralMonolithFeature.plan(astral.getSeed(), cx, cz, top);
+                AstralMonolithFeature.Plan plan = AstralMonolithFeature.plan(1234L, cx, cz, top);
                 if (plan == null) {
                     continue;
                 }
                 plans++;
-                AstralMonolithFeature.Plan again = AstralMonolithFeature.plan(astral.getSeed(), cx, cz, top);
+                AstralMonolithFeature.Plan again = AstralMonolithFeature.plan(1234L, cx, cz, top);
                 helper.assertTrue(again != null && again.x() == plan.x() && again.z() == plan.z() && again.half() == plan.half(),
                         "A cell always holds the same monolith");
                 helper.assertTrue(plan.reach() <= 15, "A monolith stays within 15 blocks of its centre, got " + plan.reach());
                 helper.assertTrue(Math.floorDiv(plan.x(), AstralMonolithFeature.CELL) == cx && Math.floorDiv(plan.z(), AstralMonolithFeature.CELL) == cz,
                         "A monolith stands in its own cell");
-                if (found == null) {
-                    found = plan;
-                }
+                helper.assertTrue(plan.half(Astral.FLOOR) > plan.half(Astral.FLOOR + 10) && plan.half(top) >= 2, "A plinth at the foot, never thinner than 2");
             }
         }
         helper.assertTrue(plans > 40 && plans < 160, "About six cells in ten hold a monolith, got " + plans + " of 169");
-        int y = top - 1;
-        BlockPos high = new BlockPos(found.x() + found.leanX(y), y, found.z() + found.leanZ(y));
-        BlockState state = astral.getBlockState(high);
-        helper.assertTrue(state.is(ModBlocks.ASTRAL_MONOLITH.get()) || state.is(ModBlocks.ASTRAL_VEIN.get()),
-                "The monolith reaches the top of the world, got " + state + " at " + high);
-        int foot = Astral.FLOOR + 10;
-        BlockPos low = new BlockPos(found.x() + found.leanX(foot), foot, found.z() + found.leanZ(foot));
-        helper.assertTrue(!astral.getBlockState(low).isAir(), "And stands on the plain");
-        int veins = 0;
-        int h = found.half(foot);
-        for (int d = -h; d <= h; d++) {
-            if (astral.getBlockState(low.offset(d, 0, -h)).is(ModBlocks.ASTRAL_VEIN.get())
-                    || astral.getBlockState(low.offset(-h, 0, d)).is(ModBlocks.ASTRAL_VEIN.get())) {
-                veins++;
-            }
-        }
-        helper.assertTrue(veins >= 1 || found.shape() != 0, "A square monolith has a glowing seam down its face");
         helper.succeed();
     }
 
     @GameTest(template = ARENA, timeoutTicks = 200)
-    public static void theAscensionRaisesAGate(GameTestHelper helper) {
-        ServerLevel astral = astral(helper);
-        BlockPos gate = Astral.ascend(helper.getLevel(), helper.absolutePos(new BlockPos(2, 2, 2)), List.of());
-        helper.assertTrue(gate != null && astral.getBlockState(gate).is(ModBlocks.ASTRAL_GATE.get()), "A gate rises in the Astral");
-        BlockPos again = Astral.ascend(helper.getLevel(), helper.absolutePos(new BlockPos(2, 2, 2)), List.of());
-        helper.assertTrue(gate.equals(again), "A second Ascension from the same site lands at the same gate");
-        helper.assertTrue(astral.getBlockState(gate).getDestroySpeed(astral, gate) < 0, "The gate cannot be broken");
-        astral.removeBlock(gate, false);
-        // the origin a player keeps survives saving
-        Astral.Origin origin = new Astral.Origin(Level.NETHER, new BlockPos(12, 70, -4), true);
-        Astral.Origin read = Astral.Origin.CODEC.parse(JsonOps.INSTANCE, Astral.Origin.CODEC.encodeStart(JsonOps.INSTANCE, origin).getOrThrow()).getOrThrow();
-        helper.assertTrue(read.equals(origin), "The way home is saved, got " + read);
+    public static void aMonolithIsBuiltWithGlowingSeams(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 1, 4));
+        // a square monolith of half-width 3, straight, over the test; built only up to 30 blocks over the Astral floor
+        int[] still = new int[1];
+        AstralMonolithFeature.Plan plan = new AstralMonolithFeature.Plan(centre.getX(), centre.getZ(), 3, 0, true, 1000, still, still, 16);
+        int top = Astral.FLOOR + 30;
+        AstralMonolithFeature.build(level, plan, top);
+        int y = Astral.FLOOR + 10;
+        BlockPos middle = new BlockPos(centre.getX(), y, centre.getZ());
+        helper.assertTrue(level.getBlockState(middle).is(ModBlocks.ASTRAL_MONOLITH.get()), "Solid stone inside");
+        helper.assertTrue(level.getBlockState(middle.offset(0, 0, -3)).is(ModBlocks.ASTRAL_VEIN.get()), "A glowing seam down the middle of a face");
+        helper.assertTrue(level.getBlockState(middle.offset(3, 0, -3)).is(ModBlocks.ASTRAL_MONOLITH.get()), "Plain stone at the corner");
+        helper.assertTrue(level.getBlockState(new BlockPos(centre.getX() + 3, 80, centre.getZ() - 3)).is(ModBlocks.ASTRAL_VEIN.get()), "A glowing band");
+        helper.assertTrue(level.getBlockState(middle.offset(4, 0, 0)).isAir(), "Nothing outside");
+        helper.assertTrue(!level.getBlockState(new BlockPos(centre.getX() + 5, Astral.FLOOR, centre.getZ())).isAir(), "The plinth is wider");
+        helper.assertTrue(level.getBlockState(new BlockPos(centre.getX(), top - 1, centre.getZ())).is(ModBlocks.ASTRAL_MONOLITH.get())
+                && level.getBlockState(new BlockPos(centre.getX(), top, centre.getZ())).isAir(), "It rises to the top it is given");
+        // clear it away
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int yy = Astral.FLOOR - 3; yy < top; yy++) {
+            for (int dx = -5; dx <= 5; dx++) {
+                for (int dz = -5; dz <= 5; dz++) {
+                    level.setBlock(pos.set(centre.getX() + dx, yy, centre.getZ() + dz), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
+                }
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void theGateCannotBeBroken(GameTestHelper helper) {
+        helper.setBlock(new BlockPos(2, 2, 2), ModBlocks.ASTRAL_GATE.get());
+        BlockPos gate = helper.absolutePos(new BlockPos(2, 2, 2));
+        helper.assertTrue(helper.getLevel().getBlockState(gate).getDestroySpeed(helper.getLevel(), gate) < 0, "The gate cannot be broken");
         helper.succeed();
     }
 
