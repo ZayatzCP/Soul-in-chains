@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:dirt",
+    "#minecraft:sand",
+    "#minecraft:base_stone_overworld",
+    "#minecraft:base_stone_nether",
+    "#minecraft:terracotta",
+    "minecraft:gravel",
+    "minecraft:clay",
+    "minecraft:cobblestone",
+    "minecraft:mossy_cobblestone",
+    "minecraft:snow_block",
+    "minecraft:netherrack",
+    "minecraft:end_stone",
+    "minecraft:calcite",
+    "minecraft:dripstone_block",
+    "minecraft:sandstone",
+    "minecraft:red_sandstone",
+    "minecraft:soul_sand",
+    "minecraft:soul_soil",
+    "minecraft:mud",
+    "minecraft:packed_mud",
+    "minecraft:cobbled_deepslate",
+    "minecraft:magma_block",
+    "minecraft:mycelium",
+    "minecraft:podzol",
+    "minecraft:grass_block"
+  ]
+}

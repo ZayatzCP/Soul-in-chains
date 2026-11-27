@@ -1,0 +1,54 @@
+{
+  "category": "material",
+  "icon": "minecraft:pointed_dripstone",
+  "sort": 310,
+  "subjects": [
+    "minecraft:pointed_dripstone",
+    "minecraft:cobblestone",
+    "minecraft:gravel"
+  ],
+  "properties": [
+    "dense",
+    "rooted"
+  ],
+  "requires": [
+    "arcane_artifacts:druid/awakening"
+  ],
+  "notes": 1,
+  "experiments": [
+    {
+      "id": "break",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_break",
+          "block": "*"
+        }
+      ]
+    },
+    {
+      "id": "launch",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_launch",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "dripstone",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:pointed_dripstone"
+        }
+      ]
+    }
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_earthen_surge",
+    "arcane_artifacts:glyph_stone_cage",
+    "arcane_artifacts:glyph_stone_lances"
+  ]
+}

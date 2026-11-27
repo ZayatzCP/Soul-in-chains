@@ -35,6 +35,11 @@ public final class ModAttachments {
             () -> AttachmentType.builder(() -> com.soulinchains.arcaneartifacts.astral.Astral.Origin.NONE)
                     .serialize(com.soulinchains.arcaneartifacts.astral.Astral.Origin.CODEC).copyOnDeath().build());
 
+    /** The Stone Hoard: real blocks torn from the ground, circling the player (1.43). */
+    public static final Supplier<AttachmentType<java.util.List<net.minecraft.world.level.block.state.BlockState>>> STONE_HOARD = REGISTER.register("stone_hoard",
+            () -> AttachmentType.<java.util.List<net.minecraft.world.level.block.state.BlockState>>builder(() -> new java.util.ArrayList<>())
+                    .serialize(com.soulinchains.arcaneartifacts.geo.StoneHoard.CODEC).build());
+
     private ModAttachments() {
     }
 }

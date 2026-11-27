@@ -1,0 +1,60 @@
+{
+  "category": "spatial",
+  "icon": "minecraft:lodestone",
+  "sort": 65,
+  "subjects": [
+    "minecraft:lodestone",
+    "minecraft:deepslate",
+    "minecraft:heavy_core"
+  ],
+  "properties": [
+    "dense",
+    "hungry"
+  ],
+  "requires": [
+    "arcane_artifacts:singularity"
+  ],
+  "notes": 1,
+  "experiments": [
+    {
+      "id": "pull",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "ars_nouveau:glyph_pull",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "tornado",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_tornado",
+          "block": "*"
+        },
+        {
+          "trigger": "arcane_artifacts:spell_effect",
+          "glyph": "arcane_artifacts:glyph_tornado",
+          "entity": "*"
+        }
+      ]
+    },
+    {
+      "id": "deepslate",
+      "any_of": [
+        {
+          "trigger": "arcane_artifacts:observe",
+          "item": "minecraft:deepslate"
+        }
+      ]
+    }
+  ],
+  "unlocks": [
+    "arcane_artifacts:glyph_myriad_volley",
+    "arcane_artifacts:glyph_stone_wings",
+    "arcane_artifacts:glyph_cataclysm",
+    "arcane_artifacts:glyph_stone_dominion"
+  ]
+}

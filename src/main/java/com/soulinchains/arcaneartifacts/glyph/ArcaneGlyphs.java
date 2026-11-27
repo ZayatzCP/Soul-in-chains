@@ -39,7 +39,14 @@ public final class ArcaneGlyphs {
             com.soulinchains.arcaneartifacts.necro.EffectBond.INSTANCE,
             com.soulinchains.arcaneartifacts.necro.EffectPhantomStep.INSTANCE,
             com.soulinchains.arcaneartifacts.necro.EffectCurseOfShackles.INSTANCE,
-            com.soulinchains.arcaneartifacts.necro.EffectChainExecution.INSTANCE
+            com.soulinchains.arcaneartifacts.necro.EffectChainExecution.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.EarthenSurge.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.StoneCage.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.StoneLances.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.MyriadVolley.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.StoneWings.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.Cataclysm.INSTANCE,
+            com.soulinchains.arcaneartifacts.geo.StoneGlyphs.StoneDominion.INSTANCE
     );
 
     /** Called from the mod constructor: Ars builds glyph items and per-glyph configs from this. */
