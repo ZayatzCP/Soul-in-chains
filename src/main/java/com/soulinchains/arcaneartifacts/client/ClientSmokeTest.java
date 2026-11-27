@@ -177,6 +177,7 @@ public final class ClientSmokeTest {
                     ticks = 0;
                     portrait = 0;
                     mc.options.hideGui = true;
+                    mc.options.fov().set(40);
                     MinecraftServer server = mc.getSingleplayerServer();
                     if (server != null) {
                         server.execute(() -> buildStudio(server));
@@ -194,6 +195,7 @@ public final class ClientSmokeTest {
                 int t = (ticks - first) % PORTRAIT;
                 if (portrait >= types.size()) {
                     mc.options.hideGui = false;
+                    mc.options.fov().set(70);
                     finish(mc);
                     return;
                 }
@@ -283,17 +285,20 @@ public final class ClientSmokeTest {
             mob.setPersistenceRequired();
         }
         if (living instanceof Servant servant) {
-            servant.bind(player);
+            // bound to a stand-in, so no chain runs from it to the camera
+            servant.bind(net.neoforged.neoforge.common.util.FakePlayerFactory.get(level,
+                    new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "portrait_master")));
         }
         if (living instanceof com.soulinchains.arcaneartifacts.astral.Watcher watcher) {
             watcher.posed = true;
         }
         level.addFreshEntity(living);
         sitter = living;
-        double h = living.getBbHeight() * (living instanceof com.soulinchains.arcaneartifacts.astral.Watcher ? 2.5 : 1);
+        double h = living.getBbHeight();
         double w = living.getBbWidth();
-        double distance = Math.max(2.6, h * 1.35 + w * 0.9);
-        double eye = STUDIO.getY() + h * 0.55 + distance * 0.18;
+        // a 40-degree view shows about 0.73 of the distance from top to bottom: the creature fills two thirds of it
+        double distance = Math.max(1.8, 2.05 * Math.max(h, w * 1.1)) + w / 2;
+        double eye = STUDIO.getY() + h * 0.5 + distance * 0.12;
         float pitch = (float) Math.toDegrees(Math.atan2(eye - (STUDIO.getY() + h * 0.5), distance));
         player.teleportTo(level, STUDIO.getX() + 0.5, eye - 1.62, STUDIO.getZ() + 0.5 - distance, 0F, pitch);
         posed = true;
