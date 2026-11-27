@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -194,9 +195,15 @@ public final class ClientSmokeTest {
                 }
                 int t = (ticks - first) % PORTRAIT;
                 if (portrait >= types.size()) {
-                    mc.options.hideGui = false;
                     mc.options.fov().set(70);
-                    finish(mc);
+                    stage = 6;
+                    ticks = 0;
+                    scene = 0;
+                    sceneTicks = 0;
+                    MinecraftServer server = mc.getSingleplayerServer();
+                    if (server != null) {
+                        server.execute(() -> spellStudio(server));
+                    }
                     return;
                 }
                 MinecraftServer server = mc.getSingleplayerServer();
@@ -205,13 +212,202 @@ public final class ClientSmokeTest {
                     server.execute(() -> pose(server, type));
                 } else if (t == PORTRAIT - 1) {
                     if (posed) {
-                        shoot(mc, BuiltInRegistries.ENTITY_TYPE.getKey(types.get(portrait)).getPath());
+                        shoot(mc, BuiltInRegistries.ENTITY_TYPE.getKey(types.get(portrait)).getPath(), false);
                     }
                     portrait++;
                 }
             }
+            case 6 -> {
+                // the stone spells, scene by scene: set up, keep the caster's visuals going, then shoot
+                MinecraftServer server = mc.getSingleplayerServer();
+                if (server == null || ticks < 100) {
+                    return;
+                }
+                if (scene >= SCENES.size()) {
+                    server.execute(() -> com.soulinchains.arcaneartifacts.geo.HoardVisuals.clear(caster == null ? java.util.UUID.randomUUID() : caster.getUUID()));
+                    mc.options.hideGui = false;
+                    mc.options.fov().set(70);
+                    finish(mc);
+                    return;
+                }
+                Scene current = SCENES.get(scene);
+                if (sceneTicks == 0) {
+                    server.execute(() -> {
+                        ServerLevel level = server.overworld();
+                        if (current.setup() != null) {
+                            current.setup().accept(level);
+                        }
+                        ServerPlayer player = player(server);
+                        if (player != null) {
+                            Vec3 cam = SPELLS.add(current.cam());
+                            Vec3 look = SPELLS.add(current.look()).subtract(cam);
+                            float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
+                            float pitch = (float) -Math.toDegrees(Math.atan2(look.y, Math.hypot(look.x, look.z)));
+                            player.teleportTo(level, cam.x, cam.y - 1.62, cam.z, yaw, pitch);
+                        }
+                    });
+                }
+                server.execute(() -> {
+                    if (caster != null) {
+                        com.soulinchains.arcaneartifacts.geo.HoardVisuals.update(server.overworld(), caster);
+                        com.soulinchains.arcaneartifacts.geo.HoardVisuals.updateWings(server.overworld(), caster);
+                    }
+                });
+                sceneTicks++;
+                if (sceneTicks >= current.wait()) {
+                    shoot(mc, "spell_" + current.name(), true);
+                    scene++;
+                    sceneTicks = 0;
+                }
+            }
             default -> {
             }
+        }
+    }
+
+    // ------------------------------------------------------------------ the stone spells, photographed
+
+    /** An open sky over a wide grass field, far from the creature studio. */
+    private static final Vec3 SPELLS = new Vec3(300.5, 201, 0.5);
+    private static int scene;
+    private static int sceneTicks;
+    private static net.neoforged.neoforge.common.util.FakePlayer caster;
+    private static net.minecraft.world.entity.decoration.ArmorStand body;
+    private static net.minecraft.world.entity.monster.Husk victim;
+    private static com.soulinchains.arcaneartifacts.geo.StonePhenomena.Cage cage;
+
+    record Scene(String name, int wait, @org.jetbrains.annotations.Nullable java.util.function.Consumer<ServerLevel> setup, Vec3 cam, Vec3 look) {
+    }
+
+    private static final List<BlockState> MIX = List.of(net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState(),
+            net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState(), net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState(),
+            net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState(),
+            net.minecraft.world.level.block.Blocks.COBBLESTONE.defaultBlockState(), net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState(),
+            net.minecraft.world.level.block.Blocks.DEEPSLATE.defaultBlockState());
+
+    private static List<BlockState> mix(int n) {
+        List<BlockState> out = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            out.add(MIX.get(i % MIX.size()));
+        }
+        return out;
+    }
+
+    private static void fill(int n) {
+        com.soulinchains.arcaneartifacts.geo.StoneHoard.clear(caster);
+        for (BlockState state : mix(n)) {
+            com.soulinchains.arcaneartifacts.geo.StoneHoard.add(caster, state);
+        }
+    }
+
+    private static void wings(boolean open, boolean flying) {
+        com.soulinchains.arcaneartifacts.geo.HoardVisuals.grantWings(caster, open ? 20 * 60 : 0);
+        caster.getAbilities().flying = flying;
+        if (!open) {
+            caster.getPersistentData().remove(ArcaneArtifacts.MODID + ":stone_wings_until");
+        }
+    }
+
+    private static net.minecraft.world.entity.monster.Husk victim(ServerLevel level, Vec3 at) {
+        if (victim != null) {
+            victim.discard();
+        }
+        victim = EntityType.HUSK.create(level);
+        victim.moveTo(at.x, at.y, at.z, 180F, 0F);
+        victim.setYHeadRot(180F);
+        victim.yBodyRot = 180F;
+        victim.setNoAi(true);
+        victim.setInvulnerable(true);
+        level.addFreshEntity(victim);
+        return victim;
+    }
+
+    private static final Vec3 C = Vec3.ZERO;
+    private static final Vec3 BODY = new Vec3(0, 1.4, 0);
+    private static final Vec3 T = new Vec3(0, 0, 7);
+    private static final Vec3 M = new Vec3(0, 0, 12);
+
+    private static final List<Scene> SCENES = List.of(
+            new Scene("hoard_rings", 12, l -> { fill(32); wings(false, false); }, new Vec3(3.5, 2.6, 6.5), BODY),
+            new Scene("hoard_rings_close", 8, null, new Vec3(1.8, 1.9, 3.2), BODY),
+            new Scene("wings_open_front", 16, l -> wings(true, false), new Vec3(0, 4, 24), new Vec3(0, 3, 0)),
+            new Scene("wings_flying_back_1", 12, l -> wings(true, true), new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
+            new Scene("wings_flying_back_2", 10, null, new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
+            new Scene("wings_flying_back_3", 10, null, new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
+            new Scene("wings_flying_back_4", 10, null, new Vec3(0, 7, -27), new Vec3(0, 3, 0)),
+            new Scene("wings_side", 6, null, new Vec3(26, 5, 2), new Vec3(0, 3, 0)),
+            new Scene("wings_three_quarter", 6, null, new Vec3(-16, 6, 18), new Vec3(0, 3, 0)),
+            new Scene("wings_top", 6, null, new Vec3(0.2, 32, -6), new Vec3(0, 1, 0)),
+            new Scene("wings_close_back", 6, null, new Vec3(2, 3.2, -6), new Vec3(0, 2.2, 0)),
+            new Scene("earthen_surge", 7, l -> {
+                wings(false, false);
+                com.soulinchains.arcaneartifacts.geo.StoneHoard.clear(caster);
+                List<BlockPos> where = new ArrayList<>();
+                List<BlockState> what = new ArrayList<>();
+                com.soulinchains.arcaneartifacts.geo.StoneGlyphs.EarthenSurge.surge(l, caster, BlockPos.containing(SPELLS.add(4, -1, 3)), 3, 16, where, what);
+                com.soulinchains.arcaneartifacts.phenomena.Phenomena.add(new com.soulinchains.arcaneartifacts.geo.StonePhenomena.Uplift(l, caster, where, what));
+            }, new Vec3(9, 3.5, 8), new Vec3(2, 1, 2)),
+            new Scene("stone_cage", 6, l -> {
+                fill(32);
+                net.minecraft.world.entity.monster.Husk husk = victim(l, SPELLS.add(T));
+                cage = new com.soulinchains.arcaneartifacts.geo.StonePhenomena.Cage(l, caster, husk, 20 * 30);
+                cage.raise(mix(12));
+            }, new Vec3(3.5, 3.2, 12.5), T.add(0, 1, 0)),
+            new Scene("stone_lances", 8, l -> {
+                if (cage != null) {
+                    cage.placed().forEach(p -> l.removeBlock(p, false));
+                    cage.placed().clear();
+                }
+                victim(l, SPELLS.add(T));
+                com.soulinchains.arcaneartifacts.phenomena.Phenomena.add(new com.soulinchains.arcaneartifacts.geo.StonePhenomena.Lances(l, caster,
+                        SPELLS.add(T), mix(10), 0F, 1.5, 0));
+            }, new Vec3(4.5, 3, 13.5), T.add(0, 1.2, 0)),
+            new Scene("myriad_volley", 14, l -> {
+                fill(32);
+                net.minecraft.world.entity.monster.Husk husk = victim(l, SPELLS.add(0, 0, 16));
+                com.soulinchains.arcaneartifacts.phenomena.Phenomena.add(new com.soulinchains.arcaneartifacts.geo.StonePhenomena.Volley(l, caster,
+                        com.soulinchains.arcaneartifacts.geo.StoneHoard.take(caster, 32), List.of(husk), husk.position(), 0F));
+            }, new Vec3(11, 4, 7), new Vec3(0, 1.5, 7)),
+            new Scene("cataclysm_falling", 12, l -> {
+                if (victim != null) {
+                    victim.discard();
+                    victim = null;
+                }
+                com.soulinchains.arcaneartifacts.phenomena.Phenomena.add(new com.soulinchains.arcaneartifacts.geo.StonePhenomena.Meteor(l, caster,
+                        SPELLS.add(M), mix(24), 0F, 6, true));
+            }, new Vec3(32, 14, -14), M.add(0, 26, 0)),
+            new Scene("cataclysm_low", 14, null, new Vec3(30, 10, -12), M.add(0, 10, 0)),
+            new Scene("cataclysm_impact", 9, null, new Vec3(22, 9, -8), M.add(0, 2, 0)),
+            new Scene("cataclysm_shockwave", 5, null, new Vec3(22, 12, -10), M.add(0, 1, 0)),
+            new Scene("cataclysm_crater", 40, null, new Vec3(10, 12, 1), M));
+
+    /** The open field, the caster (a stand-in player who holds the hoard) and a body for the eye (an armour stand). */
+    private static void spellStudio(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        level.setDayTime(6000);
+        BlockPos base = BlockPos.containing(SPELLS);
+        for (int dx = -30; dx <= 30; dx++) {
+            for (int dz = -24; dz <= 36; dz++) {
+                level.setBlock(base.offset(dx, -2, dz), net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState(), 2);
+                level.setBlock(base.offset(dx, -1, dz), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+            }
+        }
+        caster = net.neoforged.neoforge.common.util.FakePlayerFactory.get(level, new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "stone_mage"));
+        caster.setGameMode(GameType.SURVIVAL);
+        caster.moveTo(SPELLS.x, SPELLS.y, SPELLS.z, 0F, 0F);
+        caster.setYRot(0F);
+        caster.yBodyRot = 0F;
+        caster.setYHeadRot(0F);
+        body = EntityType.ARMOR_STAND.create(level);
+        body.moveTo(SPELLS.x, SPELLS.y, SPELLS.z, 0F, 0F);
+        body.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.LEATHER_HELMET));
+        body.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(net.minecraft.world.item.Items.LEATHER_CHESTPLATE));
+        body.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, new ItemStack(net.minecraft.world.item.Items.LEATHER_LEGGINGS));
+        body.setItemSlot(net.minecraft.world.entity.EquipmentSlot.FEET, new ItemStack(net.minecraft.world.item.Items.LEATHER_BOOTS));
+        level.addFreshEntity(body);
+        ServerPlayer player = player(server);
+        if (player != null) {
+            player.teleportTo(level, SPELLS.x, SPELLS.y + 3, SPELLS.z - 10, 0F, 10F);
         }
     }
 
@@ -305,18 +501,20 @@ public final class ClientSmokeTest {
     }
 
     /** The last frame, squared and shrunk to 320x320, written into the log as JPEG in Base64 (to be put together outside). */
-    private static void shoot(Minecraft mc, String name) {
+    private static void shoot(Minecraft mc, String name, boolean wide) {
         try (com.mojang.blaze3d.platform.NativeImage frame = net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget())) {
             int w = frame.getWidth();
             int h = frame.getHeight();
-            int side = Math.min(w, h);
-            int x0 = (w - side) / 2;
-            int y0 = (h - side) / 2;
-            int size = 320;
-            java.awt.image.BufferedImage out = new java.awt.image.BufferedImage(size, size, java.awt.image.BufferedImage.TYPE_INT_RGB);
-            for (int y = 0; y < size; y++) {
-                for (int x = 0; x < size; x++) {
-                    int c = frame.getPixelRGBA(x0 + x * side / size, y0 + y * side / size);
+            int sw = wide ? w : Math.min(w, h);
+            int sh = wide ? h : Math.min(w, h);
+            int x0 = (w - sw) / 2;
+            int y0 = (h - sh) / 2;
+            int ow = wide ? 640 : 320;
+            int oh = wide ? ow * sh / sw : 320;
+            java.awt.image.BufferedImage out = new java.awt.image.BufferedImage(ow, oh, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            for (int y = 0; y < oh; y++) {
+                for (int x = 0; x < ow; x++) {
+                    int c = frame.getPixelRGBA(x0 + x * sw / ow, y0 + y * sh / oh);
                     out.setRGB(x, y, (c & 255) << 16 | (c >> 8 & 255) << 8 | (c >> 16 & 255));
                 }
             }
