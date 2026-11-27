@@ -29,6 +29,8 @@ public class Watcher extends Mob {
     public static final double NEAR = 24;
 
     private WeakReference<Player> watched = new WeakReference<>(null);
+    /** Held still for a portrait (the client test): it neither watches nor vanishes. */
+    public boolean posed;
     private int gazed;
     private int age;
 
@@ -77,7 +79,7 @@ public class Watcher extends Mob {
     @Override
     public void tick() {
         super.tick();
-        if (!(level() instanceof ServerLevel)) {
+        if (!(level() instanceof ServerLevel) || posed) {
             return;
         }
         Player player = watched.get();

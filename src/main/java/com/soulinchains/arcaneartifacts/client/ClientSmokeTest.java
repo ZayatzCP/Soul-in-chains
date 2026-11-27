@@ -173,11 +173,157 @@ public final class ClientSmokeTest {
                     if (mc.level == null || com.soulinchains.arcaneartifacts.astral.Astral.isAstral(mc.level)) {
                         problems.add("the Astral Gate did not bring the player home");
                     }
+                    stage = 5;
+                    ticks = 0;
+                    portrait = 0;
+                    mc.options.hideGui = true;
+                    MinecraftServer server = mc.getSingleplayerServer();
+                    if (server != null) {
+                        server.execute(() -> buildStudio(server));
+                    }
+                    ArcaneArtifacts.LOGGER.info("ARCANE_SMOKE: portraits of {} creatures", entityTypes().size());
+                }
+            }
+            case 5 -> {
+                // one portrait every PORTRAIT ticks (the first waits for the studio's chunks)
+                List<EntityType<?>> types = entityTypes();
+                int first = 100;
+                if (ticks < first) {
+                    return;
+                }
+                int t = (ticks - first) % PORTRAIT;
+                if (portrait >= types.size()) {
+                    mc.options.hideGui = false;
                     finish(mc);
+                    return;
+                }
+                MinecraftServer server = mc.getSingleplayerServer();
+                if (t == 0 && server != null) {
+                    EntityType<?> type = types.get(portrait);
+                    server.execute(() -> pose(server, type));
+                } else if (t == PORTRAIT - 1) {
+                    if (posed) {
+                        shoot(mc, BuiltInRegistries.ENTITY_TYPE.getKey(types.get(portrait)).getPath());
+                    }
+                    portrait++;
                 }
             }
             default -> {
             }
+        }
+    }
+
+    // ------------------------------------------------------------------ portraits
+
+    static final int PORTRAIT = 24;
+    private static int portrait;
+    private static volatile boolean posed;
+    private static Entity sitter;
+    private static final BlockPos STUDIO = new BlockPos(0, 230, 0);
+
+    /** A grass floor high in the sky under a wide black roof (no sun on the undead), lit all round by invisible lights. */
+    private static void buildStudio(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        level.setDayTime(6000);
+        level.setWeatherParameters(6000, 0, false, false);
+        for (int dx = -12; dx <= 12; dx++) {
+            for (int dz = -12; dz <= 12; dz++) {
+                level.setBlock(STUDIO.offset(dx, -1, dz), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+            }
+        }
+        for (int dx = -22; dx <= 22; dx++) {
+            for (int dz = -22; dz <= 22; dz++) {
+                level.setBlock(STUDIO.offset(dx, 16, dz), net.minecraft.world.level.block.Blocks.BLACK_CONCRETE.defaultBlockState(), 2);
+            }
+        }
+        for (int dx = -6; dx <= 6; dx += 3) {
+            for (int dz = -6; dz <= 6; dz += 3) {
+                for (int dy : new int[]{1, 6}) {
+                    level.setBlock(STUDIO.offset(dx, dy, dz), net.minecraft.world.level.block.Blocks.LIGHT.defaultBlockState()
+                            .setValue(net.minecraft.world.level.block.LightBlock.LEVEL, 15), 2);
+                }
+            }
+        }
+        ServerPlayer player = player(server);
+        if (player != null) {
+            player.setGameMode(GameType.CREATIVE);
+            player.getAbilities().flying = true;
+            player.onUpdateAbilities();
+            player.teleportTo(level, STUDIO.getX() + 0.5, STUDIO.getY(), STUDIO.getZ() - 6.5, 0F, 10F);
+        }
+    }
+
+    /** Stands one creature in the studio facing the camera, and puts the camera in front of it. */
+    private static void pose(MinecraftServer server, EntityType<?> type) {
+        posed = false;
+        ServerLevel level = server.overworld();
+        if (sitter != null) {
+            sitter.discard();
+            sitter = null;
+        }
+        ServerPlayer player = player(server);
+        Entity entity;
+        try {
+            entity = type.create(level);
+        } catch (Throwable t) {
+            return;
+        }
+        if (!(entity instanceof net.minecraft.world.entity.LivingEntity living) || player == null) {
+            if (entity != null) {
+                entity.discard();
+            }
+            return;
+        }
+        living.moveTo(STUDIO.getX() + 0.5, STUDIO.getY(), STUDIO.getZ() + 0.5, 180F, 0F);
+        living.setYHeadRot(180F);
+        living.yBodyRot = 180F;
+        living.setInvulnerable(true);
+        if (living instanceof Mob mob) {
+            mob.setNoAi(true);
+            mob.setPersistenceRequired();
+        }
+        if (living instanceof Servant servant) {
+            servant.bind(player);
+        }
+        if (living instanceof com.soulinchains.arcaneartifacts.astral.Watcher watcher) {
+            watcher.posed = true;
+        }
+        level.addFreshEntity(living);
+        sitter = living;
+        double h = living.getBbHeight() * (living instanceof com.soulinchains.arcaneartifacts.astral.Watcher ? 2.5 : 1);
+        double w = living.getBbWidth();
+        double distance = Math.max(2.6, h * 1.35 + w * 0.9);
+        double eye = STUDIO.getY() + h * 0.55 + distance * 0.18;
+        float pitch = (float) Math.toDegrees(Math.atan2(eye - (STUDIO.getY() + h * 0.5), distance));
+        player.teleportTo(level, STUDIO.getX() + 0.5, eye - 1.62, STUDIO.getZ() + 0.5 - distance, 0F, pitch);
+        posed = true;
+    }
+
+    /** The last frame, squared and shrunk to 320x320, written into the log as JPEG in Base64 (to be put together outside). */
+    private static void shoot(Minecraft mc, String name) {
+        try (com.mojang.blaze3d.platform.NativeImage frame = net.minecraft.client.Screenshot.takeScreenshot(mc.getMainRenderTarget())) {
+            int w = frame.getWidth();
+            int h = frame.getHeight();
+            int side = Math.min(w, h);
+            int x0 = (w - side) / 2;
+            int y0 = (h - side) / 2;
+            int size = 320;
+            java.awt.image.BufferedImage out = new java.awt.image.BufferedImage(size, size, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            for (int y = 0; y < size; y++) {
+                for (int x = 0; x < size; x++) {
+                    int c = frame.getPixelRGBA(x0 + x * side / size, y0 + y * side / size);
+                    out.setRGB(x, y, (c & 255) << 16 | (c >> 8 & 255) << 8 | (c >> 16 & 255));
+                }
+            }
+            java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(out, "jpg", bytes);
+            String data = java.util.Base64.getEncoder().encodeToString(bytes.toByteArray());
+            int parts = (data.length() + 3999) / 4000;
+            for (int i = 0; i < parts; i++) {
+                ArcaneArtifacts.LOGGER.info("ARCANE_SHOT|{}|{}/{}|{}", name, i + 1, parts, data.substring(i * 4000, Math.min(data.length(), (i + 1) * 4000)));
+            }
+        } catch (Throwable t) {
+            ArcaneArtifacts.LOGGER.warn("ARCANE_SMOKE: no portrait of {}", name, t);
         }
     }
 
