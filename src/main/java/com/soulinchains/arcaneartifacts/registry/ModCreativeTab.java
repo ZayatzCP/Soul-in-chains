@@ -121,7 +121,6 @@ public final class ModCreativeTab {
                 output.accept(ModItems.AMBER_BLOCK.get());
                 output.accept(ModItems.ASTRAL_STONE.get());
                 output.accept(ModItems.ASTRAL_MONOLITH.get());
-                output.accept(ModItems.ASTRAL_VEIN.get());
                 output.accept(ModItems.ASTRAL_GATE.get());
                 output.accept(ModItems.PSEUDOMAGE_BOOTS.get());
                 output.accept(ModItems.DRUID_HERBARIUM.get());

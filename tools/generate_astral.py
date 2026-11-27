@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""1.41: the Astral - textures, block and item models, loot tables, tags, the dimension, its type and biome, the monolith
-feature and the Ascension rite. Run from the repository root: python3 tools/generate_astral.py"""
+"""1.41: the Astral - textures, block and item models, the dimension, its type and biome, the terrain feature (rises and
+monoliths) and the Ascension rite. The plain and the monoliths cannot be broken, so they have no loot tables or tool tags. Run from the repository root: python3 tools/generate_astral.py"""
 import json
 import os
 import random
@@ -12,7 +12,7 @@ A = os.path.join(ROOT, 'assets', 'arcane_artifacts')
 D = os.path.join(ROOT, 'data', 'arcane_artifacts')
 NS = 'arcane_artifacts'
 
-# the Astral's palette: a pale haze, a pale plain, dark monoliths with cold light in their seams
+# the Astral's palette: a pale haze, a pale plain, dark plain monoliths (only the gate glows)
 FOG = (0xB9, 0xC3, 0xD3)
 FLOOR = (0xA9, 0xB0, 0xBC)
 STONE = (0x23, 0x27, 0x30)
@@ -47,24 +47,13 @@ def textures():
     specks = {(r.randrange(16), r.randrange(16)) for _ in range(5)}
     png('astral_stone', lambda x, y: shade(FLOOR, 10 if (x, y) in specks else floor_noise[y][x]))
 
-    columns = [r.randint(-4, 4) for _ in range(16)]
     grain = [[r.randint(-2, 2) for _ in range(16)] for _ in range(16)]
-    flecks = {(r.randrange(16), r.randrange(16)) for _ in range(4)}
 
     def monolith(x, y):
-        return shade(STONE, columns[x] + grain[y][x] + (9 if (x, y) in flecks else 0))
+        # smooth, plain dark stone: no streaks, no flecks, no seams
+        return shade(STONE, grain[y][x])
 
     png('astral_monolith', monolith)
-
-    def vein(x, y):
-        # a cross of cold light: seams run on through vertical columns, bands through horizontal rows
-        if x in (7, 8) or y in (7, 8):
-            return GLOW
-        if x in (6, 9) or y in (6, 9):
-            return GLOW_EDGE
-        return shade(monolith(x, y), 6)
-
-    png('astral_vein', vein)
 
     def gate_side(x, y):
         if 6 <= x <= 9 and 3 <= y <= 12 and (x in (7, 8) or y in (5, 10)):
@@ -85,14 +74,10 @@ def textures():
 
 
 def blocks():
-    for name in ('astral_stone', 'astral_monolith', 'astral_vein'):
+    for name in ('astral_stone', 'astral_monolith'):
         w(os.path.join(A, 'blockstates', name + '.json'), {'variants': {'': {'model': f'{NS}:block/{name}'}}})
         w(os.path.join(A, 'models', 'block', name + '.json'), {'parent': 'minecraft:block/cube_all', 'textures': {'all': f'{NS}:block/{name}'}})
         w(os.path.join(A, 'models', 'item', name + '.json'), {'parent': f'{NS}:block/{name}'})
-        w(os.path.join(D, 'loot_table', 'blocks', name + '.json'), {
-            'type': 'minecraft:block',
-            'pools': [{'rolls': 1, 'bonus_rolls': 0, 'entries': [{'type': 'minecraft:item', 'name': f'{NS}:{name}'}],
-                       'conditions': [{'condition': 'minecraft:survives_explosion'}]}]})
     side, top = f'{NS}:block/astral_gate_side', f'{NS}:block/astral_gate_top'
 
     def box(f, t, uv_side, uv_top):
@@ -110,17 +95,6 @@ def blocks():
     w(os.path.join(A, 'models', 'item', 'astral_gate.json'), {'parent': f'{NS}:block/astral_gate'})
 
 
-def tags():
-    for tag, names in (('mineable/pickaxe', ['astral_stone', 'astral_monolith', 'astral_vein']),
-                       ('needs_diamond_tool', ['astral_monolith', 'astral_vein'])):
-        path = os.path.join(ROOT, 'data', 'minecraft', 'tags', 'block', tag + '.json')
-        data = json.load(open(path)) if os.path.exists(path) else {'replace': False, 'values': []}
-        for n in names:
-            if f'{NS}:{n}' not in data['values']:
-                data['values'].append(f'{NS}:{n}')
-        w(path, data)
-
-
 def world():
     color = FOG[0] << 16 | FOG[1] << 8 | FOG[2]
     w(os.path.join(D, 'dimension_type', 'astral.json'), {
@@ -136,9 +110,9 @@ def world():
                     'mood_sound': {'sound': 'minecraft:ambient.basalt_deltas.mood', 'tick_delay': 6000, 'block_search_extent': 8, 'offset': 2.0},
                     'music': {'sound': 'minecraft:music.end', 'min_delay': 6000, 'max_delay': 18000, 'replace_current_music': True}},
         'spawners': {}, 'spawn_costs': {}, 'carvers': {},
-        'features': [[f'{NS}:astral_monolith']]})
-    w(os.path.join(D, 'worldgen', 'configured_feature', 'astral_monolith.json'), {'type': f'{NS}:astral_monolith', 'config': {}})
-    w(os.path.join(D, 'worldgen', 'placed_feature', 'astral_monolith.json'), {'feature': f'{NS}:astral_monolith', 'placement': []})
+        'features': [[f'{NS}:astral_terrain']]})
+    w(os.path.join(D, 'worldgen', 'configured_feature', 'astral_terrain.json'), {'type': f'{NS}:astral_terrain', 'config': {}})
+    w(os.path.join(D, 'worldgen', 'placed_feature', 'astral_terrain.json'), {'feature': f'{NS}:astral_terrain', 'placement': []})
     w(os.path.join(D, 'dimension', 'astral.json'), {
         'type': f'{NS}:astral',
         'generator': {'type': 'minecraft:flat', 'settings': {
@@ -154,5 +128,4 @@ def world():
 if __name__ == '__main__':
     textures()
     blocks()
-    tags()
     world()

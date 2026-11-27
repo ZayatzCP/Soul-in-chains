@@ -2050,12 +2050,11 @@
   "arcane_artifacts.codex.reward.text": "A rite is generous to those who see it through. A gift falls on the altar, the richer the higher the quality (Weak - one roll, Perfect - four, each Vein one more). Every participant gets experience. Whatever the summons kill counts as yours: full loot and experience, times the rite's multiplier (up to x3). And when a summon's time is up, it leaves its own loot as tribute.",
   "block.arcane_artifacts.astral_stone": "Astral Stone",
   "block.arcane_artifacts.astral_monolith": "Astral Monolith",
-  "block.arcane_artifacts.astral_vein": "Astral Vein",
   "block.arcane_artifacts.astral_gate": "Astral Gate",
   "arcane_artifacts.astral.arrived": "The Astral. No wind, no sun, no end. The gate behind you is the way back.",
   "arcane_artifacts.astral.gate_silent": "The gate is silent: it opens only from the Astral.",
   "arcane_artifacts.rite.name.ascend": "The Ascension",
   "arcane_artifacts.codex.kind.ascend": "Ascension",
-  "arcane_artifacts.codex.result.ascend": "Result: every participant goes into the Astral, an empty plain where monoliths rise higher than sight. Where they land an Astral Gate rises: right-click it to return each of them to where they left from.",
+  "arcane_artifacts.codex.result.ascend": "Result: every participant goes into the Astral, an empty rolling plain where monoliths stand out of the ground, some higher than sight. Where they land an Astral Gate rises: right-click it to return each of them to where they left from.",
   "dimension.arcane_artifacts.astral": "The Astral"
 }

@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Astral (1.41): an empty plain under a pale haze, with monoliths that rise out of sight. It is reached by the
+ * The Astral (1.41): an empty, gently rolling plain under a pale haze, with monoliths of plain unbreakable stone. It is reached by the
  * Ascension rite and left through the Astral Gate the rite raises where its participants land; the gate sends each of them
  * back to the place they ascended from.
  */
@@ -35,7 +35,7 @@ public final class Astral {
     public static final ResourceKey<Level> ASTRAL = ResourceKey.create(Registries.DIMENSION,
             ResourceLocation.fromNamespaceAndPath(ArcaneArtifacts.MODID, "astral"));
     public static final ResourceLocation EFFECTS = ResourceLocation.fromNamespaceAndPath(ArcaneArtifacts.MODID, "astral");
-    /** The top block of the plain; one stands at {@link #FLOOR} + 1. */
+    /** The top block of the flat plain (rises lift it, see {@link AstralTerrainFeature#ground}). */
     public static final int FLOOR = 63;
     /** How far the landing search goes from the point under the rite, in blocks. */
     static final int SEARCH = 96;
@@ -61,9 +61,14 @@ public final class Astral {
         return server.getLevel(ASTRAL);
     }
 
-    /** Whether a player could stand on the plain at this column: the plain's floor, no monolith over it. */
+    /** Whether a player could stand on the plain at this column: bare ground, no monolith over it. */
     static boolean open(ServerLevel astral, int x, int z) {
-        return astral.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) == FLOOR + 1;
+        return astral.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) == AstralTerrainFeature.ground(astral.getSeed(), x, z) + 1;
+    }
+
+    /** Where one stands on the ground at (x, z). */
+    static int standY(ServerLevel astral, int x, int z) {
+        return AstralTerrainFeature.ground(astral.getSeed(), x, z) + 1;
     }
 
     /**
@@ -81,12 +86,12 @@ public final class Astral {
                     int cz = z + dz;
                     if (open(astral, cx, cz) && open(astral, cx + 3, cz + 3) && open(astral, cx - 3, cz - 3)
                             && open(astral, cx + 3, cz - 3) && open(astral, cx - 3, cz + 3)) {
-                        return new BlockPos(cx, FLOOR + 1, cz);
+                        return new BlockPos(cx, standY(astral, cx, cz), cz);
                     }
                 }
             }
         }
-        return new BlockPos(x, FLOOR + 1, z);
+        return new BlockPos(x, standY(astral, x, z), z);
     }
 
     /**
@@ -116,7 +121,7 @@ public final class Astral {
             double x = gate.getX() + 0.5 + Math.cos(angle) * 2.5;
             double z = gate.getZ() + 0.5 + Math.sin(angle) * 2.5;
             float yaw = (float) (Mth.atan2(gate.getZ() + 0.5 - z, gate.getX() + 0.5 - x) * Mth.RAD_TO_DEG) - 90F;
-            p.teleportTo(astral, x, gate.getY(), z, yaw, 0F);
+            p.teleportTo(astral, x, standY(astral, Mth.floor(x), Mth.floor(z)), z, yaw, 0F);
             p.displayClientMessage(Component.translatable("arcane_artifacts.astral.arrived"), true);
         }
         astral.playSound(null, gate, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 2F, 0.5F);
