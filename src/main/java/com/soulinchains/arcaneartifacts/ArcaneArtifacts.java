@@ -37,6 +37,7 @@ public final class ArcaneArtifacts {
         ModEffects.REGISTER.register(modBus);
         com.soulinchains.arcaneartifacts.fx.ModTimelines.REGISTER.register(modBus);
         ModEntities.REGISTER.register(modBus);
+        com.soulinchains.arcaneartifacts.astral.AstralSounds.REGISTER.register(modBus);
         com.soulinchains.arcaneartifacts.world.ModFeatures.REGISTER.register(modBus);
         com.soulinchains.arcaneartifacts.world.village.ModStructures.TYPES.register(modBus);
         com.soulinchains.arcaneartifacts.world.village.ModStructures.PIECES.register(modBus);

@@ -1,0 +1,34 @@
+{
+  "astral.hum": {
+    "sounds": [
+      {
+        "name": "arcane_artifacts:astral/hum"
+      }
+    ]
+  },
+  "astral.metal": {
+    "subtitle": "arcane_artifacts.subtitle.astral_metal",
+    "sounds": [
+      {
+        "name": "arcane_artifacts:astral/metal1",
+        "volume": 0.6
+      },
+      {
+        "name": "arcane_artifacts:astral/metal2",
+        "volume": 0.6
+      },
+      {
+        "name": "arcane_artifacts:astral/metal3",
+        "volume": 0.6
+      }
+    ]
+  },
+  "astral.silence": {
+    "sounds": [
+      {
+        "name": "arcane_artifacts:astral/silence",
+        "stream": true
+      }
+    ]
+  }
+}

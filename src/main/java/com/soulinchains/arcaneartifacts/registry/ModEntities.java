@@ -67,6 +67,10 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.Echo::new, MobCategory.MONSTER).sized(0.6F, 1.9F).clientTrackingRange(10)
                     .build(ArcaneArtifacts.MODID + ":echo"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.astral.Watcher>> WATCHER = REGISTER.register("watcher",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.astral.Watcher::new, MobCategory.MISC).sized(1.5F, 7.2F).clientTrackingRange(16)
+                    .noSave().build(ArcaneArtifacts.MODID + ":watcher"));
+
     /** The Shackled's servants, one entity type per kind. */
     public static final java.util.Map<com.soulinchains.arcaneartifacts.necro.ServantKind,
             DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.necro.Servant>>> SERVANTS = servants();

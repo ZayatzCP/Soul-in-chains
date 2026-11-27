@@ -60,6 +60,7 @@ public final class ModBlocks {
     public static final DeferredBlock<net.minecraft.world.level.block.Block> ASTRAL_MONOLITH = BLOCKS.registerSimpleBlock("astral_monolith",
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(-1.0f, 3600000.0f).noLootTable().sound(SoundType.DEEPSLATE)
                     .isValidSpawn((s, l, p, e) -> false));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.astral.AstralSnowBlock> ASTRAL_SNOW = BLOCKS.register("astral_snow", com.soulinchains.arcaneartifacts.astral.AstralSnowBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.astral.AstralGateBlock> ASTRAL_GATE = BLOCKS.register("astral_gate", com.soulinchains.arcaneartifacts.astral.AstralGateBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock> CORRUPTED_SOIL = BLOCKS.register("corrupted_soil", com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock::new);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.rite.RiteHeartBlockEntity>> RITE_HEART_ENTITY =

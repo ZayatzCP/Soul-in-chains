@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Astral (1.41): an empty, gently rolling plain under a pale haze, with monoliths of plain unbreakable stone. It is reached by the
+ * The Astral, the White Abyss (1.41-1.42): an endless white plain under a white sky, black monoliths, snow that is
+ * not weather, and something that watches. It is reached by the
  * Ascension rite and left through the Astral Gate the rite raises where its participants land; the gate sends each of them
  * back to the place they ascended from.
  */
@@ -61,14 +62,16 @@ public final class Astral {
         return server.getLevel(ASTRAL);
     }
 
-    /** Whether a player could stand on the plain at this column: bare ground, no monolith over it. */
+    /** Whether a player could stand on the plain at this column: no monolith there, open sky over it. */
     static boolean open(ServerLevel astral, int x, int z) {
-        return astral.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) == AstralTerrainFeature.ground(astral.getSeed(), x, z) + 1;
+        int g = AstralTerrainFeature.ground(astral.getSeed(), x, z);
+        return !astral.getBlockState(new BlockPos(x, g + 1, z)).is(ModBlocks.ASTRAL_MONOLITH.get())
+                && astral.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) <= g + 2;
     }
 
-    /** Where one stands on the ground at (x, z). */
+    /** Where one stands at (x, z): on the ground, on top of any snow. */
     static int standY(ServerLevel astral, int x, int z) {
-        return AstralTerrainFeature.ground(astral.getSeed(), x, z) + 1;
+        return AstralTerrainFeature.ground(astral.getSeed(), x, z) + 1 + (AstralTerrainFeature.snow(astral.getSeed(), x, z) > 0 ? 1 : 0);
     }
 
     /**
@@ -86,12 +89,12 @@ public final class Astral {
                     int cz = z + dz;
                     if (open(astral, cx, cz) && open(astral, cx + 3, cz + 3) && open(astral, cx - 3, cz - 3)
                             && open(astral, cx + 3, cz - 3) && open(astral, cx - 3, cz + 3)) {
-                        return new BlockPos(cx, standY(astral, cx, cz), cz);
+                        return new BlockPos(cx, AstralTerrainFeature.ground(astral.getSeed(), cx, cz) + 1, cz);
                     }
                 }
             }
         }
-        return new BlockPos(x, standY(astral, x, z), z);
+        return new BlockPos(x, AstralTerrainFeature.ground(astral.getSeed(), x, z) + 1, z);
     }
 
     /**

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/snow_height12",
+  "textures": {
+    "texture": "arcane_artifacts:block/astral_snow",
+    "particle": "arcane_artifacts:block/astral_snow"
+  }
+}

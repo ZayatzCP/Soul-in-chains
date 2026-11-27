@@ -3,26 +3,25 @@
   "temperature": 0.5,
   "downfall": 0.0,
   "effects": {
-    "fog_color": 12174291,
-    "sky_color": 12174291,
-    "water_color": 10475752,
-    "water_fog_color": 5930892,
+    "fog_color": 15527665,
+    "sky_color": 15527665,
+    "water_color": 13159634,
+    "water_fog_color": 9080726,
     "particle": {
       "options": {
         "type": "minecraft:white_ash"
       },
-      "probability": 0.004
+      "probability": 0.006
     },
-    "mood_sound": {
-      "sound": "minecraft:ambient.basalt_deltas.mood",
-      "tick_delay": 6000,
-      "block_search_extent": 8,
-      "offset": 2.0
+    "ambient_sound": "arcane_artifacts:astral.hum",
+    "additions_sound": {
+      "sound": "arcane_artifacts:astral.metal",
+      "tick_chance": 0.0008
     },
     "music": {
-      "sound": "minecraft:music.end",
-      "min_delay": 6000,
-      "max_delay": 18000,
+      "sound": "arcane_artifacts:astral.silence",
+      "min_delay": 12000,
+      "max_delay": 24000,
       "replace_current_music": true
     }
   },

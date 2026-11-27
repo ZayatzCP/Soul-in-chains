@@ -12,7 +12,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The land of the Astral, built chunk by chunk: wide, gentle rises over the flat plain, and the monoliths. Both are pure
+ * The land of the Astral, built chunk by chunk: wide, gentle rises over the flat plain, drifts of the snow of oblivion
+ * (never on a monolith) and the monoliths. Both are pure
  * functions of the seed, and every chunk writes only its own blocks - the rises under it and its slice of every monolith
  * that passes through it - so a monolith may lean as far as it likes.
  *
@@ -112,6 +113,15 @@ public class AstralTerrainFeature extends Feature<NoneFeatureConfiguration> {
         return Astral.FLOOR + (int) Math.max(0, Math.min(HILLS, Math.round(lift)));
     }
 
+    /**
+     * How many layers of the snow of oblivion lie at (x, z), 0 to 7: drifts in patches tens of blocks wide, nothing between
+     * them.
+     */
+    public static int snow(long seed, int x, int z) {
+        double n = 0.75 * noise(seed ^ 0x5A0L, x, z, 38) + 0.25 * noise(seed ^ 0x5A1L, x, z, 11);
+        return (int) Math.max(0, Math.min(7, Math.round((n - 0.1) * 12)));
+    }
+
     // ------------------------------------------------------------------ the monoliths
 
     /** The monolith of a cell, or null when the cell is empty. Depends only on the seed and the cell. */
@@ -168,12 +178,17 @@ public class AstralTerrainFeature extends Feature<NoneFeatureConfiguration> {
         long seed = level.getSeed();
         int top = level.getMaxBuildHeight();
         BlockState stone = ModBlocks.ASTRAL_STONE.get().defaultBlockState();
+        BlockState drift = ModBlocks.ASTRAL_SNOW.get().defaultBlockState();
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int x = minX; x < minX + 16; x++) {
             for (int z = minZ; z < minZ + 16; z++) {
                 int g = ground(seed, x, z);
                 for (int y = Astral.FLOOR + 1; y <= g; y++) {
                     level.setBlock(pos.set(x, y, z), stone, 2);
+                }
+                int layers = snow(seed, x, z);
+                if (layers > 0) {
+                    level.setBlock(pos.set(x, g + 1, z), drift.setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, layers), 2);
                 }
             }
         }

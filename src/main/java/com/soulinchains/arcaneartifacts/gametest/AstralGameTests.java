@@ -170,6 +170,81 @@ public final class AstralGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void snowLiesInDrifts(GameTestHelper helper) {
+        long seed = 20251120L;
+        int bare = 0;
+        int deep = 0;
+        int samples = 0;
+        for (int x = -1500; x <= 1500; x += 11) {
+            for (int z = -1500; z <= 1500; z += 37) {
+                int layers = AstralTerrainFeature.snow(seed, x, z);
+                helper.assertTrue(layers >= 0 && layers <= 7, "Up to seven layers of snow");
+                bare += layers == 0 ? 1 : 0;
+                deep += layers >= 4 ? 1 : 0;
+                samples++;
+            }
+        }
+        helper.assertTrue(bare > samples / 5 && bare < samples * 4 / 5 && deep > 0, "Drifts and bare crust between them: "
+                + bare + " bare, " + deep + " deep of " + samples);
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void theSnowHidesForgottenThings(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        var key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+                ResourceLocation.fromNamespaceAndPath(ArcaneArtifacts.MODID, "blocks/astral_snow"));
+        var table = level.getServer().reloadableRegistries().getLootTable(key);
+        helper.assertTrue(table != net.minecraft.world.level.storage.loot.LootTable.EMPTY, "The snow's loot table loads");
+        BlockPos at = helper.absolutePos(new BlockPos(2, 2, 2));
+        var params = new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, net.minecraft.world.phys.Vec3.atCenterOf(at))
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.TOOL, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_SHOVEL))
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_STATE, ModBlocks.ASTRAL_SNOW.get().defaultBlockState())
+                .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.BLOCK);
+        int found = 0;
+        boolean book = false;
+        for (int i = 0; i < 4000; i++) {
+            for (net.minecraft.world.item.ItemStack stack : table.getRandomItems(params)) {
+                found++;
+                helper.assertTrue(stack.has(net.minecraft.core.component.DataComponents.ITEM_NAME)
+                        && stack.has(net.minecraft.core.component.DataComponents.LORE), "Every forgotten thing has its own name and lore");
+                if (stack.is(net.minecraft.world.item.Items.WRITTEN_BOOK)) {
+                    var content = stack.get(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT);
+                    book |= content != null && !content.pages().isEmpty();
+                }
+            }
+        }
+        helper.assertTrue(found > 150 && found < 360, "About one dig in sixteen finds something, got " + found + " of 4000");
+        helper.assertTrue(book, "Books in an unknown tongue are among them");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void aWatcherIsGoneWhenLookedAt(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        net.neoforged.neoforge.common.util.FakePlayer player = net.neoforged.neoforge.common.util.FakePlayerFactory.get(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "astral_traveller"));
+        BlockPos feet = helper.absolutePos(new BlockPos(2, 2, 2));
+        player.moveTo(feet.getX() + 0.5, feet.getY(), feet.getZ() + 0.5, 0F, 0F);
+        com.soulinchains.arcaneartifacts.astral.Watcher watcher = com.soulinchains.arcaneartifacts.registry.ModEntities.WATCHER.get().create(level);
+        helper.assertTrue(watcher != null, "A Watcher can be made");
+        watcher.moveTo(feet.getX() + 0.5, feet.getY() + 20, feet.getZ() + 60.5, 0F, 0F);
+        double dy = watcher.getY() + watcher.getBbHeight() * 0.6 - player.getEyeY();
+        float up = (float) -Math.toDegrees(Math.atan2(dy, 60));
+        player.setXRot(up);
+        player.setYRot(0F);
+        helper.assertTrue(watcher.seenBy(player), "Looking straight at it, south and up");
+        player.setYRot(90F);
+        helper.assertTrue(!watcher.seenBy(player), "Looking west, it is not seen");
+        player.setYRot(8F);
+        helper.assertTrue(!watcher.seenBy(player), "From the corner of the eye it stays");
+        helper.assertTrue(watcher.getBbHeight() > 6, "It is tall");
+        watcher.discard();
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void theAscensionIsAChalkRite(GameTestHelper helper) {
         RiteDefinition rite = Rites.get(ResourceLocation.fromNamespaceAndPath(ArcaneArtifacts.MODID, "ascend"));
         helper.assertTrue(rite != null && rite.kind() == RiteDefinition.Kind.ASCEND, "The Ascension is loaded");

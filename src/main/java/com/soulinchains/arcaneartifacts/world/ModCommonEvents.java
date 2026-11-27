@@ -23,6 +23,7 @@ public final class ModCommonEvents {
     public static void attributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.MUDZYA.get(), Mudzya.createAttributes().build());
         event.put(ModEntities.ECHO.get(), com.soulinchains.arcaneartifacts.rite.Echo.createAttributes().build());
+        event.put(ModEntities.WATCHER.get(), com.soulinchains.arcaneartifacts.astral.Watcher.createAttributes().build());
         event.put(ModEntities.RESTLESS.get(), com.soulinchains.arcaneartifacts.necro.mob.Restless.createAttributes().build());
         event.put(ModEntities.SOUL_EATER.get(), com.soulinchains.arcaneartifacts.necro.mob.SoulEater.createAttributes().build());
         event.put(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.necro.mob.Mourner.createAttributes().build());
