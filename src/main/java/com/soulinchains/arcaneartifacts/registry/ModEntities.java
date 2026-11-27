@@ -67,6 +67,9 @@ public final class ModEntities {
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.Echo::new, MobCategory.MONSTER).sized(0.6F, 1.9F).clientTrackingRange(10)
                     .build(ArcaneArtifacts.MODID + ":echo"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.grove.ThicketLight>> THICKET_LIGHT = REGISTER.register("thicket_light",
+            () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.grove.ThicketLight::new, MobCategory.AMBIENT).sized(0.35F, 0.35F).clientTrackingRange(10)
+                    .build(ArcaneArtifacts.MODID + ":thicket_light"));
     public static final DeferredHolder<EntityType<?>, EntityType<com.soulinchains.arcaneartifacts.astral.Watcher>> WATCHER = REGISTER.register("watcher",
             () -> EntityType.Builder.of(com.soulinchains.arcaneartifacts.astral.Watcher::new, MobCategory.MISC).sized(1.5F, 7.2F).clientTrackingRange(16)
                     .noSave().build(ArcaneArtifacts.MODID + ":watcher"));

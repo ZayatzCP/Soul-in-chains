@@ -61,6 +61,11 @@ public final class ModBlocks {
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(-1.0f, 3600000.0f).noLootTable().sound(SoundType.DEEPSLATE)
                     .isValidSpawn((s, l, p, e) -> false));
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.astral.AstralSnowBlock> ASTRAL_SNOW = BLOCKS.register("astral_snow", com.soulinchains.arcaneartifacts.astral.AstralSnowBlock::new);
+    // the Thicket Lights (1.44)
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.grove.LightJarBlock> LIGHT_JAR = BLOCKS.register("light_jar", com.soulinchains.arcaneartifacts.grove.LightJarBlock::new);
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.grove.LightCageBlock> LIGHT_CAGE = BLOCKS.register("light_cage", com.soulinchains.arcaneartifacts.grove.LightCageBlock::new);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.grove.LightJarBlockEntity>> LIGHT_JAR_ENTITY =
+            BLOCK_ENTITIES.register("light_jar", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.grove.LightJarBlockEntity::new, LIGHT_JAR.get()).build(null));
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.astral.AstralGateBlock> ASTRAL_GATE = BLOCKS.register("astral_gate", com.soulinchains.arcaneartifacts.astral.AstralGateBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock> CORRUPTED_SOIL = BLOCKS.register("corrupted_soil", com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock::new);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.rite.RiteHeartBlockEntity>> RITE_HEART_ENTITY =

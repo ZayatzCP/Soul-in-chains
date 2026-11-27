@@ -2136,5 +2136,13 @@
   "arcane_artifacts.stone.volley": "Мириады: %s блоков в полёте (камень %s/%s)",
   "arcane_artifacts.stone.wings": "Каменные крылья: %s с полёта (камень %s/%s)",
   "arcane_artifacts.stone.cataclysm": "Катаклизм: −%s (камень %s/%s)",
-  "arcane_artifacts.stone.dominion": "Господство над камнем: %s с (камень %s/%s)"
+  "arcane_artifacts.stone.dominion": "Господство над камнем: %s с (камень %s/%s)",
+  "entity.arcane_artifacts.thicket_light": "Огонёк чащи",
+  "item.arcane_artifacts.thicket_light_spawn_egg": "Яйцо призыва огонька чащи",
+  "block.arcane_artifacts.light_jar": "Огонёк в банке",
+  "block.arcane_artifacts.light_cage": "Клетка с огоньком",
+  "item.arcane_artifacts.light_jar.desc.1": "Огонёк чащи в стеклянной банке: светильник его цвета.",
+  "item.arcane_artifacts.light_jar.desc.2": "Shift + ПКМ пустой рукой по банке — выпустить огонёк.",
+  "arcane_artifacts.lore.light_jar": "«Огонёк в банке светит ровно, но смотрит на тебя с укором. Пип выпускает его каждый вечер погулять». — Гербарий друида",
+  "arcane_artifacts.lore.light_cage": "«Разбойники держат огоньки вместо фонарей. Огоньки этого не одобряют и при первой возможности улетают к тому, кто разбил клетку. Не к тебе — просто от клетки». — Гербарий друида"
 }

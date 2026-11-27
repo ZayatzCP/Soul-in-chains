@@ -78,6 +78,18 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> ASTRAL_STONE = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_STONE);
     public static final DeferredItem<BlockItem> ASTRAL_MONOLITH = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_MONOLITH);
     public static final DeferredItem<BlockItem> ASTRAL_SNOW = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_SNOW);
+    public static final DeferredItem<BlockItem> LIGHT_JAR = REGISTER.register("light_jar", () -> new BlockItem(ModBlocks.LIGHT_JAR.get(), new Item.Properties().stacksTo(1)) {
+        @Override
+        public void appendHoverText(net.minecraft.world.item.ItemStack stack, Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip,
+                                    net.minecraft.world.item.TooltipFlag flag) {
+            for (int i = 1; i <= 2; i++) {
+                tooltip.add(net.minecraft.network.chat.Component.translatable("item.arcane_artifacts.light_jar.desc." + i).withStyle(net.minecraft.ChatFormatting.GRAY));
+            }
+        }
+    });
+    public static final DeferredItem<BlockItem> LIGHT_CAGE = REGISTER.registerSimpleBlockItem(ModBlocks.LIGHT_CAGE);
+    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> THICKET_LIGHT_SPAWN_EGG = REGISTER.register("thicket_light_spawn_egg",
+            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.THICKET_LIGHT, 0x1E2A14, 0xFFC45C, new Item.Properties()));
     public static final DeferredItem<BlockItem> ASTRAL_GATE = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_GATE);
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ECHO_SPAWN_EGG = REGISTER.register("echo_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ECHO, 0x1A0606, 0x8E1212, new Item.Properties()));

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "color=amber": {
+      "model": "arcane_artifacts:block/light_jar_amber"
+    },
+    "color=moss": {
+      "model": "arcane_artifacts:block/light_jar_moss"
+    },
+    "color=dusk": {
+      "model": "arcane_artifacts:block/light_jar_dusk"
+    },
+    "color=frost": {
+      "model": "arcane_artifacts:block/light_jar_frost"
+    },
+    "color=rose": {
+      "model": "arcane_artifacts:block/light_jar_rose"
+    }
+  }
+}

@@ -24,6 +24,7 @@ public final class ModCommonEvents {
         event.put(ModEntities.MUDZYA.get(), Mudzya.createAttributes().build());
         event.put(ModEntities.ECHO.get(), com.soulinchains.arcaneartifacts.rite.Echo.createAttributes().build());
         event.put(ModEntities.WATCHER.get(), com.soulinchains.arcaneartifacts.astral.Watcher.createAttributes().build());
+        event.put(ModEntities.THICKET_LIGHT.get(), com.soulinchains.arcaneartifacts.grove.ThicketLight.createAttributes().build());
         event.put(ModEntities.RESTLESS.get(), com.soulinchains.arcaneartifacts.necro.mob.Restless.createAttributes().build());
         event.put(ModEntities.SOUL_EATER.get(), com.soulinchains.arcaneartifacts.necro.mob.SoulEater.createAttributes().build());
         event.put(ModEntities.MOURNER.get(), com.soulinchains.arcaneartifacts.necro.mob.Mourner.createAttributes().build());
@@ -52,6 +53,8 @@ public final class ModCommonEvents {
                 com.soulinchains.arcaneartifacts.entity.GribulkaHive::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(ModEntities.MUDZYA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Mudzya::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(ModEntities.THICKET_LIGHT.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                com.soulinchains.arcaneartifacts.grove.ThicketLight::checkSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 
     @SubscribeEvent

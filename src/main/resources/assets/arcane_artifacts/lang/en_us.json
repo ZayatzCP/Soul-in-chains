@@ -2136,5 +2136,13 @@
   "arcane_artifacts.stone.volley": "Myriad Volley: %s blocks in flight (stone %s/%s)",
   "arcane_artifacts.stone.wings": "Stone Wings: %s s of flight (stone %s/%s)",
   "arcane_artifacts.stone.cataclysm": "Cataclysm: -%s (stone %s/%s)",
-  "arcane_artifacts.stone.dominion": "Stone Dominion: %s s (stone %s/%s)"
+  "arcane_artifacts.stone.dominion": "Stone Dominion: %s s (stone %s/%s)",
+  "entity.arcane_artifacts.thicket_light": "Thicket Light",
+  "item.arcane_artifacts.thicket_light_spawn_egg": "Thicket Light Spawn Egg",
+  "block.arcane_artifacts.light_jar": "Light in a Jar",
+  "block.arcane_artifacts.light_cage": "Caged Light",
+  "item.arcane_artifacts.light_jar.desc.1": "A Thicket Light in a glass jar: a lamp of its colour.",
+  "item.arcane_artifacts.light_jar.desc.2": "Shift + right-click the jar with an empty hand to let the light out.",
+  "arcane_artifacts.lore.light_jar": "\"A light in a jar shines steadily, but it looks at you reproachfully. Pip lets it out for a walk every evening.\" - Druid's Herbarium",
+  "arcane_artifacts.lore.light_cage": "\"Illagers keep lights instead of lanterns. The lights do not approve, and fly off the moment the cage breaks. Not to you - just away from the cage.\" - Druid's Herbarium"
 }

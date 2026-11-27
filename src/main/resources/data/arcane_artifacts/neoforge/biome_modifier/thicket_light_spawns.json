@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "minecraft:dark_forest",
+  "spawners": {
+    "type": "arcane_artifacts:thicket_light",
+    "weight": 20,
+    "minCount": 2,
+    "maxCount": 4
+  }
+}
