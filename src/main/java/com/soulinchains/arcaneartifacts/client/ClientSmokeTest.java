@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -143,6 +144,35 @@ public final class ClientSmokeTest {
                 }
                 if (ticks > 20 * 20 || curiosLeft.isEmpty() && ticks > 60) {
                     mc.options.setCameraType(CameraType.FIRST_PERSON);
+                    stage = 4;
+                    ticks = 0;
+                    MinecraftServer server = mc.getSingleplayerServer();
+                    if (server != null) {
+                        server.execute(() -> ascend(server));
+                    }
+                    ArcaneArtifacts.LOGGER.info("ARCANE_SMOKE: accessories worn, ascending into the Astral");
+                }
+            }
+            case 4 -> {
+                // the Astral: a few seconds there (sky, fog, monoliths drawn), then home through the gate
+                if (ticks == 160) {
+                    if (mc.level == null || !com.soulinchains.arcaneartifacts.astral.Astral.isAstral(mc.level)) {
+                        problems.add("the Ascension did not bring the player into the Astral");
+                    }
+                    MinecraftServer server = mc.getSingleplayerServer();
+                    if (server != null) {
+                        server.execute(() -> {
+                            ServerPlayer player = player(server);
+                            if (player != null) {
+                                com.soulinchains.arcaneartifacts.astral.Astral.leave(player);
+                            }
+                        });
+                    }
+                }
+                if (ticks == 260) {
+                    if (mc.level == null || com.soulinchains.arcaneartifacts.astral.Astral.isAstral(mc.level)) {
+                        problems.add("the Astral Gate did not bring the player home");
+                    }
                     finish(mc);
                 }
             }
@@ -273,6 +303,19 @@ public final class ClientSmokeTest {
                 }
             }
         });
+    }
+
+    private static void ascend(MinecraftServer server) {
+        ServerPlayer player = player(server);
+        if (player == null) {
+            return;
+        }
+        if (com.soulinchains.arcaneartifacts.astral.Astral.level(server) == null) {
+            problems.add("the Astral dimension is not loaded");
+            return;
+        }
+        BlockPos gate = com.soulinchains.arcaneartifacts.astral.Astral.ascend(player.serverLevel(), player.blockPosition(), List.of(player));
+        ArcaneArtifacts.LOGGER.info("ARCANE_SMOKE: Astral gate at {}", gate);
     }
 
     private static void finish(Minecraft mc) {
