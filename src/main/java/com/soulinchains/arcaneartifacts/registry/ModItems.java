@@ -75,6 +75,10 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> OFFERING_PEDESTAL = REGISTER.registerSimpleBlockItem(ModBlocks.OFFERING_PEDESTAL);
     public static final DeferredItem<BlockItem> RITUAL_CENSER = REGISTER.registerSimpleBlockItem(ModBlocks.RITUAL_CENSER);
     public static final DeferredItem<BlockItem> CORRUPTED_SOIL = REGISTER.registerSimpleBlockItem(ModBlocks.CORRUPTED_SOIL);
+    public static final DeferredItem<BlockItem> ASTRAL_STONE = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_STONE);
+    public static final DeferredItem<BlockItem> ASTRAL_MONOLITH = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_MONOLITH);
+    public static final DeferredItem<BlockItem> ASTRAL_VEIN = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_VEIN);
+    public static final DeferredItem<BlockItem> ASTRAL_GATE = REGISTER.registerSimpleBlockItem(ModBlocks.ASTRAL_GATE);
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> ECHO_SPAWN_EGG = REGISTER.register("echo_spawn_egg",
             () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(ModEntities.ECHO, 0x1A0606, 0x8E1212, new Item.Properties()));
     public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> RESTLESS_SPAWN_EGG = REGISTER.register("restless_spawn_egg",

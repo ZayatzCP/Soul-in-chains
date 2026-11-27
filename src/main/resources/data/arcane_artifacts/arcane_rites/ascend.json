@@ -1,0 +1,18 @@
+{
+  "kind": "ascend",
+  "main": "vrata",
+  "south": "ograda",
+  "west": "oko",
+  "east": "oko",
+  "min_field": 9,
+  "offering": {
+    "item": "minecraft:ender_eye",
+    "count": 2
+  },
+  "extra_offerings": [
+    {
+      "item": "minecraft:echo_shard",
+      "count": 1
+    }
+  ]
+}

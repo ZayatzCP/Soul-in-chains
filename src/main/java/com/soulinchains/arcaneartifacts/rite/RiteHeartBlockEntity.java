@@ -741,6 +741,13 @@ public class RiteHeartBlockEntity extends BlockEntity {
                 }
             }
             case CLEANSE -> cleanse(server, rite.cleanse());
+            case ASCEND -> {
+                // after the tick, so no player leaves the level while it is busy ticking
+                List<Player> going = List.copyOf(participants);
+                BlockPos from = worldPosition;
+                server.getServer().tell(new net.minecraft.server.TickTask(server.getServer().getTickCount(),
+                        () -> com.soulinchains.arcaneartifacts.astral.Astral.ascend(server, from, going)));
+            }
         }
         giveReward(server, rite, tier, at);
         if (otherworldly) {

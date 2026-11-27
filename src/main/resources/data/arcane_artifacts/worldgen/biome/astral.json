@@ -1,0 +1,37 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.5,
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 12174291,
+    "sky_color": 12174291,
+    "water_color": 10475752,
+    "water_fog_color": 5930892,
+    "particle": {
+      "options": {
+        "type": "minecraft:white_ash"
+      },
+      "probability": 0.004
+    },
+    "mood_sound": {
+      "sound": "minecraft:ambient.basalt_deltas.mood",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "music": {
+      "sound": "minecraft:music.end",
+      "min_delay": 6000,
+      "max_delay": 18000,
+      "replace_current_music": true
+    }
+  },
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [
+      "arcane_artifacts:astral_monolith"
+    ]
+  ]
+}

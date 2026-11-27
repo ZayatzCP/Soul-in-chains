@@ -30,6 +30,11 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<Float>> CORRUPTION = REGISTER.register("corruption",
             () -> AttachmentType.builder(() -> 0F).serialize(Codec.FLOAT).copyOnDeath().build());
 
+    /** Where a player ascended into the Astral from; the Astral Gate sends them back there. */
+    public static final Supplier<AttachmentType<com.soulinchains.arcaneartifacts.astral.Astral.Origin>> ASTRAL_ORIGIN = REGISTER.register("astral_origin",
+            () -> AttachmentType.builder(() -> com.soulinchains.arcaneartifacts.astral.Astral.Origin.NONE)
+                    .serialize(com.soulinchains.arcaneartifacts.astral.Astral.Origin.CODEC).copyOnDeath().build());
+
     private ModAttachments() {
     }
 }

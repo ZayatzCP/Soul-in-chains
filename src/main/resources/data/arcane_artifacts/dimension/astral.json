@@ -1,0 +1,22 @@
+{
+  "type": "arcane_artifacts:astral",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "arcane_artifacts:astral",
+      "features": true,
+      "lakes": false,
+      "structure_overrides": [],
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "arcane_artifacts:astral_stone",
+          "height": 63
+        }
+      ]
+    }
+  }
+}

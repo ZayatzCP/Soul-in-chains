@@ -27,7 +27,7 @@ public record RiteDefinition(ResourceLocation id, Kind kind, Sigil main, Sigil s
                              List<Summon> summons, boolean otherworldly, int lifeSeconds, List<Offering> creates,
                              Map<ResourceLocation, ResourceLocation> entityMap, Map<Item, Item> itemMap, int cleanse) {
 
-    public enum Kind { SUMMON, CREATE, TRANSMUTE, CLEANSE }
+    public enum Kind { SUMMON, CREATE, TRANSMUTE, CLEANSE, ASCEND }
 
     public record Offering(Item item, int count) {
         public boolean matches(ItemStack stack) {

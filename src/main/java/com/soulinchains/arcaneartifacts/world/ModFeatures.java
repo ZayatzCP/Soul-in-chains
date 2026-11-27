@@ -24,6 +24,9 @@ public final class ModFeatures {
     public static final DeferredHolder<Feature<?>, MudzyaNestFeature> MUDZYA_NEST =
             REGISTER.register("mudzya_nest", () -> new MudzyaNestFeature(NoneFeatureConfiguration.CODEC));
 
+    public static final DeferredHolder<Feature<?>, com.soulinchains.arcaneartifacts.astral.AstralMonolithFeature> ASTRAL_MONOLITH =
+            REGISTER.register("astral_monolith", () -> new com.soulinchains.arcaneartifacts.astral.AstralMonolithFeature(NoneFeatureConfiguration.CODEC));
+
     /** The configured feature grown from a blue mushroom with bone meal. */
     public static final ResourceKey<ConfiguredFeature<?, ?>> HUGE_BLUE_MUSHROOM_KEY =
             ResourceKey.create(Registries.CONFIGURED_FEATURE, ArcaneArtifacts.id("huge_blue_mushroom"));

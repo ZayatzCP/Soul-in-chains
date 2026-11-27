@@ -24,6 +24,9 @@
     "arcane_artifacts:great_soul_lantern",
     "arcane_artifacts:ritual_censer",
     "arcane_artifacts:rite_heart",
-    "arcane_artifacts:offering_pedestal"
+    "arcane_artifacts:offering_pedestal",
+    "arcane_artifacts:astral_stone",
+    "arcane_artifacts:astral_monolith",
+    "arcane_artifacts:astral_vein"
   ]
 }

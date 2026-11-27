@@ -52,6 +52,15 @@ public final class ModBlocks {
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.OfferingPedestalBlock> OFFERING_PEDESTAL = BLOCKS.register("offering_pedestal", com.soulinchains.arcaneartifacts.rite.OfferingPedestalBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.RitualCenserBlock> RITUAL_CENSER = BLOCKS.register("ritual_censer", com.soulinchains.arcaneartifacts.rite.RitualCenserBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.RiteCageBlock> RITE_CAGE = BLOCKS.register("rite_cage", com.soulinchains.arcaneartifacts.rite.RiteCageBlock::new);
+    // the Astral (1.41)
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> ASTRAL_STONE = BLOCKS.registerSimpleBlock("astral_stone",
+            BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(1.5f, 6.0f).sound(SoundType.CALCITE));
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> ASTRAL_MONOLITH = BLOCKS.registerSimpleBlock("astral_monolith",
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(50.0f, 1200.0f).sound(SoundType.DEEPSLATE));
+    public static final DeferredBlock<net.minecraft.world.level.block.Block> ASTRAL_VEIN = BLOCKS.registerSimpleBlock("astral_vein",
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).requiresCorrectToolForDrops().strength(50.0f, 1200.0f)
+                    .sound(SoundType.AMETHYST).lightLevel(s -> 10).emissiveRendering((s, l, p) -> true));
+    public static final DeferredBlock<com.soulinchains.arcaneartifacts.astral.AstralGateBlock> ASTRAL_GATE = BLOCKS.register("astral_gate", com.soulinchains.arcaneartifacts.astral.AstralGateBlock::new);
     public static final DeferredBlock<com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock> CORRUPTED_SOIL = BLOCKS.register("corrupted_soil", com.soulinchains.arcaneartifacts.rite.CorruptedSoilBlock::new);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.soulinchains.arcaneartifacts.rite.RiteHeartBlockEntity>> RITE_HEART_ENTITY =
             BLOCK_ENTITIES.register("rite_heart", () -> BlockEntityType.Builder.of(com.soulinchains.arcaneartifacts.rite.RiteHeartBlockEntity::new, RITE_HEART.get()).build(null));
