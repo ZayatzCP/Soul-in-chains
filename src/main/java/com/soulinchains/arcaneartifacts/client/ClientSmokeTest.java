@@ -254,7 +254,7 @@ public final class ClientSmokeTest {
                     }
                 });
                 sceneTicks++;
-                if (sceneTicks >= current.wait()) {
+                if (sceneTicks >= current.hold()) {
                     shoot(mc, "spell_" + current.name(), true);
                     scene++;
                     sceneTicks = 0;
@@ -276,7 +276,7 @@ public final class ClientSmokeTest {
     private static net.minecraft.world.entity.monster.Husk victim;
     private static com.soulinchains.arcaneartifacts.geo.StonePhenomena.Cage cage;
 
-    record Scene(String name, int wait, @org.jetbrains.annotations.Nullable java.util.function.Consumer<ServerLevel> setup, Vec3 cam, Vec3 look) {
+    record Scene(String name, int hold, @org.jetbrains.annotations.Nullable java.util.function.Consumer<ServerLevel> setup, Vec3 cam, Vec3 look) {
     }
 
     private static final List<BlockState> MIX = List.of(net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState(),
