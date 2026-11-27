@@ -51,7 +51,7 @@ public final class GroveGameTests {
         player.moveTo(feet.getX() + 0.5, feet.getY(), feet.getZ() + 0.5);
         ThicketLight light = light(helper, new BlockPos(3, 3, 3), LightColor.MOSS);
         light.tame(player);
-        helper.assertTrue(light.isTame() && light.isOwnedBy(player), "Tamed");
+        helper.assertTrue(light.isTame() && player.getUUID().equals(light.getOwnerUUID()), "Tamed");
         Zombie zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(6, 2, 6));
         float before = zombie.getHealth();
         light.sting(level, player, zombie);
