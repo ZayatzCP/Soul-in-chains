@@ -28,22 +28,30 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * The hoard made visible: small blocks circling their owner in two slow rings (block displays, moved on the server, eased
- * on the client). While Stone Wings hold, a dozen of them spread behind the back as wings and the owner may fly. The
- * displays are never saved.
+ * The hoard made visible: blocks circling their owner in two slow rings, each tumbling as it goes (block displays, moved
+ * on the server, eased on the client). While Stone Wings hold, the rings are gone into two great wings of long stone
+ * feathers, some fifteen blocks from tip to shoulder, slowly beating; the owner flies, faster than usual. The displays are
+ * never saved.
  */
 @EventBusSubscriber(modid = ArcaneArtifacts.MODID)
 public final class HoardVisuals {
     public static final String TAG = "arcane_artifacts.hoard";
     /** At most this many blocks are drawn around a player. */
     static final int SHOWN = 32;
-    static final float SCALE = 0.4F;
+    static final float SCALE = 0.62F;
+    /** The wings: feathers per side, each a long, flat block. */
+    public static final int FEATHERS = 9;
+    static final org.joml.Vector3f FEATHER = new org.joml.Vector3f(0.85F, 0.32F, 2.6F);
+    /** Flight with the wings is faster than walking flight. */
+    static final float WING_SPEED = 0.09F;
+    static final float NORMAL_SPEED = 0.05F;
     public static final int WING_BLOCKS = 12;
     private static final String WINGS = ArcaneArtifacts.MODID + ":stone_wings_until";
     private static final String WINGS_FLIGHT = ArcaneArtifacts.MODID + ":stone_wings_flight";
 
     private static final Map<UUID, List<Display.BlockDisplay>> SHOWN_BY = new HashMap<>();
     private static final Map<UUID, List<BlockState>> STATES_BY = new HashMap<>();
+    private static final Map<UUID, List<Display.BlockDisplay>> WINGS_BY = new HashMap<>();
 
     private HoardVisuals() {
     }
@@ -85,11 +93,13 @@ public final class HoardVisuals {
         }
         if (wings && !player.getAbilities().mayfly) {
             player.getAbilities().mayfly = true;
+            player.getAbilities().setFlyingSpeed(WING_SPEED);
             player.getPersistentData().putBoolean(WINGS_FLIGHT, true);
             player.onUpdateAbilities();
         } else if (!wings && granted) {
             player.getAbilities().mayfly = false;
             player.getAbilities().flying = false;
+            player.getAbilities().setFlyingSpeed(NORMAL_SPEED);
             player.getPersistentData().remove(WINGS_FLIGHT);
             player.onUpdateAbilities();
             player.getPersistentData().remove(WINGS);
@@ -108,12 +118,14 @@ public final class HoardVisuals {
         }
         wingFlight(player);
         update(level, player);
+        updateWings(level, player);
     }
 
     /** Brings the displays around a player in line with the hoard and moves them along their rings (or wings). */
     public static void update(ServerLevel level, Player player) {
         List<BlockState> hoard = StoneHoard.of(player);
-        int n = player.isAlive() && !player.isSpectator() ? Math.min(SHOWN, hoard.size()) : 0;
+        // while the wings are open the hoard is in them: no ring
+        int n = player.isAlive() && !player.isSpectator() && !wings(player) ? Math.min(SHOWN, hoard.size()) : 0;
         List<Display.BlockDisplay> shown = SHOWN_BY.computeIfAbsent(player.getUUID(), k -> new ArrayList<>());
         List<BlockState> states = STATES_BY.computeIfAbsent(player.getUUID(), k -> new ArrayList<>());
         // a display left in another level, or removed, starts the set again
@@ -145,33 +157,89 @@ public final class HoardVisuals {
                 states.add(state);
             }
         }
+        long time = player.level().getGameTime();
         for (int i = 0; i < shown.size(); i++) {
             Vec3 at = slot(player, i, n);
-            shown.get(i).setPos(at.x, at.y, at.z);
+            Display.BlockDisplay d = shown.get(i);
+            d.setPos(at.x, at.y, at.z);
+            // each block tumbles slowly as it circles
+            d.setYRot((time * (3 + i % 4) + i * 37) % 360);
+            d.setXRot((float) (Math.sin((time + i * 11) * 0.05) * 60));
         }
     }
 
-    /** Where block {@code i} of {@code n} floats: a wing feather while the wings hold, otherwise a place on a ring. */
+    // ------------------------------------------------------------------ the wings
+
+    /** Spreads (or folds) the great wings of a player: long feathers of hoard stone, slowly beating. */
+    public static void updateWings(ServerLevel level, Player player) {
+        boolean open = wings(player) && StoneHoard.count(player) >= WING_BLOCKS && player.isAlive() && !player.isSpectator();
+        List<Display.BlockDisplay> feathers = WINGS_BY.get(player.getUUID());
+        if (feathers != null && (!open || feathers.stream().anyMatch(d -> d.isRemoved() || d.level() != level))) {
+            feathers.forEach(Display.BlockDisplay::discard);
+            WINGS_BY.remove(player.getUUID());
+            feathers = null;
+        }
+        if (!open) {
+            return;
+        }
+        if (feathers == null) {
+            feathers = new ArrayList<>();
+            List<BlockState> hoard = StoneHoard.of(player);
+            for (int i = 0; i < FEATHERS * 2; i++) {
+                BlockState state = hoard.get((i / 2) % hoard.size());
+                Display.BlockDisplay feather = StonePhenomena.display(level, state, FEATHER, false, player.position());
+                if (feather != null) {
+                    feathers.add(feather);
+                }
+            }
+            WINGS_BY.put(player.getUUID(), feathers);
+        }
+        for (int i = 0; i < feathers.size(); i++) {
+            Feather f = feather(player, i / 2, i % 2 == 0 ? 1 : -1);
+            Display.BlockDisplay d = feathers.get(i);
+            d.setPos(f.pos.x, f.pos.y, f.pos.z);
+            d.setYRot(f.yaw);
+            d.setXRot(f.pitch);
+        }
+    }
+
+    public record Feather(Vec3 pos, float yaw, float pitch) {
+    }
+
+    /**
+     * Feather {@code k} (0 at the shoulder) of one wing ({@code side} +1 right, -1 left): the wing rises and falls slowly, the
+     * feathers lie further back and higher the further out they are, each pointing back and a little outwards.
+     */
+    public static Feather feather(Player player, int k, int side) {
+        double time = player.level().getGameTime();
+        double yaw = Math.toRadians(player.yBodyRot);
+        Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
+        Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
+        double beat = Math.sin(time * 0.16) * (player.getAbilities().flying ? 0.35 : 0.2);
+        double lift = 0.15 + beat * (0.4 + 0.07 * k);
+        Vec3 span = right.scale(side * Math.cos(lift)).add(0, Math.sin(lift), 0);
+        Vec3 pos = player.position().add(0, 1.35, 0).add(back.scale(0.45 + 0.22 * k)).add(span.scale(0.9 + 1.45 * k));
+        float featherYaw = (float) (player.yBodyRot + 180 + side * (8 + 5 * k));
+        float pitch = (float) (-Math.toDegrees(lift) * 0.5 - 4);
+        return new Feather(pos, featherYaw, pitch);
+    }
+
+    /** Where block {@code i} of {@code n} floats: a place on one of two slow rings around the player. */
     public static Vec3 slot(Player player, int i, int n) {
         double time = player.level().getGameTime() + i * 7;
-        if (wings(player) && i < WING_BLOCKS) {
-            double yaw = Math.toRadians(player.yBodyRot);
-            Vec3 back = new Vec3(Math.sin(yaw), 0, -Math.cos(yaw));
-            Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
-            int side = i % 2 == 0 ? 1 : -1;
-            int k = i / 2;
-            double flap = Math.sin(player.level().getGameTime() * 0.35) * 0.08 * k;
-            return player.position().add(0, 1.35 + 0.16 * k + flap, 0).add(back.scale(0.45 + 0.05 * k)).add(right.scale(side * (0.45 + 0.42 * k)));
-        }
         int ring = i % 2;
         int onRing = Math.max(1, (n + 1 - ring) / 2);
-        double angle = Math.PI * 2 * (i / 2) / onRing + player.level().getGameTime() * (ring == 0 ? 0.04 : -0.03);
-        double radius = ring == 0 ? 1.6 : 2.1;
-        double y = ring == 0 ? 0.7 : 1.5;
+        double angle = Math.PI * 2 * (i / 2) / onRing + player.level().getGameTime() * (ring == 0 ? 0.035 : -0.025);
+        double radius = ring == 0 ? 2.0 : 2.7;
+        double y = ring == 0 ? 0.6 : 1.7;
         return player.position().add(Math.cos(angle) * radius, y + Math.sin(time * 0.08) * 0.08, Math.sin(angle) * radius);
     }
 
     public static void clear(UUID player) {
+        List<Display.BlockDisplay> wings = WINGS_BY.remove(player);
+        if (wings != null) {
+            wings.forEach(Display.BlockDisplay::discard);
+        }
         List<Display.BlockDisplay> shown = SHOWN_BY.remove(player);
         if (shown != null) {
             shown.forEach(Display.BlockDisplay::discard);

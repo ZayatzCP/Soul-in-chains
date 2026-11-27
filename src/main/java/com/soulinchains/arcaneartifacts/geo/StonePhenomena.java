@@ -342,7 +342,7 @@ public final class StonePhenomena {
                 BlockState state = waiting.remove(waiting.size() - 1);
                 LivingEntity target = targets.isEmpty() ? null : targets.get(launched % targets.size());
                 Vec3 start = caster.position().add((level.random.nextDouble() - 0.5) * 2, 1.4 + level.random.nextDouble(), (level.random.nextDouble() - 0.5) * 2);
-                Display.BlockDisplay display = display(level, state, new Vector3f(0.4F, 0.4F, 0.4F), false, start);
+                Display.BlockDisplay display = display(level, state, new Vector3f(0.7F, 0.7F, 0.7F), false, start);
                 if (display != null) {
                     flying.add(new Shot(display, state, target, new Vec3[]{start}, new int[]{0}));
                     launched++;
@@ -373,6 +373,9 @@ public final class StonePhenomena {
                 pos = pos.add(to.normalize().scale(SPEED));
                 shot.pos()[0] = pos;
                 shot.display().setPos(pos.x, pos.y, pos.z);
+                shot.display().setYRot(shot.display().getYRot() + 31);
+                shot.display().setXRot((shot.display().getXRot() + 23) % 90);
+                level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, shot.state()), pos.x, pos.y, pos.z, 1, 0.1, 0.1, 0.1, 0);
             }
             return !waiting.isEmpty() || !flying.isEmpty();
         }
@@ -385,44 +388,139 @@ public final class StonePhenomena {
         }
     }
 
-    // ------------------------------------------------------------------ Cataclysm
+    // ------------------------------------------------------------------ Earthen Surge
 
-    /** The hoard pressed into one great stone falls from high above onto a point and bursts. */
-    public static final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
-        static final double HEIGHT = 28;
+    /** Torn blocks are seen to fly: each leaves its hole, rises tumbling and swings in to its owner, then joins the rings. */
+    public static final class Uplift implements Phenomena.Phenomenon, Phenomena.Located {
+        static final int FLIGHT = 16;
         private final ServerLevel level;
         private final UUID owner;
+        private final java.lang.ref.WeakReference<Player> keeper;
+        private final List<Display.BlockDisplay> blocks = new ArrayList<>();
+        private final List<Vec3> from = new ArrayList<>();
+        private final List<Integer> delay = new ArrayList<>();
+        private final Vec3 center;
+        private int ticks;
+
+        public Uplift(ServerLevel level, Player owner, List<BlockPos> torn, List<BlockState> states) {
+            this.level = level;
+            this.owner = owner.getUUID();
+            this.keeper = new java.lang.ref.WeakReference<>(owner);
+            this.center = owner.position();
+            for (int i = 0; i < torn.size(); i++) {
+                Vec3 at = Vec3.atCenterOf(torn.get(i));
+                Display.BlockDisplay d = display(level, states.get(i), new Vector3f(0.95F, 0.95F, 0.95F), false, at);
+                if (d != null) {
+                    blocks.add(d);
+                    from.add(at);
+                    delay.add(level.random.nextInt(6));
+                }
+            }
+        }
+
+        @Override
+        public ServerLevel level() {
+            return level;
+        }
+
+        @Override
+        public UUID owner() {
+            return owner;
+        }
+
+        @Override
+        public Vec3 center() {
+            return center;
+        }
+
+        @Override
+        public boolean tick() {
+            ticks++;
+            Player player = keeper.get();
+            Vec3 to = player != null && !player.isRemoved() ? player.position().add(0, 1.2, 0) : center.add(0, 1.2, 0);
+            for (int i = 0; i < blocks.size(); i++) {
+                double t = Math.max(0, Math.min(1, (ticks - delay.get(i)) / (double) FLIGHT));
+                Vec3 a = from.get(i);
+                // up out of the hole first, then a curve in
+                Vec3 lifted = a.add(0, 2.5, 0);
+                Vec3 p = a.scale((1 - t) * (1 - t)).add(lifted.scale(2 * t * (1 - t))).add(to.scale(t * t));
+                Display.BlockDisplay d = blocks.get(i);
+                d.setPos(p.x, p.y, p.z);
+                d.setYRot(d.getYRot() + 19);
+                d.setXRot((float) (Math.sin((ticks + i) * 0.4) * 70));
+                if (ticks - delay.get(i) == 1) {
+                    level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, a.x, a.y, a.z, 2, 0.3, 0.2, 0.3, 0.01);
+                }
+            }
+            if (ticks > FLIGHT + 6) {
+                cancelled();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public void cancelled() {
+            blocks.forEach(Display.BlockDisplay::discard);
+            blocks.clear();
+        }
+    }
+
+    // ------------------------------------------------------------------ Cataclysm
+
+    /**
+     * The hoard pressed into one great ball of stone, many blocks across, turning as it falls from high above onto the point,
+     * trailing fire and smoke. It bursts in a flash: fire, a ring of shock that throws everything away, flying debris - and a
+     * scorched, burning crater where the ground was earth and stone.
+     */
+    public static final class Meteor implements Phenomena.Phenomenon, Phenomena.Located {
+        static final double HEIGHT = 45;
+        static final int PARTS = 46;
+        private final ServerLevel level;
+        private final UUID owner;
+        private final java.lang.ref.WeakReference<Player> caster;
         private final Vec3 target;
         private final float damage;
         private final double radius;
+        private final boolean scorch;
+        private final double ball;
         private final List<Display.BlockDisplay> parts = new ArrayList<>();
         private final List<Vec3> offsets = new ArrayList<>();
-        private final BlockState look;
+        private final List<BlockState> looks = new ArrayList<>();
         private double y;
         private double speed;
         private int ticks;
 
         public Meteor(ServerLevel level, Player owner, Vec3 target, List<BlockState> blocks, float damage, double radius) {
+            this(level, owner, target, blocks, damage, radius, true);
+        }
+
+        public Meteor(ServerLevel level, Player owner, Vec3 target, List<BlockState> blocks, float damage, double radius, boolean scorch) {
             this.level = level;
             this.owner = owner.getUUID();
+            this.caster = new java.lang.ref.WeakReference<>(owner);
             this.target = target;
             this.damage = damage;
             this.radius = radius;
+            this.scorch = scorch;
             this.y = target.y + HEIGHT;
-            this.look = blocks.isEmpty() ? net.minecraft.world.level.block.Blocks.STONE.defaultBlockState() : blocks.get(0);
-            float size = 1.2F + blocks.size() * 0.06F;
-            int shown = Math.min(12, blocks.size());
-            for (int i = 0; i < shown; i++) {
-                double phi = Math.acos(1 - 2 * (i + 0.5) / shown);
+            this.ball = 2.5 + blocks.size() * 0.12;
+            List<BlockState> from = blocks.isEmpty() ? List.of(net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()) : blocks;
+            float size = (float) (ball * 0.62);
+            for (int i = 0; i < PARTS; i++) {
+                // spread evenly over the ball (a Fibonacci sphere), each part a big block
+                double phi = Math.acos(1 - 2 * (i + 0.5) / PARTS);
                 double theta = Math.PI * (1 + Math.sqrt(5)) * i;
-                Vec3 off = new Vec3(Math.cos(theta) * Math.sin(phi), Math.cos(phi), Math.sin(theta) * Math.sin(phi)).scale(size * 0.35);
-                Display.BlockDisplay part = display(level, blocks.get(i), new Vector3f(size * 0.6F, size * 0.6F, size * 0.6F), false,
-                        new Vec3(target.x, y, target.z).add(off));
+                Vec3 off = new Vec3(Math.cos(theta) * Math.sin(phi), Math.cos(phi), Math.sin(theta) * Math.sin(phi)).scale(ball * 0.78);
+                BlockState look = from.get(i % from.size());
+                Display.BlockDisplay part = display(level, look, new Vector3f(size, size, size), false, new Vec3(target.x, y, target.z).add(off));
                 if (part != null) {
                     parts.add(part);
                     offsets.add(off);
+                    looks.add(look);
                 }
             }
+            level.playSound(null, target.x, target.y + HEIGHT, target.z, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 4F, 0.4F);
         }
 
         @Override
@@ -440,17 +538,32 @@ public final class StonePhenomena {
             return target;
         }
 
+        public double ball() {
+            return ball;
+        }
+
         @Override
         public boolean tick() {
             ticks++;
-            speed = Math.min(2.2, speed + 0.08);
+            speed = Math.min(2.4, speed + 0.09);
             y = Math.max(target.y, y - speed);
+            double spin = ticks * 0.06;
+            double cos = Math.cos(spin);
+            double sin = Math.sin(spin);
             for (int i = 0; i < parts.size(); i++) {
-                Vec3 at = new Vec3(target.x, y, target.z).add(offsets.get(i));
-                parts.get(i).setPos(at.x, at.y, at.z);
+                Vec3 o = offsets.get(i);
+                Vec3 turned = new Vec3(o.x * cos - o.z * sin, o.y, o.x * sin + o.z * cos);
+                Vec3 at = new Vec3(target.x, y + ball, target.z).add(turned);
+                Display.BlockDisplay d = parts.get(i);
+                d.setPos(at.x, at.y, at.z);
+                d.setYRot((float) Math.toDegrees(-spin) + i * 13);
             }
-            level.sendParticles(ParticleTypes.LARGE_SMOKE, target.x, y + 1, target.z, 3, 0.4, 0.4, 0.4, 0.01);
-            if (y <= target.y || ticks > 100) {
+            level.sendParticles(ParticleTypes.FLAME, target.x, y + ball * 2, target.z, 12, ball * 0.6, ball * 0.4, ball * 0.6, 0.02);
+            level.sendParticles(ParticleTypes.LARGE_SMOKE, target.x, y + ball * 2.2, target.z, 6, ball * 0.5, ball * 0.5, ball * 0.5, 0.02);
+            if (ticks % 6 == 0) {
+                level.playSound(null, target.x, y, target.z, SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 2F, 0.4F);
+            }
+            if (y <= target.y || ticks > 120) {
                 impact();
                 return false;
             }
@@ -459,21 +572,39 @@ public final class StonePhenomena {
 
         private void impact() {
             cancelled();
-            level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, target.x, target.y + 0.5, target.z, 1, 0, 0, 0, 0);
-            crumble(level, look, target.add(0, 1, 0), 80);
-            level.playSound(null, target.x, target.y, target.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 2.5F, 0.6F);
-            Entity caster = level.getEntity(owner);
+            // the flash and the fire
+            level.sendParticles(ParticleTypes.FLASH, target.x, target.y + 1, target.z, 3, 0.5, 0.5, 0.5, 0);
+            for (int i = 0; i < 5; i++) {
+                level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, target.x + (level.random.nextDouble() - 0.5) * radius,
+                        target.y + 1 + level.random.nextDouble() * 2, target.z + (level.random.nextDouble() - 0.5) * radius, 1, 0, 0, 0, 0);
+            }
+            level.sendParticles(ParticleTypes.FLAME, target.x, target.y + 1, target.z, 260, radius * 0.4, 1.2, radius * 0.4, 0.35);
+            level.sendParticles(ParticleTypes.LAVA, target.x, target.y + 1, target.z, 60, radius * 0.4, 0.5, radius * 0.4, 0);
+            level.sendParticles(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, target.x, target.y + 1, target.z, 60, radius * 0.5, 1, radius * 0.5, 0.05);
+            for (BlockState look : looks.subList(0, Math.min(6, looks.size()))) {
+                crumble(level, look, target.add(0, 1.5, 0), 40);
+            }
+            level.playSound(null, target.x, target.y, target.z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 6F, 0.45F);
+            level.playSound(null, target.x, target.y, target.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 3F, 0.6F);
+            // the blow
+            Entity source = caster.get();
             for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(target, target).inflate(radius), LivingEntity::isAlive)) {
                 double distance = living.position().distanceTo(target);
                 if (distance > radius) {
                     continue;
                 }
                 float dealt = (float) (damage * (1 - 0.6 * distance / radius));
-                if (strike(level, caster, living, dealt)) {
-                    Vec3 push = living.position().subtract(target).normalize().scale(1.1);
-                    living.push(push.x, 0.6, push.z);
+                if (strike(level, source, living, dealt)) {
+                    living.igniteForSeconds(4);
+                    Vec3 push = living.position().subtract(target).normalize().scale(1.6);
+                    living.push(push.x, 0.8, push.z);
                     living.hurtMarked = true;
                 }
+            }
+            Phenomena.add(new Shockwave(level, owner, target, radius * 2.2));
+            Phenomena.add(new Debris(level, owner, target, looks.subList(0, Math.min(18, looks.size()))));
+            if (scorch && source instanceof LivingEntity living) {
+                scorch(level, living, target, radius * 0.85);
             }
         }
 
@@ -481,6 +612,189 @@ public final class StonePhenomena {
         public void cancelled() {
             parts.forEach(Display.BlockDisplay::discard);
             parts.clear();
+        }
+    }
+
+    /**
+     * The crater: within the radius the top of the ground (only earth and stone the caster may break) is blasted, the middle
+     * dug a block deeper, and what is left is scorched to blackstone, netherrack and magma, much of it burning.
+     */
+    public static int scorch(ServerLevel level, LivingEntity caster, Vec3 center, double radius) {
+        int changed = 0;
+        int r = (int) Math.ceil(radius);
+        BlockPos base = BlockPos.containing(center);
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dz = -r; dz <= r; dz++) {
+                double d = Math.hypot(dx, dz);
+                if (d > radius) {
+                    continue;
+                }
+                BlockPos top = null;
+                for (int dy = 3; dy >= -4; dy--) {
+                    BlockPos p = base.offset(dx, dy, dz);
+                    if (!level.getBlockState(p).isAir() && level.getBlockState(p.above()).isAir()) {
+                        top = p;
+                        break;
+                    }
+                }
+                if (top == null || !StoneHoard.tearable(level, top, caster)) {
+                    continue;
+                }
+                if (d < radius * 0.45 && StoneHoard.tearable(level, top, caster)) {
+                    level.setBlock(top, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 3);
+                    top = top.below();
+                    if (!StoneHoard.tearable(level, top, caster)) {
+                        continue;
+                    }
+                }
+                float roll = level.random.nextFloat();
+                BlockState burnt = roll < 0.15F ? net.minecraft.world.level.block.Blocks.MAGMA_BLOCK.defaultBlockState()
+                        : roll < 0.55F ? net.minecraft.world.level.block.Blocks.BLACKSTONE.defaultBlockState()
+                        : roll < 0.8F ? net.minecraft.world.level.block.Blocks.NETHERRACK.defaultBlockState()
+                        : net.minecraft.world.level.block.Blocks.COARSE_DIRT.defaultBlockState();
+                level.setBlock(top, burnt, 3);
+                changed++;
+                if (burnt.is(net.minecraft.world.level.block.Blocks.NETHERRACK) && level.random.nextFloat() < 0.6F && level.getBlockState(top.above()).isAir()) {
+                    level.setBlock(top.above(), net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState(), 3);
+                }
+            }
+        }
+        return changed;
+    }
+
+    /** A ring of shock spreading from a blast: dust and cloud along its edge, everything it passes thrown outwards. */
+    public static final class Shockwave implements Phenomena.Phenomenon, Phenomena.Located {
+        static final int LIFE = 14;
+        private final ServerLevel level;
+        private final UUID owner;
+        private final Vec3 center;
+        private final double reach;
+        private final java.util.Set<Integer> pushed = new java.util.HashSet<>();
+        private int ticks;
+
+        public Shockwave(ServerLevel level, UUID owner, Vec3 center, double reach) {
+            this.level = level;
+            this.owner = owner;
+            this.center = center;
+            this.reach = reach;
+        }
+
+        @Override
+        public ServerLevel level() {
+            return level;
+        }
+
+        @Override
+        public UUID owner() {
+            return owner;
+        }
+
+        @Override
+        public Vec3 center() {
+            return center;
+        }
+
+        @Override
+        public boolean tick() {
+            ticks++;
+            double r = reach * ticks / LIFE;
+            int n = (int) (r * 6) + 8;
+            for (int i = 0; i < n; i++) {
+                double a = Math.PI * 2 * i / n;
+                level.sendParticles(ParticleTypes.CLOUD, center.x + Math.cos(a) * r, center.y + 0.6, center.z + Math.sin(a) * r, 1, 0, 0.1, 0, 0.02);
+                if (i % 3 == 0) {
+                    level.sendParticles(ParticleTypes.POOF, center.x + Math.cos(a) * r, center.y + 1.6, center.z + Math.sin(a) * r, 1, 0, 0.2, 0, 0.02);
+                }
+            }
+            for (Entity e : level.getEntities((Entity) null, new AABB(center, center).inflate(r + 1, 3, r + 1), e -> e instanceof LivingEntity && !pushed.contains(e.getId()))) {
+                double d = Math.hypot(e.getX() - center.x, e.getZ() - center.z);
+                if (Math.abs(d - r) < 1.5 && !e.getUUID().equals(owner)) {
+                    Vec3 out = new Vec3(e.getX() - center.x, 0, e.getZ() - center.z).normalize().scale(0.9);
+                    e.push(out.x, 0.35, out.z);
+                    e.hurtMarked = true;
+                    pushed.add(e.getId());
+                }
+            }
+            return ticks < LIFE;
+        }
+    }
+
+    /** Pieces of the meteor flung out on arcs, burning, and gone where they fall. */
+    public static final class Debris implements Phenomena.Phenomenon, Phenomena.Located {
+        static final int LIFE = 40;
+        private final ServerLevel level;
+        private final UUID owner;
+        private final Vec3 center;
+        private final List<Display.BlockDisplay> pieces = new ArrayList<>();
+        private final List<Vec3> pos = new ArrayList<>();
+        private final List<Vec3> vel = new ArrayList<>();
+        private int ticks;
+
+        public Debris(ServerLevel level, UUID owner, Vec3 center, List<BlockState> looks) {
+            this.level = level;
+            this.owner = owner;
+            this.center = center;
+            for (BlockState look : looks) {
+                Vec3 start = center.add(0, 1.5, 0);
+                double a = level.random.nextDouble() * Math.PI * 2;
+                double speed = 0.5 + level.random.nextDouble() * 0.8;
+                Display.BlockDisplay d = display(level, look, new Vector3f(0.9F, 0.9F, 0.9F), false, start);
+                if (d != null) {
+                    pieces.add(d);
+                    pos.add(start);
+                    vel.add(new Vec3(Math.cos(a) * speed, 0.7 + level.random.nextDouble() * 0.7, Math.sin(a) * speed));
+                }
+            }
+        }
+
+        @Override
+        public ServerLevel level() {
+            return level;
+        }
+
+        @Override
+        public UUID owner() {
+            return owner;
+        }
+
+        @Override
+        public Vec3 center() {
+            return center;
+        }
+
+        @Override
+        public boolean tick() {
+            ticks++;
+            for (int i = pieces.size() - 1; i >= 0; i--) {
+                Vec3 p = pos.get(i).add(vel.get(i));
+                Vec3 v = vel.get(i).add(0, -0.08, 0).scale(0.98);
+                Display.BlockDisplay d = pieces.get(i);
+                if (p.y < center.y - 1 || !level.getBlockState(BlockPos.containing(p)).isAir() && ticks > 3) {
+                    level.sendParticles(ParticleTypes.LARGE_SMOKE, p.x, p.y + 0.5, p.z, 3, 0.2, 0.2, 0.2, 0.01);
+                    d.discard();
+                    pieces.remove(i);
+                    pos.remove(i);
+                    vel.remove(i);
+                    continue;
+                }
+                pos.set(i, p);
+                vel.set(i, v);
+                d.setPos(p.x, p.y, p.z);
+                d.setYRot(d.getYRot() + 23);
+                d.setXRot((d.getXRot() + 17) % 90);
+                level.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 1, 0.1, 0.1, 0.1, 0);
+            }
+            if (ticks >= LIFE || pieces.isEmpty()) {
+                cancelled();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public void cancelled() {
+            pieces.forEach(Display.BlockDisplay::discard);
+            pieces.clear();
         }
     }
 }

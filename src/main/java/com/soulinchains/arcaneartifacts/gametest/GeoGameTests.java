@@ -155,6 +155,27 @@ public final class GeoGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void theCraterIsScorched(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        FakePlayer player = mage(helper, "scorcher");
+        for (int x = 0; x <= 8; x++) {
+            for (int z = 0; z <= 8; z++) {
+                helper.setBlock(new BlockPos(x, 1, z), Blocks.GRASS_BLOCK);
+                helper.setBlock(new BlockPos(x, 0, z), Blocks.DIRT);
+                helper.setBlock(new BlockPos(x, 2, z), Blocks.AIR);
+            }
+        }
+        helper.setBlock(new BlockPos(6, 1, 4), Blocks.OAK_PLANKS);
+        Vec3 center = Vec3.atBottomCenterOf(helper.absolutePos(new BlockPos(4, 2, 4)));
+        int changed = StonePhenomena.scorch(level, player, center, 3.5);
+        helper.assertTrue(changed > 15, "Much of the ground is scorched, " + changed);
+        helper.assertBlockPresent(Blocks.OAK_PLANKS, new BlockPos(6, 1, 4));
+        helper.assertTrue(!helper.getBlockState(new BlockPos(4, 1, 4)).is(Blocks.GRASS_BLOCK), "The middle is blasted");
+        helper.assertTrue(!helper.getBlockState(new BlockPos(1, 1, 4)).is(Blocks.GRASS_BLOCK), "The ring is burnt");
+        helper.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void wingsNeedTwelveAndGiveFlight(GameTestHelper helper) {
         FakePlayer player = mage(helper, "flier");
         player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
@@ -166,8 +187,11 @@ public final class GeoGameTests {
         }
         HoardVisuals.wingFlight(player);
         helper.assertTrue(player.getAbilities().mayfly, "Twelve blocks become wings");
-        Vec3 wing = HoardVisuals.slot(player, 0, 12);
-        helper.assertTrue(wing.distanceTo(player.position()) < 4, "The wings are at the back");
+        HoardVisuals.Feather tip = HoardVisuals.feather(player, HoardVisuals.FEATHERS - 1, 1);
+        HoardVisuals.Feather root = HoardVisuals.feather(player, 0, -1);
+        helper.assertTrue(tip.pos().distanceTo(player.position()) > 10 && root.pos().distanceTo(player.position()) < 3,
+                "Great wings: the tip far out, the root at the shoulder");
+        helper.assertTrue(player.getAbilities().getFlyingSpeed() > 0.08F, "Wing flight is fast");
         StoneHoard.takeReal(player, 1);
         HoardVisuals.wingFlight(player);
         helper.assertTrue(!player.getAbilities().mayfly, "Below twelve the wings fold");

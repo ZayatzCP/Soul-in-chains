@@ -97,15 +97,24 @@ public final class StoneGlyphs {
             BlockPos center = block != null ? block : BlockPos.containing(point).below();
             int radius = 2 + Math.max(0, (int) Math.round(stats.getAoeMultiplier()));
             int count = Math.max(1, Math.min(StoneHoard.space(player), BASE + 6 * amp(stats)));
-            int torn = surge(level, player, center, radius, count);
+            List<BlockPos> where = new ArrayList<>();
+            List<BlockState> what = new ArrayList<>();
+            int torn = surge(level, player, center, radius, count, where, what);
             if (torn > 0) {
                 level.playSound(null, center, SoundEvents.ROOTED_DIRT_BREAK, SoundSource.PLAYERS, 1.5F, 0.6F);
+                level.playSound(null, center, SoundEvents.GRAVEL_BREAK, SoundSource.PLAYERS, 1.5F, 0.5F);
+                Phenomena.add(new StonePhenomena.Uplift(level, player, where, what));
             }
             StoneHoard.report(player, "arcane_artifacts.stone.surge", torn);
         }
 
         /** Tears up to {@code count} blocks within {@code radius} of the centre, nearest first. Returns how many. */
         public static int surge(ServerLevel level, Player player, BlockPos center, int radius, int count) {
+            return surge(level, player, center, radius, count, new ArrayList<>(), new ArrayList<>());
+        }
+
+        /** The same, noting where each torn block was and what it was (for the flight up). */
+        public static int surge(ServerLevel level, Player player, BlockPos center, int radius, int count, List<BlockPos> where, List<BlockState> what) {
             List<BlockPos> spots = new ArrayList<>();
             for (BlockPos pos : BlockPos.betweenClosed(center.offset(-radius, -radius, -radius), center.offset(radius, Math.min(1, radius), radius))) {
                 if (pos.distSqr(center) <= radius * radius + 1) {
@@ -118,7 +127,10 @@ public final class StoneGlyphs {
                 if (torn >= count) {
                     break;
                 }
+                BlockState state = level.getBlockState(pos);
                 if (StoneHoard.tear(level, pos, player)) {
+                    where.add(pos);
+                    what.add(state);
                     torn++;
                 }
             }
@@ -420,7 +432,7 @@ public final class StoneGlyphs {
     public static final class Cataclysm extends StoneEffect {
         public static final Cataclysm INSTANCE = new Cataclysm();
         public static final int COST = 24;
-        public static final float DAMAGE = 20F;
+        public static final float DAMAGE = 28F;
 
         private Cataclysm() {
             super("glyph_cataclysm", "Cataclysm");
@@ -432,9 +444,10 @@ public final class StoneGlyphs {
                 return;
             }
             List<BlockState> blocks = StoneHoard.take(player, COST);
-            float damage = MagicHandler.isHarmless(context) ? 0F : Math.max(4F, DAMAGE + 6F * amp(stats));
-            double radius = 4 + 1.5 * Math.max(0, stats.getAoeMultiplier());
-            Phenomena.add(new StonePhenomena.Meteor(level, player, point, blocks, damage, radius));
+            boolean harmless = MagicHandler.isHarmless(context);
+            float damage = harmless ? 0F : Math.max(4F, DAMAGE + 6F * amp(stats));
+            double radius = 6 + 1.5 * Math.max(0, stats.getAoeMultiplier());
+            Phenomena.add(new StonePhenomena.Meteor(level, player, point, blocks, damage, radius, !harmless));
             StoneHoard.report(player, "arcane_artifacts.stone.cataclysm", blocks.size());
         }
 
@@ -464,7 +477,7 @@ public final class StoneGlyphs {
 
         @Override
         public String getBookDescription() {
-            return "Twenty-four blocks of your Stone Hoard become one great stone that falls on the point and bursts: up to 20 damage around.";
+            return "Twenty-four blocks of your Stone Hoard become one great ball of stone that falls on the point and bursts: up to 28 damage, fire, a shockwave and a burning crater.";
         }
 
         @Override
