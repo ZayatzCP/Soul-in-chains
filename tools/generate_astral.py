@@ -137,7 +137,7 @@ def forgotten():
     # in the enchanting-table alphabet: no one can read it any more
     unknown = {'text': 'i was here and i had a name but the snow came and now nobody remembers it', 'font': 'minecraft:alt'}
     book = [{'function': 'minecraft:set_book_cover', 'title': '...', 'author': '?', 'generation': 3},
-            {'function': 'minecraft:set_written_book_pages', 'mode': {'type': 'replace_all'}, 'pages': [unknown, unknown, unknown]}]
+            {'function': 'minecraft:set_written_book_pages', 'mode': 'replace_all', 'pages': [unknown, unknown, unknown]}]
     w(os.path.join(D, 'loot_table', 'blocks', 'astral_snow.json'), {
         'type': 'minecraft:block',
         'pools': [{'rolls': 1, 'bonus_rolls': 0, 'conditions': [{'condition': 'minecraft:random_chance', 'chance': 0.0625}],

@@ -24,9 +24,7 @@
             },
             {
               "function": "minecraft:set_written_book_pages",
-              "mode": {
-                "type": "replace_all"
-              },
+              "mode": "replace_all",
               "pages": [
                 {
                   "text": "i was here and i had a name but the snow came and now nobody remembers it",

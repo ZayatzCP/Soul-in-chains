@@ -234,10 +234,13 @@ public final class AstralGameTests {
         float up = (float) -Math.toDegrees(Math.atan2(dy, 60));
         player.setXRot(up);
         player.setYRot(0F);
+        player.setYHeadRot(0F);
         helper.assertTrue(watcher.seenBy(player), "Looking straight at it, south and up");
         player.setYRot(90F);
+        player.setYHeadRot(90F);
         helper.assertTrue(!watcher.seenBy(player), "Looking west, it is not seen");
         player.setYRot(8F);
+        player.setYHeadRot(8F);
         helper.assertTrue(!watcher.seenBy(player), "From the corner of the eye it stays");
         helper.assertTrue(watcher.getBbHeight() > 6, "It is tall");
         watcher.discard();
